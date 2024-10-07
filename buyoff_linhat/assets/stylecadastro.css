@@ -1,0 +1,323 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+}
+
+.titulo {
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Adicionado para centralizar o título horizontalmente */
+}
+
+.titulo-img {
+    width: 100%;
+    height: 50px;
+    object-fit: cover;
+}
+
+
+.titulo-texto {
+    margin-top: 10px;
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 36px;
+    text-align: center;
+    z-index: 1;
+    margin: 0;
+    align-self: center;
+}
+
+.titulo-icon {
+    position: absolute;
+    left: 10px;
+    z-index: 2;
+    width: 50px;
+    height: 50px;
+}
+
+.sidebar {
+        display: flex;
+        justify-content: center; /* Centralizar o menu horizontalmente */
+        background-color: rgba(0, 0, 0, 0.9);
+        width: 100%;
+        padding: 10px 0; /* Adicionado espaçamento acima e abaixo do menu */
+    }
+
+.sidebar__navigation {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+
+.sidebar-navigation__item {
+        margin-right: 20px; /* Espaçamento entre os itens do menu */
+    }
+
+.sidebar-navigation__link {
+        text-decoration: none;
+        color: #ffffff;
+        font-size: 18px;
+        padding: 10px 20px; /* Espaçamento interno dos itens do menu */
+        border-radius: 5px; /* Adicionado para arredondar as bordas dos itens */
+        transition: background-color 0.3s ease; /* Transição suave da cor de fundo */
+    }
+
+.sidebar-navigation__link:hover {
+        background-color: rgba(255, 255, 255, 0.1); /* Cor de fundo ao passar o mouse */
+    }
+
+.campo-vazio {
+        border: 2px solid red;
+    }
+
+.mensagem-erro {
+        color: red;
+    }
+
+
+.form-section {
+        position: relative;
+        top: 30px; /* Espaçamento de 30px do topo */
+        display: flex;
+        flex-direction: column; /* Organizar os elementos em coluna */
+        align-items: center; /* Centralizar horizontalmente */
+        margin-left: 500px;
+    }
+
+.form-section form {
+        width: 300px; /* Largura do formulário */
+        margin-top: 20px; /* Espaçamento acima do formulário */
+        padding: 20px; /* Espaçamento interno do formulário */
+        background-color: #f5f5f5; /* Cor de fundo do formulário */
+        border-radius: 10px; /* Borda arredondada */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    }
+
+.form-section h2 {
+        margin-bottom: 20px; /* Espaçamento abaixo do título */
+    }
+
+
+
+.menu-blue {
+        background-color: blue;
+        color: white;
+    }
+
+.menu-white {
+        background-color: white;
+        color: black;
+    }
+
+.menu-yellow {
+        background-color: yellow;
+        color: black;
+    }
+
+.menu-light-grey {
+        background-color: lightgrey;
+        color: white;
+    }
+.menu-yellow.sidebar--active .sidebar-navigation__link,
+.menu-white.sidebar--active .sidebar-navigation__link
+    {
+        color: black;
+    }
+
+.menu-orange {
+        background-color: orange;
+        color: rgb(0, 0, 0);
+    }
+
+footer {
+        margin-top: auto; /* Empurra o rodapé para o fundo da página */
+        text-align: center;
+        padding: 20px;
+        background-color: #f1f1f1;
+    }
+
+
+     
+
+
+/* Estilos para o perfil */
+.profile-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    margin: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+figure.perfil {
+    font-family: 'Raleway', Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+    min-width: 230px;
+    max-width: 300px;
+    height: 300px; /* Definido para garantir altura fixa */
+    width: 100%;
+    color: #ffffff;
+    text-align: right;
+    font-size: 16px;
+    background-color: #000000;
+    text-transform: uppercase;
+}
+
+figure.perfil img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garante que a imagem cubra todo o contêiner */
+}
+
+figure.perfil:after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -90%;
+    right: 60%;
+    content: '';
+    background-color: rgba(0, 124, 255, 0.73);
+    -webkit-transform: skew(40deg) translateX(-75%);
+    transform: skew(40deg) translateX(-75%);
+    -webkit-transition: all 0.35s ease;
+    transition: all 0.35s ease;
+}
+
+figure.perfil * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-transition: all 0.35s ease;
+    transition: all 0.35s ease;
+}
+
+figure.perfil figcaption {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    padding: 20px;
+}
+
+figure.perfil h3,
+figure.perfil .links {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+figure.perfil h3 {
+    line-height: 1.3em;
+    font-weight: 900;
+    font-size: 1.3em;
+}
+
+figure.perfil .links {
+    font-size: 0.8em;
+    letter-spacing: 3px;
+    font-weight: 300;
+    margin: 0;
+    padding: 0;
+}
+
+figure.perfil .links li {
+    -webkit-transform: translateX(40px);
+    transform: translateX(40px);
+    opacity: 0;
+    list-style: none;
+}
+
+figure.perfil a {
+    padding: 2px 0;
+    display: block;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+figure.perfil a:hover {
+    color: #ffef00;
+}
+
+figure.perfil:hover:after,
+figure.perfil.hover:after {
+    -webkit-transform: skew(40deg) translateX(0%);
+    transform: skew(40deg) translateX(0%);
+}
+
+figure.perfil:hover img,
+figure.perfil.hover img {
+    zoom: 1;
+    filter: alpha(opacity=50);
+    -webkit-opacity: 0.2;
+    opacity: 0.2;
+}
+
+figure.perfil:hover li,
+figure.perfil.hover li {
+    opacity: 1;
+    -webkit-transform: translateX(0px);
+    transform: translateX(0px);
+}
+
+figure.perfil:hover li:first-child,
+figure.perfil.hover li:first-child {
+    -webkit-transition-delay: 0.1s;
+    transition-delay: 0.1s;
+}
+
+figure.perfil:hover li:nth-child(2),
+figure.perfil.hover li:nth-child(2) {
+    -webkit-transition-delay: 0.2s;
+    transition-delay: 0.2s;
+}
+
+figure.perfil:hover li:nth-child(3),
+figure.perfil.hover li:nth-child(3) {
+    -webkit-transition-delay: 0.3s;
+    transition-delay: 0.3s;
+}
+
+figure.perfil:hover li:nth-child(4),
+figure.perfil.hover li:nth-child(4) {
+    -webkit-transition-delay: 0.4s;
+    transition-delay: 0.4s;
+}
+
+figure.perfil .links li:nth-child(5),
+figure.perfil .links li:nth-child(6) {
+    -webkit-transform: translateX(40px);
+    transform: translateX(40px);
+    opacity: 0;
+    list-style: none;
+}
+
+figure.perfil:hover .links li:nth-child(5),
+figure.perfil.hover .links li:nth-child(5)
+ {
+    opacity: 1;
+    -webkit-transform: translateX(0px);
+    transform: translateX(0px);
+    -webkit-transition-delay: 0.5s; /* Ajuste o atraso conforme necessário */
+    transition-delay: 0.5s;
+}
+
+figure.perfil:hover .links li:nth-child(6),
+figure.perfil.hover .links li:nth-child(6) {
+    opacity: 1;
+    -webkit-transform: translateX(0px);
+    transform: translateX(0px);
+    -webkit-transition-delay: 0.6s; /* Ajuste o atraso conforme necessário */
+    transition-delay: 0.6s;
+}

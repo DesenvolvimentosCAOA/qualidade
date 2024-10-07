@@ -1,0 +1,10 @@
+<option value="">Selecione</option>
+<option value="TRIM">TRIM</option>
+<option value="BODY">BODY</option>
+<option value="PAINT">PAINT</option>
+<option value="SMALL">SMALL</option>
+<option value="LOGISTICA">LOGISTICA</option>
+<option value="CKD">CKD</option>
+<option value="ENGENHARIA">ENGENHARIA</option>
+<option value="FAI">FAI</option>
+<option value="PCP">PCP</option>

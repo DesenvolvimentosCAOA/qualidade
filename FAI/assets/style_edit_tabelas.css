@@ -1,0 +1,192 @@
+.filterTable {
+    display: flex;
+    align-items: center; /* Alinha verticalmente os itens ao centro */
+    gap: 1rem; /* Espaço entre os campos e botões */
+    margin-top: 2rem; /* Margem superior para afastar do topo da página */
+}
+
+.filterTable .row {
+    display: flex;
+    align-items: center; /* Alinha os itens dentro das colunas ao centro */
+    width: 100%; /* Garante que a linha ocupe toda a largura disponível */
+}
+
+.filterTable .col {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espaço entre o rótulo e o campo de entrada */
+}
+
+/* Estiliza o rótulo dos campos do formulário */
+.form-label {
+    margin-right: 0.5rem; /* Espaço entre o rótulo e o campo */
+    font-weight: 500;
+    white-space: nowrap; /* Impede que o texto do rótulo quebre em várias linhas */
+}
+
+/* Estiliza os campos de entrada */
+.form-control {
+    width: 150px; /* Largura fixa para os campos */
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+}
+
+/* Estiliza os botões do formulário */
+.btn {
+    font-size: 0.875rem; /* Fonte menor para botões mais compactos */
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    margin-left: 0.5rem; /* Espaço entre os botões */
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.btn-warning {
+    color: #212529;
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+
+/* Estilo para a tabela */
+.table {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+    background-color: #fff;
+    margin-top: 2rem; /* Margem superior para afastar do topo da página */
+}
+
+.table thead {
+    margin-bottom: 0.5rem; /* Ajuste conforme necessário */
+}
+
+
+/* Estilo para o cabeçalho da tabela */
+.table thead th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 500;
+    text-align: center;
+    padding: 0.75rem;
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* Estilo para as células do corpo da tabela */
+.table tbody tr {
+    display: table-row !important; /* Assegura que as linhas da tabela sejam exibidas */
+    visibility: visible !important; /* Garante que as linhas sejam visíveis */
+}
+
+.table thead th, .table tbody td {
+    padding: 8px 10px; /* Ajuste conforme necessário */
+}
+
+
+/* Estilo para linhas alternadas do corpo da tabela */
+.table tbody tr:nth-of-type(even) {
+    background-color: #f8f9fa;
+}
+
+/* Estilo para as linhas da tabela */
+.table tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Estilo para os botões dentro da tabela */
+.table tbody .btn {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    border: 1px solid transparent;
+}
+
+/* Estilo específico para o botão Salvar */
+.table tbody .btn-save {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.table tbody .btn-save:hover {
+    background-color: #218838;
+}
+
+/* Estilo para a tabela dentro de um container */
+.container {
+    padding: 0;
+}
+
+.table-container {
+    width: 100%; /* O container ocupa toda a largura disponível */
+    overflow-x: auto; /* Permite rolagem horizontal apenas se necessário */
+    margin-top: 1rem;
+}
+
+/* Estilo para o body e html para garantir que o footer fique no fundo da página */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Estilo para o container principal */
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o container ocupe toda a altura da viewport */
+}
+
+/* Estilo para o conteúdo principal */
+.main-content {
+    flex: 1; /* Faz com que o conteúdo principal expanda para preencher o espaço disponível */
+}
+
+/* Estilo para o footer */
+footer {
+    background-color: #f8f9fa; /* Cor de fundo do footer */
+    border-top: 1px solid #dee2e6; /* Linha superior do footer */
+    color: #212529; /* Cor do texto */
+    padding: 1rem 0; /* Padding superior e inferior */
+    text-align: center; /* Alinhamento do texto */
+}
+
+
+/* Estilo específico para o botão Salvar */
+.btn-save {
+    background-color: #28a745; /* Cor de fundo verde */
+    color: #fff; /* Cor do texto branco */
+    border: 1px solid #28a745; /* Borda na mesma cor do fundo */
+    padding: 0.375rem 0.75rem; /* Padding para tornar o botão mais espaçoso */
+    font-size: 0.875rem; /* Tamanho da fonte */
+    border-radius: 0.25rem; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de ponteiro ao passar o mouse */
+}
+
+.btn-save:hover {
+    background-color: #218838; /* Cor de fundo verde escuro ao passar o mouse */
+    border-color: #1e7e34; /* Borda com cor mais escura para hover */
+}
+
+.table th, table  td {
+    font-size: 12px;
+}

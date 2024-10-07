@@ -1,0 +1,17 @@
+<option value="Linha T">Linha T</option>
+<option value="Linha C">Linha C</option>
+<option value="Linha F">Linha F</option>
+<option value="BODY">BODY</option>
+<option value="PAINT">PAINT</option>
+<option value="SMALL">SMALL</option>
+<option value="LOGISTICA">LOGISTICA</option>
+<option value="CKD">CKD</option>
+<option value="ENGENHARIA">ENGENHARIA</option>
+<option value="MANUTENÇÃO">MANUTENÇÃO</option>
+<option value="PVT">PVT</option>
+<option value="QA">QA</option>
+<option value="CKDL">CKDL</option>
+<option value="DOOWON">DOOWON</option>
+<option value="CP7">CP7</option>
+<option value="SUB-MONTAGEM">SUB-MONTAGEM</option>
+<option value="PCP">PCP</option>

@@ -1,0 +1,47 @@
+/* Estilo para as transições */
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Estilo padrão dos contêineres */
+.login-container, .destino-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    animation-duration: 0.5s;
+}
+
+/* Aplicando animações */
+.login-container {
+    animation-name: fadeIn;
+}
+
+.destino-container {
+    display: none; /* Página de destino inicialmente oculta */
+}
+
+.logged-in .login-container {
+    animation-name: fadeOut;
+}
+
+.logged-in .destino-container {
+    display: block;
+    animation-name: fadeIn;
+}
