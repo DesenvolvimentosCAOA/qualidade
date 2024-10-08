@@ -30,8 +30,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>EDITAR ESTAÇÃO</title>
-    <link rel="icon" href="/cf/auth/qualidade/FAI/assets/chery.png" type="image/x-icon">
-    <link rel="stylesheet" href="/cf/auth/qualidade/FAI/assets/style_editar.css?v2">
+    <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
+    <link rel="stylesheet" href="/qualidade/FAI/assets/style_editar.css?v2">
     <style>
       /* Global styles */
 body {

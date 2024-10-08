@@ -121,7 +121,7 @@
        self.location = 'fai_barreira_exok.cfm';
     </script>
     </cfif>
-    <html lang="pt-BR">
+<html lang="pt-BR">
        <head>
           <!-- Required meta tags -->
           <meta charset="utf-8">
@@ -263,13 +263,10 @@
                          SELECT ID, VIN,MODELO,BARREIRA  FROM SISTEMA_QUALIDADE_FAI ORDER BY ID DESC)
                          WHERE ROWNUM = 1
                       </cfquery>
-                      <!---                     <cfdump  var="#consulta1#"> --->
+
                       <div class="form-group col-md-2" style="position: relative;">
                         <label for="formVIN">VIN</label>
-                        <input type="text" class="form-control form-control-sm" minlength="17" name="vin" id="formVIN"
-                            title="Insira o VIN Completo" required="required"
-                            oninput="this.value = this.value.replace(/\s+/g, '')" style="padding-right: 30px;">
-                        
+                        <input type="text" class="form-control form-control-sm" minlength="17" name="vin" id="formVIN" title="Insira o VIN Completo" required="required" oninput="this.value = this.value.replace(/\s+/g, '')" style="padding-right: 30px;">
                         <!-- Ícone "X" para limpar o campo -->
                         <span id="clearVin" style=" position: absolute; right: 30px; top: 70%; transform: translateY(-50%); font-size: 25px; cursor: pointer; color: red;">&times;</span>
                      </div>

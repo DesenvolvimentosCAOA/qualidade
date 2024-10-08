@@ -7,7 +7,7 @@
 </cfquery>
 
 <!-- Redireciona o usuário para a página de confirmação -->
-<cflocation url="/cf/auth/qualidade/buyoff_linhat/index.cfm" addtoken="no">
+<cflocation url="/qualidade/buyoff_linhat/index.cfm" addtoken="no">
 
 <!-- Redireciona o usuário de volta para a página anterior após alguns segundos -->
 <script>

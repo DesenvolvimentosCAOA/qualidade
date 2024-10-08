@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Barcode Code128</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+        .barcode-container {
+            margin-top: 20px;
+            max-height: 80vh; /* Ajusta a altura máxima da área de código de barras */
+            overflow-y: auto; /* Adiciona rolagem vertical se necessário */
+        }
+        .barcode-item {
+            margin-bottom: 20px;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printableArea, #printableArea * {
+                visibility: visible;
+            }
+            #printableArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-group">
+        <label for="dataInput">Digite os dados (um por linha):</label>
+        <textarea id="dataInput" placeholder="Exemplo:\n1234567890\nABCDEFGHIJ"></textarea>
+    </div>
+    <button onclick="generateBarcodes()">Gerar Barcodes</button>
+    <button onclick="printBarcodes()">Imprimir Barcodes</button>
+    <button onclick="clearFields()">Limpar Campos</button>
+    <div id="printableArea" class="barcode-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    <script>
+        function generateBarcodes() {
+            // Limpar barcodes anteriores
+            const barcodeContainer = document.getElementById('printableArea');
+            barcodeContainer.innerHTML = '';
+
+            // Capturar os dados inseridos no campo de texto
+            const dataInput = document.getElementById('dataInput').value;
+            const lines = dataInput.split('\n');
+
+            // Função para gerar um barcode
+            function generateBarcode(line, index) {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        if (line.trim() !== '') {
+                            const barcodeItem = document.createElement('div');
+                            barcodeItem.className = 'barcode-item';
+                            const canvas = document.createElement('canvas');
+                            barcodeItem.appendChild(canvas);
+                            barcodeContainer.appendChild(barcodeItem);
+                            JsBarcode(canvas, line.trim(), {
+                                format: "CODE128",
+                                displayValue: true,
+                                fontSize: 18
+                            });
+                        }
+                        resolve();
+                    }, index * 100); // Atraso de 100ms entre a geração de códigos
+                });
+            }
+
+            // Gerar todos os barcodes com atraso
+            const promises = lines.map((line, index) => generateBarcode(line, index));
+            Promise.all(promises).then(() => {
+                console.log('Todos os códigos de barras foram gerados.');
+            });
+        }
+
+        function printBarcodes() {
+            window.print();
+        }
+
+        function clearFields() {
+            document.getElementById('dataInput').value = '';
+            document.getElementById('printableArea').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

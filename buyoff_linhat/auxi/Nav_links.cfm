@@ -18,9 +18,9 @@
                               Barreiras</a>
                           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                               <a class="dropdown-item"
-                                  href="/cf/auth/qualidade/buyoff_linhat/selecao_paint.cfm">Buy Off's</a>
+                                  href="/qualidade/buyoff_linhat/selecao_paint.cfm">Buy Off's</a>
                               <a class="dropdown-item"
-                                  href="/cf/auth/qualidade/buyoff_linhat/repintura.cfm">Troca de Peças e Repinturas</a>
+                                  href="/qualidade/buyoff_linhat/repintura.cfm">Troca de Peças e Repinturas</a>
                           </div>
                         <li class="nav-item dropdown">
                           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -44,7 +44,7 @@
                           </div>
                         <li class="nav-item">
                             <a class="nav-link"
-                                href="/cf/auth/qualidade/buyoff_linhat/relatorios_paint.cfm" style="color: white; font-size: 1.1rem;">Relatórios</a>
+                                href="/qualidade/buyoff_linhat/relatorios_paint.cfm" style="color: white; font-size: 1.1rem;">Relatórios</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -53,13 +53,13 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item"
-                                    href="/cf/auth/qualidade/buyoff_linhat/indicadores_paint.cfm">Indicadores 1º turno</a>
+                                    href="/qualidade/buyoff_linhat/indicadores_paint.cfm">Indicadores 1º turno</a>
                                 <a class="dropdown-item"
-                                    href="/cf/auth/qualidade/buyoff_linhat/indicadores_paint2.cfm">Indicadores 2º turno</a>
+                                    href="/qualidade/buyoff_linhat/indicadores_paint2.cfm">Indicadores 2º turno</a>
                                 <a class="dropdown-item"
-                                    href="/cf/auth/qualidade/buyoff_linhat/indicadores_paint3.cfm">Indicadores 3º turno</a>
+                                    href="/qualidade/buyoff_linhat/indicadores_paint3.cfm">Indicadores 3º turno</a>
                                 <a class="dropdown-item"
-                                    href="/cf/auth/qualidade/buyoff_linhat/indicadores_paint_geral.cfm">Indicador Geral</a>
+                                    href="/qualidade/buyoff_linhat/indicadores_paint_geral.cfm">Indicador Geral</a>
                             </div>
                             <li class="nav-item">
                               <a class="nav-link" href="logout.cfm" style="color: red; font-size: 1.1rem;">Logout</a>

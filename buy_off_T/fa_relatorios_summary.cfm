@@ -4,7 +4,7 @@
 <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
 
@@ -59,8 +59,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Relatórios</title>
         <!-- Bootstrap CSS -->
-        <link rel="icon" href="/cf/auth/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/cf/auth/qualidade/FAI/assets/stylerelatorio.css?v1">
+        <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
+        <link rel="stylesheet" href="/qualidade/FAI/assets/stylerelatorio.css?v1">
     </head>
     <body>
         <!-- Header com as imagens e o menu -->

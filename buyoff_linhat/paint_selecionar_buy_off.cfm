@@ -38,13 +38,13 @@
         
         <div class="navbar-nav">
             <li class="nav-item">
-                <a href="/cf/auth/qualidade/buyoff_linhat/selecao_paint.cfm"><button class="button">Barreira Primer</button></a>
-                <a href="/cf/auth/qualidade/buyoff_linhat/selecao_paint_topcoat.cfm"><button class="button">Barreira Top Coat</button></a>
-                <a href="/cf/auth/qualidade/buyoff_linhat/selecao_paint_validacao.cfm"><button class="button">Barreira Validação de Qualidade</button></a>
+                <a href="/qualidade/buyoff_linhat/selecao_paint.cfm"><button class="button">Barreira Primer</button></a>
+                <a href="/qualidade/buyoff_linhat/selecao_paint_topcoat.cfm"><button class="button">Barreira Top Coat</button></a>
+                <a href="/qualidade/buyoff_linhat/selecao_paint_validacao.cfm"><button class="button">Barreira Validação de Qualidade</button></a>
             </li><br><br>
             <li class="nav-item">
-                <a href="/cf/auth/qualidade/buyoff_linhat/selecao_paint_liberacao.cfm"><button class="button">Barreira Liberação</button></a>
-                <a href="/cf/auth/qualidade/buyoff_linhat/selecao_paint_ecoat.cfm"><button class="button">Barreira ECOAT</button></a>
+                <a href="/qualidade/buyoff_linhat/selecao_paint_liberacao.cfm"><button class="button">Barreira Liberação</button></a>
+                <a href="/qualidade/buyoff_linhat/selecao_paint_ecoat.cfm"><button class="button">Barreira ECOAT</button></a>
             </li>
         </div>
     </body>

@@ -19,21 +19,24 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
               AND BARREIRA = 'T30'
               AND (
-                    -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                    -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                )
-                GROUP BY PROBLEMA, PECA, ESTACAO
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+            )
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -59,13 +62,16 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
               AND BARREIRA = 'T19'
               AND (
-                    -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                    -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-              )
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+            )
               GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
@@ -73,7 +79,7 @@
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -156,15 +162,16 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
               AND BARREIRA = 'T33'
               AND (
-                    -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                    -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-              )
-              -- Exemplo de filtro adicional baseado na coluna INTERVALO
-              -- AND INTERVALO IN ('06:00', '07:00', '08:00')  -- Substitua pelos valores reais dos intervalos que deseja filtrar
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+            )
               GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
@@ -172,7 +179,7 @@
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -198,6 +205,7 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
             AND BARREIRA = 'C13'
             AND (
                     -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
@@ -229,40 +237,42 @@
 
     <cfquery name="consulta_nconformidades" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, COUNT(*) TOTAL_POR_DEFEITO
-            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA FA
-            WHERE TRUNC(USER_DATA) = 
+            SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
+            WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
-                AND PROBLEMA IS NOT NULL
-                
+            AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
               AND BARREIRA not in 'CP7'
-                AND (
-                        -- Segunda a Quinta-feira: turno inicia às 15:50 e termina às 01:02 do dia seguinte
-                        ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                        -- Sexta-feira: turno inicia às 14:48 e termina às 23:17
-                        OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                    )
-                    GROUP BY PROBLEMA
+              AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+            )
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
-                   ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
+            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
+                ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
-                   SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
+            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
+                SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
-                   ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
+            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+                ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
         SELECT * FROM CONSULTA4
@@ -279,21 +289,24 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
               AND BARREIRA = 'F05'
               AND (
-                    -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                    -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                )
-                GROUP BY PROBLEMA, PECA, ESTACAO
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+            )
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -309,7 +322,7 @@
     </cfquery>
 
     <cfquery name="consulta_nconformidades_F10" datasource="#BANCOSINC#">
-        WITH CONSULTA AS (
+         WITH CONSULTA AS (
             SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
             WHERE TRUNC(USER_DATA) =
@@ -319,21 +332,24 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
             AND BARREIRA = 'F10'
             AND (
-                    -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                    -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                )
-                GROUP BY PROBLEMA, PECA, ESTACAO
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+            )
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -359,21 +375,24 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
             AND BARREIRA = 'SUB MOTOR'
             AND (
-                    -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                    -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                )
-                GROUP BY PROBLEMA, PECA, ESTACAO
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+            )
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -392,7 +411,7 @@
 <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
     
@@ -511,7 +530,7 @@
                 var data = {
                     labels: [
                         <cfoutput query="consulta_nconformidades_T19">
-                            '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                            '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                         </cfoutput>
                     ],
                     datasets: [
@@ -655,7 +674,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_T30">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -798,7 +817,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_T33">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -942,7 +961,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_C13">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -1012,7 +1031,7 @@
                     <div class="row">
                         <!-- Tabela H/H -->
                         <div class="col-md-4">
-                            <h3>C13</h3>
+                            <h3>F05</h3>
                             <div class="table-responsive">
                                 <table class="table table-hover table-sm table-custom-width">
                                     <thead class="bg-danger">
@@ -1086,7 +1105,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_F05">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -1230,7 +1249,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_F10">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -1370,7 +1389,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_submotor">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -1481,7 +1500,7 @@
                 var data = {
                     labels: [
                         <cfoutput query="consulta_nconformidades">
-                            '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                            '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                         </cfoutput>
                     ],
                     datasets: [

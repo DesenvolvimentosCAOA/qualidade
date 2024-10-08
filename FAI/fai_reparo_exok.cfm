@@ -2,7 +2,9 @@
     <cfinvoke method="inicializando" component="cf.ini.index">
     <cfheader name="Cache-Control" value="no-cache, no-store, must-revalidate">
     <cfheader name="Pragma" value="no-cache">
-    <cfheader name="Expires" value="0">
+    <cfheader name="Expires" value="0"> 
+    <cfcontent type="text/html; charset=UTF-8">
+    <cfprocessingdirective pageEncoding="utf-8">
 
     <!--- Verificando se está logado  --->
 <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
@@ -17,7 +19,6 @@
             history.back(); // Voltar para a página anterior
         </script>
     </cfif>
-
 
     <!--- Consulta --->
     <cfquery name="consulta" datasource="#BANCOSINC#">

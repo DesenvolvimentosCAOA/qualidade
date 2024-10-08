@@ -23,11 +23,11 @@
               
               AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
             )
               GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
@@ -66,11 +66,11 @@
             AND CRITICIDADE NOT IN ('N1', 'N2', 'N3', 'N4')
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
             )
             GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
@@ -109,11 +109,11 @@
             AND CRITICIDADE NOT IN ('N1', 'N2', 'N3', 'N4','N0','OK A-')
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
             )
             GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
@@ -136,12 +136,13 @@
         )
         SELECT * FROM CONSULTA4
     </cfquery>
-    
+
     <cfquery name="consulta_barreira" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT 
                 BARREIRA, VIN,
                 CASE 
+                    WHEN INTERVALO = '05:00' THEN '05:00~06:00'
                     WHEN INTERVALO = '06:00' THEN '06:00~07:00'
                     WHEN INTERVALO = '07:00' THEN '07:00~08:00'
                     WHEN INTERVALO = '08:00' THEN '08:00~09:00'
@@ -151,7 +152,16 @@
                     WHEN INTERVALO = '12:00' THEN '12:00~13:00'
                     WHEN INTERVALO = '13:00' THEN '13:00~14:00'
                     WHEN INTERVALO = '14:00' THEN '14:00~15:00'
+                    WHEN INTERVALO = '15:50' THEN '15:00~16:00'
                     WHEN INTERVALO = '15:00' THEN '15:00~16:00'
+                    WHEN INTERVALO = '16:00' THEN '16:00~17:00'
+                    WHEN INTERVALO = '17:00' THEN '17:00~18:00'
+                    WHEN INTERVALO = '18:00' THEN '18:00~19:00'
+                    WHEN INTERVALO = '19:00' THEN '19:00~20:00'
+                    WHEN INTERVALO = '20:00' THEN '20:00~21:00'
+                    WHEN INTERVALO = '21:00' THEN '21:00~22:00'
+                    WHEN INTERVALO = '22:00' THEN '22:00~23:00'
+                    WHEN INTERVALO = '23:00' THEN '23:00~00:00'
                     ELSE 'OUTROS'
                 END HH,
                 CASE 
@@ -175,7 +185,7 @@
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
-                AND INTERVALO BETWEEN '06:00' AND '15:00'
+                AND INTERVALO BETWEEN '06:00' AND '23:00'
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, HH, 
@@ -202,7 +212,7 @@
         GROUP BY BARREIRA
         ORDER BY ordem, HH
     </cfquery>
-    
+
     <cfquery name="consulta_nconformidades_defeitos" datasource="#BANCOSINC#">
         SELECT ESTACAO, COUNT(PROBLEMA) AS TOTAL_PROBLEMAS
         FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
@@ -217,11 +227,11 @@
         AND CRITICIDADE NOT IN ('N0', 'OK A-','AVARIA')
         AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
             )
         GROUP BY ESTACAO
         ORDER BY TOTAL_PROBLEMAS DESC
@@ -247,7 +257,7 @@
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
-                AND INTERVALO BETWEEN '06:00' AND '15:00'
+                AND INTERVALO BETWEEN '06:00' AND '23:00'
             AND STATUS IS NOT NULL
             AND BARREIRA = 'HR'
         )
@@ -280,9 +290,9 @@
             AND STATUS = 'EM REPARO'
             AND BARREIRA = 'HR'
             AND (
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
             )
         )
         SELECT 
@@ -294,26 +304,14 @@
         ORDER BY TOTAL_VINS DESC
     </cfquery>
 
-    <cfquery name="verificar_dados_reparo" datasource="#BANCOSINC#">
-        SELECT 
-            TRUNC(SYSDATE) - TRUNC(USER_DATA) AS DIAS_EM_REPARO,
-            COUNT(DISTINCT VIN) AS TOTAL_VINS
-        FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
-        WHERE STATUS = 'EM REPARO'
-        AND USER_DATA <= SYSDATE
-        AND BARREIRA = 'HR'
-        GROUP BY TRUNC(SYSDATE) - TRUNC(USER_DATA)
-        ORDER BY DIAS_EM_REPARO
-    </cfquery>
-
     <!--- Verificando se está logado  --->
 <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
-    
+
     <html lang="pt-BR">
     <head>
         <!-- Meta tags necessárias -->
@@ -741,30 +739,8 @@
                 var chart = new google.visualization.PieChart(document.getElementById('piechart_3d2'));
                 chart.draw(data, options);
             }
-        </script> --->
-
-                <div class="container mt-4">
-                    <div class="table-wrapper">
-                        <table class='reparo'>
-                            <thead>
-                                <tr>
-                                    <th>Total veículos</th>
-                                    <th>Dias em Reparo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfoutput query="verificar_dados_reparo">
-                                    <tr>
-                                        <td>#TOTAL_VINS#</td>
-                                        <td>#DIAS_EM_REPARO#</td>
-                                    </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-            <meta http-equiv="refresh" content="40,URL=fa_indicadores_1_hr.cfm">
+        </script> --->              
+        <meta http-equiv="refresh" content="40,URL=fa_indicadores_1_hr.cfm">
     </body>
 </html>
 

@@ -7,53 +7,73 @@
     <li class="dropdown">
         <a href="#">Barreiras</a>
         <ul class="dropdown-menu">
-          <li><a href="fa_barreira_cp7.cfm">Barreira CP7 SUV</a></li>
-          <li><a href="fa_barreira_cp7_hr.cfm">Barreira CP7 TRUCK</a></li>
-          <li><a href="fa_barreira_cp7_liberacao.cfm">Liberação CP7 SUV</a></li>
-          <li><a href="fa_barreira_T19.cfm">Barreira T19</a></li>
-          <li><a href="fa_barreira_T30.cfm">Barreira T30</a></li>
-          <li><a href="fa_barreira_T33.cfm">Barreira T33</a></li>
-          <li><a href="fa_barreira_C13.cfm">Barreira C13</a></li>
-          <li><a href="fa_barreira_F05.cfm">Barreira F05</a></li>
-          <li><a href="fa_barreira_F10.cfm">Barreira F10</a></li>
-          <li><a href="fa_barreira_submotor.cfm">Barreira SUB MOTOR</a></li>
+            <li class="dropdown-submenu">
+                <a href="#">Barreira CP7</a>
+                <ul class="submenu">
+                    <li><a href="fa_barreira_cp7.cfm">CP7 SUV</a></li>
+                    <li><a href="fa_barreira_cp7_hr.cfm">CP7 TRUCK</a></li>
+                </ul>
+            </li>
+            <li class="dropdown-submenu">
+                <a href="#">Buy Off's</a>
+                <ul class="submenu">
+                    <li><a href="fa_barreira_T19.cfm">T19 SUV</a></li>
+                    <li><a href="fa_barreira_T30.cfm">T30 SUV</a></li>
+                    <li><a href="fa_barreira_T33.cfm">T33 SUV</a></li>
+                    <li><a href="fa_barreira_C13.cfm">C13 SUV</a></li>
+                    <li><a href="fa_barreira_F05.cfm">F05 SUV</a></li>
+                    <li><a href="fa_barreira_F10.cfm">F10 SUV</a></li>
+                    <li><a href="fa_barreira_hr.cfm">BUY OFF HR</a></li>
+                </ul>
+            </li>
         </ul>
     </li>
+    
           <li><a href="fa_reparo.cfm">Reparo</a></li>
-    <li class="dropdown">
-        <a href="#">Liberação</a>
-        <ul class="dropdown-menu">
-            <!--- <li><a href="liberacao_fa.cfm">Liberação Buy Off</a></li> --->
-            <li><a href="fa_liberacao_cp7.cfm">Liberação CP7</a></li>
-        </ul>
-    </li>
+          <li><a href="fa_liberacao_cp7.cfm">Liberação</a></li>
     <li class="dropdown">
         <a href="#">Relatórios</a>
         <ul class="dropdown-menu">
           <li><a href="fa_relatorios.cfm">Relatórios</a></li>
-          <cfif isDefined("cookie.user_level_final_assembly") and cookie.user_level_final_assembly eq "G">
+        <cfif isDefined("cookie.user_level_final_assembly") and cookie.user_level_final_assembly eq "G">
             <li><a href="fa_relatorios_summary_cp7.cfm">Relatórios CP7</a></li>
           <li><a href="fa_relatorios_summary.cfm">Relatórios buy off</a></li>
         </cfif>
         </ul>
     </li>
+
     <li class="dropdown">
-      <a href="#">Indicadores</a>
-      <ul class="dropdown-menu">
-        <li><a href="./fa_indicadores_1_esteira.cfm">CP7 SUV 1º Turno</a></li>
-        <li><a href="./fa_indicadores_2_esteira.cfm">CP7 SUV 2º Turno</a></li>
-        <li><a href="./fa_indicadores_3_esteira.cfm">CP7 SUV 3º Turno</a></li>
-        <li><a href="./fa_indicadores_1_hr.cfm">CP7 TRUCK 1º Turno</a></li>
-        <li><a href="./fa_indicadores_1.cfm">Buy Off 1º Turno</a></li>
-        <li><a href="./fa_indicadores_2.cfm">Buy Off 2º Turno</a></li>
-        <li><a href="./fa_indicadores_3.cfm">Buy Off 3º Turno</a></li>
-      </ul>
+        <a href="#">Indicadores</a>
+        <ul class="dropdown-menu">
+            <li class="dropdown-submenu">
+                <a href="#">Indicador CP7 SUV</a>
+                <ul class="submenu">
+                    <li><a href="./fa_indicadores_1_esteira.cfm">CP7 SUV 1º Turno</a></li>
+                    <li><a href="./fa_indicadores_2_esteira.cfm">CP7 SUV 2º Turno</a></li>
+                    <li><a href="./fa_indicadores_3_esteira.cfm">CP7 SUV 3º Turno</a></li>
+                </ul>
+            </li>
+            <li class="dropdown-submenu">
+                <a href="#">Indicador CP7 TRUCK</a>
+                <ul class="submenu">
+                    <li><a href="./fa_indicadores_1_hr.cfm">CP7 TRUCK 1º Turno</a></li>
+                </ul>
+            </li>
+            <li class="dropdown-submenu">
+                <a href="#">Indicador Buy Off's</a>
+                <ul class="submenu">
+                    <li><a href="./fa_indicadores_1.cfm">Buy Off 1º Turno</a></li>
+                    <li><a href="./fa_indicadores_2.cfm">Buy Off 2º Turno</a></li>
+                    <li><a href="./fa_indicadores_3.cfm">Buy Off 3º Turno</a></li>
+                </ul>
+            </li>
+        </ul>
     </li>
     <cfif isDefined("cookie.user_level_final_assembly") and cookie.user_level_final_assembly eq "G">
         <li class="dropdown">
         <a href="#">Outros</a>
         <ul class="dropdown-menu">
-            <li><a href="/cf/auth/qualidade/buyoff_linhat/adicionar_defeito.cfm">Adicionar Defeitos</a></li>
+            <li><a href="/qualidade/buyoff_linhat/adicionar_defeito.cfm">Adicionar Defeitos</a></li>
             <li><a href="./fa_editar.cfm">Editar Lançamento</a></li>
         </ul>
         </li>
@@ -64,6 +84,44 @@
 
 
 <style>
+
+.dropdown-submenu {
+  position: relative;
+}
+
+.submenu {
+  display: none;
+  position: absolute;
+  left: 100%; /* Coloca o submenu fora do menu principal */
+  top: 0;
+  background-color: #4c8bf5; /* Azul claro */
+  min-width: 150px; /* Ajuste conforme necessário */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra para destacá-lo */
+  z-index: 1000; /* Garante que o submenu fique acima de outros elementos */
+  border-radius: 8px; /* Bordas arredondadas */
+}
+
+.dropdown-submenu:hover .submenu {
+  display: block;
+}
+
+.submenu li a {
+  color: white; /* Texto branco para contraste */
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  border-radius: 8px; /* Bordas arredondadas nos itens de link também */
+}
+
+.submenu li a:hover {
+  background-color: #3a72c9; /* Azul mais escuro no hover */
+}
+
+/* Ajustes no menu dropdown principal para evitar sobreposição */
+.dropdown-menu {
+  z-index: 500; /* Garante que o menu dropdown principal não sobreponha o submenu */
+}
+
 
   .container {
       margin-top: 100px;
@@ -282,16 +340,20 @@
   }
 
   .dropdown-menu {
-      display: none;
-      position: absolute;
-      background-color: #1d075f;
-      min-width: 200px; /* ajusta o tamanho do campo*/
-      box-shadow: 0 30px 16px 0 rgba(0,0,0,0.2);
-      z-index: 10000;
-      top: 70px;
-      /* Ajuste conforme necessário */
-      left: 0;
-  }
+    display: none;
+    position: absolute;
+    background-color: #1d075f; /* Fundo do menu principal */
+    min-width: 200px; /* Ajusta o tamanho do campo */
+    box-shadow: 0 30px 16px 0 rgba(0,0,0,0.2); /* Sombra para o menu */
+    z-index: 10000;
+    top: 70px;
+    left: 0;
+    border-radius: 8px; /* Bordas arredondadas para o menu principal */
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
 
   .dropdown-menu li {
       list-style: none;

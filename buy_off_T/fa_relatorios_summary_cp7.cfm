@@ -446,7 +446,7 @@
 <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
     
@@ -501,9 +501,8 @@
                     <div class="form-group col-md-2">
                         <label for="formBARREIRA">Barreira</label>
                         <select class="form-control form-control-sm" name="filtroBARREIRA" id="formBARREIRA">
-                            
+                            <option value="HR">HR</option>
                             <option value="CP7">CP7</option>
-                         <!---   <option value="HR">HR</option>
                             <option value="T19">T19</option>
                             <option value="T30">T30</option>
                             <option value="T33">T33</option>

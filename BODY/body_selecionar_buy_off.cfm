@@ -6,7 +6,7 @@
 <cfif not isDefined("cookie.user_apontamento_body") or cookie.user_apontamento_body eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = 'qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
 <cfif not isDefined("cookie.USER_LEVEL_BODY") or (cookie.USER_LEVEL_BODY eq "R" or cookie.USER_LEVEL_BODY eq "P")>
@@ -21,8 +21,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Seleciona a Barreira</title>
-    <link rel="stylesheet" href="/cf/auth/qualidade/FAI/assets/StyleBuyOFF.css">
-    <link rel="icon" href="/cf/auth/qualidade/FAI/assets/chery.png" type="image/x-icon">
+    <link rel="stylesheet" href="/qualidade/FAI/assets/StyleBuyOFF.css">
+    <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
     <style>
     body {
         overflow:hidden;

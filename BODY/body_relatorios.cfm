@@ -37,8 +37,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Relatórios</title>
-        <link rel="stylesheet" href="/cf/auth/qualidade/buy_off_T/assets/stylerelatorio.css?v2">
-        <link rel="icon" href="/cf/auth/qualidade/FAI/assets/chery.png" type="image/x-icon">
+        <link rel="stylesheet" href="/qualidade/buy_off_T/assets/stylerelatorio.css?v2">
+        <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
     </head>
     <body>
         <!-- Header com as imagens e o menu -->

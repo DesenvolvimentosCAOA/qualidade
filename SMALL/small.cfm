@@ -12,7 +12,6 @@
         self.location = 'index.cfm'
     </script>
 </cfif>
-
 <!---  Consulta --->
 <cfquery name="consulta" datasource="#BANCOSINC#">
     SELECT *
@@ -218,7 +217,9 @@
                     <thead>
                         <tr class="text-nowrap">
                             <!-- Coluna de ação -->
-                            <th scope="col">Del</th>
+                            <cfif isDefined("cookie.user_level_paint") and cookie.user_level_paint eq "G">
+                                <th scope="col">Ação</th>
+                            </cfif>
                             <th scope="col">ID</th>
                             <th scope="col">Data</th>
                             <th scope="col">Colaborador</th>
@@ -234,11 +235,13 @@
                         <cfoutput query="consulta">
                             <tr class="align-middle">
                                 <!-- Botão de exclusão -->
-                                <td>
-                                    <span class="delete-icon-wrapper" onclick="deletar(#ID#);">
-                                        <i class="material-icons delete-icon">X</i>
-                                    </span>
-                                </td>
+                                <cfif isDefined("cookie.user_level_paint") and cookie.user_level_paint eq "G">
+                                    <td>
+                                        <span class="delete-icon-wrapper" onclick="deletar(#ID#);">
+                                            <i style="color:red" class="material-icons delete-icon">X</i>
+                                        </span>
+                                    </td>
+                                </cfif>
                                 <td>#ID#</td>
                                 <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
                                 <td>#USER_COLABORADOR#</td>

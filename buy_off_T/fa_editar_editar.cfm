@@ -7,7 +7,7 @@
 <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
 
@@ -39,10 +39,6 @@
             <cfoutput>
               <div class="row mb-4">
                 <div class="col col-3">
-                  <div class="form-group">
-                    <label class="form-label" for="formData">Data:</label>
-                    <input type="text" name="data" class="form-control" id="formData" value="#dateFormat(consulta_editar.user_data, 'dd/mm/yyyy')#" readonly/>
-                  </div>
                 </div>
                 <div class="col col-3">
                   <div class="form-group">
@@ -95,46 +91,28 @@
               <div class="form-group">
                   <label class="form-label" for="formNConformidade">Problema</label>
                   <input list="problema-options" type="text" name="NConformidade" id="formNConformidade" value="#consulta_editar.problema#"/>
-                  
                   <!-- Datalist com cfinclude para carregar opções -->
                   <datalist id="problema-options">
                       <cfinclude template="auxi/problemas_option.cfm">
                   </datalist>
               </div>
-          </div>
-          
-                
-              </div>
-          
-              <div class="row mb-4">
-                
-                <div class="col col-3">
-                  <div class="form-group">
-                    <label class="form-label" for="formSTATUS">STATUS</label>
-                    <select class="form-control" name="status" id="formSTATUS">
-                        <option value="">Selecione</option>
-                        <option value="EM REPARO" <cfif consulta_editar.STATUS eq "EM REPARO">selected</cfif>>EM REPARO</option>
-                        <option value="LIBERADO" <cfif consulta_editar.STATUS eq "LIBERADO">selected</cfif>>LIBERADO</option>
-                        <!-- Adicione mais opções conforme necessário -->
-                    </select>
-                </div>
-                
-                </div>
-                <div class="col col-3">
-                  <div class="form-group">
-                    <label class="form-label" for="formCRITICIDADE">Criticidade</label>
-                    <select class="form-control" name="criticidade" id="formCRITICIDADE">
-                        <option value="">Selecione</option>
-                        <option value="N1" <cfif consulta_editar.CRITICIDADE eq "N1">selected</cfif>>N1</option>
-                        <option value="N2" <cfif consulta_editar.CRITICIDADE eq "N2">selected</cfif>>N2</option>
-                        <option value="N3" <cfif consulta_editar.CRITICIDADE eq "N3">selected</cfif>>N3</option>
-                        <option value="N4" <cfif consulta_editar.CRITICIDADE eq "N4">selected</cfif>>N4</option>
-                        <option value="OK A-" <cfif consulta_editar.CRITICIDADE eq "OK A-">selected</cfif>>OK A-</option>
-                        <option value="N0" <cfif consulta_editar.CRITICIDADE eq "N0">selected</cfif>>N0</option>
-                        <option value="AVARIA" <cfif consulta_editar.CRITICIDADE eq "Avaria">selected</cfif>>Avaria</option>
-                    </select>
-                </div>
-              </div>
+          </div>    
+          <div class="col col-3">
+            <div class="form-group">
+              <label class="form-label" for="formCRITICIDADE">Criticidade</label>
+              <select class="form-control" name="criticidade" id="formCRITICIDADE">
+                  <option value="">Selecione</option>
+                  <option value="N1" <cfif consulta_editar.CRITICIDADE eq "N1">selected</cfif>>N1</option>
+                  <option value="N2" <cfif consulta_editar.CRITICIDADE eq "N2">selected</cfif>>N2</option>
+                  <option value="N3" <cfif consulta_editar.CRITICIDADE eq "N3">selected</cfif>>N3</option>
+                  <option value="N4" <cfif consulta_editar.CRITICIDADE eq "N4">selected</cfif>>N4</option>
+                  <option value="OK A-" <cfif consulta_editar.CRITICIDADE eq "OK A-">selected</cfif>>OK A-</option>
+                  <option value="N0" <cfif consulta_editar.CRITICIDADE eq "N0">selected</cfif>>N0</option>
+                  <option value="AVARIA" <cfif consulta_editar.CRITICIDADE eq "Avaria">selected</cfif>>Avaria</option>
+              </select>
+            </div> 
+          </div>  
+              </div>          
                 <div class="bt_ms mb-4">
                   <div class="col col-3">
                     <button type="submit" form="for-edit" class="btn btn-primary">Salvar</button>

@@ -23,8 +23,9 @@
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
             AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
               AND BARREIRA = 'CP7'
-              AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              
               AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
@@ -158,7 +159,7 @@
         )
         SELECT * FROM CONSULTA4
     </cfquery>
-    
+
     <cfquery name="consulta_barreira" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT 
@@ -221,33 +222,40 @@
         GROUP BY BARREIRA
         ORDER BY ordem, HH
     </cfquery>
-    
+
     <cfquery name="consulta_nconformidades_defeitos" datasource="#BANCOSINC#">
         SELECT ESTACAO, COUNT(PROBLEMA) AS TOTAL_PROBLEMAS
         FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
-        WHERE TRUNC(USER_DATA) = 
+        WHERE 
+        -- Verifica o filtro de data fornecido pela URL
+        CASE 
+            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) -- Considera dia anterior se for até 02:00
+            ELSE TRUNC(USER_DATA) -- Considera o dia atual
+        END = 
         <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
-            <cfqueryparam value="#CreateODBCDate(url.filtroData)#" cfsqltype="cf_sql_date">
-        <cfelse>
-            TRUNC(SYSDATE)
-        </cfif>
-        AND PROBLEMA IS NOT NULL
-        AND BARREIRA = 'CP7'
-        AND CRITICIDADE NOT IN ('N0', 'OK A-','AVARIA')
-        AND (
-                CASE 
-                    WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
-                    WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
-                    ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
-                END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-            )
-            AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
-                ELSE TRUNC(USER_DATA) 
-            END = CASE 
-                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+            CASE 
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
+        <cfelse>
+            CASE 
+                WHEN TO_CHAR(SYSDATE, 'HH24:MI') <= '02:00' THEN TRUNC(SYSDATE - 1)
+                ELSE TRUNC(SYSDATE)
+            END
+        </cfif>
+        
+        AND PROBLEMA IS NOT NULL
+        AND BARREIRA = 'CP7'
+        AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+        
+        AND (
+            CASE 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
+                ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
+            END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00', '01:00')
+        )
+        
         GROUP BY ESTACAO
         ORDER BY TOTAL_PROBLEMAS DESC
     </cfquery>
@@ -336,7 +344,6 @@
         GROUP BY TRUNC(SYSDATE) - TRUNC(USER_DATA)
         ORDER BY DIAS_EM_REPARO
     </cfquery>
-    
 
     <!----Consulta para LIBERAÇÃO ---->
 
@@ -456,10 +463,10 @@
 <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
-    
+
     <html lang="pt-BR">
     <head>
         <!-- Meta tags necessárias -->
@@ -1002,27 +1009,7 @@
                 chart.draw(data, options);
             }
         </script> --->
-                <div class="container mt-4">
-                    <div class="table-wrapper">
-                        <table class='reparo'>
-                            <thead>
-                                <tr>
-                                    <th>Total de VINs</th>
-                                    <th>Dias em Reparo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfoutput query="verificar_dados_reparo">
-                                    <tr>
-                                        <td>#TOTAL_VINS#</td>
-                                        <td>#DIAS_EM_REPARO#</td>
-                                    </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-    <meta http-equiv="refresh" content="40,URL=fa_indicadores_2_esteira.cfm">
+        <meta http-equiv="refresh" content="40,URL=fa_indicadores_2_esteira.cfm">
     </body>
 </html>
 

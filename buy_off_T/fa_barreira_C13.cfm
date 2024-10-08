@@ -9,7 +9,7 @@
 <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
 
@@ -320,9 +320,7 @@
                 <button type="reset" class="btn btn-danger">Cancelar</button>
                 <h3 style="color:red">Após o envio verifique se o VIN foi inserido corretamente e o modelo do veículo apareceu no lançamento</h3>
             </form>
-            
         </div>
-
         <div class="container col-12 bg-white rounded metas">
             <table class="table">
                 <thead>

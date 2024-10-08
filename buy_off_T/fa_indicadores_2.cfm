@@ -442,7 +442,7 @@
     <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
         <script>
             alert("É necessario autenticação!!");
-            self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+            self.location = '/qualidade/buyoff_linhat/index.cfm'
         </script>
     </cfif>
     
@@ -557,7 +557,7 @@
                 var data = {
                     labels: [
                         <cfoutput query="consulta_nconformidades_T30">
-                            '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                            '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                         </cfoutput>
                     ],
                     datasets: [
@@ -702,7 +702,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_T19">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -845,7 +845,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_T33">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -989,7 +989,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_C13">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -1133,7 +1133,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_F05">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -1278,7 +1278,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_F10">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -1423,7 +1423,7 @@
                         var data = {
                             labels: [
                                 <cfoutput query="consulta_nconformidades_submotor">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                                 </cfoutput>
                             ],
                             datasets: [
@@ -1535,7 +1535,7 @@
                 var data = {
                     labels: [
                         <cfoutput query="consulta_nconformidades">
-                            '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                            '#PECA# #PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
                         </cfoutput>
                     ],
                     datasets: [

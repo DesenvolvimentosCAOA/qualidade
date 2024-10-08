@@ -17,7 +17,7 @@
             </cfquery>
             <cfif validausuario.recordcount GT 0>
                 <cfcookie name="user_apontamento_small" value="#FORM.small_login#">
-                <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/SMALL/small.cfm"/>
+                <meta http-equiv="refresh" content="0; URL=/qualidade/SMALL/small.cfm"/>
             <cfelse>
                 <div id="login-erro" class="alert alert-danger" role="alert">USUÁRIO OU SENHA INCORRETA</div>
             </cfif>
@@ -38,11 +38,11 @@
         <cfcookie name="user_apontamento_fa" value="#FORM.final_assembly_login#">
         <cfcookie name="user_level_final_assembly" value="#validausuario.USER_LEVEL#">
         <cfif validausuario.user_level eq "R">
-            <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/buy_off_T/fa_reparo_c13.cfm"/>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/buy_off_T/fa_reparo_c13.cfm"/>
         <cfelseif validausuario.user_level eq "P">
-            <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/buy_off_T/fa_indicadores_1.cfm"/>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/buy_off_T/fa_indicadores_1.cfm"/>
         <cfelse>
-            <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/buy_off_T/fa_selecionar_buy_off.cfm"/>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/buy_off_T/fa_selecionar_buy_off.cfm"/>
         </cfif>
     <cfelse>
             <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
@@ -64,11 +64,11 @@
         <cfcookie name="user_apontamento_paint" value="#FORM.PAINT_SHOP_LOGIN#">
         <cfcookie name="user_level_paint" value="#validausuario.USER_LEVEL#">
         <cfif validausuario.user_level eq "R">
-            <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/buyoff_linhat/Reparo.cfm"/>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/buyoff_linhat/Reparo.cfm"/>
         <cfelseif validausuario.user_level eq "P">
-            <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/buyoff_linhat/indicadores_paint.cfm"/>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/buyoff_linhat/indicadores_paint.cfm"/>
         <cfelse>
-            <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/buyoff_linhat/paint_selecionar_buy_off.cfm"/>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/buyoff_linhat/paint_selecionar_buy_off.cfm"/>
         </cfif>
     <cfelse>
         <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
@@ -85,7 +85,7 @@
                 SELECT USER_ID, USER_NAME, USER_PASSWORD, trim (USER_LEVEL) USER_LEVEL, USER_SIGN FROM reparo_fa_users 
                 WHERE upper(USER_NAME) = UPPER('#form.FAI_LOGIN#')
                 AND USER_PASSWORD = UPPER('#form.FAI_SENHA#')
-                AND (SHOP = 'FAI' OR USER_LEVEL = 'G')
+                AND (SHOP = 'FAI' OR USER_LEVEL = 'G'OR USER_LEVEL = 'P')
             </cfquery>
         
         <!---    <CFDUMP VAR="#validausuario#"> --->
@@ -93,11 +93,11 @@
                 <cfcookie name="user_apontamento_fai" value="#FORM.FAI_LOGIN#">
                 <cfcookie name="user_level_fai" value="#validausuario.USER_LEVEL#">
                 <cfif validausuario.user_level eq "R">
-                    <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/FAI/fai_selecionar_reparo.cfm"/>
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/FAI/fai_selecionar_reparo.cfm"/>
                 <cfelseif validausuario.user_level eq "P">
-                    <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/FAI/fai_indicadores_1turno.cfm"/>
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/FAI/fai_indicadores_1turno.cfm"/>
                 <cfelse>
-                    <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/FAI/fai_selecionar_buy_off.cfm"/>
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/FAI/fai_selecionar_buy_off.cfm"/>
                 </cfif>
                 <cfelse>
                     <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
@@ -121,11 +121,11 @@
             <cfcookie name="user_apontamento_body" value="#FORM.body_shop_login#">
             <cfcookie name="user_level_body" value="#validausuario.USER_LEVEL#">
             <cfif validausuario.user_level eq "R">
-                <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/body/body_reparo.cfm"/>
+                <meta http-equiv="refresh" content="0; URL=/qualidade/body/body_reparo.cfm"/>
             <cfelseif validausuario.user_level eq "P">
-                <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/body/body_indicadores_1turno.cfm"/>
+                <meta http-equiv="refresh" content="0; URL=/qualidade/body/body_indicadores_1turno.cfm"/>
             <cfelse>
-                <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/body/body_selecionar_buy_off.cfm"/>
+                <meta http-equiv="refresh" content="0; URL=/qualidade/body/body_selecionar_buy_off.cfm"/>
             </cfif>
         <cfelse>
             <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>

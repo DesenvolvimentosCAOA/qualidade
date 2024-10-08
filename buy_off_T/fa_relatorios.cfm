@@ -93,7 +93,7 @@
                     </div>
                     <div class="form-group col-md-1">
                         <label for="formEstacao">Responsável</label>
-                        <select class="form-control form-control-sm" name="filtroestacao" id="formEstacao" style="width: 200px;">
+                        <select class="form-control form-control-sm" name="filtroestacao" id="formEstacao" style="width: 150px;">
                             <option value="" disables selected>Selecione o Responsável:</option>
                             <option value="Linha T">Linha T</option>
                             <option value="Linha C">Linha C</option>

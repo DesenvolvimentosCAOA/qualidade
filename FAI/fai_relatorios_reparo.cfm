@@ -1,4 +1,9 @@
 <cfinvoke method="inicializando" component="cf.ini.index">
+<cfheader name="Cache-Control" value="no-cache, no-store, must-revalidate">
+<cfheader name="Pragma" value="no-cache">
+<cfheader name="Expires" value="0"> 
+<cfcontent type="text/html; charset=UTF-8">
+<cfprocessingdirective pageEncoding="utf-8">
 
     <!---  Consulta  --->
     <cfquery name="consulta_adicionais" datasource="#BANCOSINC#">

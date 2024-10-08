@@ -1,7 +1,9 @@
 <cfinvoke method="inicializando" component="cf.ini.index">
-    <cfheader name="Cache-Control" value="no-cache, no-store, must-revalidate">
-    <cfheader name="Pragma" value="no-cache">
-    <cfheader name="Expires" value="0">
+<cfheader name="Cache-Control" value="no-cache, no-store, must-revalidate">
+<cfheader name="Pragma" value="no-cache">
+<cfheader name="Expires" value="0"> 
+<cfcontent type="text/html; charset=UTF-8">
+<cfprocessingdirective pageEncoding="utf-8">
 
     <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
         <script>
@@ -63,6 +65,21 @@
         <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
             AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
         </cfif>
+
+        UNION ALL
+
+        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE
+        FROM INTCOLDFUSION.sistema_qualidade_body
+        WHERE 1 = 1 
+        <cfif isDefined("url.filtroVIN") and url.filtroVIN neq "">
+            AND UPPER(VIN) LIKE UPPER('%#url.filtroVIN#%')
+        </cfif>
+        <cfif isDefined("url.filtroBARCODE") and url.filtroBARCODE neq "">
+            AND UPPER(BARCODE) LIKE UPPER('%#url.filtroBARCODE#%')
+        </cfif>
+        <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
+            AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
+        </cfif>
     )
     WHERE ROWNUM <= 40 -- Limita o número de linhas retornadas
     ORDER BY ID ASC
@@ -106,10 +123,12 @@
                     </div>
                 </div><br>
                 <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <button type="submit" class="btn btn-primary">Pesquisar</button>
-                        <button type="reset" class="btn btn-primary" style="background:gold; color:black; border-color: gold" onclick="self.location='fai_relatorios_completo.cfm'">Limpar</button>
-                        <button type="button" id="report" class="btn btn-secondary">Download</button>
+                    <div class="col-md-12">
+                        <div class="form-buttons">
+                            <button type="submit" class="btn btn-primary">Pesquisar</button>
+                            <button type="button" id="report" class="btn btn-secondary">Download</button>
+                            <button type="reset" class="btn btn-primary" style="background:gold; color:black; border-color: gold" onclick="self.location='fai_relatorios_completo.cfm'">Limpar</button>
+                        </div>
                     </div>
                 </div>
             </form>

@@ -30,7 +30,7 @@
         <li><a href="./body_editar.cfm" >Editar Lançamento</a></li>
       </ul>
     </li>
-    <li><a href="/cf/auth/qualidade/buyoff_linhat/logout.cfm">Sair</a></li>
+    <li><a href="/qualidade/buyoff_linhat/logout.cfm">Sair</a></li>
   </ul>
 </nav>
 
@@ -42,7 +42,7 @@
 
     // Validação simples de exemplo
     if (username === "admin" && password === "1234") {
-      window.location.href = "/cf/auth/qualidade/buyoff_linhat/adicionar_defeito.cfm";
+      window.location.href = "/qualidade/buyoff_linhat/adicionar_defeito.cfm";
     } else {
       alert("Usuário ou senha incorretos!");
     }

@@ -8,7 +8,7 @@
    <cfif not isDefined("cookie.USER_APONTAMENTO_BODY") or cookie.USER_APONTAMENTO_BODY eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
 
@@ -126,7 +126,7 @@
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
             <title>Body - Editar</title>
             <link rel="icon" href="./assets/chery.png" type="image/x-icon">
-            <link rel="stylesheet" href="/cf/auth/qualidade/FAI/assets/stylereparo.css?v1">
+            <link rel="stylesheet" href="/qualidade/FAI/assets/stylereparo.css?v1">
             <style>
                     /* Estilo normal do botão */
                 .btn-apagar {

@@ -8,7 +8,7 @@
    <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
 
@@ -18,8 +18,6 @@
         history.back(); // Voltar para a página anterior
     </script>
 </cfif>
-
-
 
     <!--- Consulta --->
     <cfquery name="consulta" datasource="#BANCOSINC#">
@@ -71,11 +69,9 @@
         <cfquery name="obterMaxId" datasource="#BANCOSINC#">
             SELECT COALESCE(MAX(ID), 0) + 1 AS id FROM INTCOLDFUSION.sistema_qualidade_fa
         </cfquery>
-
         <!--- Dump para verificar valores --->
         <cfdump var="#form#">
         <cfdump var="#obterMaxId#">
-
         <!--- Verifica se a inserção foi bem-sucedida --->
         <cfif insere.recordCount>
             <script> self.location = "fa_editar.cfm"; </script>
@@ -204,7 +200,6 @@
                             <thead>
                                 <tr class="text-nowrap">
                                     <th scope="col">ID</th>
-                                    <th scope="col">Data</th>
                                     <th scope="col">Inspetor</th>
                                     <th scope="col">VIN</th>
                                     <th scope="col">Barreira</th>
@@ -224,7 +219,6 @@
                                         <form method="post" action="fai_reparo.cfm">
                                                 <tr class="align-middle">
                                                     <td class="text-center">#ID#</td>
-                                                    <td>#dateFormat(USER_DATA, 'dd/mm/yyyy')#</td>
                                                     <td class="text-center" style="font-size:15px">#USER_COLABORADOR#</td>
                                                    <!---- <td>
                                                         <input type="text" class="form-control" name="REPARADOR" id="formReparador" style="font-size:10px" value="#login.USER_SIGN#" readonly>

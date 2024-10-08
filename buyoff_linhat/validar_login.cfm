@@ -33,7 +33,7 @@
        
         <cfif validausuario.recordcount GT 0>
                  <cfcookie  name="user_apontamento_small" value="#FORM.small_login#">
-                <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/SMALL/small.cfm"/>
+                <meta http-equiv="refresh" content="0; URL=/qualidade/SMALL/small.cfm"/>
                 <cfelse>
                     <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
         </cfif>
@@ -81,7 +81,7 @@
 <!---    <CFDUMP VAR="#validausuario#"> --->
     <cfif validausuario.recordcount GT 0>
         <cfcookie name="user_apontamento_fa" value="#FORM.final_assembly_login#">
-            <meta http-equiv="refresh" content="0; URL=/cf/auth/qualidade/buy_off_T/fa_selecionar_buy_off.cfm"/>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/buy_off_T/fa_selecionar_buy_off.cfm"/>
         <cfelse>
             <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
            </cfif>

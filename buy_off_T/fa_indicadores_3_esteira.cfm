@@ -340,7 +340,6 @@
         ORDER BY DIAS_EM_REPARO
     </cfquery>
 
-
     <!----Consulta para LIBERAÇÃO ---->
 
     <cfquery name="consulta_nconformidades_liberacao" datasource="#BANCOSINC#">
@@ -469,7 +468,7 @@
 <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
     
@@ -1018,29 +1017,6 @@
                 chart.draw(data, options);
             }
         </script> --->
-                <div class="container mt-4">
-                    <div class="table-wrapper">
-                        <table class='reparo'>
-                            <thead>
-                                <tr>
-                                    <th>Total de VINs</th>
-                                    <th>Dias em Reparo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfoutput query="verificar_dados_reparo">
-                                    <tr>
-                                        <td>#TOTAL_VINS#</td>
-                                        <td>#DIAS_EM_REPARO#</td>
-                                    </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-        
             <meta http-equiv="refresh" content="40,URL=fa_indicadores_3_esteira.cfm">
     </body>
 </html>
-
-  

@@ -82,8 +82,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>HR</title>
-        <link rel="icon" href="/cf/auth/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/cf/auth/qualidade/FAI/assets/style_barreiras.css?v1">
+        <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
+        <link rel="stylesheet" href="/qualidade/FAI/assets/style_barreiras.css?v1">
         <!--- deixar as letras do campo problema em maiúsculo --->
         <script>
             function transformToUpperCase(input) {

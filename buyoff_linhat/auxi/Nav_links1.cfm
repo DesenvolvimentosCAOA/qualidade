@@ -10,10 +10,10 @@
                 <a href="#">Buy Off's</a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="/cf/auth/qualidade/buyoff_linhat/paint_selecionar_buy_off.cfm">Buy Off's</a>
+                        <a href="/qualidade/buyoff_linhat/paint_selecionar_buy_off.cfm">Buy Off's</a>
                     </li>
                     <li>
-                        <a href="/cf/auth/qualidade/buyoff_linhat/repintura.cfm">Repintura/ troca de peças</a>
+                        <a href="/qualidade/buyoff_linhat/repintura.cfm">Repintura/ troca de peças</a>
                     </li>
                 </ul>
             </li>
@@ -54,16 +54,16 @@
                 <a href="#">Indicadores</a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="/cf/auth/qualidade/buyoff_linhat/indicadores_paint.cfm">1º Turno</a>
+                        <a href="/qualidade/buyoff_linhat/indicadores_paint.cfm">1º Turno</a>
                     </li>
                     <li>
-                        <a href="/cf/auth/qualidade/buyoff_linhat/indicadores_paint2.cfm">2º Turno</a>
+                        <a href="/qualidade/buyoff_linhat/indicadores_paint2.cfm">2º Turno</a>
                     </li>
                     <li>
-                        <a href="/cf/auth/qualidade/buyoff_linhat/indicadores_paint3.cfm">3º Turno</a>
+                        <a href="/qualidade/buyoff_linhat/indicadores_paint3.cfm">3º Turno</a>
                     </li>
                     <li>
-                        <a href="/cf/auth/qualidade/buyoff_linhat/indicadores_paint_geral.cfm">Geral</a>
+                        <a href="/qualidade/buyoff_linhat/indicadores_paint_geral.cfm">Geral</a>
                     </li>
                 </ul>
             </li>
@@ -71,8 +71,8 @@
                 <a href="#">Outros</a>
                 <ul class="dropdown-menu">
                   <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
-                  <li><a href="/cf/auth/qualidade/buyoff_linhat/paint_editar.cfm">Editar Lançamento</a></li>
-                  <li><a href="/cf/auth/qualidade/buyoff_linhat/batalha_naval.cfm">Batalha Naval</a></li>
+                  <li><a href="/qualidade/buyoff_linhat/paint_editar.cfm">Editar Lançamento</a></li>
+                  <li><a href="/qualidade/buyoff_linhat/batalha_naval.cfm">Batalha Naval</a></li>
                 </ul>
             </li>
             <li>
@@ -89,7 +89,7 @@
 
             // Validação simples de exemplo
             if (username === "admin" && password === "1234") {
-                window.location.href = "/cf/auth/qualidade/buyoff_linhat/adicionar_defeito.cfm";
+                window.location.href = "/qualidade/buyoff_linhat/adicionar_defeito.cfm";
             } else {
                 alert("Usuário ou senha incorretos!");
             }
