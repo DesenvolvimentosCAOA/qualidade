@@ -98,7 +98,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>PDI - Liberação</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="assets/stylereparo.css?v2">
+        <link rel="stylesheet" href="/qualidade/buyoff_linhat/assets/stylereparo.css?v2">
         <style>
                 /* Estilo normal do botão */
             .btn-apagar {

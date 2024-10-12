@@ -6,7 +6,7 @@
 <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
 

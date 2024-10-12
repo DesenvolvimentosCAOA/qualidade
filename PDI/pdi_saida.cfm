@@ -4,6 +4,20 @@
    <cfheader name="Expires" value="0">
    <cfcontent type="text/html; charset=UTF-8">
    <cfprocessingdirective pageEncoding="utf-8">
+
+   <!--- Verificando se está logado --->
+   <cfif not isDefined("cookie.USER_APONTAMENTO_PDI") or cookie.USER_APONTAMENTO_PDI eq "">
+      <script>
+         alert("É necessario autenticação!!");
+         self.location = '/qualidade/buyoff_linhat/index.cfm'
+      </script>
+   </cfif>
+   <cfif not isDefined("cookie.user_level_pdi") or (cookie.user_level_pdi eq "R" or cookie.user_level_pdi eq "P")>
+   <script>
+      alert("Você não tem autorização para acessar essa área!!");
+      history.back(); // Voltar para a página anterior
+   </script>
+   </cfif>
   
    <!---  Consulta  --->
    <cfquery name="consulta" datasource="#BANCOSINC#">
@@ -42,7 +56,7 @@
             content="width=device-width, initial-scale=1, shrink-to-fit=no">
          <title>PDI - SAÍDA</title>
          <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-         <link rel="stylesheet" href="assets/StyleBuyOFF.css?v1">
+         <link rel="stylesheet" href="/qualidade/buyoff_linhat/assets/StyleBuyOFF.css?v1">
          <script>
             function validarFormulario(event) {
                 // Validação geral dos campos

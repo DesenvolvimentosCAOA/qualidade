@@ -455,7 +455,7 @@
         <!-- Meta tags necessárias -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>FA CP7 Summary-1º turno</title>
+        <title>FA CP7 Summary</title>
         <link rel="icon" href="./assets/chery.png" type="image/x-icon">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
@@ -487,20 +487,24 @@
             <cfinclude template="auxi/nav_links.cfm">
         </header><br>
         <div class="container">
-            <h2>FA CP7 Summary-1º turno</h2>
+            <h2>FA CP7 Summary</h2>
             <form method="get">
                 <div class="form-row">
-                    <div class="form-group col-md-2">
-                        <label for="formDataStart">Data Inicial</label>
-                        <input type="date" class="form-control form-control-sm" name="filtroDataStart" id="formDataStart">
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label for="formDataEnd">Data Final</label>
-                        <input type="date" class="form-control form-control-sm" name="filtroDataEnd" id="formDataEnd">
-                    </div>
+                    <cfoutput>
+                        <div class="form-group col-md-2">
+                            <label for="formDataStart">Data Inicial</label>
+                            <input value="<cfif isDefined('url.filtroDataStart')>#url.filtroDataStart#</cfif>" type="date" class="form-control form-control-sm" name="filtroDataStart" id="formDataStart">
+                        </div>
+                    
+                        <div class="form-group col-md-2">
+                            <label for="formDataEnd">Data Final</label>
+                            <input value="<cfif isDefined('url.filtroDataEnd')>#url.filtroDataEnd#</cfif>" type="date" class="form-control form-control-sm" name="filtroDataEnd" id="formDataEnd">
+                        </div>
+                    </cfoutput>
                     <div class="form-group col-md-2">
                         <label for="formBARREIRA">Barreira</label>
                         <select class="form-control form-control-sm" name="filtroBARREIRA" id="formBARREIRA">
+                            <option value="">Selecione</option>
                             <option value="HR">HR</option>
                             <option value="CP7">CP7</option>
                             <option value="T19">T19</option>
@@ -509,7 +513,7 @@
                             <option value="C13">C13</option>
                             <option value="F05">F05</option>
                             <option value="F10">F10</option>
-                            <option value="SUBMOTOR">SUBMOTOR</option> --->
+                            <option value="SUBMOTOR">SUBMOTOR</option>
                         </select>
                     </div>
                     

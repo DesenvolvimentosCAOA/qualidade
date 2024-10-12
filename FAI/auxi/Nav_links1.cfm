@@ -126,7 +126,7 @@
             var username = prompt("Digite seu usuário:");
             var password = prompt("Digite sua senha:");
             if (username === "admin" && password === "102030") {
-                window.location.href = "/cf/auth/qualidade/buyoff_linhat/adicionar_defeito.cfm";
+                window.location.href = "/qualidade/buyoff_linhat/adicionar_defeito.cfm";
             } else {
                 alert("Usuário ou senha incorretos!");
             }

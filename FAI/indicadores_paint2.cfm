@@ -314,7 +314,7 @@
     <body>
         <!-- Header com as imagens e o menu -->
         <header class="titulo">
-            <cfinclude template="/cf/auth/qualidade/fai/auxi/nav_links1.cfm">
+            <cfinclude template="/qualidade/fai/auxi/nav_links1.cfm">
         </header><br><br><br><br><br><br>
         <h2>PAINT - Indicadores 2º Turno</h2>
         <!-- Filtro de data -->

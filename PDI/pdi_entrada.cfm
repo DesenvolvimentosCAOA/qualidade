@@ -5,6 +5,20 @@
 <cfcontent type="text/html; charset=UTF-8">
 <cfprocessingdirective pageEncoding="utf-8">
 
+   <!--- Verificando se está logado --->
+   <cfif not isDefined("cookie.USER_APONTAMENTO_PDI") or cookie.USER_APONTAMENTO_PDI eq "">
+      <script>
+         alert("É necessario autenticação!!");
+         self.location = '/qualidade/buyoff_linhat/index.cfm'
+      </script>
+   </cfif>
+   <cfif not isDefined("cookie.user_level_pdi") or (cookie.user_level_pdi eq "I" or cookie.user_level_pdi eq "P")>
+   <script>
+      alert("É necessário autorização!!");
+      history.back(); // Voltar para a página anterior
+   </script>
+   </cfif>
+
     <!---  Consulta  --->
     <cfquery name="consulta" datasource="#BANCOSINC#">
        SELECT *
@@ -40,7 +54,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <title>PDI - ENTRADA</title>
       <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-      <link rel="stylesheet" href="assets/StyleBuyOFF.css?v1">
+      <link rel="stylesheet" href="/qualidade/buyoff_linhat/assets/StyleBuyOFF.css?v1">
       <script src="./assets/script.js" defer></script>
       
    </head>
@@ -164,25 +178,29 @@
             <thead>
                <tr class="text-nowrap">
                   <!-- Coluna de ação -->
-                  <th scope="col">Del</th>
+                  <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "G">
+                     <th scope="col">Del</th>
+                 </cfif>
                   <th scope="col">ID</th>
                   <th scope="col">Data</th>
                   <th scope="col">Colaborador</th>
                   <th scope="col">VIN</th>
                   <th scope="col">Modelo</th>
                   <th scope="col">Localização</th>
-
+                  <th scope="col">Imprimir</th>
                </tr>
             </thead>
             <tbody class="table-group-divider">
                <cfoutput query="consulta">
                   <tr class="align-middle">
                      <!-- Botão de exclusão -->
-                     <td>
-                        <span class="delete-icon-wrapper" onclick="deletar(#ID#);">
-                           <i class="material-icons delete-icon" style="color: red;">X</i>
-                        </span>
-                     </td>
+                     <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "G">
+                        <td>
+                            <span class="delete-icon-wrapper" onclick="deletar(#ID#);">
+                                <i style="color:red" class="material-icons delete-icon">X</i>
+                            </span>
+                        </td>
+                    </cfif>
                      <td>#ID#</td>
                      <td>#LSDateTimeFormat(USER_DATA, 'dd/mm/yyyy HH:nn:ss')#</td>
                      <td>#USER_COLABORADOR#</td>

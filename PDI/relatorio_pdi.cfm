@@ -39,7 +39,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Relatórios</title>
-        <link rel="stylesheet" href="assets/stylerelatorio.css?v1">
+        <link rel="stylesheet" href="/qualidade/buyoff_linhat/assets/stylerelatorio.css?v1">
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
     </head>
     <body>

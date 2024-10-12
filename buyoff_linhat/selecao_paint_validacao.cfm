@@ -352,7 +352,7 @@
                     </div>
                     <div class="form-group col-md-2">
                         <label for="formEstacao">Responsável</label>
-                        <select class="form-control form-control-sm" name="estacao" id="formEstacao" style="width: 270px;">
+                        <select class="form-control form-control-sm" name="estacao" id="formEstacao">
                             <option value="">Selecione o Responsável:</option>
                             <cfinclude template="auxi/estacao.cfm">
                         </select>

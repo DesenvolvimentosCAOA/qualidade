@@ -6,7 +6,8 @@
   <ul>
     <li><a href="pdi_entrada.cfm">Entrada</a></li>
           <li><a href="pdi_saida.cfm">Saída</a></li>
-<!---           <li><a href="fa_liberacao_cp7.cfm">Apontamento de Reparo</a></li> --->
+          <li><a href="pdi_reparo.cfm">Reparo</a></li>
+          <li><a href="pdi_liberar.cfm">Liberação</a></li>
           <li><a href="relatorio_pdi.cfm">Relatório</a></li>
     <li class="dropdown">
         <a href="#">Indicadores</a>
@@ -19,7 +20,7 @@
         <li class="dropdown">
         <a href="#">Outros</a>
         <ul class="dropdown-menu">
-            <li><a href="./fa_editar.cfm">Editar Lançamento</a></li>
+            <li><a href="./pdi_editar.cfm">Editar Lançamento</a></li>
         </ul>
         </li>
     </cfif>

@@ -11,13 +11,13 @@
 <cfif not isDefined("cookie.user_level_final_assembly") or cookie.user_level_final_assembly eq "R">
     <script>
         alert("É necessário autorização!!");
-        self.location= 'fa_reparo_c13.cfm'
+        history.back(); // Voltar para a página anterior
     </script>
 </cfif>
 <cfif not isDefined("cookie.user_level_final_assembly") or cookie.user_level_final_assembly eq "P">
     <script>
         alert("É necessário autorização!!");
-        self.location= 'fa_indicadores_1turno.cfm'
+        history.back(); // Voltar para a página anterior
     </script>
 </cfif>
 
@@ -31,7 +31,14 @@
     FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
     WHERE 1 = 1 
     <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
-        AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
+        <cfset barreira = url.filtroBARREIRA>
+        <cfif barreira EQ "Buy Off">
+            AND TO_CHAR(BARREIRA) IN ('T19', 'T30', 'T33', 'C13', 'F05', 'F10', 'BUY OFF HR')
+        <cfelseif barreira EQ "CP7 SUV">
+            AND TO_CHAR(BARREIRA) IN ('CP7')
+        <cfelseif barreira EQ "CP7 TRUCK">
+            AND TO_CHAR(BARREIRA) IN ('HR')
+        </cfif>
     </cfif>
     <cfif isDefined("url.filtroESTACAO") and url.filtroESTACAO neq "">
         AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroESTACAO#%')
@@ -86,7 +93,12 @@
                     </div>
                     <div class="form-group col-md-2">
                         <label for="formBARREIRA">Barreira</label>
-                        <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroBARREIRA" id="formBARREIRA">
+                        <select class="form-control form-control-sm" name="filtroBARREIRA" id="formBARREIRA">
+                            <option value="">Selecione</option>
+                            <option value="Buy Off">BUY OFF'S</option>
+                            <option value="CP7 SUV">CP7 SUV</option>
+                            <option value="CP7 TRUCK">CP7 TRUCK</option>
+                        </select>
                     </div>
                     <div class="form-group col-md-2">
                         <label for="formPeriodo">Período do Dia</label>

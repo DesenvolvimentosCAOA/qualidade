@@ -39,7 +39,7 @@
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) ELSE TRUNC(USER_DATA) END 
+                AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA) ELSE TRUNC(USER_DATA) END 
             = CASE WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')-1) 
             ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) END
             GROUP BY BARREIRA, BARCODE, INTERVALO
@@ -76,7 +76,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -115,7 +115,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -134,7 +134,7 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
@@ -169,7 +169,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -188,7 +188,7 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
@@ -223,7 +223,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -242,7 +242,7 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
@@ -277,7 +277,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -296,7 +296,7 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
@@ -331,7 +331,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -350,7 +350,7 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 

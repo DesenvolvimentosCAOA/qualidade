@@ -462,7 +462,7 @@
 <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
 
@@ -499,7 +499,7 @@
     <body>
         <!-- Header com as imagens e o menu -->
         <header class="titulo">
-            <cfinclude template="/cf/auth/qualidade/fai/auxi/nav_links1.cfm">
+            <cfinclude template="/qualidade/fai/auxi/nav_links1.cfm">
         </header><br>
         <!-- Filtro de data -->
         <cfoutput>

@@ -8,10 +8,11 @@
    <cfif not isDefined("cookie.USER_APONTAMENTO_PAINT") or cookie.USER_APONTAMENTO_PAINT eq "">
     <script>
         alert("É necessario autenticação!!");
-        self.location = 'index.cfm'
+        self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
 </cfif>
-<cfif not isDefined("cookie.user_level_paint") or (cookie.user_level_paint eq "R" or cookie.user_level_paint eq "P")>
+
+<cfif not isDefined("cookie.user_level_paint") or (cookie.user_level_paint eq "R" or cookie.user_level_paint eq "P" or cookie.user_level_paint eq "I")>
     <script>
         alert("É necessário autorização!!");
         history.back(); // Voltar para a página anterior
@@ -21,8 +22,10 @@
     <!--- Consulta --->
     <cfquery name="consulta" datasource="#BANCOSINC#">
         SELECT *
-        FROM INTCOLDFUSION.sistema_qualidade
+        FROM 
+        INTCOLDFUSION.sistema_qualidade
         WHERE 1 = 1 
+        AND ROWNUM <= 40
         <cfif isDefined("url.filtroDefeito") and url.filtroDefeito neq "">
             AND UPPER(PROBLEMA) LIKE UPPER('%#url.filtroDefeito#%')
         </cfif>
@@ -38,16 +41,9 @@
         <cfif isDefined("url.filtroestacao") and url.filtroestacao neq "">
             AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroestacao#%')
         </cfif>
-        <cfif cgi.QUERY_STRING does not contain "filtro">
-            AND TRUNC(USER_DATA) = TRUNC(SYSDATE)
-        </cfif>
-        <cfif isDefined("url.data") and url.data neq "">
-            AND TO_CHAR(USER_DATA, 'dd/mm/yy') = '#lsdateformat(url.data, 'dd/mm/yy')#'
-        <cfelse>
-            AND TRUNC(USER_DATA) = TRUNC(SYSDATE)
-        </cfif>
-        ORDER BY ID asc
-    </cfquery>    
+        ORDER BY ID desc
+    </cfquery> 
+       
     <!--- Atualizar Item--->
     <cfif structKeyExists(form, "btSalvarID") and structKeyExists(form, "Tipo") and form.btSalvarID neq "" and form.Tipo neq "">
         <cfquery name="atualizar" datasource="#BANCOSINC#">
@@ -68,7 +64,9 @@
         <cfquery name="obterMaxId" datasource="#BANCOSINC#">
             SELECT COALESCE(MAX(ID), 0) + 1 AS id FROM INTCOLDFUSION.sistema_qualidade
         </cfquery>
-
+        <!--- Dump para verificar valores --->
+        <cfdump var="#form#">
+        <cfdump var="#obterMaxId#">
         <!--- Verifica se a inserção foi bem-sucedida --->
         <cfif insere.recordCount>
             <script> self.location = "paint_editar.cfm"; </script>
@@ -91,7 +89,7 @@
     <cfquery name="login" datasource="#BANCOSINC#">
         SELECT USER_NAME, USER_SIGN 
         FROM INTCOLDFUSION.REPARO_FA_USERS
-        WHERE USER_NAME = <cfqueryparam value="#cookie.USER_APONTAMENTO_FA#" cfsqltype="CF_SQL_VARCHAR">
+        WHERE USER_NAME = <cfqueryparam value="#cookie.USER_APONTAMENTO_PAINT#" cfsqltype="CF_SQL_VARCHAR">
     </cfquery>
 
     <!-- Atualizando as colunas específicas e setando o STATUS como OK -->
@@ -104,11 +102,6 @@
             TIPO_REPARO = NULL,
             REPARADOR = NULL,
             CRITICIDADE = NULL,
-            REPARO_DATA = NULL,
-            PECA_REPARO = NULL,
-            POSICAO_REPARO = NULL,
-            PROBLEMA_REPARO = NULL,
-            RESPONSAVEL_REPARO = NULL,
             STATUS = 'OK',
             RESPONSAVEL_LIBERACAO = <cfqueryparam value="#login.USER_SIGN#" cfsqltype="CF_SQL_VARCHAR">
         WHERE ID = <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
@@ -120,33 +113,34 @@
     </script>
 </cfif>
 
+
     <html lang="pt-BR">
         <head>
             <!-- Required meta tags -->
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <title>PAINT - Editar</title>
+            <title>Paint - Editar</title>
             <link rel="icon" href="./assets/chery.png" type="image/x-icon">
-            <link rel="stylesheet" href="assets/stylereparo.css?v2">
+            <link rel="stylesheet" href="/qualidade/FAI/assets/stylereparo.css?v1">
             <style>
-                /* Estilo normal do botão */
-            .btn-apagar {
-                background-color: #dc3545; /* Vermelho (Bootstrap danger) */
-                color: white;
-                border: none;
-                padding: 5px 10px;
-                font-size: 14px;
-                border-radius: 4px;
-                transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            }
+                    /* Estilo normal do botão */
+                .btn-apagar {
+                    background-color: #dc3545; /* Vermelho (Bootstrap danger) */
+                    color: white;
+                    border: none;
+                    padding: 5px 10px;
+                    font-size: 14px;
+                    border-radius: 4px;
+                    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+                }
 
-            /* Estilo ao passar o mouse (hover) */
-            .btn-apagar:hover {
-                background-color: #c82333; /* Vermelho mais escuro */
-                box-shadow: 0 0 8px rgba(220, 53, 69, 0.5); /* Sombra leve */
-                cursor: pointer;
-            }
-        </style>
+                /* Estilo ao passar o mouse (hover) */
+                .btn-apagar:hover {
+                    background-color: #c82333; /* Vermelho mais escuro */
+                    box-shadow: 0 0 8px rgba(220, 53, 69, 0.5); /* Sombra leve */
+                    cursor: pointer;
+                }
+            </style>
         </head>
         
         <body>
@@ -156,7 +150,7 @@
             </header><br><br><br><br><br><br>
 
             <div class="container-fluid mt-4">
-                <h2 style="font-size:2vw" class="titulo2">Editar de Estação</h2><br>
+                <h2 style="font-size:2vw" class="titulo2">Editar Lançamento</h2><br>
                 <cfoutput>
                     <form class="filterTable" name="fitro" method="GET">
                         <div class="row">
@@ -175,7 +169,7 @@
                                 <input type="text" class="form-control" name="filtroModelo" id="filtroModelo" value="<cfif isDefined('url.filtroModelo')>#url.filtroModelo#</cfif>"/>
                             </div>
                             <div class="col-md-3">
-                                <label class="form-label" for="filtroVIN">VIN:</label>
+                                <label class="form-label" for="filtroVIN">BARCODE:</label>
                                 <input type="text" class="form-control" name="filtroVIN" id="filtroVIN" value="<cfif isDefined('url.filtroVIN')>#url.filtroVIN#</cfif>"/>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
@@ -196,14 +190,14 @@
                             <thead>
                                 <tr class="text-nowrap">
                                     <th scope="col">ID</th>
-                                    <th scope="col">Data</th>
-                                    <th scope="col">Inspetor</th>
+                                    <th scope="col">Modelo</th>
                                     <th scope="col">BARCODE</th>
                                     <th scope="col">Barreira</th>
                                     <th scope="col">Peça</th>
                                     <th scope="col">Posição</th>
                                     <th scope="col">Problema</th>
                                     <th scope="col">Estação</th>
+                                    <th scope="col">Criticidade</i></th>
                                     <th scope="col">Salvar</th>
                                     <th scope="col">Editar</i></th>
                                     <th scope="col">Apagar NC</i></th>
@@ -212,11 +206,10 @@
                             <tbody class="table-group-divider">
                                 <cfif consulta.recordCount gt 0>
                                     <cfoutput query="consulta">
-                                        <form method="post" action="fai_reparo.cfm">
+                                        <form method="post" action="paint_reparo.cfm">
                                                 <tr class="align-middle">
                                                     <td class="text-center">#ID#</td>
-                                                    <td>#dateFormat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                                    <td class="text-center" style="font-size:15px">#USER_COLABORADOR#</td>
+                                                    <td class="text-center" style="font-size:15px">#MODELO#</td>
                                                    <!---- <td>
                                                         <input type="text" class="form-control" name="REPARADOR" id="formReparador" style="font-size:10px" value="#login.USER_SIGN#" readonly>
                                                     </td> ---->
@@ -226,6 +219,7 @@
                                                     <td class="text-center">#POSICAO#</td>
                                                     <td class="text-center">#PROBLEMA#</td>
                                                     <td class="text-center">#ESTACAO#</td>
+                                                    <td class="text-center">#CRITICIDADE#</td>
                                                     <td style="display:none;">
                                                         <input type="text" class="form-control" name="Tipo" id="formTipo" required>
                                                     </td>
@@ -241,7 +235,7 @@
                                                         <button class="btn-apagar" onclick="atualizarRegistro(#ID#);">
                                                             <i class="material-icons delete-icon"></i> Apagar
                                                         </button>
-                                                    </td>   
+                                                    </td>                                                    
                                                 </tr>
                                         </form>
                                     </cfoutput>

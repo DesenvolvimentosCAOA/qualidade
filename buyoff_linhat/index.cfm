@@ -149,11 +149,11 @@
                 <cfcookie name="user_apontamento_pdi" value="#FORM.PDI_LOGIN#">
                 <cfcookie name="user_level_pdi" value="#validausuario.USER_LEVEL#">
                 <cfif validausuario.user_level eq "R">
-                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_selecionar_reparo.cfm"/>
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_entrada.cfm"/>
                 <cfelseif validausuario.user_level eq "P">
                     <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_indicadores_1turno.cfm"/>
                 <cfelse>
-                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_entrada.cfm"/>
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_saida.cfm"/>
                 </cfif>
                 <cfelse>
                     <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
@@ -517,6 +517,7 @@
                 <option value="PAINT">PAINT</option>
                 <option value="SMALL">SMALL</option>
                 <option value="FA">FA</option>
+                <option value="PDI">PDI</option>
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Cadastrar</button>
@@ -558,8 +559,9 @@
         }
 
         function validarAcessoEditar(event) {
-            var usuario = prompt("Digite o nome de usuário:");
-            var senha = prompt("Digite a senha:");
+            var usuario = prompt("Digite o nome de usuário:").toLowerCase(); // Converte para minúsculas
+            var senha = prompt("Digite a senha:").toLowerCase(); // Converte para minúsculas
+
             if (usuario === "admin" && senha === "3781") {
                 // Credenciais corretas, redireciona para a página de edição
             } else {
@@ -567,6 +569,7 @@
                 alert("Usuário ou senha incorretos. Tente novamente.");
             }
         }
+
     </script>
 </body>
 </html>

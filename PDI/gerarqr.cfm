@@ -11,15 +11,10 @@
                '^PW1624' & Chr(13) & Chr(10) &  // Define a largura máxima da etiqueta para 8 polegadas (1624 dots)
                '^MD17' & Chr(13) & Chr(10) &  // Ajusta a densidade para 17 (mais escura)
                '^PR2' & Chr(13) & Chr(10) &   // Ajusta a velocidade para 2 (mais lenta)
-               
-               // Gera a caixa de borda, mantendo largura e altura
-               '^FO20,20^GB750,170,4^FS' & Chr(13) & Chr(10) &  // Largura de 800 e altura de 300
-               
-               // Gera o QR Code, ajustando sua posição
-               '^FO100,50^BQN,2,5^FDLA,' & vin & '^FS' & Chr(13) & Chr(10) &  
-               
-               // Adiciona o VIN como texto ao lado do QR Code
-               '^FO350,100^A0N,30,35^FB600,1,0,L^FD' & vin & '^FS' & Chr(13) & Chr(10) &  // Posição ajustada à frente do QR Code
+               // Gera o código de barras Code 128, ajustando sua posição
+               '^FO100,50^BY3^BCN,100,Y,N,N^FD' & vin & '^FS' & Chr(13) & Chr(10) &  
+               // Adiciona o VIN como texto abaixo do código de barras
+               '^FO100,160^A0N,30,35^FB600,1,0,L^FD' & '^FS' & Chr(13) & Chr(10) &  // Posição ajustada abaixo do código de barras
 
                '^XZ';  // Fim da etiqueta
     

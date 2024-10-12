@@ -5,13 +5,14 @@
   
   <ul>
     <li class="dropdown">
-        <a href="#">Barreiras</a>
+        <a href="fa_selecionar_buy_off.cfm">Barreiras</a>
         <ul class="dropdown-menu">
             <li class="dropdown-submenu">
                 <a href="#">Barreira CP7</a>
                 <ul class="submenu">
-                    <li><a href="fa_barreira_cp7.cfm">CP7 SUV</a></li>
+                    <li><a href="fa_barreira_cp7.cfm">CP7 SUV - ESTEIRA</a></li>
                     <li><a href="fa_barreira_cp7_hr.cfm">CP7 TRUCK</a></li>
+                    <li><a href="fa_barreira_cp7_liberacao.cfm">LIBERAÇÃO REPAROS</a></li>
                 </ul>
             </li>
             <li class="dropdown-submenu">
@@ -36,8 +37,7 @@
         <ul class="dropdown-menu">
           <li><a href="fa_relatorios.cfm">Relatórios</a></li>
         <cfif isDefined("cookie.user_level_final_assembly") and cookie.user_level_final_assembly eq "G">
-            <li><a href="fa_relatorios_summary_cp7.cfm">Relatórios CP7</a></li>
-          <li><a href="fa_relatorios_summary.cfm">Relatórios buy off</a></li>
+            <li><a href="fa_relatorios_summary_cp7.cfm">Relatórios CP7 Summary</a></li>
         </cfif>
         </ul>
     </li>

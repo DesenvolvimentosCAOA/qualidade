@@ -428,7 +428,7 @@
     <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
         <script>
             alert("É necessario autenticação!!");
-            self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+            self.location = '/qualidade/buyoff_linhat/index.cfm'
         </script>
     </cfif>
     
@@ -438,7 +438,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Indicadores - 1º turno</title>
-        <link rel="icon" href="/cf/auth/qualidade/FAI/assets/chery.png" type="image/x-icon">
+        <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
         <link rel="stylesheet" href="assets/css/style.css?v=11"> 
@@ -479,7 +479,7 @@
     <body>
         <!-- Header com as imagens e o menu -->
         <header class="titulo">
-            <cfinclude template="/cf/auth/qualidade/fai/auxi/nav_links1.cfm">
+            <cfinclude template="/qualidade/fai/auxi/nav_links1.cfm">
         </header><br><br><br>
 
             <cfif IsNumeric(consulta_totais.CP5_PERC) AND IsNumeric(consulta_totais.VALIDACAO_PERC) AND IsNumeric(consulta_totais.PROCESSO_PERC)>

@@ -346,7 +346,7 @@
     <body>
         <!-- Header com as imagens e o menu -->
         <header class="titulo">
-            <cfinclude template="/cf/auth/qualidade/fai/auxi/nav_links1.cfm">
+            <cfinclude template="/qualidade/fai/auxi/nav_links1.cfm">
         </header><br><br><br><br><br><br>
       
         <!-- Filtro de data -->

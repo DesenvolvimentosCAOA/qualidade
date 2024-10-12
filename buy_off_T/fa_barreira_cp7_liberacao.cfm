@@ -105,7 +105,7 @@
                 name="viewport"
                 content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-                <title>Liberação</title>
+                <title>Liberação - Reparos</title>
                 <link rel="icon" href="./assets/chery.png" type="image/x-icon">
                     <link rel="stylesheet" href="assets/StyleBuyOFF.css?v1">
                         <!--- deixar as letras do campo problema em maiúsculo --->
@@ -191,7 +191,7 @@
                         </header>
 
                         <div class="container mt-4">
-                            <h2 class="titulo2">LIBERAÇÃO</h2><br>
+                            <h2 class="titulo2">LIBERAÇÃO - REPARO</h2><br>
 
                                 <cfquery name="pecas" datasource="#BANCOSINC#">
                                     SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
