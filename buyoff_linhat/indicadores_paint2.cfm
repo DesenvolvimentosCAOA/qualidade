@@ -24,11 +24,11 @@
                     ELSE 'OUTROS'
                 END HH,
                 CASE 
-                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    -- Verifica se o BARCODE só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
                     AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
                     
-                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    -- Verifica se o BARCODE contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
     
                     ELSE 0
@@ -1225,8 +1225,7 @@
         </script>  
         </div>   
 
-     <meta http-equiv="refresh" content="40,URL=indicadores_paint2.cfm">
-
+      <meta http-equiv="refresh" content="40,URL=indicadores_paint2.cfm">
     <!-- Setinha flutuante -->
     <div class="floating-arrow" onclick="scrollToTop();">
         <i class="material-icons">arrow_upward</i>

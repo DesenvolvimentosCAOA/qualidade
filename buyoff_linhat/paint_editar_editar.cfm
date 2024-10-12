@@ -69,6 +69,12 @@
                             <input type="text" class="form-control" name="modelo" id="formModelo" value="#consulta_editar.modelo#"/>
                         </div>
                     </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label class="form-label" for="formCriticidade">Criticidade</label>
+                            <input type="text" class="form-control" name="criticidade" id="formCriticidade" value="#consulta_editar.CRITICIDADE#"/>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Peça, Posição e Problema na mesma linha -->
@@ -108,16 +114,12 @@
                             <label class="form-label" for="formIntervalo">Intervalo</label>
                             <input type="text" name="Intervalo" id="formIntervalo" value="#consulta_editar.intervalo#"  />
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" for="formReparo">Reparo Realizado</label>
-                            <input type="text" class="form-control" name="reparo" id="formReparo" value="#consulta_editar.TIPO_REPARO#"/>
-                        </div>
                     </div>
                 </div>
                 <div class="bt_ms mb-5">
                     <button type="submit" form="for-edit" class="btn btn-primary">Salvar</button>
                     <cfif isDefined("form.vin") and form.vin neq "">
-                        <<cfquery name="atualiza" datasource="#BANCOSINC#">
+                        <cfquery name="atualiza" datasource="#BANCOSINC#">
                             UPDATE INTCOLDFUSION.sistema_qualidade
                             SET 
                                 USER_DATA = CASE 
@@ -128,7 +130,7 @@
                                 PECA = <cfqueryparam value="#UCase(form.peca)#" cfsqltype="cf_sql_varchar">, 
                                 POSICAO = <cfqueryparam value="#UCase(form.local)#" cfsqltype="cf_sql_varchar">, 
                                 PROBLEMA = <cfqueryparam value="#UCase(form.NConformidade)#" cfsqltype="cf_sql_varchar">, 
-                                TIPO_REPARO = <cfqueryparam value="#UCase(form.reparo)#" cfsqltype="cf_sql_varchar">,
+                                CRITICIDADE = <cfqueryparam value="#UCase(form.criticidade)#" cfsqltype="cf_sql_varchar">,
                                 ESTACAO = <cfqueryparam value="#UCase(form.estacao)#" cfsqltype="cf_sql_varchar">,
                                 INTERVALO = <cfqueryparam value="#UCase(form.intervalo)#" cfsqltype="cf_sql_varchar">,
                                 MODELO = <cfqueryparam value="#UCase(form.modelo)#" cfsqltype="cf_sql_varchar">,

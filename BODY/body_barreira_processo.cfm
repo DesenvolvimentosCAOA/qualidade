@@ -32,17 +32,21 @@
             <!--- Pesquisa MES --->
 <cfquery name='buscaMES' datasource="#BANCOMES#">
         select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
-        rtrim(ltrim(replace(
-                         replace(
-                         replace(
-                         replace(
-                         replace(
-                         replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
-                         ' FL',''),
-                         'COMPLETO ',''),
-                         'TXS',''),
-                         'ESCURO',''),
-                         'NOVO MOTOR',''))) modelo
+            rtrim(ltrim(replace(
+            replace(
+            replace(
+            replace(
+            replace(
+            replace(
+            replace(
+            replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
+            ' FL',''),
+            'COMPLETO ',''),
+            'COMPLETA ',''),
+            'TXS',''),
+            'SOLDADA',''),
+            'ESCURO',''),
+            'NOVO MOTOR',''))) modelo
         from TBLLot l
         left join CTBLGravacao g on l.IDLot = g.IDLot
 		left join TBLProduct p on p.IDProduct = l.IDProduct
@@ -60,17 +64,21 @@
     
     <cfquery name='buscaMES2' datasource="#BANCOMES#">
         select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
-                            rtrim(ltrim(replace(
-                            replace(
-                            replace(
-                            replace(
-                            replace(
-                            replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
-                            ' FL',''),
-                            'COMPLETO ',''),
-                            'TXS',''),
-                            'ESCURO',''),
-                            'NOVO MOTOR',''))) modelo
+            rtrim(ltrim(replace(
+            replace(
+            replace(
+            replace(
+            replace(
+            replace(
+            replace(
+            replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
+            ' FL',''),
+            'COMPLETO ',''),
+            'COMPLETA ',''),
+            'TXS',''),
+            'SOLDADA',''),
+            'ESCURO',''),
+            'NOVO MOTOR',''))) modelo
         from TBLLot l
         left join CTBLGravacao g on l.IDLot = g.IDLot
         left join TBLProduct p on p.IDProduct = l.IDProduct
@@ -264,20 +272,21 @@
                                         <!--- Pesquisa MES --->
                     <cfquery name='buscaMES' datasource="#BANCOMES#">
                         select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
-                                            rtrim(ltrim(replace(
-                                            
-                                            replace(
-                                            replace(
-                                            replace(
-                                            replace(
-                                            replace(
-                                            replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
-                                            ' FL',''),
-                                            'COMPLETO ',''),
-                                            'TXS','PL7'),
-                                            'ESCURO',''),
-                                            'NOVO MOTOR',''),
-                                            'CINZA',''))) modelo
+                            rtrim(ltrim(replace(                                        
+                            replace(
+                            replace(
+                            replace(
+                            replace(
+                            replace(
+                            replace(
+                            replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
+                            ' FL',''),
+                            'COMPLETO ',''),
+                            'COMPLETA ',''),
+                            'TXS',''),
+                            'SOLDADA',''),
+                            'ESCURO',''),
+                            'NOVO MOTOR',''))) modelo
                         from TBLLot l
                         left join CTBLGravacao g on l.IDLot = g.IDLot
                         left join TBLProduct p on p.IDProduct = l.IDProduct

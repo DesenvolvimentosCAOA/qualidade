@@ -1,175 +1,339 @@
-<img src="assets/banner_bg.jpg" alt="Título" class="titulo-img">
-    <img src="assets/favicon.png" alt="Ícone" class="titulo-icon">
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container">
-            <a class="navbar-brand">PDI</a>
-            <h1 class="titulo-texto">Sistema de Gestão da Qualidade</h1>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" name="logout" href="logout.cfm" style="color: red; font-size: 1.1rem;">Logout</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="fa_selecionar_buy_off.cfm" style="color: white; font-size: 1.1rem;">Buy Off's</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="fa_selecionar_reparo.cfm" style="color: white; font-size: 1.1rem;">Reparo</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="liberacao_fa.cfm" style="color: white; font-size: 1.1rem;">Liberação</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="fa_relatorios.cfm" style="color: white; font-size: 1.1rem;">Relatórios</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: white; font-size: 1.1rem;">
-                            Indicadores
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="indicadores_fa.cfm">Indicadores 1º turno</a>
-                            <a class="dropdown-item" href="indicadores_fa2.cfm">Indicadores 2º turno</a>
-                            <a class="dropdown-item" href="#">Indicadores 3º turno</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-<style>/* código do header e imagens */
-
-body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  position: relative;
-}
-
-
-.titulo {
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.titulo-img {
-  width: 100%;
-  height: 60px;
-  object-fit: cover;
-  position: relative;
-}
-
-.titulo-icon {
-  position:absolute;
-  left: 10px;
-  z-index: 2;
-  width: 50px;
-  height: 50px;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.navbar .navbar-brand{
-  color: yellow !important;
-  font-size: 25px;
-}
-
-
-
-.navbar {
-  width: 100%;
-  position: absolute;
-  top: 0;
-  z-index: 1000;
-  background-color: transparent;
-}
-
-.titulo-texto {
-  margin-top: center;
-  position: absolute;
-  top: 50%;
-  right: -10%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 24px;
-  text-align: center;
-  z-index: 1;
+<nav>
+  <input type="checkbox" id="check">
+  <label for="check" class="checkbtn"><i class="icon icon-bars"></i></label>
+  <div class="logo">PDI</div>
   
-}
+  <ul>
+    <li><a href="pdi_entrada.cfm">Entrada</a></li>
+          <li><a href="pdi_saida.cfm">Saída</a></li>
+<!---           <li><a href="fa_liberacao_cp7.cfm">Apontamento de Reparo</a></li> --->
+          <li><a href="relatorio_pdi.cfm">Relatório</a></li>
+    <li class="dropdown">
+        <a href="#">Indicadores</a>
+        <ul class="dropdown-menu">
+            <li><a href="./pdi_indicadores_1.cfm">PDI - 1º Turno</a></li>
+            <li><a href="./pdi_indicadores_2.cfm">PDI - 2º Turno</a></li>
+        </ul>
+    </li>
+    <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "G">
+        <li class="dropdown">
+        <a href="#">Outros</a>
+        <ul class="dropdown-menu">
+            <li><a href="./fa_editar.cfm">Editar Lançamento</a></li>
+        </ul>
+        </li>
+    </cfif>
+    <li><a href="logout.cfm">Sair</a></li>
+  </ul>
+</nav>
 
-.titulo-icon {
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  z-index: 2;
-  width: 50px;
-  height: 50px;
-}
+<style>
 
-h2 {
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  margin-top: 10px;
-  position: relative;
-  text-align: center;
-}
+    .dropdown-submenu {
+    position: relative;
+    }
 
-.botao {
-  max-width: 200px;
-  min-width: fit-content;
-  width: fit-content;
-  position: absolute; 
-  top: 5px; 
-  left: 350px;
-  padding: 10px 20px;
-  border: none;
-  color: black;
-  cursor: pointer;
-  background-color: transparent;
-  white-space: nowrap;
-}
+    .submenu {
+    display: none;
+    position: absolute;
+    left: 100%; /* Coloca o submenu fora do menu principal */
+    top: 0;
+    background-color: #4c8bf5; /* Azul claro */
+    min-width: 150px; /* Ajuste conforme necessário */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra para destacá-lo */
+    z-index: 1000; /* Garante que o submenu fique acima de outros elementos */
+    border-radius: 8px; /* Bordas arredondadas */
+    }
 
-.botao:hover {
-  color: blue;
-}
+    .dropdown-submenu:hover .submenu {
+    display: block;
+    }
 
-/* css de não conformidade */
-.defeito_paint {
-  width: 700px;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  background: #ffffff; 
-  box-shadow: 1px 0px 1.2px 0px #e3e3e3; 
-  border-radius: 3px; 
-  padding: 1em;
-}
+    .submenu li a {
+    color: white; /* Texto branco para contraste */
+    padding: 8px 16px;
+    text-decoration: none;
+    display: block;
+    border-radius: 8px; /* Bordas arredondadas nos itens de link também */
+    }
 
-    .delete-icon-wrapper {
-      display:inline-block; /* Para garantir que o span ocupe apenas o espaço necessário */
-      width: 10px; /* Largura desejada */
-      height: 24px; /* Altura desejada */
-      cursor: pointer; /* Cursor do mouse ao passar sobre o ícone */
-  }
-  
-  .table-custom-width {
-    width: 300px; /* Defina a largura desejada aqui */
-}
+    .submenu li a:hover {
+    background-color: #3a72c9; /* Azul mais escuro no hover */
+    }
 
+    /* Ajustes no menu dropdown principal para evitar sobreposição */
+    .dropdown-menu {
+    z-index: 500; /* Garante que o menu dropdown principal não sobreponha o submenu */
+    }
+
+
+    .container {
+        margin-top: 100px;
+        /* Ajuste esse valor conforme necessário */
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        position: relative;
+    }
+
+    .titulo {
+        width: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .titulo-img {
+        width: 100%;
+        height: 60px;
+        object-fit: cover;
+        position: relative;
+    }
+
+    .titulo-icon {
+        position: absolute;
+        left: 10px;
+        z-index: 2;
+        width: 50px;
+        height: 50px;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .navbar .navbar-brand {
+        color: yellow !important;
+        font-size: 25px;
+    }
+
+    .navbar {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        z-index: 1000;
+        /* Mantenha o z-index alto */
+        background-color: transparent;
+    }
+
+    .titulo-texto {
+        margin-top: center;
+        position: absolute;
+        top: 50%;
+        right: -10%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 24px;
+        text-align: center;
+        z-index: 1;
+    }
+
+    .titulo-icon {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        z-index: 2;
+        width: 50px;
+        height: 50px;
+    }
+
+    h2 {
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        margin-top: 10px;
+        position: relative;
+        text-align: center;
+    }
+
+    nav {
+        background: #5434af;
+        width: 100%;
+        height: 80px;
+        margin-bottom: 80px;
+        position: fixed;
+        /* Mantenha a posição fixa */
+        top: 0;
+        z-index: 10000;
+        /* Defina um z-index mais alto para garantir que fique na frente */
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .logo {
+        color: white;
+        font-size: 35px;
+        line-height: 80px;
+        padding: 0 20px;
+        /* Ajuste o padding conforme necessário */
+        font-weight: bold;
+    }
+
+    nav ul {
+        display: flex;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    nav ul li {
+        display: inline-block;
+        line-height: 80px;
+        margin: 0 5px;
+    }
+
+    nav ul li a {
+        font-family: 'open_sansregular';
+        color: #ffffff;
+        font-size: 1em;
+        padding: 8px 15px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        text-decoration: none;
+    }
+
+    a.active,
+    a:hover {
+        background-color: #ffef00;
+        color: #393939;
+        transition: 0.6s;
+    }
+
+    .checkbtn {
+        font-size: 22px;
+        color: #fff;
+        line-height: 80px;
+        margin-right: 20px;
+        cursor: pointer;
+        display: none;
+    }
+
+    #check {
+        display: none;
+    }
+
+    @media (max-width: 952px) {
+        .logo {
+            font-size: 22px;
+            padding-left: 20px;
+        }
+
+        nav ul li a {
+            font-size: 16px;
+        }
+    }
+
+    @media (max-width: 858px) {
+        .checkbtn {
+            display: block;
+        }
+
+        ul {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            background: #1d075f;
+            top: 80px;
+            right: -100%;
+            text-align: center;
+            transition: all 0.5s;
+        }
+
+        nav ul li {
+            display: block;
+            margin: 50px 0;
+            line-height: 30px;
+        }
+
+        nav ul li a {
+            font-size: 20px;
+        }
+
+        a.active,
+        a:hover {
+            background: none;
+            color: #5434af;
+        }
+
+        #check:checked ~ ul {
+            right: 0;
+        }
+    }
+
+    /* Estilos para o menu dropdown */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: #1d075f; /* Fundo do menu principal */
+        min-width: 200px; /* Ajusta o tamanho do campo */
+        box-shadow: 0 30px 16px 0 rgba(0,0,0,0.2); /* Sombra para o menu */
+        z-index: 10000;
+        top: 70px;
+        left: 0;
+        border-radius: 8px; /* Bordas arredondadas para o menu principal */
+    }
+
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown-menu li {
+        list-style: none;
+    } 
+
+    .dropdown-menu li a {
+        color: white;
+        padding: 8px 16px;
+        /* Ajuste o padding se necessário */
+        text-decoration: none;
+        display: block;
+        text-align: left;
+        font-size: 12px;
+        /* Ajuste o tamanho da fonte aqui */
+        line-height: 1.2;
+        /* Ajuste o espaçamento entre linhas */
+        letter-spacing: normal;
+        /* Ajuste o espaçamento entre letras se necessário */
+    }
+
+    .dropdown-menu li a:hover {
+        background-color: #5434af;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+
+    /* Adiciona um pequeno espaçamento para o dropdown quando o menu está visível */
+    @media (max-width: 858px) {
+        .dropdown-menu {
+            position: static;
+            width: 100%;
+            box-shadow: none;
+            top: 0;
+            /* Ajuste conforme necessário */
+        }
+    }
 </style>

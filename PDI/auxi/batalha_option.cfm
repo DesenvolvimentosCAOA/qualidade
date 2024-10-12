@@ -1,0 +1,12 @@
+<option value="">Selecione o local:</option>
+<option value="FR">FR</option>
+<option value="RR">RR</option>
+<option value="LH">LH</option>
+<option value="RH">RH</option>
+<option value="CENTRAL">CENTRAL</option>
+<option value="FR RH">FR RH</option>
+<option value="FR LH">FR LH</option>
+<option value="RR RH">RR RH</option>
+<option value="RR LH">RR LH</option>                        
+<option value="RH/LH">RH/LH</option>
+<option value="FR/RR">FR/RR</option>

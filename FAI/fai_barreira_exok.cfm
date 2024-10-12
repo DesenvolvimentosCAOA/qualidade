@@ -8,7 +8,7 @@
     <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
     <script>
        alert("É necessario autenticação!!");
-       self.location = '/cf/auth/qualidade/buyoff_linhat/index.cfm'
+       self.location = '/qualidade/buyoff_linhat/index.cfm'
     </script>
     </cfif>
     <cfif not isDefined("cookie.user_level_fai") or cookie.user_level_fai eq "R">
@@ -306,7 +306,7 @@
                    <div class="form-group col-md-2">
                         <label for="formPosicao"> Posição</label>
                         <select class="form-control form-control-sm" name="posicao" id="formPosicao">
-                            <cfinclude template="/cf/auth/qualidade/FAI/auxi/batalha_option.cfm">
+                            <cfinclude template="/qualidade/FAI/auxi/batalha_option.cfm">
                         </select>
                     </div>
                     <div class="form-group col-md-2">

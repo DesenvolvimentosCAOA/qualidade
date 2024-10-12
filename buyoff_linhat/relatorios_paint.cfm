@@ -92,6 +92,7 @@
                             <th scope="col">Problema</th>
                             <th scope="col">Estação</th>
                             <th scope="col">Reparo Realizado</th>
+                            <th scope="col">Criticidade</th>
                             <th scope="col">Intervalo</th>
                         </tr>
                     </thead>
@@ -110,6 +111,7 @@
                                     <td>#PROBLEMA#</td>
                                     <td>#ESTACAO#</td>
                                     <td>#TIPO_REPARO#</td>
+                                    <td>#CRITICIDADE#</td>
                                     <td>#INTERVALO#</td>
                                 </tr>
                             </cfloop>

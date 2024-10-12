@@ -6,38 +6,14 @@
         <div class="logo">Paint Shop</div>
 
         <ul>
-            <li class="dropdown">
-                <a href="#">Buy Off's</a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="/qualidade/buyoff_linhat/paint_selecionar_buy_off.cfm">Buy Off's</a>
-                    </li>
-                    <li>
-                        <a href="/qualidade/buyoff_linhat/repintura.cfm">Repintura/ troca de peças</a>
-                    </li>
-                </ul>
+            <li>
+                <a href="/qualidade/buyoff_linhat/paint_selecionar_buy_off.cfm">Barreiras</a>
             </li>
-            <li class="dropdown">
-                <a href="#">Reparo</a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="Reparo.cfm">Buy Off's</a>
-                    </li>
-                    <li>
-                        <a href="reparo_repintura.cfm">Repintura/ troca de peças</a>
-                    </li>
-                </ul>
+            <li>
+                <a href="Reparo.cfm">Reparo</a>
             </li>
-            <li class="dropdown">
-                <a href="#">Liberação</a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="liberacao.cfm">Buy Off's</a>
-                    </li>
-                    <li>
-                        <a href="liberacao_repintura.cfm">Repintura/ troca de peças</a>
-                    </li>
-                </ul>
+            <li>
+                <a href="liberacao.cfm">Liberação</a>
             </li>
             <li class="dropdown">
                 <a href="#">Relatórios</a>

@@ -134,6 +134,34 @@
     </cfoutput>
 
 
+    <!--- valida o usuário para PDI --->
+    <cfoutput>
+        <cfif isDefined("form.PDI_LOGIN")>
+            <cfquery name="validausuario" datasource="#BANCOSINC#">
+                SELECT USER_ID, USER_NAME, USER_PASSWORD, trim (USER_LEVEL) USER_LEVEL, USER_SIGN FROM reparo_fa_users 
+                WHERE upper(USER_NAME) = UPPER('#form.PDI_LOGIN#')
+                AND USER_PASSWORD = UPPER('#form.PDI_SENHA#')
+                AND (SHOP = 'PDI' OR USER_LEVEL = 'G'OR USER_LEVEL = 'P')
+            </cfquery>
+        
+        <!---    <CFDUMP VAR="#validausuario#"> --->
+            <cfif validausuario.recordcount GT 0>
+                <cfcookie name="user_apontamento_pdi" value="#FORM.PDI_LOGIN#">
+                <cfcookie name="user_level_pdi" value="#validausuario.USER_LEVEL#">
+                <cfif validausuario.user_level eq "R">
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_selecionar_reparo.cfm"/>
+                <cfelseif validausuario.user_level eq "P">
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_indicadores_1turno.cfm"/>
+                <cfelse>
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_entrada.cfm"/>
+                </cfif>
+                <cfelse>
+                    <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
+                </cfif>
+        </cfif>
+    </cfoutput>
+
+
 
 
 <!DOCTYPE html>
@@ -403,6 +431,54 @@
         // Caso não haja erro, limpar mensagens de erro (opcional)
         document.getElementById('fai_erro').style.display = 'none';
         document.getElementById('fai_erro_numerico').style.display = 'none';
+
+        return true; // Permite o envio do formulário
+    }
+</script>
+
+<!-- Formulário de PDI -->
+<div id="form-pdi" class="form-section" style="display: none;">
+    <form method="post" onsubmit="return validarPDILogin()">
+        <h2 style="color:purple">PDI</h2>
+        <div class="form-group">
+            <label for="pdi_login">Login:</label>
+            <input type="text" class="form-control" id="pdi_login" name="pdi_login" oninput="this.value = this.value.toLowerCase()">
+        </div>
+        <div class="form-group">
+            <label for="pdi_senha">Senha:</label>
+            <input type="password" class="form-control" id="pdi_senha" name="pdi_senha">
+        </div>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+        <button type="reset" class="btn btn-secondary" onclick="ocultarForm('pdi')">Cancelar</button>
+        <!-- Elemento para exibir mensagem de erro -->
+        <div id="pdi_erro" class="alert alert-danger" style="display: none; width: 100%; margin-top: 10px;">Usuário ou senha incorretos.</div>
+        <div id="pdi_erro_numerico" class="alert alert-danger" style="display: none; width: 100%; margin-top: 10px;">A senha deve conter apenas números.</div>
+    </form>
+</div>
+
+<!-- JavaScript -->
+<script>
+    function validarPDILogin() {
+        var login = document.getElementById('pdi_login').value;
+        var senha = document.getElementById('pdi_senha').value;
+
+        // Validar se a senha contém apenas números
+        if (!(/^\d+$/.test(senha))) {
+            document.getElementById('pdi_erro_numerico').style.display = 'block';
+            document.getElementById('pdi_erro').style.display = 'none';
+            return false; // Impede o envio do formulário
+        }
+
+        // Exemplo simples de validação
+        if (login === "" || senha === "") {
+            document.getElementById('pdi_erro').style.display = 'block';
+            document.getElementById('pdi_erro_numerico').style.display = 'none';
+            return false; // Impede o envio do formulário
+        }
+
+        // Caso não haja erro, limpar mensagens de erro (opcional)
+        document.getElementById('pdi_erro').style.display = 'none';
+        document.getElementById('pdi_erro_numerico').style.display = 'none';
 
         return true; // Permite o envio do formulário
     }

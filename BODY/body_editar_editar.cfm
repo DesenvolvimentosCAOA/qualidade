@@ -245,12 +245,18 @@ button.btn {
                         </select>
                   </div>
                 </div>
-                <div class="col col-3">
-                  <div class="form-group">
-                    <label class="form-label" for="formCRITICIDADE">Criticidade</label>
-                    <input type="text" class="form-control" name="criticidade" id="formCRITICIDADE" value="#consulta_editar.CRITICIDADE#"/>
-                  </div>
-                </div>
+                <div class="form-group col-md-3">
+                  <label for="formCRITICIDADE">Criticidade</label>
+                  <select class="form-control form-control-sm" name="criticidade" id="formCRITICIDADE">
+                    <option value="#consulta_editar.criticidade#">#consulta_editar.criticidade#</option>
+                      <option value="N0">N0</option>
+                      <option value="N1">N1</option>
+                      <option value="N2">N2</option>
+                      <option value="N3">N3</option>
+                      <option value="N4">N4</option>
+                      <option value="OK A-">OK A-</option>
+                  </select>
+              </div>  
                 </div>
               </div>
               <div class="row mb-4">

@@ -8,6 +8,9 @@
 <option value="RR LH">RR LH</option>
 <option value="LH">LH</option>
 <option value="RH">RH</option>
+<option value="FR/RR">FR/RR</option>
+<option value="RH/LH">RH/LH</option>
+<option value="GERAL">GERAL</option>
 <option value="A1">A1</option>
 <option value="A2">A2</option>
 <option value="A3">A3</option>

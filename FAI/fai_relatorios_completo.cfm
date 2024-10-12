@@ -54,6 +54,22 @@
         UNION ALL
 
         SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE
+        
+        FROM INTCOLDFUSION.sistema_qualidade_body
+        WHERE 1 = 1 
+        <cfif isDefined("url.filtroVIN") and url.filtroVIN neq "">
+            AND UPPER(VIN) LIKE UPPER('%#url.filtroVIN#%')
+        </cfif>
+        <cfif isDefined("url.filtroBARCODE") and url.filtroBARCODE neq "">
+            AND UPPER(BARCODE) LIKE UPPER('%#url.filtroBARCODE#%')
+        </cfif>
+        <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
+            AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
+        </cfif>
+
+        UNION ALL
+
+        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE
         FROM INTCOLDFUSION.sistema_qualidade
         WHERE 1 = 1 
         <cfif isDefined("url.filtroVIN") and url.filtroVIN neq "">

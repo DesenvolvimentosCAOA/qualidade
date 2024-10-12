@@ -43,6 +43,12 @@
           >
         </li>
         <li class="">
+          <a href="#" title="Login PDI" onclick="mostrarForm('pdi')"
+            ><ion-icon name="chevron-forward-outline"></ion-icon>
+            <p>PDI</p></a
+          >
+        </li>
+        <li class="">
           <a href="#" title="Cadastro" onclick="validarAcessoCadastro()"
             ><ion-icon name="chevron-forward-outline"></ion-icon>
             <p>Cadastro</p></a
