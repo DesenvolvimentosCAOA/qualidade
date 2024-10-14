@@ -176,7 +176,7 @@
 
     <style>
     body{
-        background: url('./assets/94215104.cms') no-repeat center center fixed; /* URL da imagem de fundo */
+        background: url('./assets/novo.jpg') no-repeat center center fixed; /* URL da imagem de fundo */
         background-size: cover; /* Cobrir toda a área da tela */
     }
     #cadastro_usuario {
