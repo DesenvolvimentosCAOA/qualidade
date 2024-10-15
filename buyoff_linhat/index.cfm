@@ -145,19 +145,20 @@
             </cfquery>
         
         <!---    <CFDUMP VAR="#validausuario#"> --->
-            <cfif validausuario.recordcount GT 0>
-                <cfcookie name="user_apontamento_pdi" value="#FORM.PDI_LOGIN#">
-                <cfcookie name="user_level_pdi" value="#validausuario.USER_LEVEL#">
-                <cfif validausuario.user_level eq "R">
-                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_entrada.cfm"/>
-                <cfelseif validausuario.user_level eq "P">
-                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_indicadores_1turno.cfm"/>
-                <cfelse>
-                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_saida.cfm"/>
-                </cfif>
-                <cfelse>
-                    <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
-                </cfif>
+        <cfif validausuario.recordcount GT 0>
+            <cfcookie name="user_apontamento_pdi" value="#FORM.PDI_LOGIN#">
+            <cfcookie name="user_level_pdi" value="#validausuario.USER_LEVEL#">
+            <cfif validausuario.user_level eq "R" OR validausuario.user_level eq "E">
+                <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_entrada.cfm"/>
+            <cfelseif validausuario.user_level eq "P">
+                <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_indicadores_1turno.cfm"/>
+            <cfelse>
+                <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_saida.cfm"/>
+            </cfif>
+        <cfelse>
+            <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
+        </cfif>
+        
         </cfif>
     </cfoutput>
 
@@ -499,8 +500,9 @@
         <div class="form-group">
             <label for="cadastro_nivel_acesso">Nível de Acesso:</label>
             <select id="cadastro_nivel_acesso" class="form-control" name="cadastro_nivel_acesso" required>
-                <option value="I">I</option>
+                <option value="E">E</option>
                 <option value="R">R</option>
+                <option value="I">I</option>
                 <option value="G">G</option>
                 <option value="P">P</option>
             </select>
@@ -512,12 +514,12 @@
         <div class="form-group">
             <label for="cadastro_setor">Setor:</label>
             <select id="cadastro_setor" class="form-control" name="cadastro_setor" oninput="removerBordaVermelha(this)">
+                <option value="PDI">PDI</option>
                 <option value="BODY">BODY</option>
                 <option value="FAI">FAI</option>
                 <option value="PAINT">PAINT</option>
                 <option value="SMALL">SMALL</option>
                 <option value="FA">FA</option>
-                <option value="PDI">PDI</option>
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Cadastrar</button>

@@ -173,6 +173,8 @@
         GROUP BY BARREIRA
         ORDER BY ordem, HH
     </cfquery>
+
+    
     
     <cfquery name="consulta_nconformidades_defeitos" datasource="#BANCOSINC#">
         SELECT ESTACAO, COUNT(PROBLEMA) AS TOTAL_PROBLEMAS

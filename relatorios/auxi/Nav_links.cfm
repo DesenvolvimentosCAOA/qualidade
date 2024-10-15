@@ -1,36 +1,17 @@
 <nav>
   <input type="checkbox" id="check">
   <label for="check" class="checkbtn"><i class="icon icon-bars"></i></label>
-  <div class="logo">PDI</div>
+  <div class="logo">Controle De Relatórios</div>
   
   <ul>
-    <li><a href="pdi_entrada.cfm">Entrada</a></li>
-          <li><a href="pdi_saida.cfm">Saída</a></li>
-          <li><a href="pdi_reparo.cfm">Reparo</a></li>
-          <li><a href="pdi_liberar.cfm">Liberação</a></li>
+    <li><a href="#">Ver e Agir</a></li>
           <li class="dropdown">
             <a href="#">Relatórios</a>
             <ul class="dropdown-menu">
-                <li><a href="./relatorio_pdi.cfm">Relatório de Saída</a></li>
-                <li><a href="./relatorio_pdi_entrada.cfm">Relatório de Entrada</a></li>
+                <li><a href="#">Relatórios 8D</a></li>
+                <li><a href="#">Relatório</a></li>
             </ul>
         </li>
-    <li class="dropdown">
-        <a href="#">Indicadores</a>
-        <ul class="dropdown-menu">
-            <li><a href="./pdi_indicadores_1.cfm">PDI - 1º Turno</a></li>
-            <li><a href="./pdi_indicadores_2.cfm">PDI - 2º Turno</a></li>
-            <li><a href="./pdi_indicadores_1_entrada.cfm">PDI - ENTRADA</a></li>
-        </ul>
-    </li>
-    <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "G">
-        <li class="dropdown">
-        <a href="#">Outros</a>
-        <ul class="dropdown-menu">
-            <li><a href="./pdi_editar.cfm">Editar Lançamento</a></li>
-        </ul>
-        </li>
-    </cfif>
     <li><a href="logout.cfm">Sair</a></li>
   </ul>
 </nav>
@@ -46,7 +27,7 @@
     position: absolute;
     left: 100%; /* Coloca o submenu fora do menu principal */
     top: 0;
-    background-color: #4c8bf5; /* Azul claro */
+    background-color: #001f36; /* Azul claro */
     min-width: 150px; /* Ajuste conforme necessário */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra para destacá-lo */
     z-index: 1000; /* Garante que o submenu fique acima de outros elementos */
@@ -66,7 +47,7 @@
     }
 
     .submenu li a:hover {
-    background-color: #3a72c9; /* Azul mais escuro no hover */
+    background-color: #001f36; /* Azul mais escuro no hover */
     }
 
     /* Ajustes no menu dropdown principal para evitar sobreposição */
@@ -171,7 +152,7 @@
     }
 
     nav {
-        background: #5434af;
+        background: #000;
         width: 100%;
         height: 80px;
         margin-bottom: 80px;
@@ -219,14 +200,14 @@
 
     a.active,
     a:hover {
-        background-color: #ffef00;
-        color: #393939;
+        background-color: #001f36;
+        color: #FF0000;
         transition: 0.6s;
     }
 
     .checkbtn {
         font-size: 22px;
-        color: #fff;
+        color: #001f36;
         line-height: 80px;
         margin-right: 20px;
         cursor: pointer;
@@ -257,7 +238,7 @@
             position: fixed;
             width: 100%;
             height: 100vh;
-            background: #1d075f;
+            background: #001f36;
             top: 80px;
             right: -100%;
             text-align: center;
@@ -277,7 +258,7 @@
         a.active,
         a:hover {
             background: none;
-            color: #5434af;
+            color: #001f36;
         }
 
         #check:checked ~ ul {
@@ -294,7 +275,7 @@
     .dropdown-menu {
         display: none;
         position: absolute;
-        background-color: #1d075f; /* Fundo do menu principal */
+        background-color: #001f36; /* Fundo do menu principal */
         min-width: 200px; /* Ajusta o tamanho do campo */
         box-shadow: 0 30px 16px 0 rgba(0,0,0,0.2); /* Sombra para o menu */
         z-index: 10000;
@@ -326,8 +307,9 @@
         /* Ajuste o espaçamento entre letras se necessário */
     }
 
+    /* Hover do sub menu */
     .dropdown-menu li a:hover {
-        background-color: #5434af;
+        background-color: #FF0000;
     }
 
     .dropdown:hover .dropdown-menu {

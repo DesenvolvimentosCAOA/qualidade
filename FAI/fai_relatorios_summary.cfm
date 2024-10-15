@@ -221,6 +221,7 @@
                             <th scope="col">Time</th>
                             <th scope="col">VIN/BARCODE</th>
                             <th scope="col">Intervalo</th>
+                            <th scope="col">Criticidade</th>
                             <th scope="col">Inspetor</th>
                         </tr>
                     </thead>
@@ -241,6 +242,7 @@
                                     <td>#ESTACAO#</td>
                                     <td>#VIN#</td>
                                     <td>#INTERVALO#</td>
+                                    <td>#CRITICIDADE#</td>
                                     <td>#USER_COLABORADOR#</td>
                                 </tr>
                             </cfloop>

@@ -13,15 +13,40 @@
         <cfif isDefined("url.filtroESTACAO") and url.filtroESTACAO neq "">
             AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroESTACAO#%')
         </cfif>
+        <!--- Filtro de Periodo --->
         <cfif isDefined("url.filtroPeriodo") and url.filtroPeriodo neq "">
             <cfset periodo = url.filtroPeriodo>
+            
+            <!--- 1º turno: Segunda a Quinta (06:00 às 15:48), Sexta (06:00 às 14:48), Sábado (06:00 às 15:48) --->
             <cfif periodo EQ "1º">
-                AND TO_CHAR(INTERVALO) IN ('06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00')
+                AND (
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                )
+            
+            <!--- 2º turno: 15:50 às 00:00, de acordo com horários ajustados --->
             <cfelseif periodo EQ "2º">
-                AND TO_CHAR(INTERVALO) IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                AND (
+                    CASE 
+                        WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
+                        WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
+                        ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
+                    END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                )
+    
+            <!--- 3º turno: Segunda a Quinta (01:02 às 06:10), Sexta (01:02 às 06:10), Sábado (23:00 às 04:25) --->
             <cfelseif periodo EQ "3º">
-                AND TO_CHAR(INTERVALO) IN ('01:00', '02:00', '03:00', '04:00', '05:00')
+                AND (
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                    ))
+                )
             </cfif>
+        <cfelse>
         </cfif>
         AND USER_DATA >= TO_DATE('#filtroDataStart#', 'yyyy-mm-dd') 
         AND USER_DATA < TO_DATE('#filtroDataEnd#', 'yyyy-mm-dd') + 1
@@ -501,31 +526,34 @@
                             <input value="<cfif isDefined('url.filtroDataEnd')>#url.filtroDataEnd#</cfif>" type="date" class="form-control form-control-sm" name="filtroDataEnd" id="formDataEnd">
                         </div>
                     </cfoutput>
-                    <div class="form-group col-md-2">
-                        <label for="formBARREIRA">Barreira</label>
-                        <select class="form-control form-control-sm" name="filtroBARREIRA" id="formBARREIRA">
-                            <option value="">Selecione</option>
-                            <option value="HR">HR</option>
-                            <option value="CP7">CP7</option>
-                            <option value="T19">T19</option>
-                            <option value="T30">T30</option>
-                            <option value="T33">T33</option>
-                            <option value="C13">C13</option>
-                            <option value="F05">F05</option>
-                            <option value="F10">F10</option>
-                            <option value="SUBMOTOR">SUBMOTOR</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group col-md-2">
-                        <label for="formPeriodo">Período do Dia</label>
-                        <select class="form-control form-control-sm" name="filtroPeriodo" id="formPeriodo">
-                            <option value="">Selecione</option>
-                            <option value="1º">1º</option>
-                            <option value="2º">2º</option>
-                            <option value="3º">3º</option>
-                        </select>
-                    </div>
+                    <cfoutput>
+                        <div class="form-group col-md-2">
+                            <label for="formBARREIRA">Barreira</label>
+                            <select class="form-control form-control-sm" name="filtroBARREIRA" id="formBARREIRA">
+                                <option value="">Selecione</option>
+                                <option value="HR" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ "HR">selected</cfif>>HR</option>
+                                <option value="CP7" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ "CP7">selected</cfif>>CP7</option>
+                                <option value="T19" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ "T19">selected</cfif>>T19</option>
+                                <option value="T30" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ "T30">selected</cfif>>T30</option>
+                                <option value="T33" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ "T33">selected</cfif>>T33</option>
+                                <option value="C13" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ "C13">selected</cfif>>C13</option>
+                                <option value="F05" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ "F05">selected</cfif>>F05</option>
+                                <option value="F10" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ "F10">selected</cfif>>F10</option>
+                                <option value="SUBMOTOR" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ "SUBMOTOR">selected</cfif>>SUBMOTOR</option>
+                            </select>
+                        </div>
+                    </cfoutput>
+                    <cfoutput>
+                        <div class="form-group col-md-2">
+                            <label for="formPeriodo">Período do Dia</label>
+                            <select class="form-control form-control-sm" name="filtroPeriodo" id="formPeriodo">
+                                <option value="">Selecione</option>
+                                <option value="1º" <cfif isDefined('url.filtroPeriodo') AND url.filtroPeriodo EQ "1º">selected</cfif>>1º</option>
+                                <option value="2º" <cfif isDefined('url.filtroPeriodo') AND url.filtroPeriodo EQ "2º">selected</cfif>>2º</option>
+                                <option value="3º" <cfif isDefined('url.filtroPeriodo') AND url.filtroPeriodo EQ "3º">selected</cfif>>3º</option>
+                            </select>
+                        </div>
+                    </cfoutput>  
                 </div>
                 <div class="form-row">
                     <div class="col-md-12">

@@ -74,7 +74,7 @@
                         </ul>
                     </li>
                     <li class="dropdown-submenu">
-                        <a href="#">Indicadores FA</a>
+                        <a href="#">Indicadores FAI</a>
                         <ul class="submenu">
                             <li><a href="fai_indicadores_1turno.cfm">FAI - 1º Turno</a></li>
                             <li><a href="fai_indicadores_2turno.cfm">FAI - 2º Turno</a></li>

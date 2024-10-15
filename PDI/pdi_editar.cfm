@@ -12,7 +12,7 @@
     </script>
 </cfif>
 
-<cfif not isDefined("cookie.user_level_pdi") or (cookie.user_level_pdi eq "R" or cookie.user_level_pdi eq "P")>
+<cfif not isDefined("cookie.user_level_pdi") or (cookie.user_level_pdi eq "R" or cookie.user_level_pdi eq "P" or cookie.user_level_pdi eq "E")>
     <script>
         alert("É necessário autorização!!");
         history.back(); // Voltar para a página anterior
@@ -97,7 +97,7 @@
         WHERE USER_NAME = <cfqueryparam value="#cookie.USER_APONTAMENTO_PDI#" cfsqltype="CF_SQL_VARCHAR">
     </cfquery>
 
-    <!-- Atualizando as colunas específicas e setando o STATUS como OK -->
+    <!-- Atualizando as colunas específicas e setando o STATUS como LIBERADO -->
     <cfquery name="update" datasource="#BANCOSINC#">
         UPDATE INTCOLDFUSION.sistema_qualidade_pdi_saida
         SET PECA = NULL,
@@ -112,7 +112,7 @@
             POSICAO_REPARO = NULL,
             PROBLEMA_REPARO = NULL,
             RESPONSAVEL_REPARO = NULL,
-            STATUS = 'OK',
+            STATUS = 'LIBERADO',
             RESPONSAVEL_LIBERACAO = <cfqueryparam value="#login.USER_SIGN#" cfsqltype="CF_SQL_VARCHAR">
         WHERE ID = <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
     </cfquery>
@@ -129,7 +129,7 @@
             <!-- Required meta tags -->
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <title>FA - Editar</title>
+            <title>PDI - Editar</title>
             <link rel="icon" href="./assets/chery.png" type="image/x-icon">
             <link rel="stylesheet" href="/qualidade/buyoff_linhat/assets/stylereparo1.css?v2">
             <style>

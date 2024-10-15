@@ -1,6 +1,6 @@
-<option value="Linha T">Linha T</option>
-<option value="Linha C">Linha C</option>
-<option value="Linha F">Linha F</option>
+<option value="TRIM">TRIM</option>
+<option value="FAI">FAI</option>
+<option value="PATIO">PATIO</option>
 <option value="BODY">BODY</option>
 <option value="PAINT">PAINT</option>
 <option value="SMALL">SMALL</option>

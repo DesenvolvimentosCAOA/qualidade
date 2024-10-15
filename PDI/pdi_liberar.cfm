@@ -12,7 +12,7 @@
     </script>
 </cfif>
 
-<cfif not isDefined("cookie.user_level_PDI") or (cookie.user_level_PDI eq "R" or cookie.user_level_PDI eq "P" or cookie.user_level_PDI eq "I")>
+<cfif not isDefined("cookie.user_level_PDI") or (cookie.user_level_PDI eq "R" or cookie.user_level_PDI eq "P" or cookie.user_level_PDI eq "I" or cookie.user_level_pdi eq "E")>
     <script>
         alert("É necessário autorização!!");
         history.back(); // Voltar para a página anterior
@@ -39,7 +39,6 @@
             AND TRUNC(USER_DATA) = TRUNC(SYSDATE)
         </cfif>
         AND STATUS NOT IN 'LIBERADO'
-        AND TIPO_REPARO IS NOT NULL
         ORDER BY ID asc
     </cfquery>    
 

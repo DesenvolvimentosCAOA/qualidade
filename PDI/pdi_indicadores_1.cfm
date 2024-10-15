@@ -362,7 +362,7 @@
                                     <tbody class="table-group-divider">
                                         <cfoutput query="consulta_nconformidades_pdi_N0">
                                             <tr class="align-middle">
-                                                <td style="font-weight: bold;<cfif ESTACAO eq 'Linha T'>color: gold;<cfelseif ESTACAO eq 'Linha C'>color: gold;<cfelseif ESTACAO eq 'Linha F'>color: gold;<cfelseif ESTACAO eq 'Paint'>color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
+                                                <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'>color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
                                                 <td>#PECA#</td>
                                                 <td style="font-weight: bold">#PROBLEMA#</td>
                                                 <td>#TOTAL_POR_DEFEITO#</td>

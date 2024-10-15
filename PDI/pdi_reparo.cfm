@@ -12,13 +12,6 @@
     </script>
 </cfif>
 
-<cfif not isDefined("cookie.user_level_pdi") or cookie.user_level_pdi eq "I">
-    <script>
-        alert("É necessário autorização!!");
-        history.back();
-    </script>
-</cfif>
-
     <!--- Consulta --->
     <cfquery name="consulta" datasource="#BANCOSINC#">
         SELECT *

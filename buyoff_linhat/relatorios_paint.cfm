@@ -65,11 +65,11 @@
                         <label for="formBARREIRA">Barreira</label>
                         <select class="form-control form-control-sm" name="filtroBARREIRA" id="formBARREIRA">
                             <option value="">Selecione</option>
-                            <option value="PROCESSO">PROCESSO</option>
-                            <option value="VALIDACAO">VALIDAÇÃO</option>
-                            <option value="CHASSI">CHASSI</option>
-                            <option value="HR">HR</option>
-                            <option value="CP5">CP5</option>
+                            <option value="Primer">Primer</option>
+                            <option value="Top Coat">Top Coat</option>
+                            <option value="Validacao">Validacao</option>
+                            <option value="CP6">CP6</option>
+                            <option value="ECOAT">ECOAT</option>
                         </select>
                     </div>
                     <div class="form-group col-md-1">

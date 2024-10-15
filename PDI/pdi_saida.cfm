@@ -12,7 +12,7 @@
          self.location = '/qualidade/buyoff_linhat/index.cfm'
       </script>
    </cfif>
-   <cfif not isDefined("cookie.user_level_pdi") or (cookie.user_level_pdi eq "R" or cookie.user_level_pdi eq "P")>
+   <cfif not isDefined("cookie.user_level_pdi") or (cookie.user_level_pdi eq "R" or cookie.user_level_pdi eq "P" or cookie.user_level_pdi eq "E")>
    <script>
       alert("Você não tem autorização para acessar essa área!!");
       history.back(); // Voltar para a página anterior
@@ -184,8 +184,7 @@
                         </datalist>
                      </div>
                      <div class="form-group col-md-2">
-                        <label for="formPosicao">
-                        Posição</label>
+                        <label for="formPosicao">Posição</label>
                         <select class="form-control form-control-sm" name="posicao" id="formPosicao">
                            <cfinclude template="auxi/batalha_option.cfm">
                         </select>

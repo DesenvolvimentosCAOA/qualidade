@@ -56,7 +56,6 @@
       <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
       <link rel="stylesheet" href="/qualidade/buyoff_linhat/assets/StyleBuyOFF.css?v1">
       <script src="./assets/script.js" defer></script>
-      
    </head>
 
    <body>
@@ -177,8 +176,7 @@
          <table class="table">
             <thead>
                <tr class="text-nowrap">
-                  <!-- Coluna de ação -->
-                  <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "G">
+                  <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "E">
                      <th scope="col">Del</th>
                  </cfif>
                   <th scope="col">ID</th>
@@ -193,8 +191,7 @@
             <tbody class="table-group-divider">
                <cfoutput query="consulta">
                   <tr class="align-middle">
-                     <!-- Botão de exclusão -->
-                     <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "G">
+                     <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "E">
                         <td>
                             <span class="delete-icon-wrapper" onclick="deletar(#ID#);">
                                 <i style="color:red" class="material-icons delete-icon">X</i>
