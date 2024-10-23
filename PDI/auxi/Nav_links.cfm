@@ -5,7 +5,16 @@
   
   <ul>
     <li><a href="pdi_entrada.cfm">Entrada</a></li>
-          <li><a href="pdi_saida.cfm">Saída</a></li>
+          
+          <li class="dropdown">
+            <a href="#">Barreira</a>
+            <ul class="dropdown-menu">
+                <li><a href="pdi_saida.cfm">Inspeção Saída</a></li>
+                <li><a href="pdi_saida_rampa.cfm">Inspeção Rampa</a></li>
+                <li><a href="pdi_saida_patio.cfm">Inspeção Pátio</a></li>
+                <li><a href="pdi_saida_patio_nacional.cfm">Inspeção Pátio Nacional</a></li>
+            </ul>
+        </li>
           <li><a href="pdi_reparo.cfm">Reparo</a></li>
           <li><a href="pdi_liberar.cfm">Liberação</a></li>
           <li class="dropdown">

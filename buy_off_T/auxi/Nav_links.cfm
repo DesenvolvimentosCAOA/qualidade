@@ -38,6 +38,7 @@
           <li><a href="fa_relatorios.cfm">Relatórios</a></li>
         <cfif isDefined("cookie.user_level_final_assembly") and cookie.user_level_final_assembly eq "G">
             <li><a href="fa_relatorios_summary_cp7.cfm">Relatórios CP7 Summary</a></li>
+            <li><a href="fa_relatorios_summary.cfm">Relatórios CP7 Summary</a></li>
         </cfif>
         </ul>
     </li>

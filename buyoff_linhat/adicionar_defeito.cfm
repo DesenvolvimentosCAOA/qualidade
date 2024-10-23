@@ -74,9 +74,17 @@
                         <div class="col">
                             <div class="form-group">
                                 <label class="form-label" for="formDefeito">Novo defeito:</label>
-                                <input type="text" class="form-control" name="Defeito" id="formDefeito" placeholder="" required/>
+                                <input type="text" class="form-control" name="Defeito" id="formDefeito" placeholder="" required oninput="removeSpecialChars(this)"/>
                             </div>
                         </div>
+                        
+                        <script>
+                        function removeSpecialChars(input) {
+                            // Permite apenas letras, números e espaços
+                            input.value = input.value.replace(/[^a-zA-Z0-9 ]/g, '');
+                        }
+                        </script>
+                        
                         <div class="col">
                             <div class="form-group">
                                 <label class="form-label" for="formShop">Shop:</label>

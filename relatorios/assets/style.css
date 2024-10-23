@@ -1,0 +1,113 @@
+/* Estilizando os botões */
+.btn-rounded {
+    border-radius: 20px;
+    padding: 10px 20px;
+    background-color: #132a32;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+    font-weight: bold;
+    font-size: 1vw;
+    position: relative;
+}
+
+/* Posicionando os botões na parte superior */
+.btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 8vw;
+    margin-left: -55%;
+}
+
+.btn-rounded:hover {
+    background-color: #000;
+}
+
+/* Submenu container */
+.submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #007bff;
+    border-radius: 10px;
+    z-index: 1;
+    min-width: 150px;
+    text-align: center;
+}
+
+/* Submenu items */
+.submenu a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.submenu a:hover {
+    background-color: #5a8e99;
+}
+
+/* Mostrar o submenu ao passar o mouse */
+.btn-rounded:hover .submenu {
+    display: block;
+}
+
+/* Tabelas inicialmente ocultas */
+.table-container {
+    display: none;
+    margin-top: 20px;
+}
+
+/* Estilizando as tabelas */
+table {
+    width: 80%;
+    margin: auto;
+    border-collapse: collapse;
+    border: 1px solid #132a32;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #132a32;
+}
+
+th {
+    background-color: #132a32; /* Fundo do cabeçalho */
+    color: #f2f5f6; /* Cor do texto do cabeçalho */
+}
+
+td {
+    background-color: #f2f5f6; /* Fundo das células */
+    color: #132a32; /* Texto das células */
+}
+
+/* Cores de hover nas células */
+td:hover {
+    background-color: #5a8e99; /* Hover das células */
+    color: #f2f5f6; /* Texto ao passar o mouse */
+}
+.search-container {
+    display: flex;
+    justify-content: center; /* Centraliza os inputs horizontalmente */
+    gap: 10px; /* Espaçamento entre os inputs */
+    margin-bottom: 20px; /* Espaço entre os inputs e a tabela */
+}
+
+.search-container input {
+    border-radius: 20px; /* Borda arredondada */
+    padding: 10px 15px; /* Espaçamento interno dos inputs */
+    font-size: 1rem; /* Tamanho da fonte */
+    border: 1px solid #5a8e99; /* Cor da borda */
+    outline: none; /* Remove o contorno ao focar */
+    width: 200px; /* Largura dos inputs */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra leve para estilo */
+}
+
+.search-container input:focus {
+    border-color: #f6722c; /* Cor da borda ao focar */
+    box-shadow: 0 0 5px #f6722c; /* Sombra ao focar */
+}
+

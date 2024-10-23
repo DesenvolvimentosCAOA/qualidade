@@ -479,7 +479,7 @@
     <body>
         <!-- Header com as imagens e o menu -->
         <header class="titulo">
-            <cfinclude template="/qualidade/fai/auxi/nav_links1.cfm">
+            <cfinclude template="/qualidade/FAI/auxi/nav_links1.cfm">
         </header><br><br><br>
 
             <cfif IsNumeric(consulta_totais.CP5_PERC) AND IsNumeric(consulta_totais.VALIDACAO_PERC) AND IsNumeric(consulta_totais.PROCESSO_PERC)>

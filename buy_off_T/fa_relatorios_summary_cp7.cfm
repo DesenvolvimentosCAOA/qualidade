@@ -20,10 +20,13 @@
             <!--- 1º turno: Segunda a Quinta (06:00 às 15:48), Sexta (06:00 às 14:48), Sábado (06:00 às 15:48) --->
             <cfif periodo EQ "1º">
                 AND (
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                )
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+            )
             
             <!--- 2º turno: 15:50 às 00:00, de acordo com horários ajustados --->
             <cfelseif periodo EQ "2º">
@@ -53,79 +56,10 @@
         ORDER BY ID DESC
     </cfquery>
 
-    <cfquery name="consulta_barreira_tiggo7" datasource="#BANCOSINC#">
-        WITH CONSULTA AS (
-            SELECT 
-                BARREIRA, VIN,
-                CASE 
-                    WHEN INTERVALO BETWEEN '01:00' AND '00:00' THEN 'OUTROS'
-                END HH,
-                CASE 
-                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
-                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
-                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
-                    
-                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
-                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-
-                    ELSE 0
-                END AS APROVADO_FLAG,
-                COUNT(DISTINCT VIN) AS totalVins,
-                
-                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
-                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fa
-            WHERE 1 = 1
-            <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
-                AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
-            </cfif>
-            <cfif isDefined("url.filtroESTACAO") and url.filtroESTACAO neq "">
-                AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroESTACAO#%')
-            </cfif>
-            <cfif isDefined("url.filtroPeriodo") and url.filtroPeriodo neq "">
-                <cfset periodo = url.filtroPeriodo>
-                <cfif periodo EQ "1º">
-                    AND TO_CHAR(INTERVALO) IN ('06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00')
-                <cfelseif periodo EQ "2º">
-                    AND TO_CHAR(INTERVALO) IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                <cfelseif periodo EQ "3º">
-                    AND TO_CHAR(INTERVALO) IN ('01:00', '02:00', '03:00', '04:00', '05:00')
-                </cfif>
-            </cfif>
-            AND USER_DATA >= TO_DATE('#filtroDataStart#', 'yyyy-mm-dd') 
-            AND USER_DATA < TO_DATE('#filtroDataEnd#', 'yyyy-mm-dd') +1
-            AND MODELO LIKE 'TIGGO 7%'
-            GROUP BY BARREIRA, VIN, INTERVALO
-        )
-        SELECT BARREIRA, HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                
-                -- Cálculo do DPV: total de VINs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                1 AS ordem
-        FROM CONSULTA
-        GROUP BY BARREIRA, HH
-        UNION ALL
-        SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
-        FROM CONSULTA
-        GROUP BY BARREIRA
-        ORDER BY ordem, HH
-    </cfquery>
-
     <cfquery name="consulta_barreira_tiggo5" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT 
-                BARREIRA, VIN,
+                BARREIRA, MODELO, VIN,
                 CASE 
                     WHEN INTERVALO BETWEEN '01:00' AND '00:00' THEN 'OUTROS'
                 END HH,
@@ -133,14 +67,11 @@
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
                     AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
-                    
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,
-                
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade_fa
@@ -154,47 +85,59 @@
             <cfif isDefined("url.filtroPeriodo") and url.filtroPeriodo neq "">
                 <cfset periodo = url.filtroPeriodo>
                 <cfif periodo EQ "1º">
-                    AND TO_CHAR(INTERVALO) IN ('06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00')
+                    AND (
+                        -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48
+                        ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                        -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                        -- Sábado: turno inicia às 06:00 e termina às 15:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                    )
                 <cfelseif periodo EQ "2º">
-                    AND TO_CHAR(INTERVALO) IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    <cfif isDefined("url.filtroData") and url.filtroData neq "">
+                        AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                            WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                            ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                        END
+                    </cfif>
                 <cfelseif periodo EQ "3º">
-                    AND TO_CHAR(INTERVALO) IN ('01:00', '02:00', '03:00', '04:00', '05:00')
+                    AND (
+                    -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                    ))
+                )
                 </cfif>
             </cfif>
+            AND MODELO LIKE 'TIGGO 5%'
             AND USER_DATA >= TO_DATE('#filtroDataStart#', 'yyyy-mm-dd') 
             AND USER_DATA < TO_DATE('#filtroDataEnd#', 'yyyy-mm-dd') + 1
-            AND MODELO LIKE 'TIGGO 5%'
-            GROUP BY BARREIRA, VIN, INTERVALO
+            GROUP BY BARREIRA, MODELO, VIN, INTERVALO
         )
-        SELECT BARREIRA, HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                
-                -- Cálculo do DPV: total de VINs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                1 AS ordem
+        SELECT 
+            'TTL' AS HH, 
+            COUNT(DISTINCT VIN) AS TOTAL, 
+            SUM(APROVADO_FLAG) AS APROVADOS, 
+            COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+            ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+            ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
         FROM CONSULTA
-        GROUP BY BARREIRA, HH
-        UNION ALL
-        SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
-        FROM CONSULTA
-        GROUP BY BARREIRA
-        ORDER BY ordem, HH
+        ORDER BY HH
     </cfquery>
 
     <cfquery name="consulta_barreira_tiggo83" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT 
-                BARREIRA, VIN,
+                BARREIRA, MODELO, VIN,
                 CASE 
                     WHEN INTERVALO BETWEEN '01:00' AND '00:00' THEN 'OUTROS'
                 END HH,
@@ -202,14 +145,11 @@
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
                     AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
-                    
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,
-                
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade_fa
@@ -223,47 +163,59 @@
             <cfif isDefined("url.filtroPeriodo") and url.filtroPeriodo neq "">
                 <cfset periodo = url.filtroPeriodo>
                 <cfif periodo EQ "1º">
-                    AND TO_CHAR(INTERVALO) IN ('06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00')
+                    AND (
+                        -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48
+                        ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                        -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                        -- Sábado: turno inicia às 06:00 e termina às 15:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                    )
                 <cfelseif periodo EQ "2º">
-                    AND TO_CHAR(INTERVALO) IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    <cfif isDefined("url.filtroData") and url.filtroData neq "">
+                        AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                            WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                            ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                        END
+                    </cfif>
                 <cfelseif periodo EQ "3º">
-                    AND TO_CHAR(INTERVALO) IN ('01:00', '02:00', '03:00', '04:00', '05:00')
+                    AND (
+                    -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                    ))
+                )
                 </cfif>
             </cfif>
+            AND MODELO LIKE 'TIGGO 83%'
             AND USER_DATA >= TO_DATE('#filtroDataStart#', 'yyyy-mm-dd') 
             AND USER_DATA < TO_DATE('#filtroDataEnd#', 'yyyy-mm-dd') + 1
-            AND MODELO LIKE 'TIGGO 83%'
-            GROUP BY BARREIRA, VIN, INTERVALO
+            GROUP BY BARREIRA, MODELO, VIN, INTERVALO
         )
-        SELECT BARREIRA, HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                
-                -- Cálculo do DPV: total de VINs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                1 AS ordem
+        SELECT 
+            'TTL' AS HH, 
+            COUNT(DISTINCT VIN) AS TOTAL, 
+            SUM(APROVADO_FLAG) AS APROVADOS, 
+            COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+            ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+            ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
         FROM CONSULTA
-        GROUP BY BARREIRA, HH
-        UNION ALL
-        SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
-        FROM CONSULTA
-        GROUP BY BARREIRA
-        ORDER BY ordem, HH
+        ORDER BY HH
     </cfquery>
 
     <cfquery name="consulta_barreira_tiggo8adas" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT 
-                BARREIRA, VIN,
+                BARREIRA, MODELO, VIN,
                 CASE 
                     WHEN INTERVALO BETWEEN '01:00' AND '00:00' THEN 'OUTROS'
                 END HH,
@@ -271,14 +223,11 @@
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
                     AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
-                    
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,
-                
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade_fa
@@ -292,47 +241,59 @@
             <cfif isDefined("url.filtroPeriodo") and url.filtroPeriodo neq "">
                 <cfset periodo = url.filtroPeriodo>
                 <cfif periodo EQ "1º">
-                    AND TO_CHAR(INTERVALO) IN ('06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00')
+                    AND (
+                        -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48
+                        ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                        -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                        -- Sábado: turno inicia às 06:00 e termina às 15:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                    )
                 <cfelseif periodo EQ "2º">
-                    AND TO_CHAR(INTERVALO) IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    <cfif isDefined("url.filtroData") and url.filtroData neq "">
+                        AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                            WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                            ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                        END
+                    </cfif>
                 <cfelseif periodo EQ "3º">
-                    AND TO_CHAR(INTERVALO) IN ('01:00', '02:00', '03:00', '04:00', '05:00')
+                    AND (
+                    -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                    ))
+                )
                 </cfif>
             </cfif>
+            AND MODELO LIKE 'TIGGO 8 %'
             AND USER_DATA >= TO_DATE('#filtroDataStart#', 'yyyy-mm-dd') 
             AND USER_DATA < TO_DATE('#filtroDataEnd#', 'yyyy-mm-dd') + 1
-            AND MODELO LIKE 'TIGGO 8 %'
-            GROUP BY BARREIRA, VIN, INTERVALO
+            GROUP BY BARREIRA, MODELO, VIN, INTERVALO
         )
-        SELECT BARREIRA, HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                
-                -- Cálculo do DPV: total de VINs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                1 AS ordem
+        SELECT 
+            'TTL' AS HH, 
+            COUNT(DISTINCT VIN) AS TOTAL, 
+            SUM(APROVADO_FLAG) AS APROVADOS, 
+            COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+            ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+            ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
         FROM CONSULTA
-        GROUP BY BARREIRA, HH
-        UNION ALL
-        SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
-        FROM CONSULTA
-        GROUP BY BARREIRA
-        ORDER BY ordem, HH
+        ORDER BY HH
     </cfquery>
 
     <cfquery name="consulta_barreira_tl" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT 
-                BARREIRA, VIN,
+                BARREIRA, MODELO, VIN,
                 CASE 
                     WHEN INTERVALO BETWEEN '01:00' AND '00:00' THEN 'OUTROS'
                 END HH,
@@ -340,14 +301,11 @@
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
                     AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
-                    
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,
-                
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade_fa
@@ -361,47 +319,59 @@
             <cfif isDefined("url.filtroPeriodo") and url.filtroPeriodo neq "">
                 <cfset periodo = url.filtroPeriodo>
                 <cfif periodo EQ "1º">
-                    AND TO_CHAR(INTERVALO) IN ('06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00')
+                    AND (
+                        -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48
+                        ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                        -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                        -- Sábado: turno inicia às 06:00 e termina às 15:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                    )
                 <cfelseif periodo EQ "2º">
-                    AND TO_CHAR(INTERVALO) IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    <cfif isDefined("url.filtroData") and url.filtroData neq "">
+                        AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                            WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                            ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                        END
+                    </cfif>
                 <cfelseif periodo EQ "3º">
-                    AND TO_CHAR(INTERVALO) IN ('01:00', '02:00', '03:00', '04:00', '05:00')
+                    AND (
+                    -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                    ))
+                )
                 </cfif>
             </cfif>
+            AND MODELO LIKE 'TL %'
             AND USER_DATA >= TO_DATE('#filtroDataStart#', 'yyyy-mm-dd') 
             AND USER_DATA < TO_DATE('#filtroDataEnd#', 'yyyy-mm-dd') + 1
-            AND MODELO LIKE 'TL%'
-            GROUP BY BARREIRA, VIN, INTERVALO
+            GROUP BY BARREIRA, MODELO, VIN, INTERVALO
         )
-        SELECT BARREIRA, HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                
-                -- Cálculo do DPV: total de VINs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                1 AS ordem
+        SELECT 
+            'TTL' AS HH, 
+            COUNT(DISTINCT VIN) AS TOTAL, 
+            SUM(APROVADO_FLAG) AS APROVADOS, 
+            COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+            ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+            ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
         FROM CONSULTA
-        GROUP BY BARREIRA, HH
-        UNION ALL
-        SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
-        FROM CONSULTA
-        GROUP BY BARREIRA
-        ORDER BY ordem, HH
+        ORDER BY HH
     </cfquery>
 
     <cfquery name="consulta_barreira_hr" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT 
-                BARREIRA, VIN,
+                BARREIRA, MODELO, VIN,
                 CASE 
                     WHEN INTERVALO BETWEEN '01:00' AND '00:00' THEN 'OUTROS'
                 END HH,
@@ -409,14 +379,11 @@
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
                     AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
-                    
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,
-                
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade_fa
@@ -430,41 +397,131 @@
             <cfif isDefined("url.filtroPeriodo") and url.filtroPeriodo neq "">
                 <cfset periodo = url.filtroPeriodo>
                 <cfif periodo EQ "1º">
-                    AND TO_CHAR(INTERVALO) IN ('01:00', '02:00', '03:00', '04:00', '05:00','06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00','15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND (
+                        -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48
+                        ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                        -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                        -- Sábado: turno inicia às 06:00 e termina às 15:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                    )
                 <cfelseif periodo EQ "2º">
-                    AND TO_CHAR(INTERVALO) IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    <cfif isDefined("url.filtroData") and url.filtroData neq "">
+                        AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                            WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                            ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                        END
+                    </cfif>
                 <cfelseif periodo EQ "3º">
-                    AND TO_CHAR(INTERVALO) IN ('01:00', '02:00', '03:00', '04:00', '05:00')
+                    AND (
+                    -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                    ))
+                )
                 </cfif>
             </cfif>
+            AND MODELO LIKE 'CHASSI HR%'
             AND USER_DATA >= TO_DATE('#filtroDataStart#', 'yyyy-mm-dd') 
             AND USER_DATA < TO_DATE('#filtroDataEnd#', 'yyyy-mm-dd') + 1
-            AND MODELO LIKE 'CHASSI HR%'
-            GROUP BY BARREIRA, VIN, INTERVALO
+            GROUP BY BARREIRA, MODELO, VIN, INTERVALO
         )
-        SELECT BARREIRA, HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                
-                -- Cálculo do DPV: total de VINs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                1 AS ordem
+        SELECT 
+            'TTL' AS HH, 
+            COUNT(DISTINCT VIN) AS TOTAL, 
+            SUM(APROVADO_FLAG) AS APROVADOS, 
+            COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+            ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+            ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
         FROM CONSULTA
-        GROUP BY BARREIRA, HH
-        UNION ALL
-        SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
+        ORDER BY HH
+    </cfquery>
+
+    <cfquery name="consulta_barreira" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, MODELO, VIN,
+                CASE 
+                    WHEN INTERVALO BETWEEN '01:00' AND '00:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.sistema_qualidade_fa
+            WHERE 1 = 1
+            <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
+                AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
+            </cfif>
+            <cfif isDefined("url.filtroESTACAO") and url.filtroESTACAO neq "">
+                AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroESTACAO#%')
+            </cfif>
+            <cfif isDefined("url.filtroPeriodo") and url.filtroPeriodo neq "">
+                <cfset periodo = url.filtroPeriodo>
+                <cfif periodo EQ "1º">
+                    AND (
+                        -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48
+                        ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                        -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                        -- Sábado: turno inicia às 06:00 e termina às 15:48
+                        OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                    )
+                <cfelseif periodo EQ "2º">
+                    AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    <cfif isDefined("url.filtroData") and url.filtroData neq "">
+                        AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                            WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                            ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                        END
+                    </cfif>
+                <cfelseif periodo EQ "3º">
+                    AND (
+                    -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                    ))
+                )
+                </cfif>
+            </cfif>
+            AND MODELO LIKE '%TIGGO 7%'
+            AND USER_DATA >= TO_DATE('#filtroDataStart#', 'yyyy-mm-dd') 
+            AND USER_DATA < TO_DATE('#filtroDataEnd#', 'yyyy-mm-dd') + 1
+            GROUP BY BARREIRA, MODELO, VIN, INTERVALO
+        )
+        SELECT 
+            'TTL' AS HH, 
+            COUNT(DISTINCT VIN) AS TOTAL, 
+            SUM(APROVADO_FLAG) AS APROVADOS, 
+            COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+            ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+            ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
         FROM CONSULTA
-        GROUP BY BARREIRA
-        ORDER BY ordem, HH
+        ORDER BY HH
     </cfquery>
 
     <!--- Verificando se está logado  --->
@@ -495,7 +552,7 @@
             table {
                 width: 100%;
                 border-collapse: collapse;
-            }           
+            }
             th, td {
                 padding: 8px;
                 text-align: left;
@@ -525,8 +582,6 @@
                             <label for="formDataEnd">Data Final</label>
                             <input value="<cfif isDefined('url.filtroDataEnd')>#url.filtroDataEnd#</cfif>" type="date" class="form-control form-control-sm" name="filtroDataEnd" id="formDataEnd">
                         </div>
-                    </cfoutput>
-                    <cfoutput>
                         <div class="form-group col-md-2">
                             <label for="formBARREIRA">Barreira</label>
                             <select class="form-control form-control-sm" name="filtroBARREIRA" id="formBARREIRA">
@@ -542,8 +597,6 @@
                                 <option value="SUBMOTOR" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ "SUBMOTOR">selected</cfif>>SUBMOTOR</option>
                             </select>
                         </div>
-                    </cfoutput>
-                    <cfoutput>
                         <div class="form-group col-md-2">
                             <label for="formPeriodo">Período do Dia</label>
                             <select class="form-control form-control-sm" name="filtroPeriodo" id="formPeriodo">
@@ -553,7 +606,7 @@
                                 <option value="3º" <cfif isDefined('url.filtroPeriodo') AND url.filtroPeriodo EQ "3º">selected</cfif>>3º</option>
                             </select>
                         </div>
-                    </cfoutput>  
+                    </cfoutput>
                 </div>
                 <div class="form-row">
                     <div class="col-md-12">
@@ -566,6 +619,7 @@
                 </div>
             </form>
         </div>
+
         <!-- Exibindo tabelas e gráficos para cada barreira -->
         <div class="container-fluid">
             <div class="row">
@@ -581,7 +635,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <cfoutput query="consulta_barreira_tiggo7">
+                                <cfoutput query="consulta_barreira">
                                         <tr>
                                             <td>#HH#</td>
                                             <td>#TOTAL#</td>

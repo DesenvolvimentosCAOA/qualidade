@@ -1,16 +1,27 @@
 
 <header class="titulo text-center" style="position: relative;">
-    <img src="assets/banner_bg.jpg" alt="Título" class="titulo-img">
-    <img src="assets/favicon.png" alt="Ícone" class="titulo-icon">
-    <h1 class="titulo-texto display-4">Sistema de Gestão da Qualidade</h1>
-    <a name="SAIR" href="index.cfm" class="absolute top-4 right-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200">Sair</a></header>
+    <a name="SAIR" href="index.cfm" class="absolute top-4 right-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200">Sair</a>
+</header>
  
-
-    
-
-
-
 <style>
+
+.delete-icon-wrapper {
+    display: inline-block; /* Para que o hover funcione corretamente */
+    cursor: pointer; /* Mostra que é clicável */
+    transition: transform 0.2s ease, color 0.2s ease; /* Transição suave para o hover */
+}
+
+.delete-icon {
+    font-size: 24px; /* Tamanho do ícone */
+    color: #737c99; /* Cor padrão do ícone */
+}
+
+/* Efeito de hover */
+.delete-icon-wrapper:hover .delete-icon {
+    transform: scale(1.1); /* Aumenta o ícone levemente */
+    color: #d32f2f; /* Cor do ícone quando passa o mouse (vermelho) */
+}
+
 
 body {
     margin: 0;

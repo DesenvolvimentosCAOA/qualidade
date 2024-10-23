@@ -1,0 +1,296 @@
+/* Estilizando os botões */
+.btn-rounded {
+    border-radius: 20px;
+    padding: 10px 20px;
+    background-color: #132a32;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+    font-weight: bold;
+    font-size: 1vw;
+    position: relative;
+}
+
+/* Posicionando os botões na parte superior */
+.btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 8vw;
+    margin-left: -55%;
+}
+
+.btn-rounded:hover {
+    background-color: #000;
+}
+
+/* Submenu container */
+.submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #007bff;
+    border-radius: 10px;
+    z-index: 1;
+    min-width: 150px;
+    text-align: center;
+}
+
+/* Submenu items */
+.submenu a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.submenu a:hover {
+    background-color: #5a8e99;
+}
+
+/* Mostrar o submenu ao passar o mouse */
+.btn-rounded:hover .submenu {
+    display: block;
+}
+
+/* Tabelas inicialmente ocultas */
+.table-container {
+    display: block;
+    margin-top: 10vw;
+    margin-left:-15vw;
+}
+
+/* Estilizando as tabelas */
+table {
+    width: 80%;
+    margin: auto;
+    border-collapse: collapse;
+    border: 1px solid #132a32;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #132a32;
+}
+
+th {
+    background-color: #132a32; /* Fundo do cabeçalho */
+    color: #f2f5f6; /* Cor do texto do cabeçalho */
+}
+
+td {
+    background-color: #f2f5f6; /* Fundo das células */
+    color: #132a32; /* Texto das células */
+}
+
+/* Cores de hover nas células */
+td:hover {
+    background-color: #5a8e99; /* Hover das células */
+    color: #f2f5f6; /* Texto ao passar o mouse */
+}
+.search-container {
+    display: flex;
+    justify-content: center; /* Centraliza os inputs horizontalmente */
+    gap: 10px; /* Espaçamento entre os inputs */
+    margin-bottom: 20px; /* Espaço entre os inputs e a tabela */
+}
+
+.search-container input {
+    border-radius: 20px; /* Borda arredondada */
+    padding: 10px 15px; /* Espaçamento interno dos inputs */
+    font-size: 1rem; /* Tamanho da fonte */
+    border: 1px solid #5a8e99; /* Cor da borda */
+    outline: none; /* Remove o contorno ao focar */
+    width: 200px; /* Largura dos inputs */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra leve para estilo */
+}
+
+.search-container input:focus {
+    border-color: #f6722c; /* Cor da borda ao focar */
+    box-shadow: 0 0 5px #f6722c; /* Sombra ao focar */
+}
+
+/* Estilizando os inputs */
+.search-container input {
+    display:flex;
+    border-radius: 20px; /* Borda arredondada */
+    padding: 15px 20px; /* Aumentando o espaçamento interno dos inputs */
+    font-size: 0.8rem; /* Aumentando o tamanho da fonte */
+    border: 1px solid #5a8e99; /* Cor da borda */
+    outline: none; /* Remove o contorno ao focar */
+    width: 100%; /* Largura dos inputs ocupa 100% do grupo */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra leve para estilo */
+}
+
+/* Consultas de mídia para responsividade */
+@media (max-width: 768px) {
+    .input-group {
+        width: 100%; /* Largura total em telas menores */
+        margin-bottom: 10px; /* Espaço entre os grupos em telas menores */
+    }
+
+    .search-container {
+        flex-direction: column; /* Coloca os grupos um embaixo do outro em telas pequenas */
+        align-items: stretch; /* Alinha os inputs ao tamanho do container */
+    }
+}
+/* Estilizando o select */
+.search-container select {
+    border-radius: 20px; /* Borda arredondada */
+    padding: 15px 20px; /* Espaçamento interno do select */
+    font-size: 0.8rem; /* Tamanho da fonte */
+    border: 1px solid #5a8e99; /* Cor da borda */
+    outline: none; /* Remove o contorno ao focar */
+    width: 100%; /* Largura do select ocupa 100% do grupo */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra leve para estilo */
+}
+
+/* Sombra e cor ao focar */
+.search-container select:focus {
+    border-color: #f6722c; /* Cor da borda ao focar */
+    box-shadow: 0 0 5px #f6722c; /* Sombra ao focar */
+}
+
+/* Estilo para o balãozinho (tooltip) */
+.tooltip {
+    position: absolute;
+    top: -25px; /* Posição acima do campo */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f6722c;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    visibility: hidden; /* Começa oculto */
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group:hover .tooltip,
+.input-group:focus-within .tooltip {
+    visibility: visible; /* Aparece quando a data é inserida ou o campo é focado */
+}
+
+.back-btn:hover {
+    background-color: yellow;
+    color: black;
+    cursor:grab;
+}
+.save-btn:hover{
+    background-color: chartreuse;
+    color: #000;
+}
+.cancel-btn:hover{
+    background-color: red;
+    color: #000;
+}
+
+.tooltip {
+    display: inline-block;
+    margin-left: 10px;
+    font-weight: bold;
+    color: red; /* Cor do texto do tooltip */
+}
+
+#tableProcess {
+    margin-top: -10px;
+}
+
+.status-validacao {
+    background-color: green; /* Fundo verde */
+    color: white;           /* Texto branco */
+}
+
+.status-andamento {
+    background-color: yellow; /* Fundo amarelo */
+    color: red;             /* Texto preto */
+    font-weight: bold;
+}
+
+
+
+
+
+
+/* Container para os botões de rádio */
+.radio-group {
+    display: flex;
+    align-items: center;
+}
+
+.radio-group .form-check {
+    margin-right: 20px; /* Espaço entre as opções */
+}
+
+/* Escondendo o botão de rádio padrão */
+.form-check-input {
+    position: absolute;
+    opacity: 0;
+}
+
+/* Estilo do label customizado */
+.form-check-label {
+    position: relative;
+    padding-left: 35px; /* Espaço para o círculo */
+    cursor: pointer;
+    font-size: 1.2rem; /* Aumenta o tamanho do texto */
+    color: #333;
+    user-select: none;
+    display: inline-block;
+}
+
+/* Círculo customizado */
+.form-check-label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #007bff; /* Cor do círculo */
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra do círculo */
+}
+
+/* Quando o botão de rádio está marcado */
+.form-check-input:checked + .form-check-label:before {
+    background-color: #007bff; /* Cor de fundo quando selecionado */
+    border-color: #007bff; /* Cor da borda quando selecionado */
+}
+
+/* Estilo do ponto no centro do círculo quando marcado */
+.form-check-input:checked + .form-check-label:after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #fff; /* Cor do ponto */
+}
+
+/* Alterando o estilo quando o rádio é hover (passar o mouse) */
+.form-check-label:hover:before {
+    border-color: #0056b3;
+}
+
+/* Estilizando o texto "Sim" e "Não" */
+.form-check-label {
+    font-weight: bold;
+}
+
+/* Aumenta o tamanho do texto ao passar o mouse */
+.form-check:hover .form-check-label {
+    font-size: 1.25rem; /* Aumenta o texto no hover */
+    color: #0056b3;
+}

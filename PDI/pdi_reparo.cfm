@@ -32,9 +32,6 @@
         <cfif isDefined("url.filtroestacao") and url.filtroestacao neq "">
             AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroestacao#%')
         </cfif>
-        <cfif cgi.QUERY_STRING does not contain "filtro">
-            AND TRUNC(USER_DATA) = TRUNC(SYSDATE)
-        </cfif>
         and TIPO_REPARO is null
         ORDER BY ID DESC
     </cfquery>    
@@ -95,7 +92,7 @@
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
             <title>PDI - REPARO</title>
             <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-            <link rel="stylesheet" href="assets/stylereparo.css?v1">
+            <link rel="stylesheet" href="/qualidade/FAI/assets/stylereparo.css?v1">
         </head>
         
         <body>

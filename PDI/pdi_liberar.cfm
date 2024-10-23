@@ -30,18 +30,10 @@
         <cfif isDefined("url.filtroVIN") and url.filtroVIN neq "">
             AND UPPER(VIN) LIKE UPPER('%#url.filtroVIN#%')
         </cfif>
-        <cfif cgi.QUERY_STRING does not contain "filtro">
-            AND TRUNC(USER_DATA) = TRUNC(SYSDATE)
-        </cfif>
-        <cfif isDefined("url.data") and url.data neq "">
-            AND TO_CHAR(USER_DATA, 'dd/mm/yy') = '#lsdateformat(url.data, 'dd/mm/yy')#'
-        <cfelse>
-            AND TRUNC(USER_DATA) = TRUNC(SYSDATE)
-        </cfif>
         AND STATUS NOT IN 'LIBERADO'
         ORDER BY ID asc
-    </cfquery>    
-
+    </cfquery>
+     
 
     <!--- Verifica se o formulário foi enviado --->
     <cfif structKeyExists(form, "nome") and structKeyExists(form, "vin") and structKeyExists(form, "local") and structKeyExists(form, "N_Conformidade") and structKeyExists(form, "posicao") and structKeyExists(form, "problema")>
@@ -148,12 +140,6 @@
             <cfoutput>
                 <form class="filterTable" name="fitro" method="GET">
                     <div class="row">
-                        <div style="margin-left:3vw" class="form-group col-md-1">
-                            <label for="formData">Data</label>
-                            <cfoutput>
-                            <input type="date" class="form-control form-control-sm" name="data" id="formData" value="<cfif isDefined('url.data')>#url.data#<cfelse>#lsdateformat(now(),'yyyy-mm-dd')#</cfif>">
-                            </cfoutput> 
-                        </div>
                         <div class="col-md-2 offset-md-1">
                             <label class="form-label" for="filtroID">ID:</label>
                             <input type="number" class="form-control" name="filtroID" id="filtroID" value="<cfif isDefined('url.filtroID')>#url.filtroID#</cfif>"/>

@@ -4,7 +4,7 @@
   <div class="logo">Controle De Relatórios</div>
   
   <ul>
-    <li><a href="#">Ver e Agir</a></li>
+    <li><a href="ver_agir.cfm">Ver e Agir</a></li>
           <li class="dropdown">
             <a href="#">Relatórios</a>
             <ul class="dropdown-menu">

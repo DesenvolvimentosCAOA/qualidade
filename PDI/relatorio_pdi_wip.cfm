@@ -33,6 +33,26 @@
         ORDER BY ID DESC
     </cfquery>
     
+    <cfquery name="verificarVinBarreira" datasource="#BANCOSINC#">
+        SELECT USER_DATA, USER_COLABORADOR, VIN, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, CRITICIDADE, STATUS
+        FROM SISTEMA_QUALIDADE_PDI_SAIDA
+        WHERE (VIN, USER_DATA) IN (
+            SELECT VIN, MAX(USER_DATA) AS MAX_USER_DATA
+            FROM SISTEMA_QUALIDADE_PDI_SAIDA
+            GROUP BY VIN
+        )
+        ORDER BY 
+            VIN,
+            CASE 
+                WHEN BARREIRA = 'NACIONAL' THEN 1
+                WHEN BARREIRA = 'PDI' THEN 2
+                WHEN BARREIRA = 'PATIO' THEN 3
+                WHEN BARREIRA = 'RAMPA' THEN 4
+                ELSE 5
+            END
+    </cfquery>
+    
+    
     <html lang="pt-BR">
     <head>
         <!-- Required meta tags-->
@@ -118,10 +138,9 @@
                             <option value="NACIONAL" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ "NACIONAL">selected</cfif>>PATIO NACIONAL</option>
                         </select>
                     </div>
-                    
                     <div class="form-group col-md-3">
                         <button type="submit" class="btn btn-primary mt-4">Pesquisar</button>
-                        <button type="reset" class="btn btn-primary mt-4" style="background:gold; color:black; border-color: gold" onclick="self.location='relatorio_pdi.cfm'">Limpar</button>
+                        <button type="reset" class="btn btn-primary mt-4" style="background:gold; color:black; border-color: gold" onclick="self.location='relatorio_pdi_wip.cfm'">Limpar</button>
                         <button type="button" id="report" class="btn btn-secondary mt-4">Download</button>
                     </div>
                 </div>
@@ -147,7 +166,7 @@
                     </thead>
                     <tbody class="table-group-divider">
                         <cfoutput>
-                            <cfloop query="consulta_adicionais">
+                            <cfloop query="verificarVinBarreira">
                                 <tr class="align-middle">
                                     <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy HH:nn:ss')#</td>
                                     <td>#USER_COLABORADOR#</td>

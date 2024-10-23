@@ -125,13 +125,13 @@
                     WHEN INTERVALO = '21:00' THEN '21:00~22:00'
                     WHEN INTERVALO = '22:00' THEN '22:00~23:00'
                     WHEN INTERVALO = '23:00' THEN '23:00~00:00'
-                    WHEN INTERVALO = '00:00' THEN '00:00~01:00'
+                    WHEN INTERVALO = '00:00' THEN '00:00~01:00' 
                     ELSE 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
-                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
                     
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
@@ -286,12 +286,12 @@
         <cfoutput>
             <div class="container">
                 <h2>PDI GERAL 2º Turno</h2>
-                <form method="get" action="pdi_indicadores_1.cfm" class="form-inline">
+                <form method="get" action="pdi_indicadores_2.cfm" class="form-inline">
                     <div class="form-group mx-sm-3 mb-2">
                         <label for="filtroData" class="sr-only">Data:</label>
                         <input type="date" class="form-control" name="filtroData" id="filtroData" value="<cfif isDefined('url.filtroData')>#url.filtroData#</cfif>" onchange="this.form.submit();"/>
                     </div>
-                    <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='pdi_indicadores_1.cfm'">Limpar</button>
+                    <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='pdi_indicadores_2.cfm'">Limpar</button>
                 </form>
             </div>
             </cfoutput>

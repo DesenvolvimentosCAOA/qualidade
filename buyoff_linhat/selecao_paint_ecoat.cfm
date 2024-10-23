@@ -122,7 +122,7 @@
             <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
             CASE 
                 WHEN TO_CHAR(SYSDATE, 'HH24:MI') BETWEEN '00:00' AND '01:02' THEN SYSDATE - 1
-                ELSE SYSDATE 
+                ELSE <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
             END,
             <cfqueryparam value="#form.nome#" cfsqltype="CF_SQL_VARCHAR">,
             <cfqueryparam value="#form.vin#" cfsqltype="CF_SQL_VARCHAR">,
@@ -140,6 +140,7 @@
             END
         )
     </cfquery>
+    
     <cfoutput><script>window.location.href = 'selecao_paint_ecoat.cfm';</script></cfoutput>
     
 </cfif>
@@ -394,7 +395,7 @@
                                 </td>
                             </cfif>
                             <td>#ID#</td>
-                            <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
+                            <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy hh:nn:ss')#</td>
                             <td>#USER_COLABORADOR#</td>
                             <td>#BARCODE#</td>
                             <td>#MODELO#</td>
