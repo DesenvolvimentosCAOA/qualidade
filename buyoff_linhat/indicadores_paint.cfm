@@ -111,18 +111,12 @@
                     ELSE 'OUTROS'
                 END HH,
                 CASE 
-                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
                     AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
-                    
-                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-    
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT BARCODE) AS totalVins,
-                
-                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade
             WHERE TRUNC(USER_DATA) = 
@@ -138,10 +132,8 @@
                 COUNT(DISTINCT BARCODE) AS TOTAL, 
                 SUM(APROVADO_FLAG) AS APROVADOS, 
                 COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
-                
-                -- Cálculo do DPV: total de VINs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                ROUND(SUM(APROVADO_FLAG) / NULLIF(COUNT(DISTINCT BARCODE), 0) * 100, 1) AS PORCENTAGEM, 
+                ROUND(CASE WHEN SUM(totalVins) = 0 THEN 0 ELSE SUM(totalProblemas) / SUM(totalVins) END, 2) AS DPV,
                 1 AS ordem
         FROM CONSULTA
         GROUP BY BARREIRA, HH
@@ -151,8 +143,8 @@
                 COUNT(DISTINCT BARCODE) AS TOTAL, 
                 SUM(APROVADO_FLAG) AS APROVADOS, 
                 COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                ROUND(SUM(APROVADO_FLAG) / NULLIF(COUNT(DISTINCT BARCODE), 0) * 100, 1) AS PORCENTAGEM, 
+                ROUND(CASE WHEN SUM(totalVins) = 0 THEN 0 ELSE SUM(totalProblemas) / SUM(totalVins) END, 2) AS DPV,
                 2 AS ordem
         FROM CONSULTA
         GROUP BY BARREIRA

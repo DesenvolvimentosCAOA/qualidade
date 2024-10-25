@@ -33,6 +33,7 @@
             AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroestacao#%')
         </cfif>
         and TIPO_REPARO is null
+        AND CRITICIDADE NOT IN 'N0'
         ORDER BY ID DESC
     </cfquery>    
     <!--- Atualizar Item--->

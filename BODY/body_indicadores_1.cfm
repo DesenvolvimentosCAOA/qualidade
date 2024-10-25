@@ -340,12 +340,12 @@
         <cfoutput>
             <div class="container">
                 <h2>BODY 1º Turno</h2>
-                <form method="get" action="body_indicadores_3.cfm" class="form-inline">
+                <form method="get" action="body_indicadores_1.cfm" class="form-inline">
                     <div class="form-group mx-sm-3 mb-2">
                         <label for="filtroData" class="sr-only">Data:</label>
                         <input type="date" class="form-control" name="filtroData" id="filtroData" value="<cfif isDefined('url.filtroData')>#url.filtroData#</cfif>" onchange="this.form.submit();"/>
                     </div>
-                    <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='body_indicadores_3.cfm'">Limpar</button>
+                    <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='body_indicadores_1.cfm'">Limpar</button>
                 </form>
             </div>
             </cfoutput>
@@ -809,11 +809,10 @@
                         </script>
                     <div id="paretoChartchassi" style="width: 500px; height: 400px;"></div>
 
-
         <div class="container-fluid">
             <div class="row">
                         <div class="col-md-3">
-                            <h3>CP5</h3>
+                            <h3>HR</h3>
                             <div class="table-responsive">
                                 <table class="table table-hover table-sm table-custom-width" style="font-size:12px">
                                     <thead class="bg-success">
@@ -925,6 +924,6 @@
                         <div id="paretoCharthr" style="width: 500px; height: 400px;"></div>
                     </div>
                 </div>
-        <meta http-equiv="refresh" content="40,URL=body_indicadores_3.cfm">
+        <meta http-equiv="refresh" content="40,URL=body_indicadores_1.cfm">
     </body>
 </html>

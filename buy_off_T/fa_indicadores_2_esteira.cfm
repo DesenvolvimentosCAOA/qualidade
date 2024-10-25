@@ -188,7 +188,7 @@
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,
-                
+
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade_fa
@@ -518,7 +518,6 @@
         <!-- Exibindo tabelas e gráficos para cada barreira -->
         <div class="container-fluid">
             <div class="row">
-                <!-- Tabela H/H para Primer -->
                 <div class="col-md-3">
                     <h3>CP7</h3>
                     <div class="table-responsive">
@@ -1009,7 +1008,7 @@
                 chart.draw(data, options);
             }
         </script> --->
-        <meta http-equiv="refresh" content="40,URL=fa_indicadores_2_esteira.cfm">
+<!---         <meta http-equiv="refresh" content="40,URL=fa_indicadores_2_esteira.cfm"> --->
     </body>
 </html>
 

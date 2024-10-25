@@ -460,8 +460,7 @@
                    </script>
                 </cfoutput>
                 </cfif>
-                <button type="reset" class="btn btn-danger">
-                Cancelar</button>
+                <button type="reset" class="btn btn-danger">Cancelar</button>
              </form>
           </div>
           <div class="container col-12 bg-white rounded metas">

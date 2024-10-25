@@ -55,7 +55,7 @@
         
         <div class="navbar-nav">
             <li class="nav-item">
-                <a href="fai_barreira_reinspecao.cfm"><button class="button">Reinspeção</button></a>
+                <a href="fai_barreira_reinspecao.cfm"><button class="button">Túnel de Liberação</button></a>
                 <a href="fai_barreira_ub2.cfm"><button class="button">Under Body II</button></a>
                 <a href="fai_barreira_road.cfm"><button class="button">Road Test</button></a>
             </li><br>

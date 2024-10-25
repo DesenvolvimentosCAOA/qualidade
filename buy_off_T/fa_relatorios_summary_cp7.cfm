@@ -27,7 +27,6 @@
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
                 OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
             )
-            
             <!--- 2º turno: 15:50 às 00:00, de acordo com horários ajustados --->
             <cfelseif periodo EQ "2º">
                 AND (
@@ -568,6 +567,7 @@
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header><br>
+
         <div class="container">
             <h2>FA CP7 Summary</h2>
             <form method="get">
@@ -811,17 +811,14 @@
                             </cfloop>
                         </cfoutput>
                     </tbody>
-
-</table>
+                </table>
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="/cf/assets/js/home/js/table2excel.js?v=2"></script>
 
-<!-- Script para deletar -->
 <script>
-   
     // Gerando Excel da tabela
     var table2excel = new Table2Excel();
     document.getElementById('report').addEventListener('click', function() {

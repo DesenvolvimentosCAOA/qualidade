@@ -39,7 +39,7 @@
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA) ELSE TRUNC(USER_DATA) END 
+                AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) ELSE TRUNC(USER_DATA) END 
             = CASE WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')-1) 
             ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) END
             GROUP BY BARREIRA, BARCODE, INTERVALO
@@ -76,7 +76,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -115,7 +115,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -124,9 +124,10 @@
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-')
-            AND BARREIRA = 'Primer'
-            AND (
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'Primer'
+              
+              AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
@@ -134,20 +135,20 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
-            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
+              GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -169,7 +170,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -178,9 +179,10 @@
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-')
-            AND BARREIRA = 'Top Coat'
-            AND (
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'Top Coat'
+              
+              AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
@@ -188,20 +190,20 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
-            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
+              GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -223,7 +225,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -232,9 +234,10 @@
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-')
-            AND BARREIRA = 'Validacao'
-            AND (
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'Validacao'
+              
+              AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
@@ -242,20 +245,20 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
-            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
+              GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -277,7 +280,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -286,9 +289,10 @@
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-')
-            AND BARREIRA = 'CP6'
-            AND (
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'CP6'
+              
+              AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
@@ -296,20 +300,20 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
-            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
+              GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -331,7 +335,7 @@
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
                 -- Se for até 02:00, considerar o dia anterior
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA)
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
                 -- Senão, considerar o próprio dia
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
@@ -340,9 +344,10 @@
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-')
-            AND BARREIRA = 'ECOAT'
-            AND (
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'ECOAT'
+              
+              AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
@@ -350,20 +355,20 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
-            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
+              GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 

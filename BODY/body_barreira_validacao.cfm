@@ -1,7 +1,7 @@
 <cfinvoke method="inicializando" component="cf.ini.index">
     <cfheader name="Cache-Control" value="no-cache, no-store, must-revalidate">
     <cfheader name="Pragma" value="no-cache">
-    <cfheader name="Expires" value="0"> 
+    <cfheader name="Expires" value="0">
     
     <!--- Verificando se está logado --->
     <cfif not isDefined("cookie.USER_APONTAMENTO_BODY") or cookie.USER_APONTAMENTO_BODY eq "">
@@ -10,7 +10,7 @@
                 self.location = 'index.cfm'
             </script>
     </cfif>
-    <cfif not isDefined("cookie.USER_LEVEL_BODY") or (cookie.USER_LEVEL_BODY eq "R" or cookie.USER_LEVEL_BODY eq "P")>
+    <cfif not isDefined("cookie.user_level_body") or (cookie.user_level_body eq "R" or cookie.user_level_body eq "P")>
         <script>
             alert("É necessário autorização!!");
             history.back(); // Voltar para a página anterior
@@ -19,52 +19,22 @@
     <!---  Consulta  --->
     <cfquery name="consulta" datasource="#BANCOSINC#">
         SELECT *
-        FROM INTCOLDFUSION.sistema_qualidade_body
-        WHERE USER_DATA >= TRUNC(SYSDATE) AND USER_DATA < TRUNC(SYSDATE) + 1
-        <cfif isDefined("url.filtroDefeito") and url.filtroDefeito neq "">
-            AND UPPER(PROBLEMA) LIKE UPPER('%#url.filtroDefeito#%')
-        </cfif>
-        AND BARREIRA = 'SUPERFICIE'
-        ORDER BY ID DESC
+            FROM INTCOLDFUSION.sistema_qualidade_body
+                WHERE USER_DATA >= TRUNC(SYSDATE) AND USER_DATA < TRUNC(SYSDATE) + 1
+                    <cfif isDefined("url.filtroDefeito") and url.filtroDefeito neq "">
+                        AND UPPER(PROBLEMA) LIKE UPPER('%#url.filtroDefeito#%')
+                    </cfif>
+                AND BARREIRA = 'SUPERFICIE'
+                ORDER BY ID DESC
     </cfquery>
     
-    
+ 
             <!--- Pesquisa MES --->
-<cfquery name='buscaMES' datasource="#BANCOMES#">
+ <cfquery name='buscaMES' datasource="#BANCOMES#">
         select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
-        rtrim(ltrim(replace(                                        
-                            replace(
-                            replace(
-                            replace(
-                            replace(
-                            replace(
-                            replace(
-                            replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
-                            ' FL',''),
-                            'COMPLETO ',''),
-                            'COMPLETA ',''),
-                            'TXS',''),
-                            'SOLDADA',''),
-                            'ESCURO',''),
-                            'NOVO MOTOR',''))) modelo
-        from TBLLot l
-        left join CTBLGravacao g on l.IDLot = g.IDLot
-		left join TBLProduct p on p.IDProduct = l.IDProduct
-        where l.code = VIN
-		and p.name like 'CARROCERIA%'
-</cfquery>
-
-    <!--- Verifica se o formulário foi enviado --->
-<cfif structKeyExists(form, "nome") and structKeyExists(form, "vin") and structKeyExists(form, "modelo") and structKeyExists(form, "local") and structKeyExists(form, "N_Conformidade") and structKeyExists(form, "posicao") and structKeyExists(form, "problema")>
-
-    <!--- Obter próximo maxId --->
-    <cfquery name="obterMaxId" datasource="#BANCOSINC#">
-        SELECT COALESCE(MAX(ID), 0) + 1 AS id FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
-    </cfquery>
-    
-    <cfquery name='buscaMES2' datasource="#BANCOMES#">
-        select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
-            rtrim(ltrim(replace(                                        
+        rtrim(ltrim(replace(
+            replace(
+            replace(
             replace(
             replace(
             replace(
@@ -75,51 +45,160 @@
             ' FL',''),
             'COMPLETO ',''),
             'COMPLETA ',''),
-            'TXS',''),
+            'TXS','PL7'),
+            'SOLDADO',''),
             'SOLDADA',''),
             'ESCURO',''),
-            'NOVO MOTOR',''))) modelo
+            'NOVO MOTOR',''),
+            'CINZA',''))) modelo
+        from TBLLot l
+        left join CTBLGravacao g on l.IDLot = g.IDLot
+      left join TBLProduct p on p.IDProduct = l.IDProduct
+        where l.code = VIN
+      and p.name like '%CARROCERIA%'
+ </cfquery>
+ 
+    <!--- Verifica se o formulário foi enviado --->
+ <cfif structKeyExists(form, "nome") and structKeyExists(form, "vin") and structKeyExists(form, "modelo") and structKeyExists(form, "local") and structKeyExists(form, "N_Conformidade") and structKeyExists(form, "posicao") and structKeyExists(form, "problema")>
+ 
+ <!--- Passo 1: Consulta para verificar se o VIN existe na tabela sistema_qualidade_body --->
+ <cfquery name="consultaVIN" datasource="#BANCOSINC#">
+    SELECT STATUS_BLOQUEIO, BARREIRA_BLOQUEIO 
+    FROM sistema_qualidade_body 
+    WHERE BARCODE = <cfqueryparam value="#form.vin#" cfsqltype="CF_SQL_VARCHAR">
+ </cfquery>
+ 
+ <!--- Passo 2: Verificar o STATUS_BLOQUEIO em todas as linhas retornadas --->
+ <cfset bloqueado = false>
+ <cfloop query="consultaVIN">
+    <cfif consultaVIN.STATUS_BLOQUEIO EQ "BLOQUEADO" AND consultaVIN.BARREIRA_BLOQUEIO EQ "ECOAT">
+        <cfset bloqueado = true>
+        <cfbreak> <!--- Para de verificar após encontrar um bloqueio --->
+    </cfif>
+ </cfloop>
+ 
+ <!--- Se bloqueado for true, exibir uma mensagem em JavaScript e impedir o envio do formulário --->
+ <cfif bloqueado>
+    <script>
+        // Cria e exibe o modal
+        document.addEventListener("DOMContentLoaded", function() {
+            var modalHtml = `
+                <div id="blockModal" style="display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
+                    <div style="background: white; padding: 20px; border-radius: 5px; text-align: center;">
+                        <p>O veículo está bloqueado, separe o veículo e acione a Liderança!</p>
+                        <button onclick="window.history.back()">Voltar</button>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        });
+    </script>
+    <cfabort>
+ </cfif>
+ <!--- Se o código chegou até aqui, significa que o VIN não está bloqueado. O formulário pode ser enviado. --->
+ 
+    <!--- Obter próximo maxId --->
+    <cfquery name="obterMaxId" datasource="#BANCOSINC#">
+        SELECT COALESCE(MAX(ID), 0) + 1 AS id FROM INTCOLDFUSION.sistema_qualidade_body
+    </cfquery>
+    
+    <cfquery name='buscaMES2' datasource="#BANCOMES#">
+        select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
+        rtrim(ltrim(replace(
+            replace(
+            replace(
+            replace(
+            replace(
+            replace(
+            replace(
+            replace(
+            replace(
+            replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
+            ' FL',''),
+            'COMPLETO ',''),
+            'COMPLETA ',''),
+            'TXS','PL7'),
+            'SOLDADO',''),
+            'SOLDADA',''),
+            'ESCURO',''),
+            'NOVO MOTOR',''),
+            'CINZA',''))) modelo
         from TBLLot l
         left join CTBLGravacao g on l.IDLot = g.IDLot
         left join TBLProduct p on p.IDProduct = l.IDProduct
         where l.code = '#form.VIN#'
-        and p.name like 'CARROCERIA%'
+        and p.name like '%CARROCERIA%'
     </cfquery>
-
+ 
     <!--- Inserir item --->
-    <cfquery name="insere" datasource="#BANCOSINC#">
-        INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_BODY (
-            ID, USER_DATA, USER_COLABORADOR, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO
-        ) VALUES (
-            <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
-            CASE 
-                WHEN TO_CHAR(SYSDATE, 'HH24:MI') BETWEEN '00:00' AND '01:02' THEN SYSDATE - 1
-                ELSE SYSDATE 
-            END,
-            <cfqueryparam value="#form.nome#" cfsqltype="CF_SQL_VARCHAR">,
-            <cfqueryparam value="#form.vin#" cfsqltype="CF_SQL_VARCHAR">,
-            <cfqueryparam value="#buscaMES2.modelo#" cfsqltype="CF_SQL_VARCHAR">,
-            <cfqueryparam value="#form.local#" cfsqltype="CF_SQL_VARCHAR">,
-            <cfqueryparam value="#form.N_Conformidade#" cfsqltype="CF_SQL_VARCHAR">,
-            <cfqueryparam value="#form.posicao#" cfsqltype="CF_SQL_VARCHAR">,
-            <cfqueryparam value="#form.problema#" cfsqltype="CF_SQL_VARCHAR">,
-            <cfqueryparam value="#form.estacao#" cfsqltype="CF_SQL_VARCHAR">,
-            <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">,
-            CASE 
-                WHEN TO_CHAR(SYSDATE, 'HH24:MI') >= '15:00' AND TO_CHAR(SYSDATE, 'HH24:MI') < '15:50' THEN '15:00' 
-                WHEN TO_CHAR(SYSDATE, 'HH24:MI') >= '15:50' AND TO_CHAR(SYSDATE, 'HH24:MI') < '16:00' THEN '15:50' 
-                ELSE TO_CHAR(SYSDATE, 'HH24') || ':00' 
-            END
-        )
+    <cfset intervaloInserir = "" />
+    <cfset userDataInserir = Now() />
+    
+    <!-- Verifica se o VIN existe na BARREIRA 'SUPERFICIE' -->
+    <cfquery name="verificaIntervalo" datasource="#BANCOSINC#">
+       SELECT INTERVALO
+       FROM INTCOLDFUSION.sistema_qualidade_body
+       WHERE BARCODE = <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">
+       AND BARREIRA = 'SUPERFICIE'
     </cfquery>
+    
+    <!-- Verifica se a consulta retornou resultados -->
+    <cfif verificaIntervalo.recordCount gt 0>
+       <!-- Se o VIN existe na BARREIRA 'SUPERFICIE', usa o intervalo existente -->
+       <cfset intervaloInserir = verificaIntervalo.INTERVALO>
+    
+       <!-- Obtém a USER_DATA se o VIN existir -->
+       <cfquery name="verificaUserData" datasource="#BANCOSINC#">
+          SELECT USER_DATA
+          FROM INTCOLDFUSION.sistema_qualidade_body
+          WHERE BARCODE = <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">
+          AND BARREIRA = 'SUPERFICIE'
+       </cfquery>
+    
+       <!-- Verifica se a consulta retornou resultados -->
+       <cfif verificaUserData.recordCount gt 0>
+          <cfset userDataInserir = verificaUserData.USER_DATA>
+       </cfif>
+    <cfelse>
+       <!-- Caso contrário, define um novo INTERVALO -->
+       <cfset currentTime = TimeFormat(Now(), "HH:mm")> <!-- Formata a hora atual -->
+       <cfif currentTime gte '15:00' AND currentTime lt '15:50'>
+          <cfset intervaloInserir = '15:00'>
+       <cfelseif currentTime gte '15:50' AND currentTime lt '16:00'>
+          <cfset intervaloInserir = '15:50'>
+       <cfelse>
+          <cfset intervaloInserir = DateFormat(Now(), "HH") & ':00'>
+       </cfif>
+    </cfif>
+    
+    <!-- Realiza a inserção na tabela -->
+    <cfquery name="insere" datasource="#BANCOSINC#">
+       INSERT INTO INTCOLDFUSION.sistema_qualidade_body (ID, USER_DATA, USER_COLABORADOR, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO)
+           VALUES (
+           <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
+           <cfqueryparam value="#userDataInserir#" cfsqltype="CF_SQL_TIMESTAMP">,
+           <cfqueryparam value="#form.nome#" cfsqltype="CF_SQL_VARCHAR">,
+           <cfqueryparam value="#form.vin#" cfsqltype="CF_SQL_VARCHAR">,
+           <cfqueryparam value="#buscaMES2.modelo#" cfsqltype="CF_SQL_VARCHAR">,
+           <cfqueryparam value="#form.local#" cfsqltype="CF_SQL_VARCHAR">,
+           <cfqueryparam value="#form.N_Conformidade#" cfsqltype="CF_SQL_VARCHAR">,
+           <cfqueryparam value="#form.posicao#" cfsqltype="CF_SQL_VARCHAR">,
+           <cfqueryparam value="#form.problema#" cfsqltype="CF_SQL_VARCHAR">,
+           <cfqueryparam value="#form.estacao#" cfsqltype="CF_SQL_VARCHAR">,
+           <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">,
+           <cfqueryparam value="#intervaloInserir#" cfsqltype="CF_SQL_VARCHAR">
+       )
+    </cfquery>
+    
+ 
     <cfoutput><script>window.location.href = 'body_barreira_validacao.cfm';</script></cfoutput>
     
-</cfif>
-
+ </cfif>
+ 
     <!--- Deletar Item --->
     <cfif structKeyExists(url, "id") and url.id neq "">
         <cfquery name="delete" datasource="#BANCOSINC#">
-            DELETE FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY WHERE ID = <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
+            DELETE FROM INTCOLDFUSION.sistema_qualidade_body WHERE ID = <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
         </cfquery>
         <script>
             self.location = 'body_barreira_validacao.cfm';
@@ -128,64 +207,16 @@
     
     <html lang="pt-BR">
     <head>
-        <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>INSP. SUPERFICIE</title>
+        <title>SUPERFICIE</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <link rel="stylesheet" href="/qualidade/FAI/assets/style_barreiras.css?v1">
-        <!--- deixar as letras do campo problema em maiúsculo --->
-        <script>
-            function transformToUpperCase(input) {
-                input.value = input.value.toUpperCase();
-            }
-        </script>
-
-<script>
+ <script>
     function validarFormulario(event) {
-        // Validação geral dos campos
-        var peça = document.getElementById('formNConformidade').value;
-        var criticidade = document.getElementById('formCriticidade').value;
-        var posição = document.getElementById('formPosicao').value;
-        var responsável = document.getElementById('formEstacao').value;
-        var problema = document.getElementById('formProblema').value;
-        var vin = document.getElementById('formVIN').value;
-    
-        // Nova validação: se problema for preenchido e peça for vazio
-        if (problema && !peça) {
-            alert('Por favor, selecione uma peça se um problema for selecionado.');
-            event.preventDefault(); // Impede o envio do formulário
-            return false;
-        }
-    
-        if (peça) {
-            if (!posição) {
-                alert('Por favor, selecione uma posição.');
-                event.preventDefault(); // Impede o envio do formulário
-                return false;
-            }
-    
-            if (!problema) {
-                alert('Por favor, selecione um problema.');
-                event.preventDefault(); // Impede o envio do formulário
-                return false;
-            }
-    
-            if (!responsável) {
-                alert('Por favor, selecione um responsável.');
-                event.preventDefault(); // Impede o envio do formulário
-                return false;
-            }
-    
-            if (!criticidade) {
-                alert('Por favor, selecione uma criticidade.');
-                event.preventDefault(); // Impede o envio do formulário
-                return false;
-            }
-        }
-    
         // Validação do BARCODE com requisição AJAX
-        var barcode = vin; // Obtém o valor do input formVIN
+        var barcode = document.getElementById('formVIN').value; // Obtém o valor do input formVIN
+        var problema = document.getElementById('formProblema').value; // Certifique-se de que há um campo com id 'formProblema'
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'verificar_barcode.cfm', true);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -209,25 +240,23 @@
                 }
             }
         };
-    
-        xhr.send('barcode=' + encodeURIComponent(barcode) + '&problema=' + encodeURIComponent(problema) + '&barreira=CP5');
+        xhr.send('barcode=' + encodeURIComponent(barcode) + '&problema=' + encodeURIComponent(problema) + '&barreira=SUPERFICIE');
     
         // Impede o envio até a resposta da requisição AJAX
         event.preventDefault();
     }
-    </script>
-    
-
+ </script>
+ 
     </head>
     <body>
         <!-- Header com as imagens e o menu -->
         <header class="titulo">
             <cfinclude template="auxi/nav_links1.cfm">
-        </header><br><br><br>
+        </header>
     
         <div class="container mt-4">
-            <h2 class="titulo2">Inspeção de Superfície</h2><br>
-
+            <h2 class="titulo2">Barreira SUPERFICIE</h2>
+            
             <cfquery name="defeitos" datasource="#BANCOSINC#">
                 SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
                 WHERE SHOP = 'BODY-PROBLEMA'
@@ -239,7 +268,7 @@
                 WHERE SHOP = 'BODY-PEÇA'
                 ORDER BY DEFEITO
             </cfquery>
-            
+        
             <form method="post" id="form_envio" onsubmit="validarFormulario(event);">
                 <div class="form-row">
                     <div class="form-group col-md-2">
@@ -258,21 +287,20 @@
                     
                     <cfquery name="consulta1" datasource="#BANCOSINC#">
                     SELECT * FROM (
-            SELECT ID, VIN,MODELO,BARREIRA  FROM SISTEMA_QUALIDADE_BODY ORDER BY ID DESC)
+            SELECT ID, VIN,MODELO,BARREIRA  FROM sistema_qualidade_body ORDER BY ID DESC)
             WHERE ROWNUM = 1 
                     </cfquery>
-<!---                     <cfdump  var="#consulta1#"> --->
+ <!---                     <cfdump  var="#consulta1#"> --->
                 <div class="form-group col-md-2">
                     <label for="formVIN">BARCODE</label>
-                    <input type="text" class="form-control form-control-sm" maxlength="17" name="vin" id="formVIN" required
-                        oninput="this.value = this.value.replace(/\s/g, '');">
+                    <input type="text" class="form-control form-control-sm" maxlength="17" name="vin" id="formVIN" required oninput="this.value = this.value.replace(/\s/g, '');">
                 </div>
-
-                    
                                         <!--- Pesquisa MES --->
                     <cfquery name='buscaMES' datasource="#BANCOMES#">
                         select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
-                            rtrim(ltrim(replace(                                        
+                        rtrim(ltrim(replace(
+                            replace(
+                            replace(
                             replace(
                             replace(
                             replace(
@@ -283,24 +311,26 @@
                             ' FL',''),
                             'COMPLETO ',''),
                             'COMPLETA ',''),
-                            'TXS',''),
+                            'TXS','PL7'),
+                            'SOLDADO',''),
                             'SOLDADA',''),
                             'ESCURO',''),
-                            'NOVO MOTOR',''))) modelo
+                            'NOVO MOTOR',''),
+                            'CINZA',''))) modelo
                         from TBLLot l
                         left join CTBLGravacao g on l.IDLot = g.IDLot
                         left join TBLProduct p on p.IDProduct = l.IDProduct
                         where l.code = '#consulta1.VIN#'
-                        and p.name  like 'CARROCERIA%'
+                        and p.name  like '%CARROCERIA%'
                     </cfquery>
-
-                    <cfset modelo = buscaMES.modelo>
-
-                    <!--- Verifica se o modelo é null e substitui por "HR" se necessário --->
-                    <cfif isNull(modelo) or len(trim(modelo)) EQ 0>
-                        <cfset modelo = "HR">
-                    </cfif>
-<!--- <cfdump var="#buscaMES#"> --->
+ 
+ <cfset modelo = buscaMES.modelo>
+ 
+ <!--- Verifica se o modelo é null e substitui por "HR" se necessário --->
+ <cfif isNull(modelo) or len(trim(modelo)) EQ 0>
+    <cfset modelo = "HR">
+ </cfif>
+ <!--- <cfdump var="#buscaMES#"> --->
                     <div class="form-group col-md-2">
                         <label for="formModelo">Modelo</label>
                         <input type="text" class="form-control form-control-sm" maxlength="17" name="modelo" id="formModelo" readonly value="#buscaMES.name#">
@@ -345,7 +375,7 @@
                     </div>
                     <div class="form-group col-md-2">
                         <label for="formEstacao">Responsável</label>
-                        <select class="form-control form-control-sm" name="estacao" id="formEstacao" style="width: 200px;">
+                        <select class="form-control form-control-sm" name="estacao" id="formEstacao" >
                             <option value="">Selecione o Responsável:</option>
                             <cfinclude template="auxi/estacao.cfm">
                         </select>
@@ -360,61 +390,56 @@
                             <option value="N3">N3</option>
                             <option value="N4">N4</option>
                             <option value="OK A-">OK A-</option>
+                            <option value="AVARIA">AVARIA</option>
                         </select>
-                    </div>      
+                    </div>
                 </div>
                 <div class="form-row"></div>
                 <button type="submit" class="btn btn-primary" >Enviar</button>
                 <button type="reset" class="btn btn-danger">Cancelar</button>
             </form>
-            
         </div>
-    
+ 
         <div class="container col-12 bg-white rounded metas">
-            <table class="table">
-                <thead>
-                    <tr class="text-nowrap" >
-                        <!-- Coluna de ação -->
-                        <th scope="col">Ação</th>
-                        <th scope="col">ID</th>
-                        <th scope="col">Data</th>
-                        <th scope="col">Colaborador</th>
-                        <th scope="col">BARCODE</th>
-                        <th scope="col">Modelo</th>
-                        <th scope="col">Barreira</th>
-                        <th scope="col">Peça</th>
-                        <th scope="col">Posição</th>
-                        <th scope="col">Problema</th>
-                        <th scope="col">Responsável</th>
-                        <th scope="col">Criticidade</th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    <cfoutput query="consulta">
-                        <tr class="align-middle">
-                            <!-- Botão de exclusão -->
-                            <td>
-                                <span class="delete-icon-wrapper" onclick="deletar(#ID#);">
-                                    <i style="color:red" class="material-icons delete-icon">X</i>
-                                </span>
-                            </td>
-                            <td>#ID#</td>
-                            <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                            <td>#USER_COLABORADOR#</td>
-                            <td>#BARCODE#</td>
-                            <td>#MODELO#</td>
-                            <td>#BARREIRA#</td>
-                            <td>#PECA#</td>
-                            <td>#POSICAO#</td>
-                            <td>#PROBLEMA#</td>
-                            <td>#ESTACAO#</td>
-                            <td>#CRITICIDADE#</td>
-                        </tr>
-                    </cfoutput>
-                </tbody>
-            </table>
-        </div>
-    
+          <table class="table">
+             <thead>
+                <tr class="text-nowrap">
+                   <th scope="col">Del</th>
+                   <th scope="col">ID</th>
+                   <th scope="col">Data</th>
+                   <th scope="col">Colaborador</th>
+                   <th scope="col">BARCODE</th>
+                   <th scope="col">Modelo</th>
+                   <th scope="col">Barreira</th>
+                   <th scope="col">Peça</th>
+                   <th scope="col">Posição</th>
+                   <th scope="col">Problema</th>
+                   <th scope="col">Responsável</th>
+                   <th scope="col">Criticidade</th>
+                </tr>
+             </thead>
+             <tbody class="table-group-divider">
+                <cfoutput query="consulta">
+                   <tr class="align-middle">
+                      <td>
+                         <span class="delete-icon-wrapper" onclick="deletar(#ID#);"><i class="material-icons delete-icon" style="color: red;">X</i></span>
+                      </td>
+                      <td>#ID#</td>
+                      <td>#LSDateTimeFormat(USER_DATA, 'dd/mm/yyyy HH:nn:ss')#</td>
+                      <td>#USER_COLABORADOR#</td>
+                      <td>#BARCODE#</td>
+                      <td>#MODELO#</td>
+                      <td>#BARREIRA#</td>
+                      <td>#PECA#</td>
+                      <td>#POSICAO#</td>
+                      <td>#PROBLEMA#</td>
+                      <td>#ESTACAO#</td>
+                      <td>#CRITICIDADE#</td>
+                   </tr>
+                </cfoutput>
+             </tbody>
+          </table>
+       </div>
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
@@ -427,28 +452,11 @@
                     window.location.href = "body_barreira_validacao.cfm?id=" + id;
                 }
             }
-        </script>    
-
-<div class="floating-arrow" onclick="scrollToTop();">
-    <i class="material-icons">arrow_upward</i>
-</div>
-
-<!-- Script para voltar ao topo suavemente -->
-<script>
-    function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    }
-</script>        
-
-
-
-<script>
+        </script> 
+ <script>
     document.addEventListener('DOMContentLoaded', () => {
         const vinInput = document.getElementById('formVIN');
-
+ 
         vinInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault(); // Impede a ação padrão do Enter
@@ -456,15 +464,15 @@
             }
         });
     });
-</script>
-
-
-
-<!---- impede de enviar o form ao final da leitura do barcode ---->
-<script>
+ </script>
+ 
+ 
+ 
+ <!---- impede de enviar o form ao final da leitura do barcode ---->
+ <script>
     document.addEventListener('DOMContentLoaded', () => {
         const vinInput = document.getElementById('formVIN');
-
+ 
         vinInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault(); // Impede a ação padrão do Enter
@@ -472,17 +480,9 @@
             }
         });
     });
-</script>
-
+ </script>
+ 
     </body>
-    <script>
-            //Resetar formulário
-            function resetForm(params) {
-            const form = document.getElementById("form_envio");
-            form.reset();
-            self.location = 'saidas_producao.cfm';
-          }
-    </script>
-    </html>
+ </html>
     
         
