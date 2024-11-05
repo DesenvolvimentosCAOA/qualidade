@@ -428,7 +428,7 @@
                 </cfif>
                 <!-- Inserção com o intervalo e USER_DATA corretos -->
                 <cfquery name="insere" datasource="#BANCOSINC#">
-                   INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_FA (ID, USER_DATA, USER_COLABORADOR, VIN, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, STATUS) 
+                   INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_FA (ID, USER_DATA, USER_COLABORADOR, VIN, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, STATUS, ULTIMO_REGISTRO) 
                    VALUES (
                     <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
                     <cfqueryparam value="#userDataInserir#" cfsqltype="CF_SQL_TIMESTAMP">,
@@ -452,7 +452,8 @@
                     <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">= 'N3' OR 
                     <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">= 'N4'  THEN 'EM REPARO'
                     ELSE 'LIBERADO'
-                   END)
+                   END,
+                   <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">)
                 </cfquery>
                 <cfoutput>
                    <script>

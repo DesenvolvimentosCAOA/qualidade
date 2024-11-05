@@ -79,31 +79,34 @@
 
 
 <!--- valida o usuário para FAI --->
-    <cfoutput>
-        <cfif isDefined("form.FAI_LOGIN")>
-            <cfquery name="validausuario" datasource="#BANCOSINC#">
-                SELECT USER_ID, USER_NAME, USER_PASSWORD, trim (USER_LEVEL) USER_LEVEL, USER_SIGN FROM reparo_fa_users 
-                WHERE upper(USER_NAME) = UPPER('#form.FAI_LOGIN#')
-                AND USER_PASSWORD = UPPER('#form.FAI_SENHA#')
-                AND (SHOP = 'FAI' OR USER_LEVEL = 'G'OR USER_LEVEL = 'P')
-            </cfquery>
-        
-        <!---    <CFDUMP VAR="#validausuario#"> --->
-            <cfif validausuario.recordcount GT 0>
-                <cfcookie name="user_apontamento_fai" value="#FORM.FAI_LOGIN#">
-                <cfcookie name="user_level_fai" value="#validausuario.USER_LEVEL#">
-                <cfif validausuario.user_level eq "R">
-                    <meta http-equiv="refresh" content="0; URL=/qualidade/FAI/fai_selecionar_reparo.cfm"/>
-                <cfelseif validausuario.user_level eq "P">
-                    <meta http-equiv="refresh" content="0; URL=/qualidade/FAI/fai_indicadores_1turno.cfm"/>
-                <cfelse>
-                    <meta http-equiv="refresh" content="0; URL=/qualidade/FAI/fai_selecionar_buy_off.cfm"/>
-                </cfif>
-                <cfelse>
-                    <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
-                </cfif>
+<cfoutput>
+    <cfif isDefined("form.FAI_LOGIN")>
+        <cfquery name="validausuario" datasource="#BANCOSINC#">
+            SELECT USER_ID, USER_NAME, USER_PASSWORD, trim(USER_LEVEL) USER_LEVEL, USER_SIGN 
+            FROM reparo_fa_users 
+            WHERE upper(USER_NAME) = UPPER('#form.FAI_LOGIN#')
+            AND USER_PASSWORD = UPPER('#form.FAI_SENHA#')
+            AND (SHOP = 'FAI' OR USER_LEVEL = 'G' OR USER_LEVEL = 'P')
+        </cfquery>
+    
+        <cfif validausuario.recordcount GT 0>
+            <cfcookie name="user_apontamento_fai" value="#form.FAI_LOGIN#">
+            <cfcookie name="user_level_fai" value="#validausuario.USER_LEVEL#">
+            <cfcookie name="user_sign" value="#validausuario.USER_SIGN#"> <!-- Adiciona o cookie para USER_SIGN -->
+            
+            <cfif validausuario.user_level eq "R">
+                <meta http-equiv="refresh" content="0; URL=/qualidade/FAI/fai_selecionar_reparo.cfm"/>
+            <cfelseif validausuario.user_level eq "P">
+                <meta http-equiv="refresh" content="0; URL=/qualidade/FAI/fai_indicadores_1turno.cfm"/>
+            <cfelse>
+                <meta http-equiv="refresh" content="0; URL=/qualidade/FAI/fai_selecionar_buy_off.cfm"/>
+            </cfif>
+        <cfelse>
+            <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
         </cfif>
-    </cfoutput>
+    </cfif>
+</cfoutput>
+
 
 
     <!--- valida o usuário para BODY --->

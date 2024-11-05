@@ -20,9 +20,9 @@
     </cfif>
 
     <cfquery name="consulta_adicionais" datasource="#BANCOSINC#">
-        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE
+        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE, CRITICIDADE
     FROM (
-        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE
+        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE, CRITICIDADE
         FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
         WHERE 1 = 1 
         <cfif isDefined("url.filtroVIN") and url.filtroVIN neq "">
@@ -34,10 +34,13 @@
         <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
             AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
         </cfif>
+        <cfif isDefined("url.filtroMODELO") and url.filtroMODELO neq "">
+            AND UPPER(MODELO) LIKE UPPER('%#url.filtroMODELO#%')
+        </cfif>
 
         UNION ALL
 
-        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE
+        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE, CRITICIDADE
         
         FROM INTCOLDFUSION.sistema_qualidade_fa
         WHERE 1 = 1 
@@ -50,10 +53,13 @@
         <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
             AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
         </cfif>
+        <cfif isDefined("url.filtroMODELO") and url.filtroMODELO neq "">
+            AND UPPER(MODELO) LIKE UPPER('%#url.filtroMODELO#%')
+        </cfif>
 
         UNION ALL
 
-        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE
+        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE, CRITICIDADE
         
         FROM INTCOLDFUSION.sistema_qualidade_body
         WHERE 1 = 1 
@@ -66,10 +72,13 @@
         <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
             AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
         </cfif>
+        <cfif isDefined("url.filtroMODELO") and url.filtroMODELO neq "">
+            AND UPPER(MODELO) LIKE UPPER('%#url.filtroMODELO#%')
+        </cfif>
 
         UNION ALL
 
-        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE
+        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE, CRITICIDADE
         FROM INTCOLDFUSION.sistema_qualidade
         WHERE 1 = 1 
         <cfif isDefined("url.filtroVIN") and url.filtroVIN neq "">
@@ -81,10 +90,13 @@
         <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
             AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
         </cfif>
+        <cfif isDefined("url.filtroMODELO") and url.filtroMODELO neq "">
+            AND UPPER(MODELO) LIKE UPPER('%#url.filtroMODELO#%')
+        </cfif>
 
         UNION ALL
 
-        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE
+        SELECT USER_DATA, VIN, BARREIRA, ID, USER_COLABORADOR, MODELO, PECA, POSICAO, PROBLEMA, ESTACAO, TIPO_REPARO, INTERVALO, REPARADOR, BARCODE, CRITICIDADE
         FROM INTCOLDFUSION.sistema_qualidade_body
         WHERE 1 = 1 
         <cfif isDefined("url.filtroVIN") and url.filtroVIN neq "">
@@ -95,6 +107,9 @@
         </cfif>
         <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
             AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
+        </cfif>
+        <cfif isDefined("url.filtroMODELO") and url.filtroMODELO neq "">
+            AND UPPER(MODELO) LIKE UPPER('%#url.filtroMODELO#%')
         </cfif>
     )
     WHERE ROWNUM <= 40 -- Limita o número de linhas retornadas
@@ -137,6 +152,10 @@
                         <label for="formBARCODE">BARCODE</label>
                         <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroBARCODE" id="formVIN">
                     </div>
+                    <div class="form-group col-md-2">
+                        <label for="formMODELO">MODELO</label>
+                        <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroMODELO" id="formVIN">
+                    </div>
                 </div><br>
                 <div class="form-row">
                     <div class="col-md-12">
@@ -166,6 +185,7 @@
                             <th scope="col">Reparo Realizado</th>
                             <th scope="col">Intervalo</th>
                             <th scope="col">Reparador</th>
+                            <th scope="col">Criticidade</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -186,6 +206,7 @@
                                     <td>#TIPO_REPARO#</td>
                                     <td>#INTERVALO#</td>
                                     <td>#REPARADOR#</td>
+                                    <td>#CRITICIDADE#</td>
                                 </tr>
                             </cfloop>
                         </cfoutput>

@@ -398,26 +398,46 @@ function verificaCamposPreenchidos() {
 }
 
 
-function toggleBPContencao(show) {
-    var container = document.getElementById('bpContencaoContainer');
-    container.style.display = show ? 'block' : 'none';
+function handleRadioClick(isSim) {
+    var containerMotivo = document.getElementById('bpContencaoMotivo');
+    var containerQA = document.getElementById('bpContencaoQA');
+    
+    if (isSim) {
+        // Se "Sim" for selecionado
+        containerMotivo.style.display = 'none'; // Oculta o contêiner de Motivo
+        containerQA.style.display = 'block'; // Mostra o contêiner de "BP de Contenção QA"
+
+        // Torna os inputs obrigatórios
+        setRequiredAttributes(true);
+    } else {
+        // Se "Não" for selecionado
+        containerMotivo.style.display = 'block'; // Mostra o contêiner de Motivo
+        containerQA.style.display = 'none'; // Oculta o contêiner de "BP de Contenção QA"
+
+        // Torna os inputs obrigatórios
+        setRequiredAttributes(false);
+    }
 }
 
-function toggleBPContainer(show) {
-    var container = document.getElementById("bpContencaoContainer");
+function setRequiredAttributes(isRequired) {
+    // Definir obrigatoriedade dos inputs de "BP de Contenção QA"
     var bpInput = document.getElementById("searchBPcontQA");
     var descricaoInput = document.getElementById("searchDescricaocontQA");
 
-    if (show) {
-        container.style.display = "flex"; // Exibir o contêiner
+    if (isRequired) {
         bpInput.setAttribute("required", "required"); // Torna o input obrigatório
         descricaoInput.setAttribute("required", "required"); // Torna o input obrigatório
     } else {
-        container.style.display = "none"; // Ocultar o contêiner
         bpInput.removeAttribute("required"); // Remove a obrigatoriedade
         descricaoInput.removeAttribute("required"); // Remove a obrigatoriedade
     }
+
+    // Definir obrigatoriedade do input de "Motivo"
+    var motivoInput = document.getElementById("searchMotivo");
+    motivoInput.required = !isRequired; // Se não for necessário, torna obrigatória
 }
+
+
 
 
 function verificarCampos() {

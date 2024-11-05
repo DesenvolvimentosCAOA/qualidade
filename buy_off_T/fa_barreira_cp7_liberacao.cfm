@@ -379,113 +379,111 @@
     </cfif>
 </cfif>
 
-<!-- Inserção com o intervalo correto -->
-<cfquery name="insere" datasource="#BANCOSINC#">
-    INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_FA (
-        ID, USER_DATA, USER_COLABORADOR, VIN, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, STATUS
-    ) VALUES (
-        <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
-        SYSDATE,
-        <cfqueryparam value="#form.nome#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#buscaBarcode.barcode#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#buscaMES.modelo#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#form.local#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#form.N_Conformidade#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#form.posicao#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#form.problema#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#form.estacao#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#intervaloInserir#" cfsqltype="CF_SQL_VARCHAR">,
-        CASE
-            WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> = 'N0' THEN 'LIBERADO'
-            WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> = 'AVARIA' THEN 'LIBERADO'
-            WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> IN ('N1', 'N2', 'N3', 'N4', 'OK A-') THEN 'EM REPARO'
-            ELSE 'LIBERADO'
-        END
-    )
-</cfquery>
-
+    <!-- Inserção com o intervalo correto -->
+    <cfquery name="insere" datasource="#BANCOSINC#">
+        INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_FA (
+            ID, USER_DATA, USER_COLABORADOR, VIN, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, STATUS, ULTIMO_REGISTRO
+        ) VALUES (
+            <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
+            SYSDATE,
+            <cfqueryparam value="#form.nome#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#buscaBarcode.barcode#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#buscaMES.modelo#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.local#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.N_Conformidade#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.posicao#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.problema#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.estacao#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#intervaloInserir#" cfsqltype="CF_SQL_VARCHAR">,
+            CASE
+                WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> = 'N0' THEN 'LIBERADO'
+                WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> = 'AVARIA' THEN 'LIBERADO'
+                WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> IN ('N1', 'N2', 'N3', 'N4', 'OK A-') THEN 'EM REPARO'
+                ELSE 'LIBERADO'
+            END,
+            <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
+        )
+    </cfquery>
                                                             
-                                                            <cfoutput>
-                                                                <script>
-                                                                    window.location.href = 'fa_barreira_cp7_liberacao.cfm';
-                                                                </script>
-                                                            </cfoutput>
-                                                        </cfif>
-                                                        <button type="reset" class="btn btn-danger">
-                                                            Cancelar</button>
-                                                    </form>
+    <cfoutput>
+        <script>
+            window.location.href = 'fa_barreira_cp7_liberacao.cfm';
+        </script>
+    </cfoutput>
+</cfif>
+            <button type="reset" class="btn btn-danger">Cancelar</button>
+        </form>
+</div>
 
-                                                </div>
+        <div class="container col-12 bg-white rounded metas">
+            <table class="table">
+                <thead>
+                    <tr class="text-nowrap">
+                        <!-- Coluna de ação -->
+                        <th scope="col">Del</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Colaborador</th>
+                        <th scope="col">VIN</th>
+                        <th scope="col">BARCODE</th>
+                        <th scope="col">Modelo</th>
+                        <th scope="col">Barreira</th>
+                        <th scope="col">Peça</th>
+                        <th scope="col">Posição</th>
+                        <th scope="col">Problema</th>
+                        <th scope="col">Responsável</th>
+                        <th scope="col">Criticidade</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    <cfoutput query="consulta">
+                        <tr class="align-middle">
+                            <!-- Botão de exclusão -->
+                            <td>
+                                <span class="delete-icon-wrapper" onclick="deletar(#ID#);">
+                                    <i class="material-icons delete-icon" style="color: red;">
+                                        X</i>
+                                </span>
+                            </td>
+                            <td>#ID#</td>
+                            <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
+                            <td>#USER_COLABORADOR#</td>
+                            <td>#VIN#</td>
+                            <td>#BARCODE#</td>
+                            <td>#MODELO#</td>
+                            <td>#BARREIRA#</td>
+                            <td>#PECA#</td>
+                            <td>#POSICAO#</td>
+                            <td>#PROBLEMA#</td>
+                            <td>#ESTACAO#</td>
+                            <td>#CRITICIDADE#</td>
+                        </tr>
+                    </cfoutput>
+                </tbody>
+            </table>
+        </div>
+    <!-- Script para deletar -->
+        <script>
+            function deletar(id) {
+                if (confirm("Tem certeza que deseja deletar este item?")) {
+                    window.location.href = "fa_barreira_cp7_liberacao.cfm?id=" + id;
+                }
+            }
+        </script>
+        <script>
+            document
+                .getElementById('formVIN')
+                .addEventListener('keypress', function (event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault(); // Evita o comportamento padrão do Enter
 
-                                                <div class="container col-12 bg-white rounded metas">
-                                                    <table class="table">
-                                                        <thead>
-                                                            <tr class="text-nowrap">
-                                                                <!-- Coluna de ação -->
-                                                                <th scope="col">Del</th>
-                                                                <th scope="col">ID</th>
-                                                                <th scope="col">Data</th>
-                                                                <th scope="col">Colaborador</th>
-                                                                <th scope="col">VIN</th>
-                                                                <th scope="col">BARCODE</th>
-                                                                <th scope="col">Modelo</th>
-                                                                <th scope="col">Barreira</th>
-                                                                <th scope="col">Peça</th>
-                                                                <th scope="col">Posição</th>
-                                                                <th scope="col">Problema</th>
-                                                                <th scope="col">Responsável</th>
-                                                                <th scope="col">Criticidade</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="table-group-divider">
-                                                            <cfoutput query="consulta">
-                                                                <tr class="align-middle">
-                                                                    <!-- Botão de exclusão -->
-                                                                    <td>
-                                                                        <span class="delete-icon-wrapper" onclick="deletar(#ID#);">
-                                                                            <i class="material-icons delete-icon" style="color: red;">
-                                                                                X</i>
-                                                                        </span>
-                                                                    </td>
-                                                                    <td>#ID#</td>
-                                                                    <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                                                    <td>#USER_COLABORADOR#</td>
-                                                                    <td>#VIN#</td>
-                                                                    <td>#BARCODE#</td>
-                                                                    <td>#MODELO#</td>
-                                                                    <td>#BARREIRA#</td>
-                                                                    <td>#PECA#</td>
-                                                                    <td>#POSICAO#</td>
-                                                                    <td>#PROBLEMA#</td>
-                                                                    <td>#ESTACAO#</td>
-                                                                    <td>#CRITICIDADE#</td>
-                                                                </tr>
-                                                            </cfoutput>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <!-- Script para deletar -->
-                                                <script>
-                                                    function deletar(id) {
-                                                        if (confirm("Tem certeza que deseja deletar este item?")) {
-                                                            window.location.href = "fa_barreira_cp7_liberacao.cfm?id=" + id;
-                                                        }
-                                                    }
-                                                </script>
-                                                <script>
-                                                    document
-                                                        .getElementById('formVIN')
-                                                        .addEventListener('keypress', function (event) {
-                                                            if (event.key === 'Enter') {
-                                                                event.preventDefault(); // Evita o comportamento padrão do Enter
-
-                                                                // Se você deseja mover para o próximo campo, descomente a linha abaixo
-                                                                // document.getElementById('proximoCampoID').focus(); Se você deseja permanecer
-                                                                // no mesmo campo, apenas deixe sem ações adicionais
-                                                            }
-                                                        });
-                                                </script>
-                                            </body>
-                                        </html>
+                        // Se você deseja mover para o próximo campo, descomente a linha abaixo
+                        // document.getElementById('proximoCampoID').focus(); Se você deseja permanecer
+                        // no mesmo campo, apenas deixe sem ações adicionais
+                    }
+                });
+        </script>
+    </body>
+</html>

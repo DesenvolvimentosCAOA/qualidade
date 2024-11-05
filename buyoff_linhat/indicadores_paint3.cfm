@@ -9,22 +9,32 @@
     <cfquery name="consulta_barreira" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT 
-            BARREIRA, BARCODE,
-            CASE 
-                WHEN INTERVALO = '01:00' THEN '01:02~02:00'
-                WHEN INTERVALO = '02:00' THEN '02:00~03:00'
-                WHEN INTERVALO = '03:00' THEN '03:00~04:00'
-                WHEN INTERVALO = '04:00' THEN '04:00~05:00'
-                WHEN INTERVALO = '05:00' THEN '05:00~06:10'
-                WHEN INTERVALO = '06:00' THEN '05:00~06:10' 
-            END HH,
-            CASE 
-                    WHEN COUNT(CASE WHEN PROBLEMA IS NULL OR PROBLEMA = '' THEN 1 END) > 0 THEN 1
+                BARREIRA, BARCODE,
+                CASE 
+                    WHEN INTERVALO = '23:00' THEN '23:00~01:00'
+                    WHEN INTERVALO = '00:00' THEN '00:00~01:00'
+                    WHEN INTERVALO = '01:00' THEN '01:00~02:00'
+                    WHEN INTERVALO = '02:00' THEN '02:00~03:00'
+                    WHEN INTERVALO = '03:00' THEN '03:00~04:00'
+                    WHEN INTERVALO = '04:00' THEN '04:00~05:00'
+                    WHEN INTERVALO = '05:00' THEN '05:00~06:00'
+                    ELSE 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o BARCODE só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    
+                    -- Verifica se o BARCODE contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+    
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT BARCODE) AS totalVins,
-                COUNT(CASE WHEN PROBLEMA IS NOT NULL THEN 1 END) AS totalProblemas
-            FROM sistema_qualidade
+                
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.sistema_qualidade
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -45,33 +55,33 @@
             GROUP BY BARREIRA, BARCODE, INTERVALO
         )
         SELECT BARREIRA, HH, 
-               COUNT(BARCODE) AS TOTAL, 
-               SUM(APROVADO_FLAG) AS APROVADOS, 
-               COUNT(BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
-               ROUND(SUM(APROVADO_FLAG) / COUNT(BARCODE) * 100, 1) AS PORCENTAGEM, 
-               ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-               1 AS ordem
+                COUNT(DISTINCT BARCODE) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
+                
+                -- Cálculo do DPV: total de BARCODEs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                1 AS ordem
         FROM CONSULTA
-        WHERE HH IS NOT NULL
         GROUP BY BARREIRA, HH
         UNION ALL
         SELECT BARREIRA, 
-               'TTL' AS HH, 
-               COUNT(BARCODE) AS TOTAL, 
-               SUM(APROVADO_FLAG) AS APROVADOS, 
-               COUNT(BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
-               ROUND(SUM(APROVADO_FLAG) / COUNT(BARCODE) * 100, 1) AS PORCENTAGEM, 
-               ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-               2 AS ordem
+                'TTL' AS HH, 
+                COUNT(DISTINCT BARCODE) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
         FROM CONSULTA
-        WHERE HH IS NOT NULL
         GROUP BY BARREIRA
         ORDER BY ordem, HH
     </cfquery>
-    
+
     <cfquery name="consulta_nconformidades" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, COUNT(*) TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE PAINT
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -91,6 +101,8 @@
                     (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
                 ))
             )
+            AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
             GROUP BY PROBLEMA
             ORDER BY COUNT(*) DESC
         ),
@@ -115,7 +127,7 @@
 
     <cfquery name="consulta_nconformidades_primer" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE
             WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -123,8 +135,9 @@
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
-            AND PROBLEMA IS NOT NULL
-            AND BARREIRA = 'Primer'
+                AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'Primer'
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
                 ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
@@ -136,23 +149,23 @@
                     (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
                 ))
             )
-            GROUP BY PROBLEMA
+            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
-                   ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+                ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
-                   SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+                SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
-                   ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+                ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
         SELECT * FROM CONSULTA4
@@ -160,7 +173,7 @@
 
     <cfquery name="consulta_nconformidades_TopCoat" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE
             WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -168,8 +181,9 @@
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
-            AND PROBLEMA IS NOT NULL
-            AND BARREIRA = 'Top Coat'
+                AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'Top Coat'
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
                 ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
@@ -181,23 +195,23 @@
                     (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
                 ))
             )
-            GROUP BY PROBLEMA
+            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
-                   ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+                ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
-                   SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+                SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
-                   ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+                ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
         SELECT * FROM CONSULTA4
@@ -205,7 +219,7 @@
 
     <cfquery name="consulta_nconformidades_val" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE
             WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -213,9 +227,10 @@
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
-            AND PROBLEMA IS NOT NULL
-            AND BARREIRA = 'Validacao'
-                        AND (
+                AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'Validacao'
+            AND (
                 -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
                 ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
                 -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
@@ -226,25 +241,23 @@
                     (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
                 ))
             )
-            -- Exemplo de filtro adicional baseado na coluna INTERVALO
-            -- AND INTERVALO IN ('06:00', '07:00', '08:00')  -- Substitua pelos valores reais dos intervalos que deseja filtrar
-            GROUP BY PROBLEMA
+            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
-                   ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+                ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
-                   SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+                SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
-                   ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+                ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
         SELECT * FROM CONSULTA4
@@ -252,7 +265,7 @@
 
     <cfquery name="consulta_nconformidades_lib" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE
             WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -260,52 +273,9 @@
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
-            AND PROBLEMA IS NOT NULL
-            AND BARREIRA = 'CP6'
-            AND (
-            -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-            ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
-            -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-            OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
-            -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
-            OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
-                (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
-                (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
-                )))
-                GROUP BY PROBLEMA
-            ORDER BY COUNT(*) DESC
-        ),
-        CONSULTA2 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
-                   ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
-            FROM CONSULTA
-            WHERE ROWNUM <= 5
-        ),
-        CONSULTA3 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
-                   SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
-            FROM CONSULTA2
-        ),
-        CONSULTA4 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
-                   ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
-            FROM CONSULTA3
-        )
-        SELECT * FROM CONSULTA4
-    </cfquery>
-
-    <cfquery name="consulta_nconformidades_ecoat" datasource="#BANCOSINC#">
-        WITH CONSULTA AS (
-            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
-            FROM INTCOLDFUSION.SISTEMA_QUALIDADE
-            WHERE TRUNC(USER_DATA) =
-                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
-                    #CreateODBCDate(url.filtroData)#
-                <cfelse>
-                    TRUNC(SYSDATE)
-                </cfif>
-            AND PROBLEMA IS NOT NULL
-            AND BARREIRA = 'ECOAT'
+                AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'CP6'
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
                 ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
@@ -315,23 +285,70 @@
                 OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
                     (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
                     (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
-                )))
-                GROUP BY PROBLEMA
+                ))
+            )
+            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+                ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
+            FROM CONSULTA3
+        )
+        SELECT * FROM CONSULTA4
+    </cfquery>
+
+    <cfquery name="consulta_nconformidades_ecoat" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE
+            WHERE TRUNC(USER_DATA) =
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'ECOAT'
+            AND (
+                -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                    (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                    (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                ))
+            )
+            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
+            ORDER BY COUNT(*) DESC
+        ),
+        CONSULTA2 AS (
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+                ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
+            FROM CONSULTA
+            WHERE ROWNUM <= 5
+        ),
+        CONSULTA3 AS (
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+                SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
+            FROM CONSULTA2
+        ),
+        CONSULTA4 AS (
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
                 ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
@@ -416,9 +433,11 @@
                         <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
                             <thead>
                                 <tr class="text-nowrap">
-                                    <th scope="col" colspan="3" class="bg-danger">Principais Não Conformidades - Top 5</th>
+                                    <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
                                 </tr>
                                 <tr class="text-nowrap">
+                                    <th scope="col">Peça</th>
+                                    <th scope="col">Posição</th>
                                     <th scope="col">Problema</th>
                                     <th scope="col">Total</th>
                                     <th scope="col">Pareto (%)</th>
@@ -427,6 +446,8 @@
                             <tbody class="table-group-divider">
                                 <cfoutput query="consulta_nconformidades_ecoat">
                                     <tr class="align-middle">
+                                        <td>#PECA#</td>
+                                        <td>#POSICAO#</td>
                                         <td style="font-weight: bold">#PROBLEMA#</td>
                                         <td>#TOTAL_POR_DEFEITO#</td>
                                         <td>#PARETO#%</td>
@@ -555,9 +576,11 @@
                         <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
                             <thead>
                                 <tr class="text-nowrap">
-                                    <th scope="col" colspan="3" class="bg-primary">Principais Não Conformidades - Top 5</th>
+                                    <th scope="col" colspan="5" class="bg-primary">Principais Não Conformidades - Top 5</th>
                                 </tr>
                                 <tr class="text-nowrap">
+                                    <th scope="col">Peça</th>
+                                    <th scope="col">Posição</th>
                                     <th scope="col">Problema</th>
                                     <th scope="col">Total</th>
                                     <th scope="col">Pareto</th>
@@ -566,6 +589,8 @@
                             <tbody class="table-group-divider">
                                 <cfoutput query="consulta_nconformidades_primer">
                                     <tr class="align-middle">
+                                        <td>#PECA#</td>
+                                        <td>#POSICAO#</td>
                                         <td style="font-weight: bold">#PROBLEMA#</td>
                                         <td>#TOTAL_POR_DEFEITO#</td>
                                         <td>#PARETO#%</td>
@@ -696,9 +721,11 @@
                                 <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
                                     <thead>
                                         <tr class="text-nowrap">
-                                            <th scope="col" colspan="3" class="bg-success">Principais Não Conformidades - Top 5</th>
+                                            <th scope="col" colspan="5" class="bg-success">Principais Não Conformidades - Top 5</th>
                                         </tr>
                                         <tr class="text-nowrap">
+                                            <th scope="col">Peça</th>
+                                            <th scope="col">Posição</th>
                                             <th scope="col">Problema</th>
                                             <th scope="col">Total</th>
                                             <th scope="col">Pareto (%)</th>
@@ -707,6 +734,8 @@
                                     <tbody class="table-group-divider">
                                         <cfoutput query="consulta_nconformidades_TopCoat">
                                             <tr class="align-middle">
+                                                <td>#PECA#</td>
+                                                <td>#POSICAO#</td>
                                                 <td style="font-weight: bold">#PROBLEMA#</td>
                                                 <td>#TOTAL_POR_DEFEITO#</td>
                                                 <td>#PARETO#%</td>
@@ -835,9 +864,11 @@
                                 <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
                                     <thead>
                                         <tr class="text-nowrap">
-                                            <th scope="col" colspan="3" class="bg-danger">Principais Não Conformidades - Top 5</th>
+                                            <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
                                         </tr>
                                         <tr class="text-nowrap">
+                                            <th scope="col">Peça</th>
+                                            <th scope="col">Posição</th>
                                             <th scope="col">Problema</th>
                                             <th scope="col">Total</th>
                                             <th scope="col">Pareto (%)</th>
@@ -846,6 +877,8 @@
                                     <tbody class="table-group-divider">
                                         <cfoutput query="consulta_nconformidades_val">
                                             <tr class="align-middle">
+                                                <td>#PECA#</td>
+                                                <td>#POSICAO#</td>
                                                 <td style="font-weight: bold">#PROBLEMA#</td>
                                                 <td>#TOTAL_POR_DEFEITO#</td>
                                                 <td>#PARETO#%</td>
@@ -975,9 +1008,11 @@
                                 <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
                                     <thead>
                                         <tr class="text-nowrap">
-                                            <th scope="col" colspan="3" class="bg-secondary">Principais Não Conformidades - Top 5</th>
+                                            <th scope="col" colspan="5" class="bg-secondary">Principais Não Conformidades - Top 5</th>
                                         </tr>
                                         <tr class="text-nowrap">
+                                            <th scope="col">Peça</th>
+                                            <th scope="col">Posição</th>
                                             <th scope="col">Problema</th>
                                             <th scope="col">Total</th>
                                             <th scope="col">Pareto (%)</th>
@@ -986,6 +1021,8 @@
                                     <tbody class="table-group-divider">
                                         <cfoutput query="consulta_nconformidades_lib">
                                             <tr class="align-middle">
+                                                <td>#PECA#</td>
+                                                <td>#POSICAO#</td>
                                                 <td style="font-weight: bold">#PROBLEMA#</td>
                                                 <td>#TOTAL_POR_DEFEITO#</td>
                                                 <td>#PARETO#%</td>

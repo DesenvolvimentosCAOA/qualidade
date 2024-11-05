@@ -173,7 +173,7 @@
     
     <!-- Realiza a inserção na tabela -->
     <cfquery name="insere" datasource="#BANCOSINC#">
-       INSERT INTO INTCOLDFUSION.sistema_qualidade_body (ID, USER_DATA, USER_COLABORADOR, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO)
+       INSERT INTO INTCOLDFUSION.sistema_qualidade_body (ID, USER_DATA, USER_COLABORADOR, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, ULTIMO_REGISTRO)
            VALUES (
            <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
            <cfqueryparam value="#userDataInserir#" cfsqltype="CF_SQL_TIMESTAMP">,
@@ -186,7 +186,8 @@
            <cfqueryparam value="#form.problema#" cfsqltype="CF_SQL_VARCHAR">,
            <cfqueryparam value="#form.estacao#" cfsqltype="CF_SQL_VARCHAR">,
            <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">,
-           <cfqueryparam value="#intervaloInserir#" cfsqltype="CF_SQL_VARCHAR">
+           <cfqueryparam value="#intervaloInserir#" cfsqltype="CF_SQL_VARCHAR">,
+           <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
        )
     </cfquery>
     

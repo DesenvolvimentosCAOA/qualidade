@@ -276,6 +276,7 @@ button.btn {
                               SET
                                   PECA ='#UCase(form.peca)#', 
                                   POSICAO = '#UCase(form.local)#',
+                                  PROBLEMA = '#UCase(form.N_Conformidade)#',
                                   ESTACAO = '#UCase(form.estacao)#',
                                   MODELO = '#UCase(form.modelo)#',
                                   BARCODE = '#UCase(form.vin)#',

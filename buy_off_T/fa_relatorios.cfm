@@ -111,6 +111,8 @@
                             <option value="DOOWON">DOOWON</option>
                             <option value="CP7">CP7</option>
                             <option value="SUB-MONTAGEM">SUB-MONTAGEM</option>
+                            <option value="PCP">PCP</option>
+                            <option value="REPARO FA">REPARO FA</option>
                         </select>
                     </div>
                     <div class="form-group col-md-1">

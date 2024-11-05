@@ -25,6 +25,7 @@
                 NECESSITA_QUALIDADE = <cfqueryparam value="#UCase(form.ver_qc)#" cfsqltype="CF_SQL_VARCHAR">,
                 RESPONSAVEL_CONTENCAO = <cfqueryparam value="#UCase(form.ver_responsavel)#" cfsqltype="CF_SQL_VARCHAR">,
                 BP_CONTENCAO_QUALIDADE = <cfqueryparam value="#UCase(form.ver_bp_contencao_qa)#" cfsqltype="CF_SQL_VARCHAR">,
+                MOTIVO_NAO_QUALIDADE = <cfqueryparam value="#UCase(form.ver_motivo)#" cfsqltype="CF_SQL_VARCHAR">,
                 DESCRICAO_CONT_QA = <cfqueryparam value="#UCase(form.ver_bp_descricao_qa)#" cfsqltype="CF_SQL_VARCHAR">
             WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
         </cfquery>
@@ -39,7 +40,7 @@
         <title>VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v4">        
-    </head>
+    </head> 
     <body>
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
@@ -124,17 +125,17 @@
                             <label for="searchQC">Necessita da validação Q.A?</label>
                             <div class="radio-group">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="ver_qc" id="descricaoSim" value="SIM" required onclick="toggleBPContencao(true); toggleBPContainer(true);">
+                                    <input class="form-check-input" type="radio" name="ver_qc" id="descricaoSim" value="SIM" required onclick="handleRadioClick(true);">
                                     <label class="form-check-label" for="descricaoSim">Sim</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="ver_qc" id="descricaoNao" value="NAO" required onclick="toggleBPContencao(false); toggleBPContainer(false);">
+                                    <input class="form-check-input" type="radio" name="ver_qc" id="descricaoNao" value="NAO" required onclick="handleRadioClick(false);">
                                     <label class="form-check-label" for="descricaoNao">Não</label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="search-container" id="bpContencaoContainer" style="display:none; width:500px; margin-left:20vw;">
+                    <div class="search-container" id="bpContencaoQA" style="display:none; width:500px; margin-left:20vw;">
                         <div class="input-group">
                             <label for="searchBPcontQA">BP Contenção QA</label>
                             <input type="text" id="searchBPcontQA" name="ver_bp_contencao_qa" placeholder="BP de Contenção QA">
@@ -142,6 +143,12 @@
                         <div class="input-group">
                             <label for="searchDescricaocontQA">Descrição de Contenção QA</label>
                             <input type="text" id="searchDescricaocontQA" name="ver_bp_descricao_qa" placeholder="Descrição de Contenção QA">
+                        </div>
+                    </div>
+                    <div class="search-container" id="bpContencaoMotivo" style="display:none; width:500px; margin-left:20vw;">
+                        <div class="input-group">
+                            <label for="searchMotivo">Motivo</label>
+                            <input type="text" id="searchMotivo" name="ver_motivo" placeholder="Motivo">
                         </div>
                     </div>
                     <div class="search-container">

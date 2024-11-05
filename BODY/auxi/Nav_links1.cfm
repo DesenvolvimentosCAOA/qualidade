@@ -12,7 +12,7 @@
       <a href="#">Relatórios</a>
         <ul class="dropdown-menu">
           <li><a href="./body_relatorios.cfm">Relatório</a></li>
-          <li><a href="./body_relatorios_summary.cfm">Relatório Summary</a></li>
+          <li><a href="./body_relatorios_buy_1.cfm">Relatório Summary</a></li>
         </ul>
     </li>
     <li class="dropdown">

@@ -143,13 +143,14 @@
                             <th scope="col">Reparo Realizado</th>
                             <th scope="col">Criticidade</th>
                             <th scope="col">STATUS</th>
+                            <th scope="col">Data Liberação</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
                         <cfoutput>
                             <cfloop query="consulta_adicionais">
                                 <tr class="align-middle">
-                                    <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy HH:nn:ss')#</td>
+                                    <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy HH:nn:ss')#⠀</td>
                                     <td>#USER_COLABORADOR#</td>
                                     <td>#VIN#</td>
                                     <td>#MODELO#</td>
@@ -161,6 +162,7 @@
                                     <td>#TIPO_REPARO#</td>
                                     <td>#CRITICIDADE#</td>
                                     <td>#STATUS#</td>
+                                    <td>#lsdatetimeformat(DATA_ENVIO, 'dd/mm/yyyy HH:nn:ss')#⠀</td>
                                 </tr>
                             </cfloop>
                         </cfoutput>

@@ -18,7 +18,7 @@
         <cfquery name="atualiza" datasource="#BANCOSINC#">
             UPDATE INTCOLDFUSION.VEREAGIR2
             SET
-                DATA_BP_DEFINITIVO_PROCESSO = <cfqueryparam value="#dateFormat(form.data_validacao, 'yyyy-mm-dd')#" cfsqltype="CF_SQL_DATE">,
+                DATA_BP_DEFINITIVO_PROCESSO = <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">,
                 BP_DEFINITIVO_PROCESSO = <cfqueryparam value="#UCase(form.ver_bp)#" cfsqltype="CF_SQL_VARCHAR">,
                 RESPONSAVEL_DEFINITIVO = <cfqueryparam value="#UCase(form.ver_responsavel)#" cfsqltype="CF_SQL_VARCHAR">,
                 DESCRICAO_DEFINITIVO = <cfqueryparam value="#UCase(form.ver_descricao)#" cfsqltype="CF_SQL_VARCHAR">,
@@ -150,8 +150,7 @@
                         <div class="input-group">
                             <label for="searchDescricao">Descrição</label>
                             <input required type="text" id="searchDescricao" name="ver_descricao" placeholder="Max 250 caracteres" value="" oninput="verificaCamposPreenchidos()">
-                        </div>
-                        
+                        </div>                        
                         <script>
                             function verificaCamposPreenchidos() {
                                 // Obtém os valores dos campos
@@ -181,10 +180,53 @@
                                 document.getElementById("searchDescricao").addEventListener('input', verificaCamposPreenchidos);
                             });
                         </script>
-                        
                     </div>
                     <div class="search-container">
+                        <!-- Primeiro input que controla a visibilidade -->
+                        <div hidden class="input-group">
+                            <label for="searchqc">BP Definitivo Q.A.1</label> 
+                            <input required type="text" id="searchqc" name="ver_qc" value="#consulta_editar.necessita_qualidade#">
+                        </div>
+                    
+                        <!-- Segundo input que será visível ou invisível conforme o valor do primeiro input -->
+                        <div class="input-group" id="inputBPDefinitivo" style="display: none;">
+                            <label for="searchBPdefinitivo">BP Definitivo Q.A.</label>
+                            <input type="text" id="searchBPdefinitivo" name="ver_br_qa">
+                        </div>
+                    </div>
+                    
+                    <script>
+                        function toggleBPDefinitivo() {
+                            const firstInput = document.getElementById("searchqc").value;
+                            const secondInput = document.getElementById("searchBPdefinitivo");
+                            const secondInputGroup = document.getElementById("inputBPDefinitivo");
+                    
+                            // Exibe ou oculta o segundo input e define se é obrigatório
+                            if (firstInput.trim().toUpperCase() === "SIM") {
+                                secondInputGroup.style.display = "block";
+                                secondInput.setAttribute("required", "required"); // Torna obrigatório
+                            } else {
+                                secondInputGroup.style.display = "none";
+                                secondInput.removeAttribute("required"); // Remove obrigatoriedade
+                            }
+                        }
+                    
+                        // Chama a função quando a página carrega para configurar a visibilidade e obrigatoriedade iniciais
+                        window.onload = toggleBPDefinitivo;
+                    
+                        // Chama a função sempre que o valor do primeiro input muda
+                        document.getElementById("searchqc").addEventListener("input", toggleBPDefinitivo);
+
+                        // Função para voltar
+                        function voltar() {
+                            // Redireciona para a página anterior
+                            window.history.back(); // ou utilize: window.location.href = 'pagina-desejada.cfm'; para redirecionar a uma página específica
+                        }
+                    </script>
+                    
+                    <div class="search-container">
                         <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao">Salvar</button>
+                        <button type="button" class="btn-rounded back-btn" id="btnVoltar" onclick="voltar()">Voltar</button>
                     </div>
                 </cfoutput>
             </form>

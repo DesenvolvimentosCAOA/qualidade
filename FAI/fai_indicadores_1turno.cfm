@@ -132,40 +132,57 @@
             SELECT 
                 BARREIRA, VIN,
                 CASE 
-                    WHEN INTERVALO = '06:00' THEN '01'
-                    WHEN INTERVALO = '07:00' THEN '02'
-                    WHEN INTERVALO = '08:00' THEN '03'
-                    WHEN INTERVALO = '09:00' THEN '04'
-                    WHEN INTERVALO = '10:00' THEN '05'
-                    WHEN INTERVALO = '11:00' THEN '06'
-                    WHEN INTERVALO = '12:00' THEN '07'
-                    WHEN INTERVALO = '13:00' THEN '08'
-                    WHEN INTERVALO = '14:00' THEN '09'
-                    WHEN INTERVALO = '15:00' THEN '10'
+                    WHEN INTERVALO = '06:00' THEN '06:00~07:00'
+                    WHEN INTERVALO = '07:00' THEN '07:00~08:00'
+                    WHEN INTERVALO = '08:00' THEN '08:00~09:00'
+                    WHEN INTERVALO = '09:00' THEN '09:00~10:00'
+                    WHEN INTERVALO = '10:00' THEN '10:00~11:00'
+                    WHEN INTERVALO = '11:00' THEN '11:00~12:00'
+                    WHEN INTERVALO = '12:00' THEN '12:00~13:00'
+                    WHEN INTERVALO = '13:00' THEN '13:00~14:00'
+                    WHEN INTERVALO = '14:00' THEN '14:00~15:00'
+                    WHEN INTERVALO = '15:00' THEN '15:00~16:00'
                     ELSE 'OUTROS'
                 END HH,
                 CASE 
-                    WHEN COUNT(CASE WHEN PROBLEMA IS NULL THEN 1 WHEN PROBLEMA IS NOT NULL 
-                        AND (CRITICIDADE = 'N0' OR CRITICIDADE = 'OK A-') THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+    
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,
-                COUNT(CASE WHEN PROBLEMA IS NOT NULL AND (CRITICIDADE IS NULL OR CRITICIDADE <> 'OK A-') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
+                
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.sistema_qualidade_fai
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
                 AND INTERVALO BETWEEN '06:00' AND '15:00'
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, HH, 
-                COUNT(VIN) AS TOTAL, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
                 SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(VIN) * 100, 1) AS PORCENTAGEM, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                
+                -- Cálculo do DPV: total de VINs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
                 ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
                 1 AS ordem
         FROM CONSULTA
@@ -173,10 +190,10 @@
         UNION ALL
         SELECT BARREIRA, 
                 'TTL' AS HH, 
-                COUNT(VIN) AS TOTAL, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
                 SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(VIN) * 100, 1) AS PORCENTAGEM, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
                 ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
                 2 AS ordem
         FROM CONSULTA
@@ -323,25 +340,25 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
             AND BARREIRA = 'SHOWER'
-            
-            AND CRITICIDADE NOT IN ('OK A-')
-            AND (
+              
+              AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
                 ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
                 OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
-            GROUP BY PROBLEMA, PECA, ESTACAO
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -1413,7 +1430,8 @@
         </div>     
         
 
-   <meta http-equiv="refresh" content="40,URL=fai_indicadores_1turno.cfm">
+<!---    <meta http-equiv="refresh" content="40,URL=fai_indicadores_1turno.cfm"> --->
+
 
   <!-- Setinha flutuante -->
   <div class="floating-arrow" onclick="scrollToTop();">

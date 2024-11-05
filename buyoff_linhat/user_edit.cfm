@@ -86,12 +86,13 @@
                     <div class="col-md-3 d-flex align-items-end">
                         <button class="btn btn-primary mr-2" type="submit">Filtrar</button>
                         <button class="btn btn-warning" type="reset" onclick="self.location='user_edit.cfm'">Limpar</button>
+                        <button class="btn btn-warning mb-2 ml-2" type="button" id="report">Download</button>
                     </div>
                 </div>
             </form>
         </cfoutput>
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white">
+            <table class="min-w-full bg-white" id="tblStocks">
                 <thead>
                     <tr>
                         <th class="py-2 px-4 bg-gray-200 text-left text-gray-600 font-bold uppercase text-sm">ID</th>
@@ -149,5 +150,18 @@
             }
         }
     </script>  
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/cf/assets/js/home/js/table2excel.js?v=2"></script>
+    <script>
+        // Gerando Excel da tabela
+        var table2excel = new Table2Excel();
+        document.getElementById('report').addEventListener('click', function() {
+            table2excel.export(document.querySelectorAll('#tblStocks'));
+        });
+    </script>
 </body>
 </html>

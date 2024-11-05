@@ -290,7 +290,7 @@
 
             <cfquery name="insere" datasource="#BANCOSINC#">
                 INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_FA (
-                    ID, USER_DATA, USER_COLABORADOR, VIN, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO,CRITICIDADE, INTERVALO
+                    ID, USER_DATA, USER_COLABORADOR, VIN, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO,CRITICIDADE, ULTIMO_REGISTRO, INTERVALO
                 ) VALUES (
                     <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
                     CASE 
@@ -307,6 +307,7 @@
                     <cfqueryparam value="#UCase(problema)#" cfsqltype="CF_SQL_VARCHAR">,
                     <cfqueryparam value="#UCase(estacao)#" cfsqltype="CF_SQL_VARCHAR">,
                     <cfqueryparam value="#UCase(criticidade)#" cfsqltype="CF_SQL_VARCHAR">,
+                    <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">,
                     CASE 
                         WHEN TO_CHAR(SYSDATE, 'HH24:MI') >= '15:00' AND TO_CHAR(SYSDATE, 'HH24:MI') < '15:50' THEN '15:00' 
                         WHEN TO_CHAR(SYSDATE, 'HH24:MI') >= '15:50' AND TO_CHAR(SYSDATE, 'HH24:MI') < '16:00' THEN '15:50' 

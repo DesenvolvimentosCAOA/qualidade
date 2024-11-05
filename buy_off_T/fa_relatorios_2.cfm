@@ -18,7 +18,7 @@
         </cfif>
         <!--- Novo filtro de intervalo, modelo, barreira e data --->
         AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-        AND BARREIRA = 'CP7'
+        AND BARREIRA NOT IN 'LIBERACAO'
         AND CASE 
             WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
             ELSE TRUNC(USER_DATA) 
@@ -50,13 +50,12 @@
             FROM INTCOLDFUSION.sistema_qualidade_fa
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                 AND MODELO LIKE 'TIGGO 7%'
-                AND BARREIRA = 'CP7'
                 AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) ELSE TRUNC(USER_DATA) END 
             = CASE WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')-1) 
             ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) END
             GROUP BY BARREIRA, VIN, INTERVALO, MODELO
         )
-        SELECT 
+        SELECT BARREIRA,
             'TTL' AS HH, 
             COUNT(DISTINCT VIN) AS TOTAL, 
             SUM(APROVADO_FLAG) AS APROVADOS, 
@@ -64,6 +63,7 @@
             ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
             ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
         FROM CONSULTA
+        GROUP BY BARREIRA
         ORDER BY HH
     </cfquery>
 
@@ -88,13 +88,12 @@
             FROM INTCOLDFUSION.sistema_qualidade_fa
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                 AND MODELO LIKE 'TIGGO 5%'
-                AND BARREIRA = 'CP7'
                 AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) ELSE TRUNC(USER_DATA) END 
             = CASE WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')-1) 
             ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) END
             GROUP BY BARREIRA, VIN, INTERVALO, MODELO
         )
-        SELECT 
+        SELECT BARREIRA,
             'TTL' AS HH, 
             COUNT(DISTINCT VIN) AS TOTAL, 
             SUM(APROVADO_FLAG) AS APROVADOS, 
@@ -102,6 +101,7 @@
             ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
             ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
         FROM CONSULTA
+        GROUP BY BARREIRA
         ORDER BY HH
     </cfquery>
 
@@ -126,13 +126,12 @@
             FROM INTCOLDFUSION.sistema_qualidade_fa
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                 AND MODELO LIKE 'TIGGO 8 %'
-                AND BARREIRA = 'CP7'
                 AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) ELSE TRUNC(USER_DATA) END 
             = CASE WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')-1) 
             ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) END
             GROUP BY BARREIRA, VIN, INTERVALO, MODELO
         )
-        SELECT 
+        SELECT BARREIRA,
             'TTL' AS HH, 
             COUNT(DISTINCT VIN) AS TOTAL, 
             SUM(APROVADO_FLAG) AS APROVADOS, 
@@ -140,6 +139,7 @@
             ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
             ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
         FROM CONSULTA
+        GROUP BY BARREIRA
         ORDER BY HH
     </cfquery>
 
@@ -164,13 +164,12 @@
             FROM INTCOLDFUSION.sistema_qualidade_fa
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                 AND MODELO LIKE 'TIGGO 83%'
-                AND BARREIRA = 'CP7'
                 AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) ELSE TRUNC(USER_DATA) END 
             = CASE WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')-1) 
             ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) END
             GROUP BY BARREIRA, VIN, INTERVALO, MODELO
         )
-        SELECT 
+        SELECT BARREIRA,
             'TTL' AS HH, 
             COUNT(DISTINCT VIN) AS TOTAL, 
             SUM(APROVADO_FLAG) AS APROVADOS, 
@@ -178,6 +177,7 @@
             ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
             ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
         FROM CONSULTA
+        GROUP BY BARREIRA
         ORDER BY HH
     </cfquery>
 
@@ -202,13 +202,12 @@
             FROM INTCOLDFUSION.sistema_qualidade_fa
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                 AND MODELO LIKE 'TL %'
-                AND BARREIRA = 'CP7'
                 AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) ELSE TRUNC(USER_DATA) END 
             = CASE WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')-1) 
             ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) END
             GROUP BY BARREIRA, VIN, INTERVALO, MODELO
         )
-        SELECT 
+        SELECT BARREIRA,
             'TTL' AS HH, 
             COUNT(DISTINCT VIN) AS TOTAL, 
             SUM(APROVADO_FLAG) AS APROVADOS, 
@@ -216,44 +215,7 @@
             ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
             ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
         FROM CONSULTA
-        ORDER BY HH
-    </cfquery>
-
-    <cfquery name="consulta_barreira_hr" datasource="#BANCOSINC#">
-        WITH CONSULTA AS (
-            SELECT 
-                BARREIRA, VIN, MODELO,
-                CASE 
-                    WHEN INTERVALO BETWEEN '01:00' AND '00:00' THEN 'OUTROS'
-                END HH,
-                CASE 
-                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
-                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
-                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
-                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
-                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-                    ELSE 0
-                END AS APROVADO_FLAG,
-                COUNT(DISTINCT VIN) AS totalVins,
-                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
-                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fa
-            WHERE INTERVALO BETWEEN '00:00' AND '23:00'
-                AND MODELO LIKE '%HR%'
-                AND BARREIRA = 'HR'
-                AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) ELSE TRUNC(USER_DATA) END 
-            = CASE WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')-1) 
-            ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) END
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
-        )
-        SELECT 
-            'TTL' AS HH, 
-            COUNT(DISTINCT VIN) AS TOTAL, 
-            SUM(APROVADO_FLAG) AS APROVADOS, 
-            COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-            ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-            ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
-        FROM CONSULTA
+        GROUP BY BARREIRA
         ORDER BY HH
     </cfquery>
 
@@ -318,128 +280,9 @@
                 </div>
             </form>
         </div>
-
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-2">
-                    <h3>TIGGO 7</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm w-50" style="font-size:12px;">
-                            <thead class="bg-danger">
-                                <tr>
-                                    <th style="width:1vw">H/H</th>
-                                    <th style="width:1vw">Prod</th>
-                                    <th style="width:1vw">Aprov</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfoutput query="consulta_barreira_tiggo7">
-                                        <tr>
-                                            <td>#HH#</td>
-                                            <td>#TOTAL#</td>
-                                            <td>#APROVADOS#</td>
-                                        </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <h3>TIGGO 5</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm w-50" style="font-size:12px">
-                            <thead class="bg-success">
-                                <tr>
-                                    <th style="width:1vw">H/H</th>
-                                    <th style="width:1vw">Prod</th>
-                                    <th style="width:1vw">Aprov</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfoutput query="consulta_barreira_tiggo5">
-                                        <tr>
-                                            <td>#HH#</td>
-                                            <td>#TOTAL#</td>
-                                            <td>#APROVADOS#</td>
-                                        </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <h3>T18</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm w-50" style="font-size:12px">
-                            <thead class="bg-success">
-                                <tr>
-                                    <th style="width:1vw">H/H</th>
-                                    <th style="width:1vw">Prod</th>
-                                    <th style="width:1vw">Aprov</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfoutput query="consulta_barreira_tiggo18">
-                                        <tr>
-                                            <td>#HH#</td>
-                                            <td>#TOTAL#</td>
-                                            <td>#APROVADOS#</td>
-                                        </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <h3>T1A</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm w-50" style="font-size:12px">
-                            <thead class="bg-success">
-                                <tr>
-                                    <th style="width:1vw">H/H</th>
-                                    <th style="width:1vw">Prod</th>
-                                    <th style="width:1vw">Aprov</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfoutput query="consulta_barreira_t1a">
-                                        <tr>
-                                            <td>#HH#</td>
-                                            <td>#TOTAL#</td>
-                                            <td>#APROVADOS#</td>
-                                        </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <h3>TL</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm w-50" style="font-size:12px">
-                            <thead class="bg-success">
-                                <tr>
-                                    <th style="width:1vw">H/H</th>
-                                    <th style="width:1vw">Prod</th>
-                                    <th style="width:1vw">Aprov</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfoutput query="consulta_barreira_tl">
-                                        <tr>
-                                            <td>#HH#</td>
-                                            <td>#TOTAL#</td>
-                                            <td>#APROVADOS#</td>
-                                        </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <h2 class="titulo2">Relatórios</h2><br>
-            
-            <div class="container col-12 bg-white rounded metas">
+        
+            <h2 class="titulo2">Relatórios</h2>
+            <div style="margin-top:1vw" class="container col-12 bg-white rounded metas">
                 <table id="tblStocks" class="table">
                     <thead>
                         <tr class="text-nowrap">
@@ -455,29 +298,528 @@
                             <th scope="col">Qtd</th>
                             <th scope="col">Time</th>
                             <th scope="col">VIN/BARCODE</th>
-                            <th scope="col">Intervalo</th>
+                            <th scope="col">Turno</th>
                             <th scope="col">Criticidade</th>
+                            <th scope="col">Intervalo</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
                         <cfoutput>
                             <cfloop query="consulta_adicionais">
-                                <tr class="align-middle">
-                                    <td>#BARREIRA#</td>
-                                    <td>#MODELO#</td>
+                                <tr style="font-size:12px"  class="align-middle">
+                                    <td>
+                                        <cfif FindNoCase("CP7", BARREIRA) neq 0>
+                                            ASSEMBLY
+                                        <cfelseif FindNoCase("T19", BARREIRA) neq 0>
+                                            BUY OFF - T19
+                                        <cfelseif FindNoCase("T30", BARREIRA) neq 0>
+                                            BUY OFF - T30
+                                        <cfelseif FindNoCase("T33", BARREIRA) neq 0>
+                                            BUY OFF - T33
+                                        <cfelseif FindNoCase("C13", BARREIRA) neq 0>
+                                            BUY OFF - C13
+                                        <cfelseif FindNoCase("F05", BARREIRA) neq 0>
+                                            BUY OFF - F5
+                                        <cfelseif FindNoCase("F10", BARREIRA) neq 0>
+                                            BUY OFF - F10
+                                        <cfelseif FindNoCase("HR", BARREIRA) neq 0>
+                                            ASSEMBLY
+                                        </cfif>
+                                    </td>
+                                    <td>
+                                        <cfif FindNoCase("CHASSI HR", MODELO) neq 0>
+                                            HR
+                                        <cfelseif FindNoCase("TIGGO 5", MODELO) neq 0>
+                                            T19
+                                        <cfelseif FindNoCase("TIGGO 7", MODELO) neq 0>
+                                            T1E
+                                        <cfelseif FindNoCase("TIGGO 8 ", MODELO) neq 0>
+                                            T1A
+                                        <cfelseif FindNoCase("TIGGO 83 ", MODELO) neq 0>
+                                            T18
+                                        <cfelseif FindNoCase("TL", MODELO) neq 0>
+                                            TL
+                                        </cfif>
+                                    </td>
                                     <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
                                     <td></td>
                                     <td></td>
                                     <td>#PECA#</td>
                                     <td>#POSICAO#</td>
                                     <td>#PROBLEMA#</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        <cfif ESTACAO eq "BODY">
+                                            B
+                                        <cfelseif ListFind("PCPM", ESTACAO)>
+                                            PCPM
+                                        <cfelseif ListFind("CP7", ESTACAO)>
+                                            T
+                                        <cfelseif ListFind("PCP", ESTACAO)>
+                                            PCP
+                                        <cfelseif ListFind("PVT", ESTACAO)>
+                                            PVT
+                                        <cfelseif ListFind("ENGENHARIA", ESTACAO)>
+                                            ENGENHARIA
+                                        <cfelseif ListFind("MANUTENÇÃO", ESTACAO)>
+                                            MANUTENÇÃO
+                                        <cfelseif ListFind("LOGISTICA", ESTACAO)>
+                                            LOG
+                                        <cfelseif ListFind("CKDL", ESTACAO)>
+                                            CKDL
+                                        <cfelseif ListFind("DOOWON", ESTACAO)>
+                                            DOOWON
+                                        <cfelseif ListFind("SMALL", ESTACAO)>
+                                            SMALL
+                                        <cfelseif ListFind("CKD", ESTACAO)>
+                                            Q1
+                                        <cfelseif ListFind("PAINT", ESTACAO)>
+                                            P    
+                                        <cfelseif ListFind("LINHA T", ESTACAO)>
+                                            T
+                                        <cfelseif ListFind("LINHA F", ESTACAO)>
+                                            T
+                                        <cfelseif ListFind("LINHA C", ESTACAO)>
+                                            C
+                                        <cfelseif ListFind("SUB-MONTAGEM", ESTACAO)>
+                                            T
+                                        </cfif>
+                                    </td>
+                                    <td>1</td>
                                     <td>#ESTACAO#</td>
                                     <td>#VIN#</td>
-                                    <td>#INTERVALO#</td>
+                                    <td>
+                                        <!-- Verificação de turno com base no INTERVALO -->
+                                        <cfif ListFind("06:00,07:00,08:00,09:00,10:00,11:00,12:00,13:00,14:00,15:00", INTERVALO)>
+                                            1º TURNO
+                                        <cfelseif ListFind("15:50,16:00,17:00,18:00,19:00,20:00,21:00,22:00,23:00,00:00", INTERVALO)>
+                                            2º TURNO
+                                        <cfelseif ListFind("01:00,02:00,03:00,04:00,05:00", INTERVALO)>
+                                            3º TURNO
+                                        <cfelse>
+                                            -
+                                        </cfif>
+                                    </td>
                                     <td>#CRITICIDADE#</td>
+                                    <td>#INTERVALO#</td>
                                 </tr>
+                            </cfloop>
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
+                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "T19">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T19</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1E</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
+                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "T19">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T19</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T19</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
+                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "T19">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T19</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T18</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
+                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "T19">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T19</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1A</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
+                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "T19">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T19</strong></td>
+                                        <td colspan="1" class="text-end"><strong>TL</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
+                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "T30">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T30</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1E</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
+                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "T30">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T30</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T19</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
+                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "T30">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T30</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T18</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
+                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "T30">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T30</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1A</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
+                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "T30">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T30</strong></td>
+                                        <td colspan="1" class="text-end"><strong>TL</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
+                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "T33">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T33</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1E</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
+                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "T33">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T33</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T19</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
+                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "T33">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T33</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T18</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
+                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "T33">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T33</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1A</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
+                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "T33">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - T33</strong></td>
+                                        <td colspan="1" class="text-end"><strong>TL</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
+                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "C13">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - C13</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1E</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
+                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "C13">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - C13</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T19</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
+                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "C13">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - C13</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T18</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
+                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "C13">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - C13</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1A</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
+                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "C13">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - C13</strong></td>
+                                        <td colspan="1" class="text-end"><strong>TL</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
+                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "F05">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - F5</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1E</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
+                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "F05">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - F5</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T19</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
+                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "F05">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - F5</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T18</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
+                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "F05">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - F5</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1A</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
+                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "F05">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - F5</strong></td>
+                                        <td colspan="1" class="text-end"><strong>TL</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
+                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "F10">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - F10</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1E</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
+                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "F10">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - F10</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T19</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
+                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "F10">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - F10</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T18</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
+                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "F10">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - F10</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1A</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
+                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "F10">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>BUY OFF - F10</strong></td>
+                                        <td colspan="1" class="text-end"><strong>TL</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
+                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "CP7">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>ASSEMBLY</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1E</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
+                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "CP7">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>ASSEMBLY</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T19</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
+                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "CP7">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>ASSEMBLY</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T18</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
+                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "CP7">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>ASSEMBLY</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1A</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
+                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "CP7">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>ASSEMBLY</strong></td>
+                                        <td colspan="1" class="text-end"><strong>TL</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
                             </cfloop>
                         </cfoutput>
                     </tbody>

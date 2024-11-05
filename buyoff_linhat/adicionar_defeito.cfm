@@ -13,7 +13,7 @@
     <cfif isDefined("url.filtroDefeito") and url.filtroDefeito neq "">
       AND UPPER(DEFEITO) LIKE UPPER('%#url.filtroDefeito#%')
     </cfif>
-    ORDER BY SHOP ASC
+    ORDER BY DEFEITO ASC
   </cfquery>
   
   <!--- Deletar Item --->

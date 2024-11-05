@@ -34,7 +34,7 @@
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT BARCODE) AS totalVins,
-                
+
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade
@@ -71,7 +71,7 @@
     
     <cfquery name="consulta_nconformidades" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, PECA, POSICAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE PAINT
             WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             AND CASE 
@@ -86,22 +86,22 @@
             END
             AND PROBLEMA IS NOT NULL
             AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
-            GROUP BY PROBLEMA, PECA, POSICAO
+            GROUP BY PROBLEMA
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, PECA, POSICAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                    ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 10
+            WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, PECA, POSICAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                    SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, PECA, POSICAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
                    ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
@@ -148,7 +148,7 @@
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 10
+            WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -203,7 +203,7 @@
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 10
+            WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -258,7 +258,7 @@
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 10
+            WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -313,7 +313,7 @@
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 10
+            WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -368,7 +368,7 @@
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 10
+            WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -1152,8 +1152,6 @@
                                     <th scope="col" colspan="5" class="bg-warning">Principais Não Conformidades - Top 5</th>
                                 </tr>
                                 <tr class="text-nowrap">
-                                    <th scope="col">Peça</th>
-                                    <th scope="col">Posição</th>
                                     <th scope="col">Problema</th>
                                     <th scope="col">Total</th>
                                     <th scope="col">Pareto (%)</th>
@@ -1162,8 +1160,6 @@
                             <tbody class="table-group-divider">
                                 <cfoutput query="consulta_nconformidades">
                                     <tr class="align-middle">
-                                        <td style="font-size:12px">#PECA#</td>
-                                        <td style="font-size:12px">#POSICAO#</td>
                                         <td style="font-weight: bold; font-size:12px">#PROBLEMA#</td>
                                         <td style="font-size:12px">#TOTAL_POR_DEFEITO#</td>
                                         <td>#PARETO#%</td>
@@ -1252,23 +1248,7 @@
             });
         </script>  
         </div>   
-
       <meta http-equiv="refresh" content="40,URL=indicadores_paint2.cfm">
-    <!-- Setinha flutuante -->
-    <div class="floating-arrow" onclick="scrollToTop();">
-        <i class="material-icons">arrow_upward</i>
-    </div>
-
-    <!-- Script para voltar ao topo suavemente -->
-    <script>
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-    </script>
-
     </body>
 </html>
   

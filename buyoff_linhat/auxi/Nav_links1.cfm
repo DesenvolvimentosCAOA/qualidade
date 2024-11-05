@@ -22,7 +22,7 @@
                         <a href="relatorios_paint.cfm">Relatórios</a>
                     </li>
                     <li>
-                        <a href="paint_relatorios_summary.cfm">Relatórios Summary</a>
+                        <a href="paint_relatorios_buy_1.cfm">Relatórios Summary CP6</a>
                     </li>
                 </ul>
             </li>

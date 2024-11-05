@@ -30,6 +30,7 @@
       }
   }
 </script>
+
 <cfif structKeyExists(url, "delete_id") and url.delete_id neq "">
   <!-- Executa o DELETE no banco de dados -->
   <cfquery name="delete" datasource="#BANCOSINC#">
@@ -52,6 +53,23 @@
       }
   }
 </script>
+
+        <cfif isDefined("url.deletarOK") and url.deletarOK eq "true">
+            <cfquery datasource="#BANCOSINC#">
+                UPDATE INTCOLDFUSION.MASSIVA_FAI 
+                SET STATUS = 'LIBERADO' 
+                WHERE STATUS = 'OK'
+            </cfquery>
+            <cfoutput>Registros com STATUS 'OK' foram atualizados para 'LIBERADO' com sucesso.</cfoutput>
+        </cfif>
+
+        <script>
+            function deletarRegistrosOK() {
+                if (confirm("Tem certeza que deseja excluir todos os registros com STATUS 'OK'?")) {
+                    window.location.href = "cadastro_defeitos.cfm?deletarOK=true";
+                }
+            }
+        </script>
 
   <!-- Verifica se o parâmetro ID foi passado na URL e executa o UPDATE -->
 <cfif structKeyExists(url, "id") and url.id neq "">
@@ -270,7 +288,9 @@
                         <tr class="text-nowrap">
                             <th scope="col">VIN</th>
                             <th scope="col">Liberar</th>
+                        <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
                             <th scope="col"><i class="mdi mdi-delete"></i></th>
+                        </cfif>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -284,9 +304,11 @@
                                                 <i class="material-icons"></i> Liberar
                                             </button>
                                         </td>
-                                        <th scope="row">
-                                            <i onclick="deletarRegistro(#ID#);" class="mdi mdi-delete-outline btn-apagar"></i>
-                                        </th>
+                                        <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
+                                            <th scope="row">
+                                                <i onclick="deletarRegistro(#ID#);" class="mdi mdi-delete-outline btn-apagar"></i>
+                                            </th>
+                                        </cfif>
                                     </tr>
                                 </cfif>
                             </cfloop>
@@ -302,7 +324,9 @@
                       <tr class="text-nowrap">
                           <th scope="col">VIN</th>
                           <th scope="col">Liberar</th>
+                        <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
                           <th scope="col"><i class="mdi mdi-delete"></i></th>
+                        </cfif>
                       </tr>
                   </thead>
                   <tbody class="table-group-divider">
@@ -316,9 +340,11 @@
                                               <i class="material-icons"></i> Liberar
                                           </button>
                                       </td>
+                                    <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
                                       <th scope="row">
                                           <i onclick="deletarRegistro(#ID#);" class="mdi mdi-delete-outline btn-apagar"></i>
                                       </th>
+                                    </cfif>
                                   </tr>
                               </cfif>
                           </cfloop>
@@ -334,7 +360,9 @@
                       <tr class="text-nowrap">
                           <th scope="col">VIN</th>
                           <th scope="col">Liberar</th>
+                        <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
                           <th scope="col"><i class="mdi mdi-delete"></i></th>
+                        </cfif>
                       </tr>
                   </thead>
                   <tbody class="table-group-divider">
@@ -348,9 +376,11 @@
                                               <i class="material-icons"></i> Liberar
                                           </button>
                                       </td>
+                                    <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
                                       <th scope="row">
                                           <i onclick="deletarRegistro(#ID#);" class="mdi mdi-delete-outline btn-apagar"></i>
                                       </th>
+                                    </cfif>
                                   </tr>
                               </cfif>
                           </cfloop>
@@ -366,7 +396,9 @@
                       <tr class="text-nowrap">
                           <th scope="col">VIN</th>
                           <th scope="col">Liberar</th>
-                          <th scope="col"><i class="mdi mdi-delete"></i></th>
+                          <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
+                            <th scope="col"><i class="mdi mdi-delete"></i></th>
+                          </cfif>
                       </tr>
                   </thead>
                   <tbody class="table-group-divider">
@@ -380,9 +412,11 @@
                                               <i class="material-icons"></i> Liberar
                                           </button>
                                       </td>
+                                    <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
                                       <th scope="row">
                                           <i onclick="deletarRegistro(#ID#);" class="mdi mdi-delete-outline btn-apagar"></i>
                                       </th>
+                                    </cfif>
                                   </tr>
                               </cfif>
                           </cfloop>
@@ -398,7 +432,9 @@
                       <tr class="text-nowrap">
                           <th scope="col">VIN</th>
                           <th scope="col">Liberar</th>
-                          <th scope="col"><i class="mdi mdi-delete"></i></th>
+                          <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
+                            <th scope="col"><i class="mdi mdi-delete"></i></th>
+                          </cfif>
                       </tr>
                   </thead>
                   <tbody class="table-group-divider">
@@ -412,9 +448,11 @@
                                               <i class="material-icons"></i> Liberar
                                           </button>
                                       </td>
+                                    <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
                                       <th scope="row">
                                           <i onclick="deletarRegistro(#ID#);" class="mdi mdi-delete-outline btn-apagar"></i>
                                       </th>
+                                    </cfif>
                                   </tr>
                               </cfif>
                           </cfloop>
@@ -444,9 +482,11 @@
                                               <i class="material-icons"></i> Liberar
                                           </button>
                                       </td>
+                                    <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
                                       <th scope="row">
                                           <i onclick="deletarRegistro(#ID#);" class="mdi mdi-delete-outline btn-apagar"></i>
                                       </th>
+                                    </cfif>
                                   </tr>
                               </cfif>
                           </cfloop>
@@ -489,9 +529,15 @@
         </div>
         <!--- <label for="formFile" class="form-label">Importar Programação Via Excel (Colunas devem estar na mesma ordem dos campos)</label> --->
       </form>
-      <form method="post">
-        <button type="submit" name="confirmDelete" value="yes" class="btn btn-danger">Deletar Todos os Registros</button>
-      </form>
+      <cfif structKeyExists(cookie, "user_sign") AND cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign eq "ALEX DA SILVA BARRETO">
+        <form method="post">
+            <button type="submit" name="confirmDelete" value="yes" class="btn btn-danger">Deletar Todos os Registros</button>
+            <button type="button" onclick="deletarRegistrosOK()" class="btn btn-primary">Excluir veículos Massiva 'OK'</button>
+        </form>
+    <cfelse>
+        <cfoutput>Você não tem permissão para visualizar esta opção.</cfoutput>
+    </cfif>
+    
     </div>
   </body>
     

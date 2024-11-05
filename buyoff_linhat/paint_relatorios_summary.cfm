@@ -33,13 +33,37 @@
     <cfif isDefined("url.filtroPeriodo") and url.filtroPeriodo neq "">
         <cfset periodo = url.filtroPeriodo>
         <cfif periodo EQ "1º">
-            AND TO_CHAR(INTERVALO) IN ('06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00')
+            AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
         <cfelseif periodo EQ "2º">
-            AND TO_CHAR(INTERVALO) IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+            AND (
+                CASE 
+                    WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
+                    WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
+                    ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
+                END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+            )
         <cfelseif periodo EQ "3º">
-            AND TO_CHAR(INTERVALO) IN ('01:00', '02:00', '03:00', '04:00', '05:00')
+            AND (
+                    -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
+                    -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
+                    -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                    ))
+                )
         </cfif>
     </cfif>
+    AND BARREIRA NOT IN 'CP6'
     AND USER_DATA >= TO_DATE('#filtroDataStart#', 'yyyy-mm-dd') 
     AND USER_DATA < TO_DATE('#filtroDataEnd#', 'yyyy-mm-dd') + 1
     ORDER BY ID DESC
@@ -224,7 +248,9 @@
                             <th scope="col">Qtd</th>
                             <th scope="col">Time</th>
                             <th scope="col">VIN/BARCODE</th>
+                            <th scope="col">Turno</th>
                             <th scope="col">Intervalo</th>
+                            <th scope="col">Criticidade</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -243,7 +269,20 @@
                                     <td></td>
                                     <td>#ESTACAO#</td>
                                     <td>#BARCODE#</td>
+                                    <td>
+                                        <!-- Verificação de turno com base no INTERVALO -->
+                                        <cfif INTERVALO gte "06:00" and INTERVALO lt "15:00">
+                                            1º
+                                        <cfelseif ListFind("15:50,16:00,17:00,18:00,19:00,20:00,21:00,22:00,23:00,00:00", INTERVALO)>
+                                            2º
+                                        <cfelseif ListFind("01:00,02:00,03:00,04:00,05:00", INTERVALO)>
+                                            3º
+                                        <cfelse>
+                                            -
+                                        </cfif>
+                                    </td>
                                     <td>#INTERVALO#</td>
+                                    <td>#CRITICIDADE#</td>
                                 </tr>
                             </cfloop>
                             

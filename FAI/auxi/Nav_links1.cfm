@@ -112,6 +112,9 @@
                     <li>
                         <a href="acompanhamento_massiva.cfm">Acompanhamento Massiva</a>
                     </li>
+                    <li>
+                        <a href="fai_relatorios_massiva.cfm">Relatório Massiva</a>
+                    </li>
                 </ul>
             </li>
             

@@ -29,7 +29,8 @@
             AND PROBLEMA IS NOT NULL
             ORDER BY ID DESC
         )
-        WHERE ROWNUM <= 200
+        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
+        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
     </cfquery>
 
     <cfquery name="consultas_paint" datasource="#BANCOSINC#">
@@ -56,7 +57,8 @@
         AND PROBLEMA IS NOT NULL
         ORDER BY ID DESC
         )
-        WHERE ROWNUM <= 200
+        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
+        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
     </cfquery>
 
     <cfquery name="consultas_fa" datasource="#BANCOSINC#">
@@ -69,7 +71,7 @@
                 AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
             </cfif>
             <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                AND UPPER(BARCODE) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
+                AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
             </cfif>
             <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
                 AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
@@ -83,7 +85,8 @@
             AND PROBLEMA IS NOT NULL
             ORDER BY ID DESC
         )
-        WHERE ROWNUM <= 200
+        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
+        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
     </cfquery>
 
     <cfquery name="consultas_fai" datasource="#BANCOSINC#">
@@ -96,7 +99,7 @@
                 AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
             </cfif>
             <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                AND UPPER(BARCODE) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
+                AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
             </cfif>
             <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
                 AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
@@ -110,7 +113,8 @@
             AND PROBLEMA IS NOT NULL
             ORDER BY ID DESC
         )
-        WHERE ROWNUM <= 200
+        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
+        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
     </cfquery>
 
     <cfquery name="consultas_pdi" datasource="#BANCOSINC#">
@@ -123,7 +127,7 @@
                 AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
             </cfif>
             <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                AND UPPER(BARCODE) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
+                AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
             </cfif>
             <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
                 AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
@@ -137,7 +141,8 @@
             AND PROBLEMA IS NOT NULL
             ORDER BY ID DESC
         )
-        WHERE ROWNUM <= 200
+        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
+        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
     </cfquery>
 
     <cfquery name="consultas_acomp_cont" datasource="#BANCOSINC#">
@@ -166,10 +171,19 @@
             </cfif>
             AND PROBLEMA IS NOT NULL
             -- AND BP_CONTENCAO_PROCESSO IS NULL
-            ORDER BY RPN DESC
+            ORDER BY RPN ASC
         )
         WHERE ROWNUM <= 200
     </cfquery>
+
+<cfquery name="consulta_datas" datasource="#BANCOSINC#">
+    SELECT
+        ID,  -- Ou outra chave única que corresponda
+        DATA_BP_PROCESSO,
+        DATA_BP_DEFINITIVO_PROCESSO
+    FROM VEREAGIR2 -- Substitua pela tabela que contém as datas
+</cfquery>
+
     
 <html lang="pt-BR">
     <head>
@@ -189,11 +203,11 @@
             <div class="btn-rounded">
                 Novo Relatório
                 <div class="submenu">
-                    <a href="#" onclick="showTable('tableBody')">Body</a>
-                    <a href="#" onclick="showTable('tablePaint')">Paint</a>
-                    <a href="#" onclick="showTable('tableFA')">FA</a>
-                    <a href="#" onclick="showTable('tableFAI')">FAI</a>
-                    <a href="#" onclick="showTable('tablePDI')">PDI</a>
+                        <a href="#" onclick="showTable('tableBody')">Body</a>
+                        <a href="#" onclick="showTable('tablePaint')">Paint</a>
+                        <a href="#" onclick="showTable('tableFA')">FA</a>
+                        <a href="#" onclick="showTable('tableFAI')">FAI</a>
+                        <a href="#" onclick="showTable('tablePDI')">PDI</a>
                 </div>
             </div>
             <button class="btn-rounded" onclick="showTable('tableACOMP')">Acompanhamento Contenção</button>
@@ -256,9 +270,9 @@
             <div class="search-container">
                 <input type="text" id="searchIDP" placeholder="Pesquisar ID" onkeyup="filterTablePaint()">
                 <input type="text" id="searchVINP" placeholder="Pesquisar Barcode" onkeyup="filterTablePaint()">
-                <input type="text" id="searchPecaP" placeholder="Pesquisar Peça" onkeyup="filterTablePaint()">
-                <input type="text" id="searchPosicaoP" placeholder="Pesquisar Posição" onkeyup="filterTablePaint()">
-                <input type="text" id="searchProblemaP" placeholder="Pesquisar Problema" onkeyup="filterTablePaint()">
+                <input type="text" id="searchPecaP" placeholder="Pesquisar Modelo" onkeyup="filterTablePaint()">
+                <input type="text" id="searchPosicaoP" placeholder="Pesquisar Peça" onkeyup="filterTablePaint()">
+                <input type="text" id="searchProblemaP" placeholder="Pesquisar Posição" onkeyup="filterTablePaint()">
             </div>
             <table border="1">
                 <thead>
@@ -302,9 +316,9 @@
             <div class="search-container">
                 <input type="text" id="searchIDFA" placeholder="Pesquisar ID" onkeyup="filterTableFA()">
                 <input type="text" id="searchVINFA" placeholder="Pesquisar Vin" onkeyup="filterTableFA()">
-                <input type="text" id="searchPecaFA" placeholder="Pesquisar Peça" onkeyup="filterTableFA()">
-                <input type="text" id="searchPosicaoFA" placeholder="Pesquisar Posição" onkeyup="filterTableFA()">
-                <input type="text" id="searchProblemaFA" placeholder="Pesquisar Problema" onkeyup="filterTableFA()">
+                <input type="text" id="searchPecaFA" placeholder="Pesquisar Modelo" onkeyup="filterTableFA()">
+                <input type="text" id="searchPosicaoFA" placeholder="Pesquisar Peça" onkeyup="filterTableFA()">
+                <input type="text" id="searchProblemaFA" placeholder="Pesquisar Posição" onkeyup="filterTableFA()">
             </div>
             <table border="1" id="FATable">
                 <thead>
@@ -348,9 +362,9 @@
             <div class="search-container">
                 <input type="text" id="searchIDFAI" placeholder="Pesquisar ID" onkeyup="filterTableFAI()">
                 <input type="text" id="searchVINFAI" placeholder="Pesquisar Vin" onkeyup="filterTableFAI()">
-                <input type="text" id="searchPecaFAI" placeholder="Pesquisar Peça" onkeyup="filterTableFAI()">
-                <input type="text" id="searchPosicaoFAI" placeholder="Pesquisar Posição" onkeyup="filterTableFAI()">
-                <input type="text" id="searchProblemaFAI" placeholder="Pesquisar Problema" onkeyup="filterTableFAI()">
+                <input type="text" id="searchPecaFAI" placeholder="Pesquisar Modelo" onkeyup="filterTableFAI()">
+                <input type="text" id="searchPosicaoFAI" placeholder="Pesquisar Peça" onkeyup="filterTableFAI()">
+                <input type="text" id="searchProblemaFAI" placeholder="Pesquisar Posição" onkeyup="filterTableFAI()">
             </div>
             
         
@@ -396,9 +410,9 @@
             <div class="search-container">
                 <input type="text" id="searchIDPDI" placeholder="Pesquisar ID" onkeyup="filterTablePDI()">
                 <input type="text" id="searchVINPDI" placeholder="Pesquisar Vin" onkeyup="filterTablePDI()">
-                <input type="text" id="searchPecaPDI" placeholder="Pesquisar Peça" onkeyup="filterTablePDI()">
-                <input type="text" id="searchPosicaoPDI" placeholder="Pesquisar Posição" onkeyup="filterTablePDI()">
-                <input type="text" id="searchProblemaPDI" placeholder="Pesquisar Problema" onkeyup="filterTablePDI()">
+                <input type="text" id="searchPecaPDI" placeholder="Pesquisar Modelo" onkeyup="filterTablePDI()">
+                <input type="text" id="searchPosicaoPDI" placeholder="Pesquisar Peça" onkeyup="filterTablePDI()">
+                <input type="text" id="searchProblemaPDI" placeholder="Pesquisar Posição" onkeyup="filterTablePDI()">
             </div>
             
         
@@ -471,55 +485,74 @@
                         <th>Problema</th>
                         <th>Barreira</th>
                         <th>Status</th>
+                        <th>Total de Dias</th> <!-- Adicione esta coluna -->
                         <th>Selecionar</th>
                     </tr>
                 </thead>
                 <tbody style="font-size:12px;">
-                    <cfoutput>
-                        <cfloop query="consultas_acomp_cont">
-                            <tr>
-                                <td>#RPN#</td>
-                                <td>#lsdatetimeformat(DATA_REGISTRO, 'dd/mm/yyyy')#</td>
-                                <td>#MODELO#</td>
-                                <td>#VIN#</td>
-                                <td>#PECA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PROBLEMA#</td>
-                                <td>#BARREIRA#</td>
-                                <td>
-                                    <cfif STATUS EQ "EM ANDAMENTO">
-                                        <span style="background-color: yellow; color: black; padding: 5px;">#STATUS#</span>
-                                    <cfelseif STATUS EQ "AG. BP DEFINITIVO">
-                                        <span style="background-color: darkorange; color: white; padding: 5px;">#STATUS#</span>
-                                    <cfelseif STATUS EQ "CONCLUÍDO">
-                                        <span style="background-color: green; color: white; padding: 5px;">#STATUS#</span>
-                                    <cfelse>
-                                        <span>#STATUS#</span>
-                                    </cfif>
+                    <cfoutput query="consultas_acomp_cont">
+                        <tr>
+                            <td>#RPN#</td>
+                            <td>#lsdatetimeformat(DATA_REGISTRO, 'dd/mm/yyyy')#</td>
+                            <td>#MODELO#</td>
+                            <td>#VIN#</td>
+                            <td>#PECA#</td>
+                            <td>#POSICAO#</td>
+                            <td>#PROBLEMA#</td>
+                            <td>#BARREIRA#</td>
+                            <td>
+                                <cfif STATUS EQ "EM ANDAMENTO">
+                                    <span style="background-color: yellow; color: black; padding: 5px;">#STATUS#</span>
+                                <cfelseif STATUS EQ "AG. BP DEFINITIVO">
+                                    <span style="background-color: darkorange; color: white; padding: 5px;">#STATUS#</span>
+                                <cfelseif STATUS EQ "CONCLUÍDO">
+                                    <span style="background-color: green; color: white; padding: 5px;">#STATUS#</span>
+                                <cfelse>
+                                    <span>#STATUS#</span>
+                                </cfif>
+                            </td>
+                            <td>
+                                <cfset totalDias = 0> <!-- Inicializa a variável -->
+                                <cfif consulta_datas.recordCount>
+                                    <!-- Procura a linha correspondente -->
+                                    <cfloop query="consulta_datas">
+                                        <cfif consulta_datas.ID EQ #ID#> <!-- Use a chave única aqui -->
+                                            <cfif NOT IsNull(DATA_BP_DEFINITIVO_PROCESSO) AND NOT IsNull(DATA_BP_PROCESSO) AND 
+                                                IsDate(DATA_BP_DEFINITIVO_PROCESSO) AND IsDate(DATA_BP_PROCESSO)>
+                                                <cfset totalDias = DateDiff("d", DATA_BP_DEFINITIVO_PROCESSO, DATA_BP_PROCESSO)>
+                                            <cfelse>
+                                                <cfset totalDias = "">
+                                            </cfif>
+                                        </cfif>
+                                    </cfloop>
+                                </cfif>
+                                #totalDias#
+                            </td>
+                            
+                            <cfif STATUS eq "EM ANDAMENTO">
+                                <td class="text-nowrap">
+                                    <button class="btn-rounded" onclick="self.location='ver_agir_edit.cfm?id_editar=#id#'">
+                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
+                                    </button>
                                 </td>
-                                <cfif STATUS eq "EM ANDAMENTO">
-                                    <td class="text-nowrap">
-                                        <button class="btn-rounded" onclick="self.location='ver_agir_edit.cfm?id_editar=#id#'">
-                                            <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                        </button>
-                                    </td>
-                                <cfelseif STATUS eq "AG. BP DEFINITIVO">
-                                    <td class="text-nowrap">
-                                        <button class="btn-rounded" onclick="self.location='ver_agir_edit_def.cfm?id_editar=#id#'">
-                                            <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                        </button>
-                                    </td>
-                                <cfelseif STATUS eq "CONCLUÍDO">
-                                    <td class="text-nowrap">
-                                        <button class="btn-rounded" onclick="self.location='ver_agir_edit_conc.cfm?id_editar=#id#'">
-                                            <i class="mdi mdi-pencil-outline"></i>Selecionar</button>
-                                    </td>
+                            <cfelseif STATUS eq "AG. BP DEFINITIVO">
+                                <td class="text-nowrap">
+                                    <button class="btn-rounded" onclick="self.location='ver_agir_edit_def.cfm?id_editar=#id#'">
+                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
+                                    </button>
+                                </td>
+                            <cfelseif STATUS eq "CONCLUÍDO">
+                                <td class="text-nowrap">
+                                    <button class="btn-rounded" onclick="self.location='ver_agir_edit_conc.cfm?id_editar=#id#'">
+                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
+                                    </button>
+                                </td>
                             </cfif>
-                            </tr>
-                        </cfloop>
+                        </tr>
                     </cfoutput>
                 </tbody>
             </table>
+            
         </div> 
         <script src="/qualidade/relatorios/assets/script.js?v8"></script>
     </body>

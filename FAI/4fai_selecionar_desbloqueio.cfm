@@ -117,7 +117,7 @@
                                     <th scope="col">BARCODE</th>
                                     <th scope="col">MODELO</th>
                                     <th scope="col">STATUS</th>
-                                    <th scope="col">Responsável</th>
+                                    <th scope="col">Responsável pelo Bloqueio</th>
                                     <th scope="col">Barreira de Desbloqueio</th>
                                     <th scope="col">Motivo do Desbloqueio</th>
                                     <th hidden scope="col">Salvar</th>
@@ -134,9 +134,9 @@
                                                     <td>#BARCODE#</td>
                                                     <td>#MODELO#</td>
                                                     <td>#STATUS_BLOQUEIO#</td>
-                                                    <td id="responsavelBloqueio_#ID#">#RESPONSAVEL_DESBLOQUEIO#</td>
+                                                    <td id="responsavelBloqueio_#ID#">#RESPONSAVEL_BLOQUEIO#</td>
                                                     <td>#BARREIRA_BLOQUEIO#</td>
-                                                    <td>#MOTIVO_DESBLOQUEIO#</td>
+                                                    <td>#MOTIVO_BLOQUEIO#</td>
                                                     <td style="display:none;">
                                                         <input type="text" class="form-control" name="Tipo" id="formTipo" required>
                                                     </td>
