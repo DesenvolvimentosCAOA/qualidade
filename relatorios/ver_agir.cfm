@@ -171,18 +171,38 @@
             </cfif>
             AND PROBLEMA IS NOT NULL
             -- AND BP_CONTENCAO_PROCESSO IS NULL
-            ORDER BY RPN ASC
+            ORDER BY DATA_REGISTRO DESC
         )
         WHERE ROWNUM <= 200
     </cfquery>
 
-<cfquery name="consulta_datas" datasource="#BANCOSINC#">
-    SELECT
-        ID,  -- Ou outra chave única que corresponda
-        DATA_BP_PROCESSO,
-        DATA_BP_DEFINITIVO_PROCESSO
-    FROM VEREAGIR2 -- Substitua pela tabela que contém as datas
-</cfquery>
+    <cfquery name="consulta_datas" datasource="#BANCOSINC#">
+        SELECT
+            ID,
+            DATA_BP_PROCESSO,
+            DATA_BP_DEFINITIVO_PROCESSO,
+            ROUND(
+                CASE 
+                    WHEN DATA_BP_PROCESSO IS NULL THEN SYSDATE - DATA_REGISTRO
+                    ELSE DATA_BP_PROCESSO - DATA_REGISTRO
+                END
+            ) AS DIAS
+        FROM VEREAGIR2
+    </cfquery>
+
+    <cfquery name="consulta_data_definitivo" datasource="#BANCOSINC#">
+        SELECT
+            ID,
+            DATA_REGISTRO,
+            DATA_BP_DEFINITIVO_PROCESSO,
+            ROUND(
+                CASE
+                WHEN DATA_BP_DEFINITIVO_PROCESSO IS NULL THEN SYSDATE - DATA_REGISTRO
+                ELSE DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO
+                END
+                ) AS DIAS_DEFINITIVO
+        FROM VEREAGIR2
+    </cfquery>
 
     
 <html lang="pt-BR">
@@ -468,11 +488,20 @@
                 <button style="background-color:gold" class="btn-rounded" onclick="toggleBarreiraFilter('TRIM')">TRIM</button>
                 <button style="background-color:gray" class="btn-rounded" onclick="toggleBarreiraFilter('FAI')">FAI</button>
                 <button style="background-color:purple" class="btn-rounded" onclick="toggleBarreiraFilter('PDI')">PDI</button>
-                <button class="btn-rounded" onclick="toggleStatusFilter('EM ANDAMENTO')">EM ANDAMENTO</button>
+                <button class="btn-rounded" onclick="toggleStatusFilter('FALTA CONTENÇÃO')">FALTA CONTENÇÃO</button>
                 <button class="btn-rounded" onclick="toggleStatusFilter('CONCLUÍDO')">CONCLUÍDO</button>
                 <button class="btn-rounded" onclick="toggleStatusFilter('AG. BP DEFINITIVO')">AG. BP DEFINITIVO</button>
                 <button style="background-color:red" class="btn-rounded" onclick="clearFilters()">LIMPAR</button> <!-- Botão para limpar filtros -->
             </div>
+            <cfquery name="consulta_datas" datasource="#BANCOSINC#">
+                SELECT
+                    ID,
+                    DATA_BP_PROCESSO,
+                    DATA_BP_DEFINITIVO_PROCESSO,
+                    ROUND(DATA_BP_PROCESSO - DATA_REGISTRO) AS DIAS
+                FROM VEREAGIR2
+            </cfquery>
+            
             <table border="1" id="ACOMPTable">
                 <thead>
                     <tr>
@@ -485,7 +514,8 @@
                         <th>Problema</th>
                         <th>Barreira</th>
                         <th>Status</th>
-                        <th>Total de Dias</th> <!-- Adicione esta coluna -->
+                        <th>Total de Dias Contenção</th>
+                        <th>Total de Dias Definitivo</th>
                         <th>Selecionar</th>
                     </tr>
                 </thead>
@@ -501,7 +531,7 @@
                             <td>#PROBLEMA#</td>
                             <td>#BARREIRA#</td>
                             <td>
-                                <cfif STATUS EQ "EM ANDAMENTO">
+                                <cfif STATUS EQ "FALTA CONTENÇÃO">
                                     <span style="background-color: yellow; color: black; padding: 5px;">#STATUS#</span>
                                 <cfelseif STATUS EQ "AG. BP DEFINITIVO">
                                     <span style="background-color: darkorange; color: white; padding: 5px;">#STATUS#</span>
@@ -511,25 +541,65 @@
                                     <span>#STATUS#</span>
                                 </cfif>
                             </td>
+            
+                            <!-- Coluna Total de Dias -->
                             <td>
-                                <cfset totalDias = 0> <!-- Inicializa a variável -->
-                                <cfif consulta_datas.recordCount>
-                                    <!-- Procura a linha correspondente -->
-                                    <cfloop query="consulta_datas">
-                                        <cfif consulta_datas.ID EQ #ID#> <!-- Use a chave única aqui -->
-                                            <cfif NOT IsNull(DATA_BP_DEFINITIVO_PROCESSO) AND NOT IsNull(DATA_BP_PROCESSO) AND 
-                                                IsDate(DATA_BP_DEFINITIVO_PROCESSO) AND IsDate(DATA_BP_PROCESSO)>
-                                                <cfset totalDias = DateDiff("d", DATA_BP_DEFINITIVO_PROCESSO, DATA_BP_PROCESSO)>
-                                            <cfelse>
-                                                <cfset totalDias = "">
-                                            </cfif>
-                                        </cfif>
-                                    </cfloop>
+                                <cfset diasCalculado = "">
+                                <cfset dataBpProcesso = ""> <!-- Inicializa dataBpProcesso com valor padrão -->
+                                <cfset statusPrazo = "">
+                                
+                                <!-- Loop para obter o valor de diasCalculado e a data DATA_BP_PROCESSO para o ID correspondente -->
+                                <cfloop query="consulta_datas">
+                                    <cfif consulta_datas.ID EQ consultas_acomp_cont.ID>
+                                        <cfset diasCalculado = consulta_datas.DIAS>
+                                        <cfset dataBpProcesso = consulta_datas.DATA_BP_PROCESSO>
+                                        <cfbreak>
+                                    </cfif>
+                                </cfloop>
+                                
+                                <!-- Definição do status baseado nas condições para o title -->
+                                <cfif NOT Len(dataBpProcesso) AND diasCalculado LTE 1>
+                                    <cfset statusPrazo = "Dentro do Prazo">
+                                <cfelseif diasCalculado EQ 1>
+                                    <cfset statusPrazo = "Finalizado no Prazo">
+                                <cfelseif diasCalculado GT 1>
+                                    <cfset statusPrazo = "Finalizado Fora do Prazo">
                                 </cfif>
-                                #totalDias#
+                            
+                                <!-- Exibição do valor com o status no tooltip -->
+                                <span style="<cfif diasCalculado GT 1>color: red;<cfelseif diasCalculado LTE 1>color: green;</cfif> font-weight: bold;" title="#statusPrazo#">
+                                    #diasCalculado#
+                                </span>
                             </td>
                             
-                            <cfif STATUS eq "EM ANDAMENTO">
+                            <!-- Coluna Total de Dias Definitivo -->
+                            <td>
+                                <cfset diasDefinitivoCalculado = "">
+                                <cfset statusDefinitivoPrazo = ""> <!-- Inicializa a variável de status -->
+                            
+                                <!-- Loop para obter o valor de diasDefinitivoCalculado para o ID correspondente -->
+                                <cfloop query="consulta_data_definitivo">
+                                    <cfif consulta_data_definitivo.ID EQ consultas_acomp_cont.ID>
+                                        <cfset diasDefinitivoCalculado = consulta_data_definitivo.DIAS_DEFINITIVO>
+                                        <cfbreak>
+                                    </cfif>
+                                </cfloop>
+
+                                <!-- Definição do status para o tooltip -->
+                                <cfif diasDefinitivoCalculado GT 7>
+                                    <cfset statusDefinitivoPrazo = "Atrasado">
+                                    <span style="color: red; font-weight: bold;" title="#statusDefinitivoPrazo#">
+                                        #diasDefinitivoCalculado#
+                                    </span>
+                                <cfelse>
+                                    <cfset statusDefinitivoPrazo = "Dentro do Prazo">
+                                    <span style="color: green; font-weight: bold;" title="#statusDefinitivoPrazo#">
+                                        #diasDefinitivoCalculado#
+                                    </span>
+                                </cfif>
+                            </td>
+                            
+                            <cfif STATUS eq "FALTA CONTENÇÃO">
                                 <td class="text-nowrap">
                                     <button class="btn-rounded" onclick="self.location='ver_agir_edit.cfm?id_editar=#id#'">
                                         <i class="mdi mdi-pencil-outline"></i>Selecionar
@@ -552,7 +622,6 @@
                     </cfoutput>
                 </tbody>
             </table>
-            
         </div> 
         <script src="/qualidade/relatorios/assets/script.js?v8"></script>
     </body>

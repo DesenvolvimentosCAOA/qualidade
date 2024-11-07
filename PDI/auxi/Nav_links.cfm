@@ -17,11 +17,17 @@
         </li>
           <li><a href="pdi_reparo.cfm">Reparo</a></li>
           <li><a href="pdi_liberar.cfm">Liberação</a></li>
+
           <li class="dropdown">
             <a href="#">Relatórios</a>
             <ul class="dropdown-menu">
                 <li><a href="./relatorio_pdi.cfm">Relatório de Saída</a></li>
                 <li><a href="./relatorio_pdi_entrada.cfm">Relatório de Entrada</a></li>
+
+                <cfif isDefined("cookie.user_sign") AND (cookie.user_sign EQ "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign EQ "DANIEL ALVES TEIXEIRA")>
+                    <li><a href="./pdi_relatorios_1.cfm">Relatório Summary</a></li>
+                </cfif>
+                
             </ul>
         </li>
     <li class="dropdown">

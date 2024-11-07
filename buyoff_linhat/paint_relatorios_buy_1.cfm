@@ -476,7 +476,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>ECOAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1E</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -487,7 +488,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>ECOAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>T19</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -498,7 +500,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>ECOAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>T18</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -509,7 +512,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>ECOAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1A</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -520,7 +524,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>ECOAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>TL</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -531,7 +536,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>ECOAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>HR</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -542,7 +548,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>PRIMER</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1E</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -553,7 +560,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>PRIMER</strong></td>
                                         <td colspan="1" class="text-end"><strong>T19</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -564,7 +572,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>PRIMER</strong></td>
                                         <td colspan="1" class="text-end"><strong>T18</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -575,7 +584,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>PRIMER</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1A</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -586,7 +596,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>PRIMER</strong></td>
                                         <td colspan="1" class="text-end"><strong>TL</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -597,7 +608,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>PRIMER</strong></td>
                                         <td colspan="1" class="text-end"><strong>HR</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -608,7 +620,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>VALIDACAO</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1E</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -619,7 +632,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>VALIDACAO</strong></td>
                                         <td colspan="1" class="text-end"><strong>T19</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -630,7 +644,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>VALIDACAO</strong></td>
                                         <td colspan="1" class="text-end"><strong>T18</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -641,7 +656,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>VALIDACAO</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1A</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -652,7 +668,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>VALIDACAO</strong></td>
                                         <td colspan="1" class="text-end"><strong>TL</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -663,7 +680,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>VALIDACAO</strong></td>
                                         <td colspan="1" class="text-end"><strong>HR</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -674,7 +692,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>CP6</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1E</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -685,7 +704,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>CP6</strong></td>
                                         <td colspan="1" class="text-end"><strong>T19</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -696,7 +716,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>CP6</strong></td>
                                         <td colspan="1" class="text-end"><strong>T18</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -707,7 +728,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>CP6</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1A</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -718,7 +740,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>CP6</strong></td>
                                         <td colspan="1" class="text-end"><strong>TL</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -729,7 +752,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>CP6</strong></td>
                                         <td colspan="1" class="text-end"><strong>HR</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -740,7 +764,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>TOP COAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1E</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -751,7 +776,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>TOP COAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>T19</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -762,7 +788,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>TOP COAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>T18</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -773,7 +800,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>TOP COAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1A</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -784,7 +812,8 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>TOP COAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>TL</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
@@ -795,12 +824,12 @@
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>TOP COAT</strong></td>
                                         <td colspan="1" class="text-end"><strong>HR</strong></td>
-                                        <td colspan="2" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
                             </cfloop>
-
                         </cfoutput>
                     </tbody>
                 </table>

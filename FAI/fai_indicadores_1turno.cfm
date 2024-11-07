@@ -358,7 +358,7 @@
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 10
+            WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -1428,9 +1428,8 @@
             });
         </script>  
         </div>     
-        
 
-<!---    <meta http-equiv="refresh" content="40,URL=fai_indicadores_1turno.cfm"> --->
+<meta http-equiv="refresh" content="40,URL=fai_indicadores_1turno.cfm">
 
 
   <!-- Setinha flutuante -->

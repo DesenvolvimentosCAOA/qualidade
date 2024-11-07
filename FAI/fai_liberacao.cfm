@@ -25,24 +25,28 @@
     </script>
 </cfif>
     
+    <cfquery name="login" datasource="#BANCOSINC#">
+        SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
+        WHERE USER_NAME = '#cookie.USER_APONTAMENTO_FAI#'
+    </cfquery>
+
     <!--- Captura e Atualização de Dados--->
-    <cfif isDefined("form.updateID") and isDefined("form.status")>
+    <cfif isDefined("form.updateID") and isDefined("form.updateID")>
         <cfquery datasource="#BANCOSINC#">
             UPDATE INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            SET 
-            STATUS = <cfqueryparam value="#form.status#" cfsqltype="cf_sql_varchar">
+            SET
+                RESPONSAVEL_LIBERACAO = <cfqueryparam value="#login.USER_SIGN#" cfsqltype="CF_SQL_VARCHAR">,
+                STATUS = 'LIBERADO'
             WHERE ID = <cfqueryparam value="#form.updateID#" cfsqltype="cf_sql_integer">
         </cfquery>
-    </cfif>
-    
+    </cfif>    
     
     <!--- Consulta --->
     <cfquery name="consulta_cripple" datasource="#BANCOSINC#">
         SELECT *
         FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
         WHERE PROBLEMA is not null
-        and TIPO_REPARO is not null
-        AND STATUS is null 
+        AND STATUS IS NULL
         <cfif isDefined("url.filtroID") and url.filtroID neq "">
             AND ID = <cfqueryparam value="#url.filtroID#" cfsqltype="cf_sql_integer">
         </cfif>
@@ -63,21 +67,21 @@
     WHERE USER_NAME = '#cookie.USER_APONTAMENTO_FAI#'
 </cfquery>
     
-    <html lang="pt-BR">
-        <head>
-            <!-- Required meta tags -->
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <title>FAI - Liberação</title>
-            <link rel="icon" href="./assets/chery.png" type="image/x-icon">
-            <link rel="stylesheet" href="assets/stylereparo.css?v2">
-        </head>
+<html lang="pt-BR">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>FAI - Liberação</title>
+        <link rel="icon" href="./assets/chery.png" type="image/x-icon">
+        <link rel="stylesheet" href="assets/stylereparo.css?v2">
+    </head>
         
-        <body>
-            <!-- Header com as imagens e o menu -->
-            <header class="titulo">
-                <cfinclude template="auxi/nav_links1.cfm">
-            </header><br><br><br><br><br>
+    <body>
+        <!-- Header com as imagens e o menu -->
+        <header class="titulo">
+            <cfinclude template="auxi/nav_links1.cfm">
+        </header><br><br><br><br><br>
     
         <cfoutput>
             <h2 class="titulo2">Liberação</h2><br><br>
@@ -117,7 +121,6 @@
                             <th scope="col">Posição</th>
                             <th scope="col">Problema</th>
                             <th scope="col">Reparo Realizado</th>
-                            <th scope="col">Status</th>
                             <th scope="col">Salvar</th>
                         </tr>
                     </thead>
@@ -136,19 +139,7 @@
                                         <td>#POSICAO#</td>
                                         <td>#PROBLEMA#</td>
                                         <td>#TIPO_REPARO#</td>
-                                        <td>
-                                            <!-- Dropdown de Status e Botão Salvar -->
-                                            <div class="d-flex align-items-center">
-                                                <select class="form-select status-dropdown mr-2" name="status" onchange="changeDropdownColor(this)">
-                                                    <option value="">Selecione</option>
-                                                    <option value="OK">OK</option>
-                                                    <option value="NG">NG</option>
-                                                    <option value="NG">Dispensado</option>
-                                                    <option value="#STATUS#" SELECTED >#STATUS#</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td><button class="btn btn-primary salvar-btn" type="submit" name="updateID" value="#ID#">Salvar</button></td>
+                                        <td><button class="btn btn-primary salvar-btn" type="submit" name="updateID" value="#ID#">Liberar</button></td>
                                     </tr>
                             </cfloop>
                         </cfoutput>
@@ -156,17 +147,6 @@
                 </table>
             </form>
         </div>
-        <script>
-            function changeDropdownColor(selectElement) {
-                var color;
-                if (selectElement.value === '') {
-                    color = 'white';
-                } else {
-                    color = selectElement.value === 'OK' ? 'green' : 'red';
-                }
-                selectElement.style.backgroundColor = color;
-            }
-        </script>
     </body>
-    </html>
+</html>
     

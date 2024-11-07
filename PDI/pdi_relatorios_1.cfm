@@ -8,9 +8,9 @@
 
     <cfquery name="consulta_adicionais" datasource="#BANCOSINC#">
         SELECT *
-        FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
+        FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
         WHERE 1 = 1 
-        AND BARREIRA NOT IN 'TUNEL DE LIBERACAO'
+        AND BARREIRA = 'PDI'
         <!--- Filtros de barreira e estação --->
         <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
             AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
@@ -57,7 +57,7 @@
                 COUNT(DISTINCT VIN) AS totalVins,
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -107,7 +107,7 @@
                 COUNT(DISTINCT VIN) AS totalVins,
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -123,56 +123,6 @@
                 OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
             AND MODELO LIKE 'TIGGO 5%'
-                AND INTERVALO BETWEEN '06:00' AND '15:00'
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
-        )
-        SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT VIN) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
-        FROM CONSULTA
-        GROUP BY BARREIRA
-        ORDER BY ordem, HH
-    </cfquery>
-
-    <cfquery name="consulta_barreira_t1a" datasource="#BANCOSINC#">
-        WITH CONSULTA AS (
-            SELECT 
-                BARREIRA, VIN, MODELO,
-                CASE 
-                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
-                END HH,
-                CASE 
-                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
-                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
-                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
-                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
-                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-                    ELSE 0
-                END AS APROVADO_FLAG,
-                COUNT(DISTINCT VIN) AS totalVins,
-                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
-                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
-            WHERE TRUNC(USER_DATA) = 
-                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
-                    #CreateODBCDate(url.filtroData)#
-                <cfelse>
-                    TRUNC(SYSDATE)
-                </cfif>
-                AND (
-                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-            )
-            AND MODELO LIKE 'TIGGO 8 %'
                 AND INTERVALO BETWEEN '06:00' AND '15:00'
             GROUP BY BARREIRA, VIN, INTERVALO, MODELO
         )
@@ -207,7 +157,7 @@
                 COUNT(DISTINCT VIN) AS totalVins,
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -222,8 +172,59 @@
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
                 OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
-            AND MODELO LIKE 'TIGGO 83%'
+            AND MODELO = 'TIGGO 8 FL3'
                 AND INTERVALO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+        )
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+
+    <cfquery name="consulta_barreira_t1a" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN, MODELO,
+                CASE 
+                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+            AND MODELO LIKE 'TIGGO 8 %'
+            AND MODELO NOT IN 'TIGGO 8 FL3'
+            AND INTERVALO BETWEEN '06:00' AND '15:00'
             GROUP BY BARREIRA, VIN, INTERVALO, MODELO
         )
         SELECT BARREIRA, 
@@ -257,7 +258,7 @@
                 COUNT(DISTINCT VIN) AS totalVins,
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -272,7 +273,7 @@
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
                 OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
-            AND MODELO LIKE 'TL %'
+            AND MODELO LIKE 'TUCSON%'
                 AND INTERVALO BETWEEN '06:00' AND '15:00'
             GROUP BY BARREIRA, VIN, INTERVALO, MODELO
         )
@@ -307,7 +308,7 @@
                 COUNT(DISTINCT VIN) AS totalVins,
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -322,8 +323,8 @@
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
                 OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
-            AND MODELO LIKE '%HR %'
-                AND INTERVALO BETWEEN '00:00' AND '23:00'
+            AND MODELO LIKE '% HR %'
+                AND INTERVALO BETWEEN '06:00' AND '15:00'
             GROUP BY BARREIRA, VIN, INTERVALO, MODELO
         )
         SELECT BARREIRA, 
@@ -339,8 +340,408 @@
         ORDER BY ordem, HH
     </cfquery>
 
+    <cfquery name="consulta_barreira_azera" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN, MODELO,
+                CASE 
+                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+            AND MODELO LIKE 'AZERA%'
+                AND INTERVALO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+        )
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+
+    <cfquery name="consulta_barreira_kona" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN, MODELO,
+                CASE 
+                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+            AND MODELO LIKE 'KONA%'
+                AND INTERVALO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+        )
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+
+    <cfquery name="consulta_barreira_ioniq" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN, MODELO,
+                CASE 
+                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+            AND MODELO LIKE 'IONIQ%'
+                AND INTERVALO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+        )
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+
+    <cfquery name="consulta_barreira_subaru" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN, MODELO,
+                CASE 
+                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+            AND MODELO LIKE 'SUBARU%'
+                AND INTERVALO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+        )
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+
+    <cfquery name="consulta_barreira_forester" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN, MODELO,
+                CASE 
+                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+            AND MODELO LIKE 'FORESTER%'
+                AND INTERVALO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+        )
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+
+    <cfquery name="consulta_barreira_outback" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN, MODELO,
+                CASE 
+                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+            AND MODELO LIKE 'OUTBACK%'
+                AND INTERVALO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+        )
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+
+    <cfquery name="consulta_barreira_santa" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN, MODELO,
+                CASE 
+                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+            AND MODELO LIKE 'SANTA %'
+                AND INTERVALO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+        )
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+
+    <cfquery name="consulta_barreira_hd" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN, MODELO,
+                CASE 
+                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+            AND MODELO LIKE 'HD%'
+                AND INTERVALO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+        )
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+    
     <!--- Verificando se está logado  --->
-<cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
+<cfif not isDefined("cookie.USER_APONTAMENTO_PDI") or cookie.USER_APONTAMENTO_PDI eq "">
     <script>
         alert("É necessario autenticação!!");
         self.location = '/qualidade/buyoff_linhat/index.cfm'
@@ -352,7 +753,7 @@
         <!-- Meta tags necessárias -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Relatório CP8 1º Turno</title>
+        <title>Relatório PDI 1º Turno</title>
         <link rel="icon" href="./assets/chery.png" type="image/x-icon">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
@@ -367,7 +768,7 @@
             table {
                 width: 100%;
                 border-collapse: collapse;
-            }           
+            }
             th, td {
                 padding: 8px;
                 text-align: left;
@@ -376,17 +777,18 @@
                 background-color: #f2f2f2;
             }
         </style>
+
     </head>
     <body>
         <header class="titulo">
-            <cfinclude template="auxi/nav_links1.cfm">
+            <cfinclude template="auxi/nav_links.cfm">
         </header>
 
         <div class="container">
-            <button style="background-color:green; color:white;" class="btn btn-warning mb-2 ml-2" onclick="self.location='fai_relatorios_1.cfm'">1º Turno</button>
-            <button class="btn btn-warning mb-2 ml-2" onclick="self.location='fai_relatorios_2.cfm'">2º Turno</button>
-            <button class="btn btn-warning mb-2 ml-2" onclick="self.location='fai_relatorios_3.cfm'">3º Turno</button>
-            <h2>Relatório CP8 1º Turno</h2>
+            <button style="background-color:green; color:white;" class="btn btn-warning mb-2 ml-2" onclick="self.location='pdi_relatorios_1.cfm'">1º Turno</button>
+            <button class="btn btn-warning mb-2 ml-2" onclick="self.location='pdi_relatorios_2.cfm'">2º Turno</button>
+<!---             <button class="btn btn-warning mb-2 ml-2" onclick="self.location='pdi_relatorios_3.cfm'">3º Turno</button> --->
+            <h2>Relatório PDI 1º Turno</h2>
             <form method="get">
                 <div class="form-row">
                     <cfoutput>
@@ -394,7 +796,7 @@
                             <label for="filtroData" class="sr-only">Data:</label>
                             <input type="date" class="form-control" name="filtroData" id="filtroData" value="<cfif isDefined('url.filtroData')>#url.filtroData#</cfif>" onchange="this.form.submit();"/>
                         </div>
-                        <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='fai_relatorios_1.cfm'">Limpar</button>
+                        <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='pdi_relatorios_1.cfm'">Limpar</button>
                         <button class="btn btn-warning mb-2 ml-2" type="button" id="report">Download</button>
                     </cfoutput>
                 </div>
@@ -428,22 +830,44 @@
                                 <tr style="font-size:12px"  class="align-middle">
                                     <td>#BARREIRA#</td>
                                     <td>
-                                        <cfif FindNoCase("CHASSI HR", MODELO) neq 0>
-                                            HR
-                                        <cfelseif FindNoCase("TIGGO 5", MODELO) neq 0>
-                                            T19
-                                        <cfelseif FindNoCase("TIGGO 7", MODELO) neq 0>
-                                            T1E
-                                        <cfelseif FindNoCase("TIGGO 8 ADAS", MODELO) neq 0>
-                                            T1A
-                                        <cfelseif FindNoCase("TIGGO 83 ICE", MODELO) neq 0>
-                                            T18
-                                        <cfelseif FindNoCase("TL", MODELO) neq 0>
+                                        <cfif FindNoCase("IX35 GLS", MODELO) neq 0>
+                                            LM
+                                        <cfelseif FindNoCase("Tucson", MODELO) neq 0>
                                             TL
+                                        <cfelseif FindNoCase("HR DA10/12", MODELO) neq 0>
+                                            HR
+                                        <cfelseif FindNoCase("HD80", MODELO) neq 0>
+                                            HD
+                                        <cfelseif FindNoCase("Tiggo 5", MODELO) neq 0>
+                                            T19
+                                        <cfelseif FindNoCase("Tiggo 7", MODELO) neq 0>
+                                            T1E
+                                        <cfelseif FindNoCase("Tiggo 8 ADAS", MODELO) neq 0>
+                                            T1A
+                                        <cfelseif FindNoCase("Tiggo 8 TXS", MODELO) neq 0>
+                                            T1A
+                                        <cfelseif FindNoCase("TIGGO 8 FL3",MODELO) neq 0>
+                                            T18
+                                        <cfelseif FindNoCase("Tiggo 8 PHEV", MODELO) neq 0>
+                                            T1D
+                                        <cfelseif FindNoCase("FORESTER", MODELO) neq 0>
+                                            FORESTER
+                                        <cfelseif FindNoCase("AZERA", MODELO) neq 0>
+                                            AZERA
+                                        <cfelseif FindNoCase("SUBARU ", MODELO) neq 0>
+                                            SUBARU
+                                        <cfelseif FindNoCase("SANTA FÉ", MODELO) neq 0>
+                                            SANTA FÉ
+                                        <cfelseif FindNoCase("IONIQ", MODELO) neq 0>
+                                            IONIQ
+                                        <cfelseif FindNoCase("OUTBACK", MODELO) neq 0>
+                                            OUTBACK
+                                        <cfelseif FindNoCase("KONA ", MODELO) neq 0>
+                                            KONA
                                         </cfif>
                                     </td>
 
-                                    <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
+                                    <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#⠀</td>
                                     <td></td>
                                     <td></td>
                                     <td>#PROBLEMA#</td>
@@ -511,10 +935,11 @@
                                     <td>#INTERVALO#</td>
                                 </tr>
                             </cfloop>
+                            
                             <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
-                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "UNDER BODY">
+                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>UNDER BODY</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1E</strong></td>
                                         <td></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
@@ -524,9 +949,9 @@
                             </cfloop>
 
                             <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
-                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "UNDER BODY">
+                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>UNDER BODY</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
                                         <td colspan="1" class="text-end"><strong>T19</strong></td>
                                         <td></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
@@ -536,9 +961,9 @@
                             </cfloop>
 
                             <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
-                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "UNDER BODY">
+                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>UNDER BODY</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
                                         <td colspan="1" class="text-end"><strong>T18</strong></td>
                                         <td></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
@@ -548,9 +973,9 @@
                             </cfloop>
 
                             <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
-                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "UNDER BODY">
+                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>UNDER BODY</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
                                         <td colspan="1" class="text-end"><strong>T1A</strong></td>
                                         <td></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
@@ -560,9 +985,9 @@
                             </cfloop>
 
                             <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
-                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "UNDER BODY">
+                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>UNDER BODY</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
                                         <td colspan="1" class="text-end"><strong>TL</strong></td>
                                         <td></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
@@ -572,9 +997,9 @@
                             </cfloop>
 
                             <cfloop index="i" from="1" to="#consulta_barreira_hr.recordcount#">
-                                <cfif consulta_barreira_hr.BARREIRA[i] EQ "UNDER BODY">
+                                <cfif consulta_barreira_hr.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>UNDER BODY</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
                                         <td colspan="1" class="text-end"><strong>HR</strong></td>
                                         <td></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
@@ -583,220 +1008,103 @@
                                 </cfif>
                             </cfloop>
 
-                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
-                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "ROAD TEST">
+                            <cfloop index="i" from="1" to="#consulta_barreira_azera.recordcount#">
+                                <cfif consulta_barreira_azera.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>ROAD TEST</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T1E</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
+                                        <td colspan="1" class="text-end"><strong>AZERA</strong></td>
                                         <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_azera.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_azera.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
                             </cfloop>
 
-                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
-                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "ROAD TEST">
+                            <cfloop index="i" from="1" to="#consulta_barreira_kona.recordcount#">
+                                <cfif consulta_barreira_kona.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>ROAD TEST</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T19</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
+                                        <td colspan="1" class="text-end"><strong>KONA</strong></td>
                                         <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_kona.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_kona.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
                             </cfloop>
 
-                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
-                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "ROAD TEST">
+                            <cfloop index="i" from="1" to="#consulta_barreira_ioniq.recordcount#">
+                                <cfif consulta_barreira_ioniq.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>ROAD TEST</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T18</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
+                                        <td colspan="1" class="text-end"><strong>IONIQ</strong></td>
                                         <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_ioniq.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_ioniq.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
                             </cfloop>
 
-                            <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
-                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "ROAD TEST">
+                            <cfloop index="i" from="1" to="#consulta_barreira_subaru.recordcount#">
+                                <cfif consulta_barreira_subaru.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>ROAD TEST</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T1A</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SUBARU</strong></td>
                                         <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_subaru.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_subaru.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
                             </cfloop>
 
-                            <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
-                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "ROAD TEST">
+                            <cfloop index="i" from="1" to="#consulta_barreira_forester.recordcount#">
+                                <cfif consulta_barreira_forester.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>ROAD TEST</strong></td>
-                                        <td colspan="1" class="text-end"><strong>TL</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
+                                        <td colspan="1" class="text-end"><strong>FORESTER</strong></td>
                                         <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_forester.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_forester.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
                             </cfloop>
 
-                            <cfloop index="i" from="1" to="#consulta_barreira_hr.recordcount#">
-                                <cfif consulta_barreira_hr.BARREIRA[i] EQ "ROAD TEST">
+                            <cfloop index="i" from="1" to="#consulta_barreira_outback.recordcount#">
+                                <cfif consulta_barreira_outback.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>ROAD TEST</strong></td>
-                                        <td colspan="1" class="text-end"><strong>HR</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
+                                        <td colspan="1" class="text-end"><strong>OUTBACK</strong></td>
                                         <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.APROVADOS[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_outback.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_outback.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
                             </cfloop>
 
-                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
-                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "SHOWER">
+                            <cfloop index="i" from="1" to="#consulta_barreira_santa.recordcount#">
+                                <cfif consulta_barreira_santa.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SHOWER</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T1E</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SANTA FÉ</strong></td>
                                         <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_santa.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_santa.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
                             </cfloop>
 
-                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
-                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "SHOWER">
+                            <cfloop index="i" from="1" to="#consulta_barreira_hd.recordcount#">
+                                <cfif consulta_barreira_hd.BARREIRA[i] EQ "PDI">
                                     <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SHOWER</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T19</strong></td>
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
+                                        <td colspan="1" class="text-end"><strong>HD80</strong></td>
                                         <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hd.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hd.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
                             </cfloop>
 
-                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
-                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "SHOWER">
-                                    <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SHOWER</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T18</strong></td>
-                                        <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
-                                    </tr>
-                                </cfif>
-                            </cfloop>
-
-                            <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
-                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "SHOWER">
-                                    <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SHOWER</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T1A</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
-                                    </tr>
-                                </cfif>
-                            </cfloop>
-
-                            <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
-                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "SHOWER">
-                                    <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SHOWER</strong></td>
-                                        <td colspan="1" class="text-end"><strong>TL</strong></td>
-                                        <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
-                                    </tr>
-                                </cfif>
-                            </cfloop>
-
-                            <cfloop index="i" from="1" to="#consulta_barreira_hr.recordcount#">
-                                <cfif consulta_barreira_hr.BARREIRA[i] EQ "SHOWER">
-                                    <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SHOWER</strong></td>
-                                        <td colspan="1" class="text-end"><strong>HR</strong></td>
-                                        <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.APROVADOS[i]#</strong></td>
-                                    </tr>
-                                </cfif>
-                            </cfloop>
-
-                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
-                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "SIGN OFF">
-                                    <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SIGN OFF</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T1E</strong></td>
-                                        <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
-                                    </tr>
-                                </cfif>
-                            </cfloop>
-
-                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
-                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "SIGN OFF">
-                                    <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SIGN OFF</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T19</strong></td>
-                                        <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
-                                    </tr>
-                                </cfif>
-                            </cfloop>
-
-                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
-                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "SIGN OFF">
-                                    <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SIGN OFF</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T18</strong></td>
-                                        <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
-                                    </tr>
-                                </cfif>
-                            </cfloop>
-
-                            <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
-                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "SIGN OFF">
-                                    <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SIGN OFF</strong></td>
-                                        <td colspan="1" class="text-end"><strong>T1A</strong></td>
-                                        <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
-                                    </tr>
-                                </cfif>
-                            </cfloop>
-
-                            <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
-                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "SIGN OFF">
-                                    <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SIGN OFF</strong></td>
-                                        <td colspan="1" class="text-end"><strong>TL</strong></td>
-                                        <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
-                                    </tr>
-                                </cfif>
-                            </cfloop>
-
-                            <cfloop index="i" from="1" to="#consulta_barreira_hr.recordcount#">
-                                <cfif consulta_barreira_hr.BARREIRA[i] EQ "SIGN OFF">
-                                    <tr class="align-middle">
-                                        <td colspan="1" class="text-end"><strong>SIGN OFF</strong></td>
-                                        <td colspan="1" class="text-end"><strong>HR</strong></td>
-                                        <td></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
-                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.APROVADOS[i]#</strong></td>
-                                    </tr>
-                                </cfif>
-                            </cfloop>
+                            
                         </cfoutput>
                     </tbody>
                 </table>

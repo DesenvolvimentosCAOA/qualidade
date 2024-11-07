@@ -94,7 +94,7 @@
                         </div>
                         <div hidden class="input-group">
                             <label for="searchStatus">Status</label>
-                            <input type="text" id="searchStatus" name="ver_status" placeholder="Status" value="EM ANDAMENTO">
+                            <input type="text" id="searchStatus" name="ver_status" placeholder="Status" value="FALTA CONTENÇÃO">
                         </div>
                         <div class="input-group">
                             <label for="searchModelo">Modelo</label>

@@ -48,7 +48,7 @@
             <cfoutput>Erro ao inserir dados no banco de dados.</cfoutput>
         </cfif>
     </cfif>
-    
+
 
     <cfif structKeyExists(url, "id") and url.id neq "">
         <!-- Consulta para obter o USER_SIGN e salvar no campo RESPONSAVEL_LIBERACAO -->

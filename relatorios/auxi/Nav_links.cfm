@@ -5,6 +5,7 @@
   
   <ul>
     <li><a href="ver_agir.cfm">Ver e Agir</a></li>
+    <li><a href="indicador.cfm">Indicadores</a></li>
           <li class="dropdown">
             <a href="#">Relatórios</a>
             <ul class="dropdown-menu">

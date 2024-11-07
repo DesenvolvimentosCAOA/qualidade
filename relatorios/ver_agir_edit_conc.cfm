@@ -113,6 +113,13 @@
                     </div>
                     <div class="search-container">
                         <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao">Salvar</button>
+                        <button type="button" class="btn-rounded back-btn" id="btnVoltar" onclick="voltar()">Voltar</button>
+                        <script>
+                            function voltar() {
+                                    // Redireciona para a página anterior
+                                    window.history.back(); // ou utilize: window.location.href = 'pagina-desejada.cfm'; para redirecionar a uma página específica
+                                }
+                        </script>
                     </div>
                 </cfoutput>
         </div>

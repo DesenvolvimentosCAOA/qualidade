@@ -107,7 +107,7 @@
                         </div>
                         <div class="input-group">
                             <label for="searchStatus">STATUS</label>
-                            <input readonly required type="text" id="searchSTATUS" name="ver_status" placeholder="Status de Conclusão" value="EM ANDAMENTO" oninput="verificaCamposPreenchidos()">
+                            <input readonly required type="text" id="searchSTATUS" name="ver_status" placeholder="Status de Conclusão" value="FALTA CONTENÇÃO" oninput="verificaCamposPreenchidos()">
                         </div>
                         <div class="input-group">
                             <label for="searchBP">Ponto de Corte</label>

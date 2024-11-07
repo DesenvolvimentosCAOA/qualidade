@@ -71,7 +71,7 @@
                 <div class="col col-3">
                   <div class="form-group">
                     <label class="form-label" for="formEstacao">Estação</label>
-                    <select class="form-control" name="estacao" id="formEstacao">
+                    <select class="form-control" name="estacao" id="formEstacao" required>
                       <option value="#consulta_editar.estacao#">#consulta_editar.estacao#</option>
                       <cfinclude template="auxi/estacao.cfm">
                     </select>
@@ -82,7 +82,7 @@
                 <div class="col col-3">
                   <div class="form-group">
                     <label class="form-label" for="formPeca">Peça</label>
-                    <select class="form-control" name="peca" id="formPeca">
+                    <select class="form-control" name="peca" id="formPeca" required>
                       <option value="#consulta_editar.peca#" selected>#consulta_editar.peca#</option>
                       <option value="">Selecione a Peça</option>
                       <cfloop query="peca">
@@ -96,7 +96,7 @@
                 <div class="col col-3">
                   <div class="form-group">
                     <label class="form-label" for="formlocal">Posição</label>
-                    <select class="form-control" name="local" id="formlocal">
+                    <select class="form-control" name="local" id="formlocal" required>
                       <option value="#consulta_editar.posicao#" selected>#consulta_editar.posicao#</option>
                       <cfinclude template="auxi/batalha_option.cfm">
                     </select>
@@ -105,7 +105,7 @@
                 <div class="col col-3">
                 <div class="form-group">
                   <label class="form-label" for="formNConformidade">Problema</label>
-                  <select class="form-control" name="NConformidade" id="formNConformidade">
+                  <select class="form-control" name="NConformidade" id="formNConformidade" required>
                     <option value="#consulta_editar.problema#" selected>#consulta_editar.problema#</option>
                     <option value="">Selecione o Problema</option>
                     <cfloop query="problema">
@@ -119,7 +119,7 @@
               <div class="col col-3">
                 <div class="form-group">
                   <label class="form-label" for="formCRITICIDADE">Criticidade</label>
-                  <select class="form-control" name="criticidade" id="formCRITICIDADE">
+                  <select class="form-control" name="criticidade" id="formCRITICIDADE" required>
                     <option value="#consulta_editar.CRITICIDADE#" selected>#consulta_editar.CRITICIDADE#</option>
                     <option value="N1">N1</option>
                     <option value="N2">N2</option>

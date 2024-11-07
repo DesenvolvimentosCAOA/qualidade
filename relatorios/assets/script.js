@@ -222,8 +222,8 @@ function filterTableACOMP() {
             var matchBarreira = true; // Default to true if no barreira filter is applied
 
             // Aplicando o filtro de status se estiver ativo
-            if (activeFilter === 'EM ANDAMENTO') {
-                matchStatus = tdStatus.innerHTML.indexOf("EM ANDAMENTO") > -1;
+            if (activeFilter === 'FALTA CONTENÇÃO') {
+                matchStatus = tdStatus.innerHTML.indexOf("FALTA CONTENÇÃO") > -1;
             }
             if (activeFilter === 'CONCLUÍDO') {
                 matchStatus = tdStatus.innerHTML.indexOf("CONCLUÍDO") > -1;
@@ -391,7 +391,7 @@ function verificaCamposPreenchidos() {
         statusField.classList.add("status-validacao"); // Adiciona a classe de estilo para validação
         statusField.classList.remove("status-andamento"); // Remove a classe de andamento, se existir
     } else {
-        statusField.value = "EM ANDAMENTO"; // Define como "EM ANDAMENTO" se não estiver preenchido
+        statusField.value = "FALTA CONTENÇÃO"; // Define como "FALTA CONTENÇÃO" se não estiver preenchido
         statusField.classList.add("status-andamento"); // Adiciona a classe de estilo para andamento
         statusField.classList.remove("status-validacao"); // Remove a classe de validação, se existir
     }
