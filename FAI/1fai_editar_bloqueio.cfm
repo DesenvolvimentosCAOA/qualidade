@@ -141,7 +141,7 @@
                           VIN = '#UCase(form.VIN)#',
                           STATUS_BLOQUEIO = '#UCase(form.status_bloqueio)#',
                           RESPONSAVEL_BLOQUEIO = '#UCase(form.responsavel_bloqueio)#',
-                          DATA_BLOQUEIO = <cfqueryparam value="#parseDateTime(form.data_bloqueio, 'dd/mm/yyyy')#" cfsqltype="cf_sql_date"/>,
+                          DATA_BLOQUEIO = SYSDATE,
                           MOTIVO_BLOQUEIO = '#UCase(form.motivo_bloqueio)#',
                           BARREIRA_BLOQUEIO = '#UCase(form.barreira_bloqueio)#',
                           MODELO = '#UCase(form.modelo)#'

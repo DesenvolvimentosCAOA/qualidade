@@ -111,7 +111,7 @@
                       SET 
                           STATUS_BLOQUEIO = '#UCase(form.status_bloqueio)#',
                           RESPONSAVEL_DESBLOQUEIO = '#UCase(form.responsavel_desbloqueio)#',
-                          DATA_DESBLOQUEIO = <cfqueryparam value="#parseDateTime(form.data_desbloqueio, 'dd/mm/yyyy')#" cfsqltype="cf_sql_date"/>,
+                          DATA_DESBLOQUEIO = SYSDATE,
                           MOTIVO_DESBLOQUEIO = '#UCase(form.motivo_desbloqueio)#',
                           MODELO = '#UCase(form.modelo)#'
                       WHERE ID = '#url.id_editar#'

@@ -91,28 +91,28 @@
 
     <cfquery name="consultas_fai" datasource="#BANCOSINC#">
         SELECT *
-            FROM (
-                SELECT *
-                FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-                WHERE 1 = 1
-                <cfif isDefined("url.searchID") and url.searchID neq "">
-                    AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-                </cfif>
-                <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                    AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
-                </cfif>
-                <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-                    AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
-                </cfif>
-                <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-                    AND UPPER(POSICAO) LIKE UPPER('%<cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR">%')
-                </cfif>
-                <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-                    AND UPPER(PROBLEMA) LIKE UPPER('%<cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR">%')
-                </cfif>
-                AND PROBLEMA IS NOT NULL
-                ORDER BY ID DESC
-            )
+        FROM (
+            SELECT *
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
+            WHERE 1 = 1
+            <cfif isDefined("url.searchID") and url.searchID neq "">
+                AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
+            </cfif>
+            <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
+                AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
+            </cfif>
+            <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
+                AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
+            </cfif>
+            <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
+                AND UPPER(POSICAO) LIKE UPPER('%<cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR">%')
+            </cfif>
+            <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
+                AND UPPER(PROBLEMA) LIKE UPPER('%<cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR">%')
+            </cfif>
+            AND PROBLEMA IS NOT NULL
+            ORDER BY ID DESC
+        )
         WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
         AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
     </cfquery>
@@ -204,7 +204,150 @@
         FROM VEREAGIR2
     </cfquery>
 
-    
+    <cfquery name="result" datasource="#BANCOSINC#">
+        SELECT 
+            sqf.PECA AS PECA_SQF, 
+            sqf.PROBLEMA AS PROBLEMA_SQF,
+            sqf.MODELO AS MODELO_SQF,
+            v2.PECA AS PECA_VEREAGIR2,
+            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+            v2.MODELO AS MODELO_VEREAGIR2,
+            v2.ID AS ID_VEREAGIR2,
+            v2.BARREIRA,
+            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            CASE 
+                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'BP QUEBRADO'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'TRATANDO'
+                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
+            END AS STATUS_NOVO
+        FROM 
+            SISTEMA_QUALIDADE_FA sqf
+        LEFT JOIN 
+            VEREAGIR2 v2
+        ON 
+            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        WHERE 
+            v2.BARREIRA = 'TRIM'
+        GROUP BY 
+            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+
+        UNION ALL
+
+        SELECT 
+            sqf.PECA AS PECA_SQF, 
+            sqf.PROBLEMA AS PROBLEMA_SQF,
+            sqf.MODELO AS MODELO_SQF,
+            v2.PECA AS PECA_VEREAGIR2,
+            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+            v2.MODELO AS MODELO_VEREAGIR2,
+            v2.ID AS ID_VEREAGIR2,
+            v2.BARREIRA,
+            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            CASE 
+                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'BP QUEBRADO'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'TRATANDO'
+                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
+            END AS STATUS_NOVO
+        FROM 
+            SISTEMA_QUALIDADE_FAI sqf
+        LEFT JOIN 
+            VEREAGIR2 v2
+        ON 
+            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        WHERE 
+            v2.BARREIRA = 'FAI'
+        GROUP BY 
+            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+
+        UNION ALL
+
+        SELECT 
+            sqf.PECA AS PECA_SQF, 
+            sqf.PROBLEMA AS PROBLEMA_SQF,
+            sqf.MODELO AS MODELO_SQF,
+            v2.PECA AS PECA_VEREAGIR2,
+            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+            v2.MODELO AS MODELO_VEREAGIR2,
+            v2.ID AS ID_VEREAGIR2,
+            v2.BARREIRA,
+            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            CASE 
+                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'BP QUEBRADO'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'TRATANDO'
+                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
+            END AS STATUS_NOVO
+        FROM 
+            SISTEMA_QUALIDADE sqf
+        LEFT JOIN 
+            VEREAGIR2 v2
+        ON 
+            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        WHERE 
+            v2.BARREIRA = 'PAINT'
+        GROUP BY 
+            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+
+        UNION ALL
+
+        SELECT 
+            sqf.PECA AS PECA_SQF, 
+            sqf.PROBLEMA AS PROBLEMA_SQF,
+            sqf.MODELO AS MODELO_SQF,
+            v2.PECA AS PECA_VEREAGIR2,
+            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+            v2.MODELO AS MODELO_VEREAGIR2,
+            v2.ID AS ID_VEREAGIR2,
+            v2.BARREIRA,
+            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            CASE 
+                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'BP QUEBRADO'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'TRATANDO'
+                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
+            END AS STATUS_NOVO
+        FROM 
+            SISTEMA_QUALIDADE_BODY sqf
+        LEFT JOIN 
+            VEREAGIR2 v2
+        ON 
+            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        WHERE 
+            v2.BARREIRA = 'BODY'
+        GROUP BY 
+            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+
+        UNION ALL
+
+        SELECT 
+            sqf.PECA AS PECA_SQF, 
+            sqf.PROBLEMA AS PROBLEMA_SQF,
+            sqf.MODELO AS MODELO_SQF,
+            v2.PECA AS PECA_VEREAGIR2,
+            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+            v2.MODELO AS MODELO_VEREAGIR2,
+            v2.ID AS ID_VEREAGIR2,
+            v2.BARREIRA,
+            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            CASE 
+                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'BP QUEBRADO'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'TRATANDO'
+                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
+            END AS STATUS_NOVO
+        FROM 
+            SISTEMA_QUALIDADE_PDI_SAIDA sqf
+        LEFT JOIN 
+            VEREAGIR2 v2
+        ON 
+            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        WHERE 
+            v2.BARREIRA = 'PDI'
+        GROUP BY 
+            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+    </cfquery>
 
     
 <html lang="pt-BR">
@@ -507,6 +650,7 @@
             <table border="1" id="ACOMPTable">
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>RPN</th>
                         <th>Data</th>
                         <th>Modelo</th>
@@ -516,6 +660,7 @@
                         <th>Problema</th>
                         <th>Barreira</th>
                         <th>Status</th>
+                        <th>Status Novo</th>
                         <th>Total de Dias Contenção</th>
                         <th>Total de Dias Definitivo</th>
                         <th>Selecionar</th>
@@ -524,6 +669,7 @@
                 <tbody style="font-size:12px;">
                     <cfoutput query="consultas_acomp_cont">
                         <tr>
+                            <td>#ID#</td>
                             <td>#RPN#</td>
                             <td>#lsdatetimeformat(DATA_REGISTRO, 'dd/mm/yyyy')#</td>
                             <td>#MODELO#</td>
@@ -543,8 +689,20 @@
                                     <span>#STATUS#</span>
                                 </cfif>
                             </td>
-            
-                            <!-- Coluna Total de Dias -->
+                            <td>
+                                <cfloop query="result">
+                                    <cfif result.ID_VEREAGIR2 EQ consultas_acomp_cont.ID>
+                                        <cfif STATUS_NOVO EQ "BP QUEBRADO">
+                                            <span style="background-color: red; color: white; padding: 5px;">#STATUS_NOVO#</span>
+                                        <cfelseif STATUS_NOVO EQ "TRATANDO">
+                                            <span style="background-color: blue; color: white; padding: 5px;">#STATUS_NOVO#</span>
+                                        <cfelse>
+                                            <span>#STATUS_NOVO#</span>
+                                        </cfif>
+                                        <cfbreak>
+                                    </cfif>
+                                </cfloop>
+                            </td>
                             <td>
                                 <cfset diasCalculado = "">
                                 <cfset dataBpProcesso = ""> <!-- Inicializa dataBpProcesso com valor padrão -->
@@ -586,7 +744,7 @@
                                         <cfbreak>
                                     </cfif>
                                 </cfloop>
-
+            
                                 <!-- Definição do status para o tooltip -->
                                 <cfif diasDefinitivoCalculado GT 7>
                                     <cfset statusDefinitivoPrazo = "Atrasado">

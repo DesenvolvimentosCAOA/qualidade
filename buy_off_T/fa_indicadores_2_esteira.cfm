@@ -165,6 +165,7 @@
             SELECT 
                 BARREIRA, VIN,
                 CASE 
+                    WHEN INTERVALO = '15:00' THEN '15:00~16:00'
                     WHEN INTERVALO = '15:50' THEN '16:00~17:00'
                     WHEN INTERVALO = '16:00' THEN '16:00~17:00'
                     WHEN INTERVALO = '17:00' THEN '17:00~18:00'
@@ -192,10 +193,31 @@
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade_fa
-            WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) ELSE TRUNC(USER_DATA) END 
-            = CASE WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')-1) 
-            ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) END
+                WHERE 
+                (
+                    (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 5 -- Segunda a Quinta-feira
+                        AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                        AND CASE 
+                                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
+                                ELSE TRUNC(USER_DATA) 
+                            END = CASE 
+                                    WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                                    ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                                END
+                    )
+                OR (TO_CHAR(USER_DATA, 'D') = '6' -- Sexta-feira
+                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                    AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                            END
+                    )
+                )
+
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, HH, 
@@ -227,35 +249,47 @@
         SELECT ESTACAO, COUNT(PROBLEMA) AS TOTAL_PROBLEMAS
         FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
         WHERE 
-        -- Verifica o filtro de data fornecido pela URL
-        CASE 
-            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) -- Considera dia anterior se for até 02:00
-            ELSE TRUNC(USER_DATA) -- Considera o dia atual
-        END = 
-        <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+            -- Verifica o filtro de data fornecido pela URL
             CASE 
-                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
-                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
-            END
-        <cfelse>
-            CASE 
-                WHEN TO_CHAR(SYSDATE, 'HH24:MI') <= '02:00' THEN TRUNC(SYSDATE - 1)
-                ELSE TRUNC(SYSDATE)
-            END
-        </cfif>
-        
-        AND PROBLEMA IS NOT NULL
-        AND BARREIRA = 'CP7'
-        AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
-        
-        AND (
-            CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
-                ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
-            END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00', '01:00')
-        )
-        
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) -- Considera dia anterior se for até 02:00
+                ELSE TRUNC(USER_DATA) -- Considera o dia atual
+            END = 
+            <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                CASE 
+                    WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                    ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                END
+            <cfelse>
+                CASE 
+                    WHEN TO_CHAR(SYSDATE, 'HH24:MI') <= '02:00' THEN TRUNC(SYSDATE - 1)
+                    ELSE TRUNC(SYSDATE)
+                END
+            </cfif>
+            
+            AND PROBLEMA IS NOT NULL
+            AND BARREIRA = 'CP7'
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            
+            AND (
+                -- Para segunda a quinta-feira, exclui 15:00
+                (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 5 
+                    AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
+                            ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
+                        END IN ('16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00', '01:00')
+                )
+                OR
+                -- Para sexta-feira, inclui 15:00
+                (TO_CHAR(USER_DATA, 'D') = '6' 
+                    AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
+                            ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
+                        END IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00', '01:00')
+                )
+            )
+            
         GROUP BY ESTACAO
         ORDER BY TOTAL_PROBLEMAS DESC
     </cfquery>

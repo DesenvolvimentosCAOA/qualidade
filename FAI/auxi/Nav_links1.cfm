@@ -35,15 +35,9 @@
             <li class="dropdown">
                 <a href="#">RELATÓRIOS</a>
                 <ul class="dropdown-menu">
-                    <li>
-                        <a href="fai_relatorios.cfm">Relatórios</a>
-                    </li>
-                    <li>
-                        <a href="fai_relatorios_summary.cfm">Relatório Summary</a>
-                    </li>
-                    <li>
-                        <a href="fai_relatorios_completo.cfm">Relatório completo</a>
-                    </li>
+                    <li><a href="fai_relatorios.cfm">Relatórios</a></li>
+                    <li><a href="fai_relatorios_summary.cfm">Relatório Summary</a></li>
+                    <li><a href="fai_relatorios_completo.cfm">Relatório completo</a></li>
                 </ul>
             </li>
             <li class="dropdown">
@@ -86,18 +80,13 @@
             <li class="dropdown">
                 <a href="#">Outros</a>
                 <ul class="dropdown-menu">
-                    <li>
-                        <a href="fai_editar.cfm">Editar Lançamento</a>
-                    </li>
-                    <li>
-                        <a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a>
-                    </li>
-                    <li>
-                        <a href="2fai_selecionar_bloqueio.cfm">Bloquear veículos</a>
-                    </li>
-                    <li>
-                        <a href="4fai_selecionar_desbloqueio.cfm">Desbloquear Veículo</a>
-                    </li>
+                    <li><a href="fai_editar.cfm">Editar Lançamento</a></li>
+                    <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
+                    <li><a href="2fai_selecionar_bloqueio.cfm">Bloquear veículos</a></li>
+                    <li><a href="4fai_selecionar_desbloqueio.cfm">Desbloquear Veículo</a></li>
+                    <cfif isDefined("cookie.user_level_fai") and cookie.user_level_fai eq "G">
+                        <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver & Agir</a></li>
+                    </cfif>
                 </ul>
             </li>
             <li>

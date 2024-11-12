@@ -204,6 +204,151 @@
         FROM VEREAGIR2
     </cfquery>
 
+    <cfquery name="result" datasource="#BANCOSINC#">
+        SELECT 
+            sqf.PECA AS PECA_SQF, 
+            sqf.PROBLEMA AS PROBLEMA_SQF,
+            sqf.MODELO AS MODELO_SQF,
+            v2.PECA AS PECA_VEREAGIR2,
+            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+            v2.MODELO AS MODELO_VEREAGIR2,
+            v2.ID AS ID_VEREAGIR2,
+            v2.BARREIRA,
+            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            CASE 
+                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'Quebra de BP'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'BP Válido'
+                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
+            END AS STATUS_NOVO
+        FROM 
+            SISTEMA_QUALIDADE_FA sqf
+        LEFT JOIN 
+            VEREAGIR2 v2
+        ON 
+            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        WHERE 
+            v2.BARREIRA = 'TRIM'
+        GROUP BY 
+            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+
+        UNION ALL
+
+        SELECT 
+            sqf.PECA AS PECA_SQF, 
+            sqf.PROBLEMA AS PROBLEMA_SQF,
+            sqf.MODELO AS MODELO_SQF,
+            v2.PECA AS PECA_VEREAGIR2,
+            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+            v2.MODELO AS MODELO_VEREAGIR2,
+            v2.ID AS ID_VEREAGIR2,
+            v2.BARREIRA,
+            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            CASE 
+                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'Quebra de BP'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'BP Válido'
+                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
+            END AS STATUS_NOVO
+        FROM 
+            SISTEMA_QUALIDADE_FAI sqf
+        LEFT JOIN 
+            VEREAGIR2 v2
+        ON 
+            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        WHERE 
+            v2.BARREIRA = 'FAI'
+        GROUP BY 
+            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+
+        UNION ALL
+
+        SELECT 
+            sqf.PECA AS PECA_SQF, 
+            sqf.PROBLEMA AS PROBLEMA_SQF,
+            sqf.MODELO AS MODELO_SQF,
+            v2.PECA AS PECA_VEREAGIR2,
+            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+            v2.MODELO AS MODELO_VEREAGIR2,
+            v2.ID AS ID_VEREAGIR2,
+            v2.BARREIRA,
+            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            CASE 
+                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'Quebra de BP'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'BP Válido'
+                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
+            END AS STATUS_NOVO
+        FROM 
+            SISTEMA_QUALIDADE sqf
+        LEFT JOIN 
+            VEREAGIR2 v2
+        ON 
+            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        WHERE 
+            v2.BARREIRA = 'PAINT'
+        GROUP BY 
+            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+
+        UNION ALL
+
+        SELECT 
+            sqf.PECA AS PECA_SQF, 
+            sqf.PROBLEMA AS PROBLEMA_SQF,
+            sqf.MODELO AS MODELO_SQF,
+            v2.PECA AS PECA_VEREAGIR2,
+            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+            v2.MODELO AS MODELO_VEREAGIR2,
+            v2.ID AS ID_VEREAGIR2,
+            v2.BARREIRA,
+            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            CASE 
+                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'Quebra de BP'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'BP Válido'
+                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
+            END AS STATUS_NOVO
+        FROM 
+            SISTEMA_QUALIDADE_BODY sqf
+        LEFT JOIN 
+            VEREAGIR2 v2
+        ON 
+            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        WHERE 
+            v2.BARREIRA = 'BODY'
+        GROUP BY 
+            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+
+        UNION ALL
+
+        SELECT 
+            sqf.PECA AS PECA_SQF, 
+            sqf.PROBLEMA AS PROBLEMA_SQF,
+            sqf.MODELO AS MODELO_SQF,
+            v2.PECA AS PECA_VEREAGIR2,
+            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+            v2.MODELO AS MODELO_VEREAGIR2,
+            v2.ID AS ID_VEREAGIR2,
+            v2.BARREIRA,
+            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            CASE 
+                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'Quebra de BP'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'BP Válido'
+                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
+            END AS STATUS_NOVO
+        FROM 
+            SISTEMA_QUALIDADE_PDI_SAIDA sqf
+        LEFT JOIN 
+            VEREAGIR2 v2
+        ON 
+            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        WHERE 
+            v2.BARREIRA = 'PDI'
+        GROUP BY 
+            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+    </cfquery>
+
     
 <html lang="pt-BR">
     <head>
@@ -212,6 +357,18 @@
         <title>VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <link rel="stylesheet" href="/qualidade/relatorios/assets/style.css?v2">
+        <style>
+            .wide-column {
+                width: 300px;
+            }
+            .status-span {
+                display: inline-block;
+                padding: 5px;
+                line-height: 1.5; /* Ajuste a altura da linha conforme necessário */
+                white-space: normal; /* Permite a quebra de linha */
+                word-wrap: break-word; /* Quebra palavras longas */
+            }
+        </style>
     </head>
     <body>
         <header class="titulo">
@@ -290,9 +447,9 @@
             <div class="search-container">
                 <input type="text" id="searchIDP" placeholder="Pesquisar ID" onkeyup="filterTablePaint()">
                 <input type="text" id="searchVINP" placeholder="Pesquisar Barcode" onkeyup="filterTablePaint()">
-                <input type="text" id="searchPecaP" placeholder="Pesquisar Modelo" onkeyup="filterTablePaint()">
-                <input type="text" id="searchPosicaoP" placeholder="Pesquisar Peça" onkeyup="filterTablePaint()">
-                <input type="text" id="searchProblemaP" placeholder="Pesquisar Posição" onkeyup="filterTablePaint()">
+                <input type="text" id="searchPecaP" placeholder="Pesquisar Peça" onkeyup="filterTablePaint()">
+                <input type="text" id="searchPosicaoP" placeholder="Pesquisar Posição" onkeyup="filterTablePaint()">
+                <input type="text" id="searchProblemaP" placeholder="Pesquisar Problema" onkeyup="filterTablePaint()">
             </div>
             <table border="1">
                 <thead>
@@ -336,9 +493,9 @@
             <div class="search-container">
                 <input type="text" id="searchIDFA" placeholder="Pesquisar ID" onkeyup="filterTableFA()">
                 <input type="text" id="searchVINFA" placeholder="Pesquisar Vin" onkeyup="filterTableFA()">
-                <input type="text" id="searchPecaFA" placeholder="Pesquisar Modelo" onkeyup="filterTableFA()">
-                <input type="text" id="searchPosicaoFA" placeholder="Pesquisar Peça" onkeyup="filterTableFA()">
-                <input type="text" id="searchProblemaFA" placeholder="Pesquisar Posição" onkeyup="filterTableFA()">
+                <input type="text" id="searchPecaFA" placeholder="Pesquisar Peça" onkeyup="filterTableFA()">
+                <input type="text" id="searchPosicaoFA" placeholder="Pesquisar Posição" onkeyup="filterTableFA()">
+                <input type="text" id="searchProblemaFA" placeholder="Pesquisar Problema" onkeyup="filterTableFA()">
             </div>
             <table border="1" id="FATable">
                 <thead>
@@ -382,9 +539,9 @@
             <div class="search-container">
                 <input type="text" id="searchIDFAI" placeholder="Pesquisar ID" onkeyup="filterTableFAI()">
                 <input type="text" id="searchVINFAI" placeholder="Pesquisar Vin" onkeyup="filterTableFAI()">
-                <input type="text" id="searchPecaFAI" placeholder="Pesquisar Modelo" onkeyup="filterTableFAI()">
-                <input type="text" id="searchPosicaoFAI" placeholder="Pesquisar Peça" onkeyup="filterTableFAI()">
-                <input type="text" id="searchProblemaFAI" placeholder="Pesquisar Posição" onkeyup="filterTableFAI()">
+                <input type="text" id="searchPecaFAI" placeholder="Pesquisar Peça" onkeyup="filterTableFAI()">
+                <input type="text" id="searchPosicaoFAI" placeholder="Pesquisar Posição" onkeyup="filterTableFAI()">
+                <input type="text" id="searchProblemaFAI" placeholder="Pesquisar Problema" onkeyup="filterTableFAI()">
             </div>
             
         
@@ -430,9 +587,9 @@
             <div class="search-container">
                 <input type="text" id="searchIDPDI" placeholder="Pesquisar ID" onkeyup="filterTablePDI()">
                 <input type="text" id="searchVINPDI" placeholder="Pesquisar Vin" onkeyup="filterTablePDI()">
-                <input type="text" id="searchPecaPDI" placeholder="Pesquisar Modelo" onkeyup="filterTablePDI()">
-                <input type="text" id="searchPosicaoPDI" placeholder="Pesquisar Peça" onkeyup="filterTablePDI()">
-                <input type="text" id="searchProblemaPDI" placeholder="Pesquisar Posição" onkeyup="filterTablePDI()">
+                <input type="text" id="searchPecaPDI" placeholder="Pesquisar Peça" onkeyup="filterTablePDI()">
+                <input type="text" id="searchPosicaoPDI" placeholder="Pesquisar Posição" onkeyup="filterTablePDI()">
+                <input type="text" id="searchProblemaPDI" placeholder="Pesquisar Problema" onkeyup="filterTablePDI()">
             </div>
             
         
@@ -517,9 +674,10 @@
                         <th>Total de Dias Contenção</th>
                         <th>Total de Dias Definitivo</th>
                         <th>Selecionar</th>
+                        <th>Status BP</th>
                     </tr>
                 </thead>
-                <tbody style="font-size:12px;">
+                <tbody style="font-size:12px;background-color:red;">
                     <cfoutput query="consultas_acomp_cont">
                         <tr>
                             <td>#RPN#</td>
@@ -618,11 +776,25 @@
                                     </button>
                                 </td>
                             </cfif>
+                            <td class="wide-column">
+                                <cfloop query="result">
+                                    <cfif result.ID_VEREAGIR2 EQ consultas_acomp_cont.ID AND result.MODELO_VEREAGIR2 EQ consultas_acomp_cont.MODELO>
+                                        <cfif STATUS_NOVO EQ "Quebra de BP">
+                                            <span class="status-span" style="background-color: red; color: white;">#STATUS_NOVO#</span>
+                                        <cfelseif STATUS_NOVO EQ "BP Válido">
+                                            <span class="status-span" style="background-color: green; color: white;">#STATUS_NOVO#</span>
+                                        <cfelse>
+                                            <span class="status-span">#STATUS_NOVO#</span>
+                                        </cfif>
+                                        <cfbreak>
+                                    </cfif>
+                                </cfloop>
+                            </td>
                         </tr>
                     </cfoutput>
                 </tbody>
             </table>
         </div> 
-        <script src="/qualidade/relatorios/assets/script.js?v8"></script>
+        <script src="/qualidade/relatorios/assets/script.js?v9"></script>
     </body>
 </html>

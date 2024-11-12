@@ -49,6 +49,9 @@
                   <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
                   <li><a href="/qualidade/buyoff_linhat/paint_editar.cfm">Editar Lançamento</a></li>
                   <li><a href="/qualidade/buyoff_linhat/batalha_naval.cfm">Batalha Naval</a></li>
+                  <cfif isDefined("cookie.user_level_paint") and cookie.user_level_paint eq "G">
+                    <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver & Agir</a></li>
+                </cfif>
                 </ul>
             </li>
             <li>

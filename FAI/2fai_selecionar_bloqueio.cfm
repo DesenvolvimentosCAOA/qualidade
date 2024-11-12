@@ -22,6 +22,7 @@
         SELECT *
         FROM INTCOLDFUSION.sistema_qualidade_body
         WHERE 1 = 1
+        AND DATA_BLOQUEIO IS NULL
         <cfif isDefined("url.filtroID") and url.filtroID neq "">
             AND ID = <cfqueryparam value="#url.filtroID#" cfsqltype="cf_sql_integer">
         </cfif>

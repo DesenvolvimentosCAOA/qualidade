@@ -131,7 +131,6 @@
                 <table id="tblStocks" class="table">
                     <thead>
                         <tr class="text-nowrap">
-                            <th>id</th>
                             <th scope="col">Data</th>
                             <th scope="col">Inspetor</th>
                             <th scope="col">VIN/BARCODE</th>
@@ -151,7 +150,6 @@
                         <cfoutput>
                             <cfloop query="consulta_adicionais">
                                 <tr class="align-middle">
-                                    <td>#ID#</td>
                                     <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy HH:nn:ss')#⠀</td>
                                     <td>#USER_COLABORADOR#</td>
                                     <td>#VIN#</td>

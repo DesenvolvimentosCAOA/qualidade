@@ -14,9 +14,9 @@ function filterTable() {
     for (var i = 1; i < tr.length; i++) { // Inicia em 1 para pular o cabeçalho
         var tdID = tr[i].getElementsByTagName("td")[0];
         var tdVIN = tr[i].getElementsByTagName("td")[2];
-        var tdPeca = tr[i].getElementsByTagName("td")[3];
-        var tdPosicao = tr[i].getElementsByTagName("td")[4];
-        var tdProblema = tr[i].getElementsByTagName("td")[5];
+        var tdPeca = tr[i].getElementsByTagName("td")[4];
+        var tdPosicao = tr[i].getElementsByTagName("td")[5];
+        var tdProblema = tr[i].getElementsByTagName("td")[6];
 
         if (tdID && tdVIN && tdPeca && tdPosicao && tdProblema) {
             // Verificando se os dados correspondem aos filtros
@@ -51,9 +51,9 @@ function filterTablePaint() {
     for (var i = 1; i < tr.length; i++) { // Inicia em 1 para pular o cabeçalho
         var tdID = tr[i].getElementsByTagName("td")[0];
         var tdVIN = tr[i].getElementsByTagName("td")[2];
-        var tdPeca = tr[i].getElementsByTagName("td")[3];
-        var tdPosicao = tr[i].getElementsByTagName("td")[4];
-        var tdProblema = tr[i].getElementsByTagName("td")[5];
+        var tdPeca = tr[i].getElementsByTagName("td")[4];
+        var tdPosicao = tr[i].getElementsByTagName("td")[5];
+        var tdProblema = tr[i].getElementsByTagName("td")[6];
 
         if (tdID && tdVIN && tdPeca && tdPosicao && tdProblema) {
             // Verificando se os dados correspondem aos filtros
@@ -89,9 +89,9 @@ function filterTableFA() {
     for (var i = 1; i < tr.length; i++) { // Inicia em 1 para pular o cabeçalho
         var tdID = tr[i].getElementsByTagName("td")[0];
         var tdVIN = tr[i].getElementsByTagName("td")[2];
-        var tdPeca = tr[i].getElementsByTagName("td")[3];
-        var tdPosicao = tr[i].getElementsByTagName("td")[4];
-        var tdProblema = tr[i].getElementsByTagName("td")[5];
+        var tdPeca = tr[i].getElementsByTagName("td")[4];
+        var tdPosicao = tr[i].getElementsByTagName("td")[5];
+        var tdProblema = tr[i].getElementsByTagName("td")[6];
 
         if (tdID && tdVIN && tdPeca && tdPosicao && tdProblema) {
             // Verificando se os dados correspondem aos filtros
@@ -126,9 +126,9 @@ function filterTableFAI() {
     for (var i = 1; i < tr.length; i++) { // Inicia em 1 para pular o cabeçalho
         var tdID = tr[i].getElementsByTagName("td")[0];
         var tdVIN = tr[i].getElementsByTagName("td")[2];
-        var tdPeca = tr[i].getElementsByTagName("td")[3];
-        var tdPosicao = tr[i].getElementsByTagName("td")[4];
-        var tdProblema = tr[i].getElementsByTagName("td")[5];
+        var tdPeca = tr[i].getElementsByTagName("td")[4];
+        var tdPosicao = tr[i].getElementsByTagName("td")[5];
+        var tdProblema = tr[i].getElementsByTagName("td")[6];
 
         if (tdID && tdVIN && tdPeca && tdPosicao && tdProblema) {
             // Verificando se os dados correspondem aos filtros
@@ -163,9 +163,9 @@ function filterTablePDI() {
     for (var i = 1; i < tr.length; i++) { // Inicia em 1 para pular o cabeçalho
         var tdID = tr[i].getElementsByTagName("td")[0];
         var tdVIN = tr[i].getElementsByTagName("td")[2];
-        var tdPeca = tr[i].getElementsByTagName("td")[3];
-        var tdPosicao = tr[i].getElementsByTagName("td")[4];
-        var tdProblema = tr[i].getElementsByTagName("td")[5];
+        var tdPeca = tr[i].getElementsByTagName("td")[4];
+        var tdPosicao = tr[i].getElementsByTagName("td")[5];
+        var tdProblema = tr[i].getElementsByTagName("td")[6];
 
         if (tdID && tdVIN && tdPeca && tdPosicao && tdProblema) {
             // Verificando se os dados correspondem aos filtros

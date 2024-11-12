@@ -233,13 +233,13 @@
 
              <cfquery name="defeitos" datasource="#BANCOSINC#">
                 SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
-                WHERE SHOP = 'FAI-EXOK-PROBLEMA'
+                WHERE SHOP = 'FAI-SHOWER-PROBLEMA'
                 ORDER BY DEFEITO
             </cfquery>
 
              <cfquery name="pecas" datasource="#BANCOSINC#">
                 SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
-                WHERE SHOP = 'FAI-EXOK-PEÇA'
+                WHERE SHOP = 'FAI-SHOWER-PEÇA'
                 ORDER BY DEFEITO
             </cfquery>
 

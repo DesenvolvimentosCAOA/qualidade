@@ -13,6 +13,7 @@
                 <li><a href="pdi_saida_rampa.cfm">Inspeção Rampa</a></li>
                 <li><a href="pdi_saida_patio.cfm">Inspeção Pátio</a></li>
                 <li><a href="pdi_saida_patio_nacional.cfm">Inspeção Pátio Nacional</a></li>
+                <li><a href="pdi_saida_apontamento_liberacao.cfm">Apontamento Liberação</a></li>
             </ul>
         </li>
           <li><a href="pdi_reparo.cfm">Reparo</a></li>
@@ -23,11 +24,7 @@
             <ul class="dropdown-menu">
                 <li><a href="./relatorio_pdi.cfm">Relatório de Saída</a></li>
                 <li><a href="./relatorio_pdi_entrada.cfm">Relatório de Entrada</a></li>
-
-                <cfif isDefined("cookie.user_sign") AND (cookie.user_sign EQ "JEFFERSON ALVES TEIXEIRA" OR cookie.user_sign EQ "DANIEL ALVES TEIXEIRA")>
-                    <li><a href="./pdi_relatorios_1.cfm">Relatório Summary</a></li>
-                </cfif>
-                
+                    <li><a href="./pdi_relatorios_1.cfm">Restricted area</a></li>                
             </ul>
         </li>
     <li class="dropdown">
@@ -43,6 +40,9 @@
         <a href="#">Outros</a>
         <ul class="dropdown-menu">
             <li><a href="./pdi_editar.cfm">Editar Lançamento</a></li>
+            <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "G">
+                <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver & Agir</a></li>
+            </cfif>
         </ul>
         </li>
     </cfif>

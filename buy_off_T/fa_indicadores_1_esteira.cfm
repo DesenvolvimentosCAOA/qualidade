@@ -96,7 +96,7 @@
 
     <cfquery name="consulta_nconformidades_cp7_AVARIA" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
             WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -115,22 +115,22 @@
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
                 OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
-            GROUP BY PROBLEMA, PECA, ESTACAO
+            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
                 ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
@@ -727,11 +727,12 @@
                                 <table style="font-size:12px" class="table table-hover table-sm" border="1" id="tblStocks" style="width: 100%;" data-excel-name="Veículos">
                                     <thead>
                                         <tr class="text-nowrap">
-                                            <th scope="col" colspan="5" class="bg-success">Principais Não Conformidades - top 10</th>
+                                            <th scope="col" colspan="6" class="bg-success">Principais Não Conformidades - top 10</th>
                                         </tr>
                                         <tr class="text-nowrap">
                                             <th scope="col">Shop</th>
                                             <th scope="col">Peça</th>
+                                            <th scope="col">Posição</th>
                                             <th scope="col">Problema</th>
                                             <th scope="col">Total</th>
                                             <th scope="col">Pareto</th>
@@ -742,6 +743,7 @@
                                             <tr class="align-middle">
                                                 <td style="font-weight: bold;<cfif ESTACAO eq 'Linha T'>color: gold;<cfelseif ESTACAO eq 'Linha C'>color: gold;<cfelseif ESTACAO eq 'Linha F'>color: gold;<cfelseif ESTACAO eq 'Paint'>color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
                                                 <td>#PECA#</td>
+                                                <td>#POSICAO#</td>
                                                 <td style="font-weight: bold">#PROBLEMA#</td>
                                                 <td>#TOTAL_POR_DEFEITO#</td>
                                                 <td>#PARETO#%</td>

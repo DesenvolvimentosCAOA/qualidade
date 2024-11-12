@@ -121,6 +121,7 @@
                   <label class="form-label" for="formCRITICIDADE">Criticidade</label>
                   <select class="form-control" name="criticidade" id="formCRITICIDADE" required>
                     <option value="#consulta_editar.CRITICIDADE#" selected>#consulta_editar.CRITICIDADE#</option>
+                    <option value="N0">N0</option>
                     <option value="N1">N1</option>
                     <option value="N2">N2</option>
                     <option value="N3">N3</option>

@@ -29,6 +29,7 @@
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
             WHERE 1 = 1 
             and BARREIRA = 'CP5'
+            AND DATA_DESBLOQUEIO IS NULL
             <cfif isDefined("url.filtroDefeito") and url.filtroDefeito neq "">
             AND UPPER(PROBLEMA) LIKE UPPER('%#url.filtroDefeito#%')
         </cfif>
@@ -45,7 +46,7 @@
             AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroestacao#%')
         </cfif>
         )
-        WHERE ROWNUM <= 30 -- Limita o número de linhas retornadas
+        WHERE ROWNUM <= 3000 -- Limita o número de linhas retornadas
         AND STATUS_BLOQUEIO = 'BLOQUEADO'
         ORDER BY ID ASC
     </cfquery>

@@ -2,7 +2,7 @@
   <input type="checkbox" id="check">
   <label for="check" class="checkbtn"><i class="icon icon-bars"></i></label>
   <div class="logo">Body Shop</div>
-  
+
   <ul>
     <li><a href="./body_selecionar_buy_off.cfm">Buy Off's</a></li>
     <li><a href="./body_reparo.cfm">Reparo</a></li>
@@ -28,6 +28,9 @@
       <ul class="dropdown-menu">
         <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
         <li><a href="./body_editar.cfm" >Editar Lançamento</a></li>
+        <cfif isDefined("cookie.user_level_body") and cookie.user_level_body eq "G">
+            <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver & Agir</a></li>
+        </cfif>
       </ul>
     </li>
     <li><a href="/qualidade/buyoff_linhat/logout.cfm">Sair</a></li>

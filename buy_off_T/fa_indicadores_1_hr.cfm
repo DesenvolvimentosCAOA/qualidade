@@ -23,11 +23,11 @@
               
               AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
             )
               GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
@@ -66,11 +66,11 @@
             AND CRITICIDADE NOT IN ('N1', 'N2', 'N3', 'N4')
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
             )
             GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
@@ -109,11 +109,11 @@
             AND CRITICIDADE NOT IN ('N1', 'N2', 'N3', 'N4','N0','OK A-')
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
             )
             GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
@@ -142,6 +142,10 @@
             SELECT 
                 BARREIRA, VIN,
                 CASE 
+                    WHEN INTERVALO = '01:00' THEN '01:00~02:00'
+                    WHEN INTERVALO = '02:00' THEN '02:00~03:00'
+                    WHEN INTERVALO = '03:00' THEN '03:00~04:00'
+                    WHEN INTERVALO = '04:00' THEN '04:00~05:00'
                     WHEN INTERVALO = '05:00' THEN '05:00~06:00'
                     WHEN INTERVALO = '06:00' THEN '06:00~07:00'
                     WHEN INTERVALO = '07:00' THEN '07:00~08:00'
@@ -185,7 +189,7 @@
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
-                AND INTERVALO BETWEEN '06:00' AND '23:00'
+                AND INTERVALO BETWEEN '01:00' AND '23:00'
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, HH, 
@@ -227,11 +231,11 @@
         AND CRITICIDADE NOT IN ('N0', 'OK A-','AVARIA')
         AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
             )
         GROUP BY ESTACAO
         ORDER BY TOTAL_PROBLEMAS DESC
@@ -257,7 +261,7 @@
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
-                AND INTERVALO BETWEEN '06:00' AND '23:00'
+                AND INTERVALO BETWEEN '00:00' AND '23:00'
             AND STATUS IS NOT NULL
             AND BARREIRA = 'HR'
         )
@@ -290,9 +294,9 @@
             AND STATUS = 'EM REPARO'
             AND BARREIRA = 'HR'
             AND (
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '23:00:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '23:00:00'))
             )
         )
         SELECT 
@@ -304,15 +308,15 @@
         ORDER BY TOTAL_VINS DESC
     </cfquery>
 
-    <!--- Verificando se está logado  --->
-<cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
-    <script>
-        alert("É necessario autenticação!!");
-        self.location = '/qualidade/buyoff_linhat/index.cfm'
-    </script>
-</cfif>
+        <!--- Verificando se está logado  --->
+    <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
+        <script>
+            alert("É necessario autenticação!!");
+            self.location = '/qualidade/buyoff_linhat/index.cfm'
+        </script>
+    </cfif>
 
-    <html lang="pt-BR">
+<html lang="pt-BR">
     <head>
         <!-- Meta tags necessárias -->
         <meta charset="utf-8">
