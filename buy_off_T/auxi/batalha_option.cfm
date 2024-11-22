@@ -12,4 +12,5 @@
 <option value="FR/RR">FR/RR</option>
 <option value="FR- LH/RH">FR-LH/RH</option>
 <option value="RR- LH/RH">RR-LH/RH</option>
-<option value="FR/RR">FR/RR</option>
+<option value="LH/FR RR">LH/FR RR</option>
+<option value=RH/FR RR">RH/FR RR</option>

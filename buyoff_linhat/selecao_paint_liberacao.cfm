@@ -269,12 +269,11 @@
             SELECT ID, VIN,MODELO,BARREIRA  FROM SISTEMA_QUALIDADE ORDER BY ID DESC)
             WHERE ROWNUM = 1 
                     </cfquery>
- <!---                     <cfdump  var="#consulta1#"> --->
-                <div class="form-group col-md-2">
-                    <label for="formVIN">BARCODE</label>
-                    <input type="text" class="form-control form-control-sm" maxlength="17" name="vin" id="formVIN" required
-                        oninput="this.value = this.value.replace(/\s/g, '');">
-                </div>
+            <div class="form-group col-md-2">
+                <label for="formVIN">BARCODE</label>
+                <input type="text" class="form-control form-control-sm" maxlength="6" name="vin" id="formVIN" required
+                    oninput="this.value = this.value.replace(/\D/g, '');" pattern="\d{6}">
+            </div>
  
                                         <!--- Pesquisa MES --->
                     <cfquery name='buscaMES' datasource="#BANCOMES#">

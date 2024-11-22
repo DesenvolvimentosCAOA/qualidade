@@ -454,7 +454,6 @@
                         <th scope="col">VIN/BARCODE</th>
                         <th scope="col">Turno</th>
                         <th scope="col">Criticidade</th>
-                        <th scope="col">Intervalo</th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
@@ -543,7 +542,6 @@
                                     </cfif>
                                 </td>
                                 <td>#CRITICIDADE#</td>
-                                <td>#INTERVALO#</td>
                             </tr>
                         </cfloop>
                         <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">

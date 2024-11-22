@@ -26,7 +26,8 @@
                 RESPONSAVEL_CONTENCAO = <cfqueryparam value="#UCase(form.ver_responsavel)#" cfsqltype="CF_SQL_VARCHAR">,
                 BP_CONTENCAO_QUALIDADE = <cfqueryparam value="#UCase(form.ver_bp_contencao_qa)#" cfsqltype="CF_SQL_VARCHAR">,
                 MOTIVO_NAO_QUALIDADE = <cfqueryparam value="#UCase(form.ver_motivo)#" cfsqltype="CF_SQL_VARCHAR">,
-                DESCRICAO_CONT_QA = <cfqueryparam value="#UCase(form.ver_bp_descricao_qa)#" cfsqltype="CF_SQL_VARCHAR">
+                DESCRICAO_CONT_QA = <cfqueryparam value="#UCase(form.ver_bp_descricao_qa)#" cfsqltype="CF_SQL_VARCHAR">,
+                RESPONSAVEL_QUALIDADE = <cfqueryparam value="#UCase(form.ver_resp_qa)#" cfsqltype="CF_SQL_VARCHAR">
             WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
         </cfquery>
         <cflocation url="ver_agir.cfm">
@@ -39,7 +40,68 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v4">        
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v4">  
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f9;
+                margin: 0;
+                padding: 0;
+            }
+            .table-container {
+                margin: 20px auto;
+                padding: 20px;
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                max-width: 800px;
+            }
+            h2 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .search-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .input-group {
+                flex: 1 1 45%;
+                margin-bottom: 15px;
+            }
+            .input-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+            .input-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+            .btn-rounded {
+                display: inline-block;
+                padding: 10px 20px;
+                margin: 10px 5px;
+                border: none;
+                border-radius: 20px;
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+                text-align: center;
+            }
+            .btn-rounded.back-btn {
+                background-color: #6c757d;
+            }
+            .btn-rounded:hover {
+                background-color: #0056b3;
+            }
+            .btn-rounded.back-btn:hover {
+                background-color: #5a6268;
+            }
+        </style>      
     </head> 
     <body>
         <header class="titulo">
@@ -135,17 +197,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="search-container" id="bpContencaoQA" style="display:none; width:500px; margin-left:20vw;">
-                        <div class="input-group">
-                            <label for="searchBPcontQA">BP Contenção QA</label>
-                            <input type="text" id="searchBPcontQA" name="ver_bp_contencao_qa" placeholder="BP de Contenção QA">
-                        </div>
-                        <div class="input-group">
-                            <label for="searchDescricaocontQA">Descrição de Contenção QA</label>
-                            <input type="text" id="searchDescricaocontQA" name="ver_bp_descricao_qa" placeholder="Descrição de Contenção QA">
+                    <div class="search-container" id="bpContencaoQA" style="display:none; width:700px">
+                        <div class="input-group" style="display: flex; align-items: center;">
+                            <div style="flex: 2; margin-right: 10px;">
+                                <label for="searchBPcontQA">BP Contenção QA</label>
+                                <input type="text" id="searchBPcontQA" name="ver_bp_contencao_qa" placeholder="Ponto de Corte">
+                            </div>
+                            <div style="flex: 2;">
+                                <label for="searchDescricaocontQA">Descrição da Contenção QA</label>
+                                <input type="text" id="searchDescricaocontQA" name="ver_bp_descricao_qa" placeholder="Max 250 caracteres">
+                            </div>
+                            <div style="flex: 2;">
+                                <label for="searchResp_QA">Responsável QA</label>
+                                <input type="text" id="searchResp_QA" name="ver_resp_qa" placeholder="Responsável pela Implementação">
+                            </div>
                         </div>
                     </div>
-                    <div class="search-container" id="bpContencaoMotivo" style="display:none; width:500px; margin-left:20vw;">
+                    <div class="search-container" id="bpContencaoMotivo" style="display:none; width:500px;">
                         <div class="input-group">
                             <label for="searchMotivo">Motivo</label>
                             <input type="text" id="searchMotivo" name="ver_motivo" placeholder="Motivo">

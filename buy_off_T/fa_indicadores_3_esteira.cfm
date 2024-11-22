@@ -393,16 +393,13 @@
             SELECT 
                 BARREIRA, VIN,
                 CASE 
-                    WHEN INTERVALO = '15:50' THEN '16:00~17:00'
-                    WHEN INTERVALO = '16:00' THEN '16:00~17:00'
-                    WHEN INTERVALO = '17:00' THEN '17:00~18:00'
-                    WHEN INTERVALO = '18:00' THEN '18:00~19:00'
-                    WHEN INTERVALO = '19:00' THEN '19:00~20:00'
-                    WHEN INTERVALO = '20:00' THEN '20:00~21:00'
-                    WHEN INTERVALO = '21:00' THEN '21:00~22:00'
-                    WHEN INTERVALO = '22:00' THEN '22:00~23:00'
-                    WHEN INTERVALO = '23:00' THEN '23:00~00:00'
+                    WHEN INTERVALO = '23:00' THEN '23:00~01:00'
                     WHEN INTERVALO = '00:00' THEN '00:00~01:00'
+                    WHEN INTERVALO = '01:00' THEN '01:00~02:00'
+                    WHEN INTERVALO = '02:00' THEN '02:00~03:00'
+                    WHEN INTERVALO = '03:00' THEN '03:00~04:00'
+                    WHEN INTERVALO = '04:00' THEN '04:00~05:00'
+                    WHEN INTERVALO = '05:00' THEN '05:00~06:00'
                     ELSE 'OUTROS'
                 END HH,
                 CASE 
@@ -412,7 +409,7 @@
                     
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-
+    
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,
@@ -437,6 +434,82 @@
                         (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
                     ))
                 )
+                AND BARREIRA = 'LIBERACAO'
+                AND MODELO NOT LIKE 'CHASSI HR HDB 4WD DBLE'
+            GROUP BY BARREIRA, VIN, INTERVALO
+        )
+        SELECT BARREIRA, HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                -- Cálculo do DPV: total de VINs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                1 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA, HH
+        UNION ALL
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+
+    <cfquery name="consulta_barreira_liberacao_hr" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN,
+                CASE 
+                    WHEN INTERVALO = '23:00' THEN '23:00~01:00'
+                    WHEN INTERVALO = '00:00' THEN '00:00~01:00'
+                    WHEN INTERVALO = '01:00' THEN '01:00~02:00'
+                    WHEN INTERVALO = '02:00' THEN '02:00~03:00'
+                    WHEN INTERVALO = '03:00' THEN '03:00~04:00'
+                    WHEN INTERVALO = '04:00' THEN '04:00~05:00'
+                    WHEN INTERVALO = '05:00' THEN '05:00~06:00'
+                    ELSE 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+    
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.sistema_qualidade_fa
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                    -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                    ))
+                )
+                AND BARREIRA = 'LIBERACAO'
+                AND MODELO = 'CHASSI HR HDB 4WD DBLE'
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, HH, 
@@ -593,7 +666,7 @@
                     <div class="row">
                         <!-- Tabela H/H para Primer -->
                         <div class="col-md-3">
-                            <h3>Liberação</h3>
+                            <h3>Liberação - SUV</h3>
                             <div class="table-responsive">
                                 <table style="font-size:12px" class="table table-hover table-sm table-custom-width">
                                     <thead class="bg-success">
@@ -607,6 +680,35 @@
                                     </thead>
                                     <tbody>
                                         <cfoutput query="consulta_barreira_liberacao">
+                                            <cfif BARREIRA eq 'LIBERACAO'>
+                                                <tr>
+                                                    <td>#HH#</td>
+                                                    <td>#TOTAL#</td>
+                                                    <td>#APROVADOS#</td>
+                                                    <td style="font-weight: bold;<cfif PORCENTAGEM gt '86.0'>color: green;<cfelseif PORCENTAGEM lt '86.0'> color: red;</cfif>">#PORCENTAGEM#%</td>
+                                                    <td>#DPV#</td>
+                                                </tr>
+                                            </cfif>
+                                        </cfoutput>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <h3>Liberação - HR</h3>
+                            <div class="table-responsive">
+                                <table style="font-size:12px" class="table table-hover table-sm table-custom-width">
+                                    <thead class="bg-success">
+                                        <tr>
+                                            <th style="width:3vw">H/H</th>
+                                            <th style="width:1vw">Prod</th>
+                                            <th style="width:1vw">Aprov</th>
+                                            <th style="width:1vw">%</th>
+                                            <th>DPV</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <cfoutput query="consulta_barreira_liberacao_hr">
                                             <cfif BARREIRA eq 'LIBERACAO'>
                                                 <tr>
                                                     <td>#HH#</td>
@@ -658,7 +760,7 @@
                             <div id="paretoChartCP7" style="width: 100%; height: 500px;"></div>
                         </div>
 
-                        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                <!----        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
                         <script>
                             google.charts.load('current', {'packages':['corechart', 'line']});
                             google.charts.setOnLoadCallback(drawParetoChartCP7);
@@ -710,7 +812,7 @@
                                 var chart = new google.visualization.ComboChart(document.getElementById('paretoChartCP7'));
                                 chart.draw(data, options);
                             }
-                        </script>
+                        </script> ---->
                         
                 <!-- Gráfico para Pareto - CP7 -->
                 <div class="container-fluid">

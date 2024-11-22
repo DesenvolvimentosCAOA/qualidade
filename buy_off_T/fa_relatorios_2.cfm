@@ -341,7 +341,7 @@
                                             TL
                                         </cfif>
                                     </td>
-                                    <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
+                                    <td>#lsdatetimeformat(url.filtroData, 'dd/mm/yyyy')#</td>
                                     <td></td>
                                     <td></td>
                                     <td>#PECA#</td>

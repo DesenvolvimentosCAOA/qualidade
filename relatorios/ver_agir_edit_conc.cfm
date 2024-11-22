@@ -34,7 +34,7 @@
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
             <title>VER & AGIR</title>
             <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-            <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v4">
+            <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v3">
             <style>
                 body {
                     font-family: Arial, sans-serif;
@@ -102,7 +102,7 @@
                 <cfinclude template="auxi/nav_links.cfm">
             </header>
         
-            <div id="tableBody" class="table-container">
+            <div id="tableBody" class="table-container" style="margin-top:100px;">
                 <h2 style="color: blue; font-size:30px;">Dados do Item</h2>
                 <cfoutput>
                     <div class="search-container">
@@ -155,7 +155,7 @@
                 <h2 style="color: yellow; font-size:30px;">AÇÃO DE CONTENÇÃO</h2>
                         <div class="search-container">
                             <div class="input-group">
-                                <label for="searchData">Data da Validação</label>
+                                <label for="searchData">Data da Implementação</label>
                                 <input readonly type="date" id="searchValidacao" name="data_validacao" placeholder="Data da validação" value="#DateFormat(consulta_editar.data_bp_processo, 'yyyy-mm-dd')#">
                             </div>
                                                   
@@ -164,16 +164,58 @@
                                 <input required type="text" id="searchBP" name="ver_bp" placeholder="BP - VIN/BARCODE" value="#consulta_editar.bp_contencao_processo#">
                             </div>
                             <div class="input-group">
-                                <label for="searchResponsavel">Responsável</label>
+                                <label for="searchResponsavel">Responsável pela Contenção</label>
                                 <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="#consulta_editar.grupo_responsavel#">
                             </div>
                             <div class="input-group">
-                                <label for="searchqc">BP da Qualidade</label>
+                                <label for="searchResponsavel">O que foi feito?</label>
+                                <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="#consulta_editar.descricao_contencao#">
+                            </div>
+                            <div class="input-group">
+                                <label for="searchqc">Foi Necessário BP da Qualidade?</label>
                                 <input required type="text" id="searchqc" name="ver_qc" value="#consulta_editar.necessita_qualidade#">
+                            </div>
+                            <div class="input-group">
+                                <label for="searchqc">BP da Qualidade - Contenção</label>
+                                <input required type="text" id="searchqc" name="ver_qc" value="#consulta_editar.bp_contencao_qualidade#">
+                            </div>
+                            <div class="input-group">
+                                <label for="searchqc">Descrição da Contenção</label>
+                                <input required type="text" id="searchqc" name="ver_qc" value="#consulta_editar.descricao_cont_qa#">
+                            </div>
+                            <div class="input-group">
+                                <label for="searchqc">Responsável QA pela Contenção</label>
+                                <input required type="text" id="searchqc" name="ver_qc" value="#consulta_editar.responsavel_qualidade#">
+                            </div>
+                        </div>
+            </div>
+
+            <div id="tableProcess" class="table-container Process">
+                <h2 style="color: green; font-size:30px;">AÇÃO DEFINITIVA</h2>
+                        <div class="search-container">
+                            <div class="input-group">
+                                <label for="searchData">Data da Implementação</label>
+                                <input readonly type="date" id="searchValidacao" name="data_validacao" placeholder="Data da validação" value="#DateFormat(consulta_editar.data_bp_definitivo_processo, 'yyyy-mm-dd')#">
+                            </div>
+                                                  
+                            <div class="input-group">
+                                <label for="searchBP">Ponto de Corte</label>
+                                <input required type="text" id="searchBP" name="ver_bp" placeholder="BP - VIN/BARCODE" value="#consulta_editar.bp_definitivo_processo#">
+                            </div>
+                            <div class="input-group">
+                                <label for="searchResponsavel">O que foi feito?</label>
+                                <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="#consulta_editar.descricao_definitivo#">
+                            </div>
+                            <div class="input-group">
+                                <label for="searchResponsavel">Responsável pela implementação</label>
+                                <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="#consulta_editar.responsavel_definitivo#">
+                            </div>
+                            <div class="input-group">
+                                <label for="searchResponsavel">Status de Conclusão</label>
+                                <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="#consulta_editar.status#">
                             </div>
                         </div>
                         <div class="search-container">
-                            <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao">Salvar</button>
                             <button type="button" class="btn-rounded back-btn" id="btnVoltar" onclick="voltar()">Voltar</button>
                             <script>
                                 function voltar() {
@@ -182,8 +224,8 @@
                                     }
                             </script>
                         </div>
-                    </cfoutput>
             </div>
-        </body>
-        </html>
+                </cfoutput>
+    </body>
+</html>
         

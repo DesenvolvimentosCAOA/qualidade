@@ -121,250 +121,216 @@
        self.location = 'fa_barreira_cp7.cfm';
     </script>
     </cfif>
-    <html lang="pt-BR">
-       <head>
-          <!-- Required meta tags -->
-          <meta charset="utf-8">
-          <meta
-             name="viewport"
-             content="width=device-width, initial-scale=1, shrink-to-fit=no">
-          <title>CP7</title>
-          <link rel="icon" href="./assets/chery.png" type="image/x-icon">
-          <link rel="stylesheet" href="assets/StyleBuyOFF.css?v1">
-          <!--- deixar as letras do campo problema em maiúsculo --->
-          <script>
-             function transformToUpperCase(input) {
-                 input.value = input
-                     .value
-                     .toUpperCase();
-             }
-          </script>
-          <script>
-             function validarFormulario(event) {
-                 // Validação geral dos campos
-                 var peça = document.getElementById('formNConformidade').value;
-                 var criticidade = document.getElementById('formCriticidade').value;
-                 var posição = document.getElementById('formPosicao').value;
-                 var responsável = document.getElementById('formEstacao').value;
-                 var problema = document.getElementById('formProblema').value;
-                 var vin = document.getElementById('formVIN').value;
-             
-                 // Verificação do comprimento do VIN
-                 if (vin.length !== 17) {
-                     alert('O VIN deve ter exatamente 17 caracteres.');
+<html lang="pt-BR">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>CP7</title>
+      <link rel="icon" href="./assets/chery.png" type="image/x-icon">
+      <link rel="stylesheet" href="assets/StyleBuyOFF.css?v1">
+      <script>
+         function validarFormulario(event) {
+            // Validação geral dos campos
+            var peça = document.getElementById('formNConformidade').value;
+            var criticidade = document.getElementById('formCriticidade').value;
+            var posição = document.getElementById('formPosicao').value;
+            var responsável = document.getElementById('formEstacao').value;
+            var problema = document.getElementById('formProblema').value;
+            var vin = document.getElementById('formVIN').value;
+         
+            // Verificação do comprimento do VIN
+            if (vin.length !== 17) {
+               alert('O VIN deve ter exatamente 17 caracteres.');
+               event.preventDefault(); // Impede o envio do formulário
+               return false;
+            }
+         
+            // Verificação dos primeiros 4 caracteres do VIN
+            var vinPrefixo = vin.substring(0, 4);
+            var vinPermitidos = ['95PJ', '95PZ', '95PB', '95PE', '95PD', '95PF'];
+         
+            if (!vinPermitidos.includes(vinPrefixo)) {
+               alert('O VIN não existe');
+               event.preventDefault(); // Impede o envio do formulário
+               return false;
+            }
+         
+            if (peça) {
+               if (!posição) {
+                     alert('Por favor, selecione uma posição.');
                      event.preventDefault(); // Impede o envio do formulário
                      return false;
-                 }
-             
-                 // Verificação dos primeiros 4 caracteres do VIN
-                 var vinPrefixo = vin.substring(0, 4);
-                 var vinPermitidos = ['95PJ', '95PZ', '95PB', '95PE', '95PD', '95PF'];
-             
-                 if (!vinPermitidos.includes(vinPrefixo)) {
-                     alert('O VIN não existe');
+               }
+         
+               if (!problema) {
+                     alert('Por favor, selecione um problema.');
                      event.preventDefault(); // Impede o envio do formulário
                      return false;
-                 }
-             
-                 if (peça) {
-                     if (!posição) {
-                         alert('Por favor, selecione uma posição.');
-                         event.preventDefault(); // Impede o envio do formulário
-                         return false;
+               }
+         
+               if (!responsável) {
+                     alert('Por favor, selecione um responsável.');
+                     event.preventDefault(); // Impede o envio do formulário
+                     return false;
+               }
+         
+               if (!criticidade) {
+                     alert('Por favor, selecione uma criticidade.');
+                     event.preventDefault(); // Impede o envio do formulário
+                     return false;
+               }
+            }
+         
+            // Validação do VIN com requisição AJAX
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'verificar_vin.cfm', true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function () {
+               if (xhr.readyState === 4 && xhr.status === 200) {
+                     var response = xhr.responseText.trim();
+                     if (response === 'EXISTE_COM_CONDICAO') {
+                        alert('O VIN já foi inserido como OK. Não é possível prosseguir com o VIN NG.');
+                        event.preventDefault(); // Impede o envio do formulário
+                     } else if (response === 'PROBLEMA_EXISTE_FORM_NULO') {
+                        alert('O VIN já existe na tabela com um problema registrado. O campo PROBLEMA no formulário não pode estar vazio.');
+                        event.preventDefault(); // Impede o envio do formulário
+                     } else if (response === 'EXISTE') {
+                        alert('O VIN já existe na tabela. Por favor, verifique os dados.');
+                        event.preventDefault(); // Impede o envio do formulário
+                     } else if (response === 'PERMITIR_ENVIO') {
+                        // Permite o envio do formulário
+                        document.getElementById('form_envio').submit();
+                     } else {
+                        document.getElementById('form_envio').submit();
                      }
-             
-                     if (!problema) {
-                         alert('Por favor, selecione um problema.');
-                         event.preventDefault(); // Impede o envio do formulário
-                         return false;
-                     }
-             
-                     if (!responsável) {
-                         alert('Por favor, selecione um responsável.');
-                         event.preventDefault(); // Impede o envio do formulário
-                         return false;
-                     }
-             
-                     if (!criticidade) {
-                         alert('Por favor, selecione uma criticidade.');
-                         event.preventDefault(); // Impede o envio do formulário
-                         return false;
-                     }
-                 }
-             
-                 // Validação do VIN com requisição AJAX
-                 var xhr = new XMLHttpRequest();
-                 xhr.open('POST', 'verificar_vin.cfm', true);
-                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                 xhr.onreadystatechange = function () {
-                     if (xhr.readyState === 4 && xhr.status === 200) {
-                         var response = xhr.responseText.trim();
-                         if (response === 'EXISTE_COM_CONDICAO') {
-                             alert('O VIN já foi inserido como OK. Não é possível prosseguir com o VIN NG.');
-                             event.preventDefault(); // Impede o envio do formulário
-                         } else if (response === 'PROBLEMA_EXISTE_FORM_NULO') {
-                             alert('O VIN já existe na tabela com um problema registrado. O campo PROBLEMA no formulário não pode estar vazio.');
-                             event.preventDefault(); // Impede o envio do formulário
-                         } else if (response === 'EXISTE') {
-                             alert('O VIN já existe na tabela. Por favor, verifique os dados.');
-                             event.preventDefault(); // Impede o envio do formulário
-                         } else if (response === 'PERMITIR_ENVIO') {
-                             // Permite o envio do formulário
-                             document.getElementById('form_envio').submit();
-                         } else {
-                             document.getElementById('form_envio').submit();
-                         }
-                     }
-                 };
-                 xhr.send('vin=' + vin + '&problema=' + problema + '&barreira=CP7');
-             
-                 // Impede o envio até a resposta da requisição AJAX
-                 event.preventDefault();
-             }
-          </script>
-       </head>
-       <body>
-          <!-- Header com as imagens e o menu -->
-          <header class="titulo">
-             <cfinclude template="auxi/nav_links.cfm">
-          </header>
-          <div class="container mt-4">
-             <h2 class="titulo2">CP7</h2>
-             <br>
-             <cfquery name="pecas" datasource="#BANCOSINC#">
-                SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
-                WHERE SHOP = 'FA'
-                ORDER BY DEFEITO
-             </cfquery>
-             <form onsubmit="return validarFormulario(event);" method="post" id="form_envio">
-                <div class="form-row">
-                   <div class="form-group col-md-2">
-                      <label for="formData">Data</label>
-                      <input type="date" class="form-control form-control-sm" name="data" id="formData" value="<cfoutput>#dateFormat(now(), 'yyyy-mm-dd')#</cfoutput>"readonly="readonly">
-                   </div>
-                   <cfquery name="login" datasource="#BANCOSINC#">
-                      SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
-                      WHERE USER_NAME = '#cookie.user_apontamento_fa#'
-                   </cfquery>
-                   <cfoutput>
-                      <div class="form-group col-md-2">
-                         <label for="formNome">Inspetor</label>
-                         <input type="text" class="form-control form-control-sm" name="nome" id="formNome" required="required" value="#login.USER_SIGN#" readonly="readonly">
-                      </div>
-                      <cfquery name="consulta1" datasource="#BANCOSINC#">
-                         SELECT * FROM (
-                         SELECT ID, VIN,MODELO,BARREIRA  FROM SISTEMA_QUALIDADE_FA ORDER BY ID DESC)
-                         WHERE ROWNUM = 1
-                      </cfquery>
-                      <!---                     <cfdump  var="#consulta1#"> --->
-                      <div class="form-group col-md-2">
-                         <label for="formVIN">VIN</label>
-                         <input type="text" class="form-control form-control-sm" minlength="17"name="vin" id="formVIN" title="Insira o VIN Completo" required="required" oninput="this.value = this.value.replace(/\s+/g, '')">
-                      </div>
-                      <!--- <cfdump var="#buscaMES#"> --->
-                      <div class="form-group col-md-2">
-                         <label for="formModelo">Modelo</label>
-                         <input type="text" class="form-control form-control-sm" name="modelo" id="formModelo" readonly="readonly">
-                         <input id="modelo" name="modelo" type="hidden"
-                            value="<cfif isDefined("buscaMES.name")>#buscaMES.name#
-                         <cfelse>
-                         </cfif>">
-                      </div>
-                      <div class="form-group col-md-2">
-                         <label for="formLocal">Local</label>
-                         <select
-                            class="form-control form-control-sm"
-                            name="local"
-                            id="formLocal"
-                            required="required"
-                            readonly="readonly">
-                            <option value="CP7">CP7</option>
-                         </select>
-                   </cfoutput>
-                   </div>
-                </div>
-                <div class="form-row">
-                   <div class="form-group col-md-2">
-                      <label for="formNConformidade">Peça</label>
-                      <input class="form-control form-control-sm" list="pecasList" name="N_Conformidade" id="formNConformidade" placeholder="Selecione a Peça">
-                      <datalist id="pecasList">
-                         <option value="">Selecione a Peça</option>
-                         <cfloop query="pecas">
-                            <cfoutput>
-                               <option value="#defeito#">#defeito#</option>
-                            </cfoutput>
-                         </cfloop>
-                      </datalist>
-                   </div>
-                   <div class="form-group col-md-2">
-                      <label for="formPosicao">
-                      Posição</label>
-                      <select class="form-control form-control-sm" name="posicao" id="formPosicao">
-                         <cfinclude template="auxi/batalha_option.cfm">
-                      </select>
-                   </div>
-                   <div class="form-group col-md-2">
-                      <label for="formProblema">Problema</label>
-                      <input class="form-control form-control-sm" list="problemasList" name="problema" id="formProblema" oninput="transformToUpperCase(this)">
-                      <datalist id="problemasList">
-                         <cfinclude template="auxi/problemas_option.cfm">
-                      </datalist>
-                   </div>
-                   <div class="form-group col-md-2">
-                      <label for="formEstacao">Responsável</label>
-                      <select class="form-control form-control-sm" name="estacao" id="formEstacao" style="width: 200px;">
-                         <option value="">
-                            Selecione o Responsável:
-                         </option>
-                         <cfinclude template="auxi/estacao.cfm">
-                      </select>
-                   </div>
-                   <div class="form-group col-md-2">
-                      <label for="formCriticidade">Criticidade</label>
-                      <select class="form-control form-control-sm" name="criticidade" id="formCriticidade">
-                         <option value="">Selecione</option>
-                         <option value="N0">N0</option>
-                         <option value="N1">N1</option>
-                         <option value="N2">N2</option>
-                         <option value="N3">N3</option>
-                         <option value="N4">N4</option>
-                         <option value="OK A-">OK A-</option>
-                         <option value="AVARIA">AVARIA</option>
-                      </select>
-                   </div>
-                   <div class="form-group col-md-3">
-                      <input type="hidden" name="barcode" id="barcode" value="<cfif isDefined('buscaBarcode.BARCODE')>#buscaBarcode.BARCODE#<cfelse></cfif>">
-                   </div>
-                </div>
-                <div class="form-row"></div>
-                <button type="submit" class="btn btn-primary">Enviar</button>
-                <!----acrescenta o modelo no banco de dados ---->
-                <cfif isDefined("form.VIN") and form.VIN neq "">
-                <cfquery name="buscaMES" datasource="#BANCOMES#">
-                   select
-                   rtrim(ltrim(replace(
-                   replace(
-                   replace(
-                   replace(
-                   replace(
-                   replace(
-                   replace(
-                   replace(
-                   replace(
-                   replace(
-                   replace(
+               }
+            };
+            xhr.send('vin=' + vin + '&problema=' + problema + '&barreira=CP7');
+         
+            // Impede o envio até a resposta da requisição AJAX
+            event.preventDefault();
+         }
+      </script>
+   </head>
+   <body>
+      <header class="titulo">
+         <cfinclude template="auxi/nav_links.cfm">
+      </header>
+      <div class="container mt-4">
+         <h2 class="titulo2">CP7</h2><br>
+         <cfquery name="pecas" datasource="#BANCOSINC#">
+            SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
+            WHERE SHOP = 'FA'
+            ORDER BY DEFEITO
+         </cfquery>
+         <form onsubmit="return validarFormulario(event);" method="post" id="form_envio">
+            <div class="form-row">
+               <div class="form-group col-md-2">
+                  <label for="formData">Data</label>
+                     <input type="date" class="form-control form-control-sm" name="data" id="formData" value="<cfoutput>#dateFormat(now(), 'yyyy-mm-dd')#</cfoutput>"readonly="readonly">
+               </div>
+            <cfquery name="login" datasource="#BANCOSINC#">
+               SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
+               WHERE USER_NAME = '#cookie.user_apontamento_fa#'
+            </cfquery>
+
+            <cfoutput>
+               <div class="form-group col-md-2">
+                  <label for="formNome">Inspetor</label>
+                  <input type="text" class="form-control form-control-sm" name="nome" id="formNome" required="required" value="#login.USER_SIGN#" readonly="readonly">
+               </div>
+            <cfquery name="consulta1" datasource="#BANCOSINC#">
+               SELECT * FROM (
+               SELECT ID, VIN,MODELO,BARREIRA  FROM SISTEMA_QUALIDADE_FA ORDER BY ID DESC)
+               WHERE ROWNUM = 1
+            </cfquery>
+               <div class="form-group col-md-2">
+                  <label for="formVIN">VIN</label>
+                  <input type="text" class="form-control form-control-sm" minlength="17" name="vin" id="formVIN" title="Insira o VIN Completo" required="required" oninput="this.value = this.value.replace(/\s+/g, '')">
+               </div>
+            <script>
+               // Adiciona um evento ao carregar a página para focar no campo
+               document.addEventListener('DOMContentLoaded', function () {
+                  const vinInput = document.getElementById('formVIN');
+                  if (vinInput) {
+                     vinInput.focus(); // Foca no campo VIN
+                  }
+               });
+            </script>
+               <div class="form-group col-md-2">
+                  <label for="formModelo">Modelo</label>
+                  <input type="text" class="form-control form-control-sm" name="modelo" id="formModelo" readonly="readonly">
+                  <input id="modelo" name="modelo" type="hidden" value="<cfif isDefined("buscaMES.name")>#buscaMES.name#<cfelse></cfif>">
+               </div>
+               <div class="form-group col-md-2">
+                  <label for="formLocal">Local</label>
+                  <select class="form-control form-control-sm" name="local" id="formLocal" required="required" readonly="readonly">
+                     <option value="CP7">CP7</option>
+                  </select>
+            </cfoutput>
+               </div>
+      </div>
+      <div class="form-row">
+         <div class="form-group col-md-2">
+            <label for="formNConformidade">Peça</label>
+            <input class="form-control form-control-sm" list="pecasList" name="N_Conformidade" id="formNConformidade" placeholder="Selecione a Peça">
+            <datalist id="pecasList">
+               <option value="">Selecione a Peça</option>
+               <cfloop query="pecas">
+                  <cfoutput>
+                     <option value="#defeito#">#defeito#</option>
+                  </cfoutput>
+               </cfloop>
+            </datalist>
+         </div>
+         <div class="form-group col-md-2">
+            <label for="formPosicao">
+            Posição</label>
+            <select class="form-control form-control-sm" name="posicao" id="formPosicao">
+               <cfinclude template="auxi/batalha_option.cfm">
+            </select>
+         </div>
+         <div class="form-group col-md-2">
+            <label for="formProblema">Problema</label>
+            <input class="form-control form-control-sm" list="problemasList" name="problema" id="formProblema" oninput="transformToUpperCase(this)">
+            <datalist id="problemasList">
+               <cfinclude template="auxi/problemas_option.cfm">
+            </datalist>
+         </div>
+         <div class="form-group col-md-2">
+            <label for="formEstacao">Responsável</label>
+            <select class="form-control form-control-sm" name="estacao" id="formEstacao" style="width: 200px;">
+               <option value="">
+                  Selecione o Responsável:
+               </option>
+               <cfinclude template="auxi/estacao.cfm">
+            </select>
+         </div>
+         <div class="form-group col-md-2">
+            <label for="formCriticidade">Criticidade</label>
+            <select class="form-control form-control-sm" name="criticidade" id="formCriticidade">
+               <option value="">Selecione</option>
+               <option value="N0">N0</option>
+               <option value="N1">N1</option>
+               <option value="N2">N2</option>
+               <option value="N3">N3</option>
+               <option value="N4">N4</option>
+               <option value="OK A-">OK A-</option>
+               <option value="AVARIA">AVARIA</option>
+            </select>
+         </div>
+         <div class="form-group col-md-3">
+            <input type="hidden" name="barcode" id="barcode" value="<cfif isDefined('buscaBarcode.BARCODE')>#buscaBarcode.BARCODE#<cfelse></cfif>">
+         </div>
+      </div>
+      <div class="form-row"></div>
+         <button type="submit" class="btn btn-primary">Enviar</button>
+            <cfif isDefined("form.VIN") and form.VIN neq "">
+               <cfquery name="buscaMES" datasource="#BANCOMES#">
+                   select rtrim(ltrim(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(
                    replace(replace(p.name,'CONJUNTO',''),'TRIM',''),
-                   ' FL',''),
-                   'BRANCO',''),
-                   'PEROLA',''),
-                   'PRATA',''),
-                   'AZUL',''),
-                   'PRETO',''),
-                   'CINZA',''),
-                   'TXS','PL7'),
-                   'ESCURO',''),
-                   'NOVO MOTOR',''),
-                   'CINZA',''))) modelo,
+                   ' FL',''),'BRANCO',''),'PEROLA',''),'PRATA',''),'AZUL',''),
+                   'PRETO',''),'CINZA',''),'TXS','PL7'),'ESCURO',''),'NOVO MOTOR',''),'CINZA',''))) modelo,
                    p.name, g.vin, g.IDProduct, g.*
                    from CTBLGravacao g
                    left join TBLProduct p on g.IDProduct = p.IDProduct
@@ -372,22 +338,22 @@
                    order by g.DtCreation desc
                 </cfquery>
                 <!----acrescenta o barcode no banco de dados ---->
-                <cfif isDefined("form.VIN") and form.VIN neq "">
-                <cfquery name="buscaBarcode" datasource="#BANCOMES#">
-                   select 
-                   l.code as BARCODE,
-                   g.VIN,
-                   p.name,
-                   g.IDProduct,
-                   l.IDLot,
-                   g.IDLot
-                   from CTBLGravacao g
-                   left join TBLLot l on g.IDLot = l.IDLot
-                   left join TBLProduct p on g.IDProduct = p.IDProduct
-                   where g.VIN = UPPER('#form.VIN#')
-                   order by g.DtCreation desc
-                </cfquery>
-                </cfif>
+            <cfif isDefined("form.VIN") and form.VIN neq "">
+               <cfquery name="buscaBarcode" datasource="#BANCOMES#">
+                  select 
+                  l.code as BARCODE,
+                  g.VIN,
+                  p.name,
+                  g.IDProduct,
+                  l.IDLot,
+                  g.IDLot
+                  from CTBLGravacao g
+                  left join TBLLot l on g.IDLot = l.IDLot
+                  left join TBLProduct p on g.IDProduct = p.IDProduct
+                  where g.VIN = UPPER('#form.VIN#')
+                  order by g.DtCreation desc
+               </cfquery>
+            </cfif>
                 <!--- Inserir item --->
                 <!-- Verifica se o VIN existe na BARREIRA 'CP7' -->
                 <!-- Verifica se o VIN já existe e obtém a USER_DATA se existir -->

@@ -438,7 +438,7 @@
                   INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_FAI (
                   ID, USER_DATA, USER_COLABORADOR, VIN, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, STATUS, ULTIMO_REGISTRO
                   ) VALUES (
-                    <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
+                     seq_id.NEXTVAL,
                     <cfqueryparam value="#userDataInserir#" cfsqltype="CF_SQL_TIMESTAMP">,
                     <cfqueryparam value="#form.nome#" cfsqltype="CF_SQL_VARCHAR">,
                     <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">,

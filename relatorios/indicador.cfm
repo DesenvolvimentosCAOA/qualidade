@@ -5,626 +5,935 @@
     <cfcontent type="text/html; charset=UTF-8">
     <cfprocessingdirective pageEncoding="utf-8">
 
-    <cfquery name="consultas" datasource="#BANCOSINC#">
-        SELECT * 
-        FROM (
-            SELECT * 
-            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
-            WHERE 1 = 1
-            <cfif isDefined("url.searchID") and url.searchID neq "">
-                AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-            </cfif>
-            <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                AND UPPER(BARCODE) LIKE UPPER('%' || <cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR"> || '%')
-            </cfif>
-            <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-                AND UPPER(PECA) LIKE UPPER('%' || <cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR"> || '%')
-            </cfif>
-            <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-                AND UPPER(POSICAO) LIKE UPPER('%' || <cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR"> || '%')
-            </cfif>
-            <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-                AND UPPER(PROBLEMA) LIKE UPPER('%' || <cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR"> || '%')
-            </cfif>
-            AND PROBLEMA IS NOT NULL
-            ORDER BY ID DESC
-        )
-        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
-        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
-    </cfquery>
-
-    <cfquery name="consultas_paint" datasource="#BANCOSINC#">
-        SELECT *
-        FROM (
-        SELECT *
-        FROM INTCOLDFUSION.SISTEMA_QUALIDADE
-        WHERE 1 = 1
-        <cfif isDefined("url.searchID") and url.searchID neq "">
-            AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-        </cfif>
-        <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-            AND UPPER(BARCODE) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
-        </cfif>
-        <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-            AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
-        </cfif>
-        <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-            AND UPPER(POSICAO) LIKE UPPER('%<cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR">%')
-        </cfif>
-        <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-            AND UPPER(PROBLEMA) LIKE UPPER('%<cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR">%')
-        </cfif>
-        AND PROBLEMA IS NOT NULL
-        ORDER BY ID DESC
-        )
-        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
-        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
-    </cfquery>
-
-    <cfquery name="consultas_fa" datasource="#BANCOSINC#">
-        SELECT *
-        FROM (
-            SELECT *
-            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
-            WHERE 1 = 1
-            <cfif isDefined("url.searchID") and url.searchID neq "">
-                AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-            </cfif>
-            <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-                AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-                AND UPPER(POSICAO) LIKE UPPER('%<cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-                AND UPPER(PROBLEMA) LIKE UPPER('%<cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            AND PROBLEMA IS NOT NULL
-            ORDER BY ID DESC
-        )
-        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
-        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
-    </cfquery>
-
-    <cfquery name="consultas_fai" datasource="#BANCOSINC#">
-        SELECT *
-            FROM (
-                SELECT *
-                FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-                WHERE 1 = 1
-                <cfif isDefined("url.searchID") and url.searchID neq "">
-                    AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-                </cfif>
-                <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                    AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
-                </cfif>
-                <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-                    AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
-                </cfif>
-                <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-                    AND UPPER(POSICAO) LIKE UPPER('%<cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR">%')
-                </cfif>
-                <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-                    AND UPPER(PROBLEMA) LIKE UPPER('%<cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR">%')
-                </cfif>
-                AND PROBLEMA IS NOT NULL
-                ORDER BY ID DESC
-            )
-        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
-        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
-    </cfquery>
-
-    <cfquery name="consultas_pdi" datasource="#BANCOSINC#">
-        SELECT *
-        FROM (
-            SELECT *
-            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
-            WHERE 1 = 1
-            <cfif isDefined("url.searchID") and url.searchID neq "">
-                AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-            </cfif>
-            <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-                AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-                AND UPPER(POSICAO) LIKE UPPER('%<cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-                AND UPPER(PROBLEMA) LIKE UPPER('%<cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            AND PROBLEMA IS NOT NULL
-            ORDER BY ID DESC
-        )
-        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
-        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
-    </cfquery>
-
-    <cfquery name="consultas_acomp_cont" datasource="#BANCOSINC#">
-        SELECT *
-        FROM (
-            SELECT *
-            FROM INTCOLDFUSION.vereagir2
-            WHERE 1 = 1
-            <cfif isDefined("url.searchID") and url.searchID neq "">
-                AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-            </cfif>
-            <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-                AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-                AND UPPER(POSICAO) LIKE UPPER('%<cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-                AND UPPER(PROBLEMA) LIKE UPPER('%<cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchStatus") and url.searchStatus neq "">
-                AND UPPER(STATUS) LIKE UPPER('%<cfqueryparam value="#url.searchStatus#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            AND PROBLEMA IS NOT NULL
-            -- AND BP_CONTENCAO_PROCESSO IS NULL
-            ORDER BY DATA_REGISTRO DESC
-        )
-        WHERE ROWNUM <= 200
-    </cfquery>
-
-    <cfquery name="consulta_datas" datasource="#BANCOSINC#">
-        SELECT
-            ID,
-            DATA_BP_PROCESSO,
-            DATA_BP_DEFINITIVO_PROCESSO,
-            ROUND(
-                CASE 
-                    WHEN DATA_BP_PROCESSO IS NULL THEN SYSDATE - DATA_REGISTRO
-                    ELSE DATA_BP_PROCESSO - DATA_REGISTRO
-                END
-            ) AS DIAS
-        FROM VEREAGIR2
-    </cfquery>
-
-    <cfquery name="consulta_data_definitivo" datasource="#BANCOSINC#">
-        SELECT
-            ID,
-            DATA_REGISTRO,
-            DATA_BP_DEFINITIVO_PROCESSO,
-            ROUND(
-                CASE
-                WHEN DATA_BP_DEFINITIVO_PROCESSO IS NULL THEN SYSDATE - DATA_REGISTRO
-                ELSE DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO
-                END
-                ) AS DIAS_DEFINITIVO
-        FROM VEREAGIR2
-    </cfquery>
-
+    <!-- Verificar se o parâmetro 'mes' existe na URL, caso contrário, usar o mês atual -->
+    <cfif NOT isDefined("url.mes") OR trim(url.mes) EQ "">
+        <cfset mesSelecionado = dateFormat(now(), "yyyy-mm")> <!-- Mês atual -->
+    <cfelse>
+        <cfset mesSelecionado = url.mes> <!-- Mês selecionado da URL -->
+    </cfif>
     
+    <!--TRIM SHOP-->
+    <cfquery name="consulta_semanal" datasource="#BANCOSINC#">
+        SELECT 
+            TO_CHAR(DATA_BP_PROCESSO, 'IW') AS Semana,
+            AVG(ROUND(DATA_BP_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+        FROM VEREAGIR2
+        WHERE DATA_BP_PROCESSO IS NOT NULL
+        AND BARREIRA = 'FA'
+        AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        GROUP BY TO_CHAR(DATA_BP_PROCESSO, 'IW')
+        ORDER BY Semana
+    </cfquery>
+    <cfquery name="consulta_semanal_definitivo" datasource="#BANCOSINC#">
+        SELECT 
+            TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW') AS Semana,
+            AVG(ROUND(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+        FROM VEREAGIR2
+        WHERE DATA_BP_DEFINITIVO_PROCESSO IS NOT NULL
+        AND BARREIRA = 'FA'
+        AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        GROUP BY TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW')
+        ORDER BY Semana
+    </cfquery>
 
-    
-<html lang="pt-BR">
+    <!--PAINT SHOP-->
+    <cfquery name="consulta_semanal_paint" datasource="#BANCOSINC#">
+        SELECT 
+            TO_CHAR(DATA_BP_PROCESSO, 'IW') AS Semana,
+            AVG(ROUND(DATA_BP_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+        FROM VEREAGIR2
+        WHERE DATA_BP_PROCESSO IS NOT NULL
+        AND BARREIRA = 'PAINT'
+        AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        GROUP BY TO_CHAR(DATA_BP_PROCESSO, 'IW')
+        ORDER BY Semana
+    </cfquery>
+    <cfquery name="consulta_semanal_definitivo_paint" datasource="#BANCOSINC#">
+        SELECT 
+            TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW') AS Semana,
+            AVG(ROUND(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+        FROM VEREAGIR2
+        WHERE DATA_BP_DEFINITIVO_PROCESSO IS NOT NULL
+        AND BARREIRA = 'PAINT'
+        AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        GROUP BY TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW')
+        ORDER BY Semana
+    </cfquery>
+
+    <!--BODY SHOP-->
+    <cfquery name="consulta_semanal_body" datasource="#BANCOSINC#">
+        SELECT 
+            TO_CHAR(DATA_BP_PROCESSO, 'IW') AS Semana,
+            AVG(ROUND(DATA_BP_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+        FROM VEREAGIR2
+        WHERE DATA_BP_PROCESSO IS NOT NULL
+        AND BARREIRA = 'BODY'
+        AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        GROUP BY TO_CHAR(DATA_BP_PROCESSO, 'IW')
+        ORDER BY Semana
+    </cfquery>
+    <cfquery name="consulta_semanal_definitivo_body" datasource="#BANCOSINC#">
+        SELECT 
+            TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW') AS Semana,
+            AVG(ROUND(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+        FROM VEREAGIR2
+        WHERE DATA_BP_DEFINITIVO_PROCESSO IS NOT NULL
+        AND BARREIRA = 'BODY'
+        AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        GROUP BY TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW')
+        ORDER BY Semana
+    </cfquery>
+
+    <!--FAI SHOP-->
+    <cfquery name="consulta_semanal_fai" datasource="#BANCOSINC#">
+        SELECT 
+            TO_CHAR(DATA_BP_PROCESSO, 'IW') AS Semana,
+            AVG(ROUND(DATA_BP_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+        FROM VEREAGIR2
+        WHERE DATA_BP_PROCESSO IS NOT NULL
+        AND BARREIRA = 'FAI'
+        AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        GROUP BY TO_CHAR(DATA_BP_PROCESSO, 'IW')
+        ORDER BY Semana
+    </cfquery>
+    <cfquery name="consulta_semanal_definitivo_fai" datasource="#BANCOSINC#">
+        SELECT 
+            TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW') AS Semana,
+            AVG(ROUND(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+        FROM VEREAGIR2
+        WHERE DATA_BP_DEFINITIVO_PROCESSO IS NOT NULL
+        AND BARREIRA = 'FAI'
+        AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        GROUP BY TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW')
+        ORDER BY Semana
+    </cfquery>
+
+    <!--PDI SHOP-->
+    <cfquery name="consulta_semanal_pdi" datasource="#BANCOSINC#">
+        SELECT 
+            TO_CHAR(DATA_BP_PROCESSO, 'IW') AS Semana,
+            AVG(ROUND(DATA_BP_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+        FROM VEREAGIR2
+        WHERE DATA_BP_PROCESSO IS NOT NULL
+        AND BARREIRA = 'PDI'
+        AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        GROUP BY TO_CHAR(DATA_BP_PROCESSO, 'IW')
+        ORDER BY Semana
+    </cfquery>
+    <cfquery name="consulta_semanal_definitivo_pdi" datasource="#BANCOSINC#">
+        SELECT 
+            TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW') AS Semana,
+            AVG(ROUND(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+        FROM VEREAGIR2
+        WHERE DATA_BP_DEFINITIVO_PROCESSO IS NOT NULL
+        AND BARREIRA = 'PDI'
+        AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        GROUP BY TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW')
+        ORDER BY Semana
+    </cfquery>
+
+    <cfquery name="contagemStatus_Body" datasource="#BANCOSINC#">
+        SELECT STATUS, COUNT(*) AS total_status
+        FROM VEREAGIR2
+        WHERE TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        AND BARREIRA = 'BODY'
+        GROUP BY STATUS
+    </cfquery>
+
+    <cfquery name="contagemStatus_paint" datasource="#BANCOSINC#">
+        SELECT STATUS, COUNT(*) AS total_status
+        FROM VEREAGIR2
+        WHERE TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        AND BARREIRA = 'PAINT'
+        GROUP BY STATUS
+    </cfquery>
+
+    <cfquery name="contagemStatus_fa" datasource="#BANCOSINC#">
+        SELECT STATUS, COUNT(*) AS total_status
+        FROM VEREAGIR2
+        WHERE TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        AND BARREIRA = 'FA'
+        GROUP BY STATUS
+    </cfquery>
+
+    <cfquery name="contagemStatus_fai" datasource="#BANCOSINC#">
+        SELECT STATUS, COUNT(*) AS total_status
+        FROM VEREAGIR2
+        WHERE TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        AND BARREIRA = 'FAI'
+        GROUP BY STATUS
+    </cfquery>
+
+    <cfquery name="contagemStatus_pdi" datasource="#BANCOSINC#">
+        SELECT STATUS, COUNT(*) AS total_status
+        FROM VEREAGIR2
+        WHERE TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
+        AND BARREIRA = 'PDI'
+        GROUP BY STATUS
+    </cfquery>
+
+<html>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>VER & AGIR</title>
+        <title>Indicador - VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/relatorios/assets/style.css?v2">
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <style>
+            .chart-container {
+                display: flex;
+                justify-content: space-around;
+            }
+            .btn-container {
+                margin-top: 10vw;
+            }
+            /* Estilo para o select */
+            .select-rounded {
+                border-radius: 20px;
+                padding: 10px 20px;
+                background-color: #132a32; /* Cor de fundo similar ao seu botão */
+                color: white;  /* Cor do texto */
+                border: 1px solid #5a5a5a;  /* Borda sutil */
+                font-weight: bold;
+                font-size: 1vw; /* Tamanho da fonte */
+                cursor: pointer;
+                margin: 5px;
+                position: relative;
+                appearance: none; /* Para remover o estilo nativo de certos navegadores */
+                -webkit-appearance: none; /* Para garantir que o estilo seja removido no Safari */
+                -moz-appearance: none; /* Para garantir que o estilo seja removido no Firefox */
+            }
+        
+            /* Estilo para a seta do select */
+            .select-rounded::-ms-expand {
+                display: none; /* Remove a seta do select no IE */
+            }
+        
+            .select-rounded option {
+                background-color: #132a32;
+                color: white;
+            }
+        
+            .label-rounded {
+                font-size: 1.2vw;
+                font-weight: bold;
+                color: white; /* Cor do texto */
+                margin-right: 10px; /* Espaço entre o label e o select */
+                font-family: Arial, sans-serif;
+            }
+        
+            .select-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 20px; /* Espaço acima */
+                position: fixed; /* Fixa o container na tela */
+                top: 70px; /* Distância do topo da página */
+                right: 20px; /* Distância da direita da página */
+                z-index: 1000; /* Garante que o container fique acima de outros elementos */
+                background-color: rgba(0, 0, 0, 0.7); /* Fundo escuro com transparência */
+                border-radius: 15px; /* Bordas arredondadas */
+                padding: 10px; /* Espaçamento interno */
+            }
+        </style>
+
+        <script type="text/javascript">
+            google.charts.load('current', {packages: ['corechart', 'bar']});
+            google.charts.setOnLoadCallback(drawFirstChart);
+            google.charts.setOnLoadCallback(drawSecondChart);
+      
+            // Primeiro gráfico
+            function drawFirstChart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Semana');
+                data.addColumn('number', 'Média Tempo de Resposta');
+                data.addColumn({type: 'string', role: 'style'});
+                data.addColumn({type: 'string', role: 'annotation'});
+
+                <cfoutput query="consulta_semanal">
+                var mediaDias = #Media_Dias#;
+                var corBarra = (mediaDias > 1) ? 'color: red' : 'color: green';
+                data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
+                </cfoutput>
+
+                var options = {
+                title: 'Média Tempo de Resposta de BP de Contenção',
+                hAxis: {
+                    title: 'Semana',
+                },
+                vAxis: {
+                    title: 'Média de Dias',
+                    minValue: 0
+                },
+                legend: { position: "none" },
+                annotations: {
+                    alwaysOutside: false, // Coloca o rótulo sempre fora da barra
+                    textStyle: {
+                    color: 'black',  // Cor do texto
+                    fontSize: 15,     // Tamanho da fonte
+                    bold: true        // Negrito
+                    }
+                }
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_1'));
+                chart.draw(data, options);
+            }
+
+            // Segundo gráfico
+            function drawSecondChart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Semana');
+                data.addColumn('number', 'Média Tempo de Resposta');
+                data.addColumn({type: 'string', role: 'style'});
+                data.addColumn({type: 'string', role: 'annotation'});
+
+                <cfoutput query="consulta_semanal_definitivo">
+                var mediaDias = #Media_Dias#;
+                var corBarra = (mediaDias > 7) ? 'color: red' : 'color: green';
+                data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
+                </cfoutput>
+
+                var options = {
+                title: 'Média Tempo de Resposta de BP Definitivo',
+                hAxis: {
+                    title: 'Semana',
+                },
+                vAxis: {
+                    title: 'Média de Dias',
+                    minValue: 0
+                },
+                legend: { position: "none" },
+                annotations: {
+                    alwaysOutside: false, // Coloca o rótulo sempre fora da barra
+                    textStyle: {
+                    color: 'black',  // Cor do texto
+                    fontSize: 15,     // Tamanho da fonte
+                    bold: true        // Negrito
+                    }
+                }
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_2'));
+                chart.draw(data, options);
+            }
+        </script>
+
+        <script type="text/javascript">
+            google.charts.load('current', {packages: ['corechart', 'bar']});
+            google.charts.setOnLoadCallback(draw3Chart);
+            google.charts.setOnLoadCallback(draw4Chart);
+
+            // Primeiro gráfico
+            function draw3Chart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Semana');
+                data.addColumn('number', 'Média Tempo de Resposta');
+                data.addColumn({type: 'string', role: 'style'});
+                data.addColumn({type: 'string', role: 'annotation'});
+
+                <cfoutput query="consulta_semanal_paint">
+                var mediaDias = #Media_Dias#;
+                var corBarra = (mediaDias > 1) ? 'color: red' : 'color: green';
+                data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
+                </cfoutput>
+
+                var options = {
+                title: 'Média Tempo de Resposta de BP de Contenção',
+                hAxis: {
+                    title: 'Semana',
+                },
+                vAxis: {
+                    title: 'Média de Dias',
+                    minValue: 0
+                },
+                legend: { position: "none" },
+                annotations: {
+                    alwaysOutside: false, // Coloca o rótulo sempre fora da barra
+                    textStyle: {
+                    color: 'black',  // Cor do texto
+                    fontSize: 15,     // Tamanho da fonte
+                    bold: true        // Negrito
+                    }
+                }
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_3'));
+                chart.draw(data, options);
+            }
+
+            // Segundo gráfico
+            function draw4Chart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Semana');
+                data.addColumn('number', 'Média Tempo de Resposta');
+                data.addColumn({type: 'string', role: 'style'});
+                data.addColumn({type: 'string', role: 'annotation'});
+
+                <cfoutput query="consulta_semanal_definitivo_paint">
+                var mediaDias = #Media_Dias#;
+                var corBarra = (mediaDias > 7) ? 'color: red' : 'color: green';
+                data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
+                </cfoutput>
+
+                var options = {
+                title: 'Média Tempo de Resposta de BP Definitivo',
+                hAxis: {
+                    title: 'Semana',
+                },
+                vAxis: {
+                    title: 'Média de Dias',
+                    minValue: 0
+                },
+                legend: { position: "none" },
+                annotations: {
+                    alwaysOutside: false, // Coloca o rótulo sempre fora da barra
+                    textStyle: {
+                    color: 'black',  // Cor do texto
+                    fontSize: 15,     // Tamanho da fonte
+                    bold: true        // Negrito
+                    }
+                }
+                };
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_4'));
+                chart.draw(data, options);
+            }
+        </script>
+
+        <script type="text/javascript">
+            google.charts.load('current', {packages: ['corechart', 'bar']});
+            google.charts.setOnLoadCallback(draw5Chart);
+            google.charts.setOnLoadCallback(draw6Chart);
+
+            // Primeiro gráfico
+            function draw5Chart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Semana');
+                data.addColumn('number', 'Média Tempo de Resposta');
+                data.addColumn({type: 'string', role: 'style'});
+                data.addColumn({type: 'string', role: 'annotation'});
+
+                <cfoutput query="consulta_semanal_body">
+                var mediaDias = #Media_Dias#;
+                var corBarra = (mediaDias > 1) ? 'color: red' : 'color: green';
+                data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
+                </cfoutput>
+
+                var options = {
+                title: 'Média Tempo de Resposta de BP de Contenção',
+                hAxis: {
+                    title: 'Semana',
+                },
+                vAxis: {
+                    title: 'Média de Dias',
+                    minValue: 0
+                },
+                legend: { position: "none" },
+                annotations: {
+                    alwaysOutside: false, // Coloca o rótulo sempre fora da barra
+                    textStyle: {
+                    color: 'black',  // Cor do texto
+                    fontSize: 15,     // Tamanho da fonte
+                    bold: true        // Negrito
+                    }
+                }
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_5'));
+                chart.draw(data, options);
+            }
+
+            // Segundo gráfico
+            function draw6Chart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Semana');
+                data.addColumn('number', 'Média Tempo de Resposta');
+                data.addColumn({type: 'string', role: 'style'});
+                data.addColumn({type: 'string', role: 'annotation'});
+
+                <cfoutput query="consulta_semanal_definitivo_body">
+                var mediaDias = #Media_Dias#;
+                var corBarra = (mediaDias > 7) ? 'color: red' : 'color: green';
+                data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
+                </cfoutput>
+
+                var options = {
+                title: 'Média Tempo de Resposta de BP Definitivo',
+                hAxis: {
+                    title: 'Semana',
+                },
+                vAxis: {
+                    title: 'Média de Dias',
+                    minValue: 0
+                },
+                legend: { position: "none" },
+                annotations: {
+                    alwaysOutside: false, // Coloca o rótulo sempre fora da barra
+                    textStyle: {
+                    color: 'black',  // Cor do texto
+                    fontSize: 15,     // Tamanho da fonte
+                    bold: true        // Negrito
+                    }
+                }
+                };
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_6'));
+                chart.draw(data, options);
+            }
+        </script>
+
+        <script type="text/javascript">
+            google.charts.load('current', {packages: ['corechart', 'bar']});
+            google.charts.setOnLoadCallback(draw7Chart);
+            google.charts.setOnLoadCallback(draw8Chart);
+
+            // Primeiro gráfico
+            function draw7Chart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Semana');
+                data.addColumn('number', 'Média Tempo de Resposta');
+                data.addColumn({type: 'string', role: 'style'});
+                data.addColumn({type: 'string', role: 'annotation'});
+
+                <cfoutput query="consulta_semanal_fai">
+                var mediaDias = #Media_Dias#;
+                var corBarra = (mediaDias > 1) ? 'color: red' : 'color: green';
+                data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
+                </cfoutput>
+
+                var options = {
+                title: 'Média Tempo de Resposta de BP de Contenção',
+                hAxis: {
+                    title: 'Semana',
+                },
+                vAxis: {
+                    title: 'Média de Dias',
+                    minValue: 0
+                },
+                legend: { position: "none" },
+                annotations: {
+                    alwaysOutside: false, // Coloca o rótulo sempre fora da barra
+                    textStyle: {
+                    color: 'black',  // Cor do texto
+                    fontSize: 15,     // Tamanho da fonte
+                    bold: true        // Negrito
+                    }
+                }
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_7'));
+                chart.draw(data, options);
+            }
+
+            // Segundo gráfico
+            function draw8Chart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Semana');
+                data.addColumn('number', 'Média Tempo de Resposta');
+                data.addColumn({type: 'string', role: 'style'});
+                data.addColumn({type: 'string', role: 'annotation'});
+
+                <cfoutput query="consulta_semanal_definitivo_fai">
+                var mediaDias = #Media_Dias#;
+                var corBarra = (mediaDias > 7) ? 'color: red' : 'color: green';
+                data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
+                </cfoutput>
+
+                var options = {
+                title: 'Média Tempo de Resposta de BP Definitivo',
+                hAxis: {
+                    title: 'Semana',
+                },
+                vAxis: {
+                    title: 'Média de Dias',
+                    minValue: 0
+                },
+                legend: { position: "none" },
+                annotations: {
+                    alwaysOutside: false, // Coloca o rótulo sempre fora da barra
+                    textStyle: {
+                    color: 'black',  // Cor do texto
+                    fontSize: 15,     // Tamanho da fonte
+                    bold: true        // Negrito
+                    }
+                }
+                };
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_8'));
+                chart.draw(data, options);
+            }
+        </script>
+
+        <script type="text/javascript">
+            google.charts.load('current', {packages: ['corechart', 'bar']});
+            google.charts.setOnLoadCallback(draw9Chart);
+            google.charts.setOnLoadCallback(draw10Chart);
+
+            // Primeiro gráfico
+            function draw9Chart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Semana');
+                data.addColumn('number', 'Média Tempo de Resposta');
+                data.addColumn({type: 'string', role: 'style'});
+                data.addColumn({type: 'string', role: 'annotation'});
+
+                <cfoutput query="consulta_semanal_pdi">
+                var mediaDias = #Media_Dias#;
+                var corBarra = (mediaDias > 1) ? 'color: red' : 'color: green';
+                data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
+                </cfoutput>
+
+                var options = {
+                title: 'Média Tempo de Resposta de BP de Contenção',
+                hAxis: {
+                    title: 'Semana',
+                },
+                vAxis: {
+                    title: 'Média de Dias',
+                    minValue: 0
+                },
+                legend: { position: "none" },
+                annotations: {
+                    alwaysOutside: false, // Coloca o rótulo sempre fora da barra
+                    textStyle: {
+                    color: 'black',  // Cor do texto
+                    fontSize: 15,     // Tamanho da fonte
+                    bold: true        // Negrito
+                    }
+                }
+                };
+
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_9'));
+                chart.draw(data, options);
+            }
+
+            // Segundo gráfico
+            function draw10Chart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Semana');
+                data.addColumn('number', 'Média Tempo de Resposta');
+                data.addColumn({type: 'string', role: 'style'});
+                data.addColumn({type: 'string', role: 'annotation'});
+
+                <cfoutput query="consulta_semanal_definitivo_pdi">
+                var mediaDias = #Media_Dias#;
+                var corBarra = (mediaDias > 7) ? 'color: red' : 'color: green';
+                data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
+                </cfoutput>
+
+                var options = {
+                title: 'Média Tempo de Resposta de BP Definitivo',
+                hAxis: {
+                    title: 'Semana',
+                },
+                vAxis: {
+                    title: 'Média de Dias',
+                    minValue: 0
+                },
+                legend: { position: "none" },
+                annotations: {
+                    alwaysOutside: false, // Coloca o rótulo sempre fora da barra
+                    textStyle: {
+                    color: 'black',  // Cor do texto
+                    fontSize: 15,     // Tamanho da fonte
+                    bold: true        // Negrito
+                    }
+                }
+                };
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_10'));
+                chart.draw(data, options);
+            }
+        </script>
+
+        <script type="text/javascript">
+            google.charts.load('current', {packages: ['corechart', 'bar']});
+            google.charts.setOnLoadCallback(drawStatusChart);
+
+            function drawStatusChart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Status');
+                data.addColumn('number', 'Total');
+                data.addColumn({type: 'string', role: 'style'}); // Coluna para definir a cor
+
+                <cfoutput query="contagemStatus_Paint">
+                    var color = '';
+                    switch ('#STATUS#') {
+                        case 'CONCLUÍDO':
+                            color = 'color: green';
+                            break;
+                        case 'AG. BP DEFINITIVO':
+                            color = 'color: orange';
+                            break;
+                        case 'EM ANDAMENTO':
+                            color = 'color: gold';
+                            break;
+                        default:
+                            color = 'color: gray';
+                    }
+                    data.addRow(['#STATUS#', #total_status#, color]);
+                </cfoutput>
+
+                var options = {
+                    title: 'Status Paint',
+                    hAxis: { title: 'Total', minValue: 0 },
+                    vAxis: { title: '' },
+                    legend: { position: "none" }
+                };
+
+                var chart = new google.visualization.BarChart(document.getElementById('status_chart_paint'));
+                chart.draw(data, options);
+            }
+        </script>
+
+        <script type="text/javascript">
+            google.charts.load('current', {packages: ['corechart', 'bar']});
+            google.charts.setOnLoadCallback(drawStatusChart);
+
+            function drawStatusChart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Status');
+                data.addColumn('number', 'Total');
+                data.addColumn({type: 'string', role: 'style'}); // Coluna para definir a cor
+
+                <cfoutput query="contagemStatus_body">
+                    var color = '';
+                    switch ('#STATUS#') {
+                        case 'CONCLUÍDO':
+                            color = 'color: green';
+                            break;
+                        case 'AG. BP DEFINITIVO':
+                            color = 'color: orange';
+                            break;
+                        case 'EM ANDAMENTO':
+                            color = 'color: gold';
+                            break;
+                        default:
+                            color = 'color: gray';
+                    }
+                    data.addRow(['#STATUS#', #total_status#, color]);
+                </cfoutput>
+
+                var options = {
+                    title: 'Status Body',
+                    hAxis: { title: 'Total', minValue: 0 },
+                    vAxis: { title: '' },
+                    legend: { position: "none" }
+                };
+
+                var chart = new google.visualization.BarChart(document.getElementById('status_chart_div'));
+                chart.draw(data, options);
+            }
+        </script>
+
+        <script type="text/javascript">
+            google.charts.load('current', {packages: ['corechart', 'bar']});
+            google.charts.setOnLoadCallback(drawStatusChart);
+
+            function drawStatusChart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Status');
+                data.addColumn('number', 'Total');
+                data.addColumn({type: 'string', role: 'style'}); // Coluna para definir a cor
+
+                <cfoutput query="contagemStatus_fa">
+                    var color = '';
+                    switch ('#STATUS#') {
+                        case 'CONCLUÍDO':
+                            color = 'color: green';
+                            break;
+                        case 'AG. BP DEFINITIVO':
+                            color = 'color: orange';
+                            break;
+                        case 'EM ANDAMENTO':
+                            color = 'color: gold';
+                            break;
+                        default:
+                            color = 'color: gray';
+                    }
+                    data.addRow(['#STATUS#', #total_status#, color]);
+                </cfoutput>
+
+                var options = {
+                    title: 'Status Assembly',
+                    hAxis: { title: 'Total', minValue: 0 },
+                    vAxis: { title: '' },
+                    legend: { position: "none" }
+                };
+
+                var chart = new google.visualization.BarChart(document.getElementById('status_chart_fa'));
+                chart.draw(data, options);
+            }
+        </script>
+
+        <script type="text/javascript">
+            google.charts.load('current', {packages: ['corechart', 'bar']});
+            google.charts.setOnLoadCallback(drawStatusChart);
+
+            function drawStatusChart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Status');
+                data.addColumn('number', 'Total');
+                data.addColumn({type: 'string', role: 'style'}); // Coluna para definir a cor
+
+                <cfoutput query="contagemStatus_fai">
+                    var color = '';
+                    switch ('#STATUS#') {
+                        case 'CONCLUÍDO':
+                            color = 'color: green';
+                            break;
+                        case 'AG. BP DEFINITIVO':
+                            color = 'color: orange';
+                            break;
+                        case 'EM ANDAMENTO':
+                            color = 'color: gold';
+                            break;
+                        default:
+                            color = 'color: gray';
+                    }
+                    data.addRow(['#STATUS#', #total_status#, color]);
+                </cfoutput>
+
+                var options = {
+                    title: 'Status FAI',
+                    hAxis: { title: 'Total', minValue: 0 },
+                    vAxis: { title: '' },
+                    legend: { position: "none" }
+                };
+
+                var chart = new google.visualization.BarChart(document.getElementById('status_chart_fai'));
+                chart.draw(data, options);
+            }
+        </script>
+
+        <script type="text/javascript">
+            google.charts.load('current', {packages: ['corechart', 'bar']});
+            google.charts.setOnLoadCallback(drawStatusChart);
+
+            function drawStatusChart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Status');
+                data.addColumn('number', 'Total');
+                data.addColumn({type: 'string', role: 'style'}); // Coluna para definir a cor
+
+                <cfoutput query="contagemStatus_pdi">
+                    var color = '';
+                    switch ('#STATUS#') {
+                        case 'CONCLUÍDO':
+                            color = 'color: green';
+                            break;
+                        case 'AG. BP DEFINITIVO':
+                            color = 'color: orange';
+                            break;
+                        case 'EM ANDAMENTO':
+                            color = 'color: gold';
+                            break;
+                        default:
+                            color = 'color: gray';
+                    }
+                    data.addRow(['#STATUS#', #total_status#, color]);
+                </cfoutput>
+
+                var options = {
+                    title: 'Status PDI',
+                    hAxis: { title: 'Total', minValue: 0 },
+                    vAxis: { title: '' },
+                    legend: { position: "none" }
+                };
+
+                var chart = new google.visualization.BarChart(document.getElementById('status_chart_pdi'));
+                chart.draw(data, options);
+            }
+        </script>
+
     </head>
     <body>
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header>
-
-        <!-- Container para os botões -->
+        
         <div class="btn-container">
-            <div class="btn-rounded">
-                Novo Relatório
-                <div class="submenu">
-                        <a href="#" onclick="showTable('tableBody')">Body</a>
-                        <a href="#" onclick="showTable('tablePaint')">Paint</a>
-                        <a href="#" onclick="showTable('tableFA')">FA</a>
-                        <a href="#" onclick="showTable('tableFAI')">FAI</a>
-                        <a href="#" onclick="showTable('tablePDI')">PDI</a>
+            <h2>Indicador VER & AGIR</h2>
+            <div class="select-container">
+                <label for="meses" class="label-rounded">Escolha o mês:</label>
+                <select id="meses" name="mes" class="select-rounded" onchange="updateCharts()">
+                    <option value="2024-01" <cfif mesSelecionado == "2024-01">selected</cfif>>Janeiro</option>
+                    <option value="2024-02" <cfif mesSelecionado == "2024-02">selected</cfif>>Fevereiro</option>
+                    <option value="2024-03" <cfif mesSelecionado == "2024-03">selected</cfif>>Março</option>
+                    <option value="2024-04" <cfif mesSelecionado == "2024-04">selected</cfif>>Abril</option>
+                    <option value="2024-05" <cfif mesSelecionado == "2024-05">selected</cfif>>Maio</option>
+                    <option value="2024-06" <cfif mesSelecionado == "2024-06">selected</cfif>>Junho</option>
+                    <option value="2024-07" <cfif mesSelecionado == "2024-07">selected</cfif>>Julho</option>
+                    <option value="2024-08" <cfif mesSelecionado == "2024-08">selected</cfif>>Agosto</option>
+                    <option value="2024-09" <cfif mesSelecionado == "2024-09">selected</cfif>>Setembro</option>
+                    <option value="2024-10" <cfif mesSelecionado == "2024-10">selected</cfif>>Outubro</option>
+                    <option value="2024-11" <cfif mesSelecionado == "2024-11">selected</cfif>>Novembro</option>
+                    <option value="2024-12" <cfif mesSelecionado == "2024-12">selected</cfif>>Dezembro</option>
+                </select>
+            </div>
+
+            <script type="text/javascript">
+                function updateCharts() {
+                    var mesSelecionado = document.getElementById("meses").value;
+                    window.location.href = window.location.pathname + "?mes=" + mesSelecionado;
+                }
+            </script>
+
+            <div class="chart-container" style="display: flex; flex-direction: column; align-items: center; margin-top:5vw;">
+                <h2 style="text-align: center; margin-bottom: 20px;color:blue;">Body</h2>
+                <div style="display: flex; justify-content: center; width: 100%;">
+                    <div id="chart_div_5" style="width: 45%; height: 300px;"></div>
+                    <div id="chart_div_6" style="width: 45%; height: 300px; margin-left: 10px;"></div>
                 </div>
             </div>
-            <button class="btn-rounded" onclick="showTable('tableACOMP')">Acompanhamento Contenção</button>
-            <button class="btn-rounded"></button>
-            <button class="btn-rounded"></button>
+
+            <div class="chart-container" style="display: flex; flex-direction: column; align-items: center; margin-top:5vw;">
+                <div id="status_chart_div" style="width: 900px; height: 200px;"></div>
+            </div>
+
+            <div class="chart-container" style="display: flex; flex-direction: column; align-items: center; margin-top:5vw;">
+                <h2 style="text-align: center; margin-bottom: 20px;color:Orange;">Paint</h2>
+                <div style="display: flex; justify-content: center; width: 100%;">
+                    <div id="chart_div_3" style="width: 45%; height: 300px;"></div>
+                    <div id="chart_div_4" style="width: 45%; height: 300px; margin-left: 10px;"></div>
+                </div>
+            </div>
+
+            <div class="chart-container" style="display: flex; flex-direction: column; align-items: center; margin-top:5vw;">
+                <div id="status_chart_paint" style="width: 900px; height: 200px;"></div>
+            </div>
+
+            <div class="chart-container" style="display: flex; flex-direction: column; align-items: center; margin-top:5vw;">
+                <h2 style="text-align: center; margin-bottom: 20px;color:gold;">Final Assembly</h2>
+                <div style="display: flex; justify-content: center; width: 100%;">
+                    <div id="chart_div_1" style="width: 45%; height: 300px;"></div>
+                    <div id="chart_div_2" style="width: 45%; height: 300px; margin-left: 10px;"></div>
+                </div>
+            </div>
+
+            <div class="chart-container" style="display: flex; flex-direction: column; align-items: center; margin-top:5vw;">
+                <div id="status_chart_fa" style="width: 900px; height: 200px;"></div>
+            </div>
+
+            <div class="chart-container" style="display: flex; flex-direction: column; align-items: center; margin-top:5vw;">
+                <h2 style="text-align: center; margin-bottom: 20px;color:grey;">FAI</h2>
+                <div style="display: flex; justify-content: center; width: 100%;">
+                    <div id="chart_div_7" style="width: 45%; height: 300px;"></div>
+                    <div id="chart_div_8" style="width: 45%; height: 300px; margin-left: 10px;"></div>
+                </div>
+            </div>
+
+            <div class="chart-container" style="display: flex; flex-direction: column; align-items: center; margin-top:5vw;">
+                <div id="status_chart_fai" style="width: 900px; height: 200px;"></div>
+            </div>
+
+            <div class="chart-container" style="display: flex; flex-direction: column; align-items: center; margin-top:5vw;">
+                <h2 style="text-align: center; margin-bottom: 20px;color:purple;">PDI</h2>
+                <div style="display: flex; justify-content: center; width: 100%;">
+                    <div id="chart_div_9" style="width: 45%; height: 300px;"></div>
+                    <div id="chart_div_10" style="width: 45%; height: 300px; margin-left: 10px;"></div>
+                </div>
+            </div>
+            <div class="chart-container" style="display: flex; flex-direction: column; align-items: center; margin-top:5vw;">
+                <div id="status_chart_pdi" style="width: 900px; height: 200px;"></div>
+            </div>
         </div>
-
-        <!-- Tabelas -->
-        <div id="tableBody" class="table-container">
-            <h2 style="color:#0000CD">Body Shop</h2>
-            <!-- Inputs de pesquisa -->
-            <div class="search-container">
-                <input type="text" id="searchID" placeholder="Pesquisar ID" onkeyup="filterTable()">
-                <input type="text" id="searchVIN" placeholder="Pesquisar Barcode" onkeyup="filterTable()">
-                <input type="text" id="searchPeca" placeholder="Pesquisar Peça" onkeyup="filterTable()">
-                <input type="text" id="searchPosicao" placeholder="Pesquisar Posição" onkeyup="filterTable()">
-                <input type="text" id="searchProblema" placeholder="Pesquisar Problema" onkeyup="filterTable()">
-            </div>
-            
-        
-            <table border="1" id="bodyTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>VIN</th>
-                        <th>Modelo</th>
-                        <th>Peça</th>
-                        <th>Posição</th>
-                        <th>Problema</th>
-                        <th>Inserir</th>
-                    </tr>
-                </thead>
-                <tbody style="font-size:12px;">
-                    <cfoutput>
-                        <cfloop query="consultas">
-                            <tr>
-                                <td>#ID#</td>
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                <td>#BARCODE#</td>
-                                <td>#MODELO#</td>
-                                <td>#PECA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PROBLEMA#</td>
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_add.cfm?id_editar=#id#&tabela=sistema_qualidade_body'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>  
-                            </tr>
-                        </cfloop>
-                    </cfoutput>
-                </tbody>
-            </table>
-        </div> 
-
-        <div id="tablePaint" class="table-container">
-            <h2 style="color:#f6722c">Paint Shop</h2>
-            <!-- Inputs de pesquisa -->
-            <div class="search-container">
-                <input type="text" id="searchIDP" placeholder="Pesquisar ID" onkeyup="filterTablePaint()">
-                <input type="text" id="searchVINP" placeholder="Pesquisar Barcode" onkeyup="filterTablePaint()">
-                <input type="text" id="searchPecaP" placeholder="Pesquisar Modelo" onkeyup="filterTablePaint()">
-                <input type="text" id="searchPosicaoP" placeholder="Pesquisar Peça" onkeyup="filterTablePaint()">
-                <input type="text" id="searchProblemaP" placeholder="Pesquisar Posição" onkeyup="filterTablePaint()">
-            </div>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>Barcode</th>
-                        <th>Modelo</th>
-                        <th>Peça</th>
-                        <th>Posição</th>
-                        <th>Problema</th>
-                        <th>Inserir</th>
-                    </tr>
-                </thead>
-                <tbody style="font-size:12px;">
-                    <cfoutput>
-                        <cfloop query="consultas_paint">
-                            <tr>
-                                <td>#ID#</td>
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                <td>#BARCODE#</td>
-                                <td>#MODELO#</td>
-                                <td>#PECA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PROBLEMA#</td>
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_add.cfm?id_editar=#id#&tabela=sistema_qualidade'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>                                
-                            </tr>
-                        </cfloop>
-                    </cfoutput>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="tableFA" class="table-container">
-            <h2 style="color:gold">Final Assembly</h2>
-            <!-- Inputs de pesquisa -->
-            <div class="search-container">
-                <input type="text" id="searchIDFA" placeholder="Pesquisar ID" onkeyup="filterTableFA()">
-                <input type="text" id="searchVINFA" placeholder="Pesquisar Vin" onkeyup="filterTableFA()">
-                <input type="text" id="searchPecaFA" placeholder="Pesquisar Modelo" onkeyup="filterTableFA()">
-                <input type="text" id="searchPosicaoFA" placeholder="Pesquisar Peça" onkeyup="filterTableFA()">
-                <input type="text" id="searchProblemaFA" placeholder="Pesquisar Posição" onkeyup="filterTableFA()">
-            </div>
-            <table border="1" id="FATable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>VIN</th>
-                        <th>Modelo</th>
-                        <th>Peça</th>
-                        <th>Posição</th>
-                        <th>Problema</th>
-                        <th>Inserir</th>
-                    </tr>
-                </thead>
-                <tbody style="font-size:12px;">
-                    <cfoutput>
-                        <cfloop query="consultas_fa">
-                            <tr>
-                                <td>#ID#</td>
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                <td>#VIN#</td>
-                                <td>#MODELO#</td>
-                                <td>#PECA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PROBLEMA#</td>
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_add.cfm?id_editar=#id#&tabela=sistema_qualidade_fa'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>  
-                            </tr>
-                        </cfloop>
-                    </cfoutput>
-                </tbody>
-            </table>
-        </div> 
-
-        <div id="tableFAI" class="table-container">
-            <h2 style="color:gray">FAI</h2>
-            <!-- Inputs de pesquisa -->
-            <div class="search-container">
-                <input type="text" id="searchIDFAI" placeholder="Pesquisar ID" onkeyup="filterTableFAI()">
-                <input type="text" id="searchVINFAI" placeholder="Pesquisar Vin" onkeyup="filterTableFAI()">
-                <input type="text" id="searchPecaFAI" placeholder="Pesquisar Modelo" onkeyup="filterTableFAI()">
-                <input type="text" id="searchPosicaoFAI" placeholder="Pesquisar Peça" onkeyup="filterTableFAI()">
-                <input type="text" id="searchProblemaFAI" placeholder="Pesquisar Posição" onkeyup="filterTableFAI()">
-            </div>
-            
-        
-            <table border="1" id="FAITable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>VIN</th>
-                        <th>Modelo</th>
-                        <th>Peça</th>
-                        <th>Posição</th>
-                        <th>Problema</th>
-                        <th>Inserir</th>
-                    </tr>
-                </thead>
-                <tbody style="font-size:12px;">
-                    <cfoutput>
-                        <cfloop query="consultas_fai">
-                            <tr>
-                                <td>#ID#</td>
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                <td>#VIN#</td>
-                                <td>#MODELO#</td>
-                                <td>#PECA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PROBLEMA#</td>
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_add.cfm?id_editar=#id#&tabela=sistema_qualidade_fai'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>  
-                            </tr>
-                        </cfloop>
-                    </cfoutput>
-                </tbody>
-            </table>
-        </div> 
-
-        <div id="tablePDI" class="table-container">
-            <h2 style="color:purple">PDI</h2>
-            <!-- Inputs de pesquisa -->
-            <div class="search-container">
-                <input type="text" id="searchIDPDI" placeholder="Pesquisar ID" onkeyup="filterTablePDI()">
-                <input type="text" id="searchVINPDI" placeholder="Pesquisar Vin" onkeyup="filterTablePDI()">
-                <input type="text" id="searchPecaPDI" placeholder="Pesquisar Modelo" onkeyup="filterTablePDI()">
-                <input type="text" id="searchPosicaoPDI" placeholder="Pesquisar Peça" onkeyup="filterTablePDI()">
-                <input type="text" id="searchProblemaPDI" placeholder="Pesquisar Posição" onkeyup="filterTablePDI()">
-            </div>
-            
-        
-            <table border="1" id="PDITable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>VIN</th>
-                        <th>Modelo</th>
-                        <th>Peça</th>
-                        <th>Posição</th>
-                        <th>Problema</th>
-                        <th>Inserir</th>
-                    </tr>
-                </thead>
-                <tbody style="font-size:12px;">
-                    <cfoutput>
-                        <cfloop query="consultas_pdi">
-                            <tr>
-                                <td>#ID#</td>
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                <td>#VIN#</td>
-                                <td>#MODELO#</td>
-                                <td>#PECA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PROBLEMA#</td>
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_add.cfm?id_editar=#id#&tabela=sistema_qualidade_pdi_saida'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>  
-                            </tr>
-                        </cfloop>
-                    </cfoutput>
-                </tbody>
-            </table>
-        </div> 
-
-        <div id="tableACOMP" class="table-container">
-            <h2 style="color:gray">Acompanhamento BP</h2>
-            <!-- Inputs de pesquisa -->
-            <div class="search-container">
-                <input type="text" id="searchIDACOMP" placeholder="Pesquisar ID" onkeyup="filterTableACOMP()">
-                <input type="text" id="searchVINACOMP" placeholder="Pesquisar Vin" onkeyup="filterTableACOMP()">
-                <input type="text" id="searchPecaACOMP" placeholder="Pesquisar Peça" onkeyup="filterTableACOMP()">
-                <input type="text" id="searchPosicaoACOMP" placeholder="Pesquisar Posição" onkeyup="filterTableACOMP()">
-                <input type="text" id="searchProblemaACOMP" placeholder="Pesquisar Problema" onkeyup="filterTableACOMP()">
-            </div>
-            <div class="search-container">
-                <button style="background-color:blue" class="btn-rounded" onclick="toggleBarreiraFilter('BODY')">BODY</button>
-                <button style="background-color:orange" class="btn-rounded" onclick="toggleBarreiraFilter('PAINT')">PAINT</button>
-                <button style="background-color:gold" class="btn-rounded" onclick="toggleBarreiraFilter('TRIM')">TRIM</button>
-                <button style="background-color:gray" class="btn-rounded" onclick="toggleBarreiraFilter('FAI')">FAI</button>
-                <button style="background-color:purple" class="btn-rounded" onclick="toggleBarreiraFilter('PDI')">PDI</button>
-                <button class="btn-rounded" onclick="toggleStatusFilter('FALTA CONTENÇÃO')">FALTA CONTENÇÃO</button>
-                <button class="btn-rounded" onclick="toggleStatusFilter('CONCLUÍDO')">CONCLUÍDO</button>
-                <button class="btn-rounded" onclick="toggleStatusFilter('AG. BP DEFINITIVO')">AG. BP DEFINITIVO</button>
-                <button style="background-color:red" class="btn-rounded" onclick="clearFilters()">LIMPAR</button> <!-- Botão para limpar filtros -->
-            </div>
-            <cfquery name="consulta_datas" datasource="#BANCOSINC#">
-                SELECT
-                    ID,
-                    DATA_BP_PROCESSO,
-                    DATA_BP_DEFINITIVO_PROCESSO,
-                    ROUND(DATA_BP_PROCESSO - DATA_REGISTRO) AS DIAS
-                FROM VEREAGIR2
-            </cfquery>
-            
-            <table border="1" id="ACOMPTable">
-                <thead>
-                    <tr>
-                        <th>RPN</th>
-                        <th>Data</th>
-                        <th>Modelo</th>
-                        <th>VIN/ Barcode</th>
-                        <th>Peça</th>
-                        <th>Posição</th>
-                        <th>Problema</th>
-                        <th>Barreira</th>
-                        <th>Status</th>
-                        <th>Total de Dias Contenção</th>
-                        <th>Total de Dias Definitivo</th>
-                        <th>Selecionar</th>
-                    </tr>
-                </thead>
-                <tbody style="font-size:12px;">
-                    <cfoutput query="consultas_acomp_cont">
-                        <tr>
-                            <td>#RPN#</td>
-                            <td>#lsdatetimeformat(DATA_REGISTRO, 'dd/mm/yyyy')#</td>
-                            <td>#MODELO#</td>
-                            <td>#VIN#</td>
-                            <td>#PECA#</td>
-                            <td>#POSICAO#</td>
-                            <td>#PROBLEMA#</td>
-                            <td>#BARREIRA#</td>
-                            <td>
-                                <cfif STATUS EQ "FALTA CONTENÇÃO">
-                                    <span style="background-color: yellow; color: black; padding: 5px;">#STATUS#</span>
-                                <cfelseif STATUS EQ "AG. BP DEFINITIVO">
-                                    <span style="background-color: darkorange; color: white; padding: 5px;">#STATUS#</span>
-                                <cfelseif STATUS EQ "CONCLUÍDO">
-                                    <span style="background-color: green; color: white; padding: 5px;">#STATUS#</span>
-                                <cfelse>
-                                    <span>#STATUS#</span>
-                                </cfif>
-                            </td>
-            
-                            <!-- Coluna Total de Dias -->
-                            <td>
-                                <cfset diasCalculado = "">
-                                <cfset dataBpProcesso = ""> <!-- Inicializa dataBpProcesso com valor padrão -->
-                                <cfset statusPrazo = "">
-                                
-                                <!-- Loop para obter o valor de diasCalculado e a data DATA_BP_PROCESSO para o ID correspondente -->
-                                <cfloop query="consulta_datas">
-                                    <cfif consulta_datas.ID EQ consultas_acomp_cont.ID>
-                                        <cfset diasCalculado = consulta_datas.DIAS>
-                                        <cfset dataBpProcesso = consulta_datas.DATA_BP_PROCESSO>
-                                        <cfbreak>
-                                    </cfif>
-                                </cfloop>
-                                
-                                <!-- Definição do status baseado nas condições para o title -->
-                                <cfif NOT Len(dataBpProcesso) AND diasCalculado LTE 1>
-                                    <cfset statusPrazo = "Dentro do Prazo">
-                                <cfelseif diasCalculado EQ 1>
-                                    <cfset statusPrazo = "Finalizado no Prazo">
-                                <cfelseif diasCalculado GT 1>
-                                    <cfset statusPrazo = "Finalizado Fora do Prazo">
-                                </cfif>
-                            
-                                <!-- Exibição do valor com o status no tooltip -->
-                                <span style="<cfif diasCalculado GT 1>color: red;<cfelseif diasCalculado LTE 1>color: green;</cfif> font-weight: bold;" title="#statusPrazo#">
-                                    #diasCalculado#
-                                </span>
-                            </td>
-                            
-                            <!-- Coluna Total de Dias Definitivo -->
-                            <td>
-                                <cfset diasDefinitivoCalculado = "">
-                                <cfset statusDefinitivoPrazo = ""> <!-- Inicializa a variável de status -->
-                            
-                                <!-- Loop para obter o valor de diasDefinitivoCalculado para o ID correspondente -->
-                                <cfloop query="consulta_data_definitivo">
-                                    <cfif consulta_data_definitivo.ID EQ consultas_acomp_cont.ID>
-                                        <cfset diasDefinitivoCalculado = consulta_data_definitivo.DIAS_DEFINITIVO>
-                                        <cfbreak>
-                                    </cfif>
-                                </cfloop>
-
-                                <!-- Definição do status para o tooltip -->
-                                <cfif diasDefinitivoCalculado GT 7>
-                                    <cfset statusDefinitivoPrazo = "Atrasado">
-                                    <span style="color: red; font-weight: bold;" title="#statusDefinitivoPrazo#">
-                                        #diasDefinitivoCalculado#
-                                    </span>
-                                <cfelse>
-                                    <cfset statusDefinitivoPrazo = "Dentro do Prazo">
-                                    <span style="color: green; font-weight: bold;" title="#statusDefinitivoPrazo#">
-                                        #diasDefinitivoCalculado#
-                                    </span>
-                                </cfif>
-                            </td>
-                            
-                            <cfif STATUS eq "FALTA CONTENÇÃO">
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_edit.cfm?id_editar=#id#'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>
-                            <cfelseif STATUS eq "AG. BP DEFINITIVO">
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_edit_def.cfm?id_editar=#id#'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>
-                            <cfelseif STATUS eq "CONCLUÍDO">
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_edit_conc.cfm?id_editar=#id#'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>
-                            </cfif>
-                        </tr>
-                    </cfoutput>
-                </tbody>
-            </table>
-        </div> 
-        <script src="/qualidade/relatorios/assets/script.js?v8"></script>
     </body>
 </html>

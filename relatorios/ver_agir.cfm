@@ -208,166 +208,188 @@
         SELECT 
             sqf.PECA AS PECA_SQF, 
             sqf.PROBLEMA AS PROBLEMA_SQF,
-            sqf.MODELO AS MODELO_SQF,
             v2.PECA AS PECA_VEREAGIR2,
             v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
-            v2.MODELO AS MODELO_VEREAGIR2,
             v2.ID AS ID_VEREAGIR2,
             v2.BARREIRA,
             MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
             MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
+
+            -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
+            (SELECT COUNT(*)
+            FROM SISTEMA_QUALIDADE_FA sqf_inner
+            WHERE sqf_inner.PECA = sqf.PECA
+            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            ) AS TOTAL_OCORRENCIAS_APOS_BP,
+
+            -- Ajuste na lógica do STATUS_NOVO
             CASE 
-                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'Quebra de BP'
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'BP Válido'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) > v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'Quebra de BP'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) <= v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'BP Válido'
                 WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
             END AS STATUS_NOVO
         FROM 
             SISTEMA_QUALIDADE_FA sqf
-        LEFT JOIN 
+        LEFT JOIN
             VEREAGIR2 v2
-        ON 
-            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        ON
+            sqf.PECA = v2.PECA 
+            AND sqf.PROBLEMA = v2.PROBLEMA
         WHERE 
-            v2.BARREIRA = 'TRIM'
+            v2.BARREIRA = 'FA'
         GROUP BY 
-            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+            sqf.PECA, sqf.PROBLEMA, 
+            v2.PECA, v2.PROBLEMA, 
+            v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
 
-        UNION ALL
+                UNION ALL
 
         SELECT 
             sqf.PECA AS PECA_SQF, 
             sqf.PROBLEMA AS PROBLEMA_SQF,
-            sqf.MODELO AS MODELO_SQF,
             v2.PECA AS PECA_VEREAGIR2,
             v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
-            v2.MODELO AS MODELO_VEREAGIR2,
             v2.ID AS ID_VEREAGIR2,
             v2.BARREIRA,
             MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
             MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
+
+            -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
+            (SELECT COUNT(*)
+            FROM SISTEMA_QUALIDADE_FAI sqf_inner
+            WHERE sqf_inner.PECA = sqf.PECA
+            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            ) AS TOTAL_OCORRENCIAS_APOS_BP,
+
+            -- Ajuste na lógica do STATUS_NOVO
             CASE 
-                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'Quebra de BP'
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'BP Válido'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) > v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'Quebra de BP'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) <= v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'BP Válido'
                 WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
             END AS STATUS_NOVO
         FROM 
             SISTEMA_QUALIDADE_FAI sqf
-        LEFT JOIN 
+        LEFT JOIN
             VEREAGIR2 v2
-        ON 
-            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        ON
+            sqf.PECA = v2.PECA 
+            AND sqf.PROBLEMA = v2.PROBLEMA
         WHERE 
             v2.BARREIRA = 'FAI'
         GROUP BY 
-            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+            sqf.PECA, sqf.PROBLEMA, 
+            v2.PECA, v2.PROBLEMA, 
+            v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
 
         UNION ALL
 
         SELECT 
             sqf.PECA AS PECA_SQF, 
             sqf.PROBLEMA AS PROBLEMA_SQF,
-            sqf.MODELO AS MODELO_SQF,
             v2.PECA AS PECA_VEREAGIR2,
             v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
-            v2.MODELO AS MODELO_VEREAGIR2,
             v2.ID AS ID_VEREAGIR2,
             v2.BARREIRA,
             MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
             MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
+
+            -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
+            (SELECT COUNT(*)
+            FROM SISTEMA_QUALIDADE sqf_inner
+            WHERE sqf_inner.PECA = sqf.PECA
+            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            ) AS TOTAL_OCORRENCIAS_APOS_BP,
+
+            -- Ajuste na lógica do STATUS_NOVO
             CASE 
-                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'Quebra de BP'
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'BP Válido'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) > v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'Quebra de BP'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) <= v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'BP Válido'
                 WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
             END AS STATUS_NOVO
         FROM 
             SISTEMA_QUALIDADE sqf
-        LEFT JOIN 
+        LEFT JOIN
             VEREAGIR2 v2
-        ON 
-            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        ON
+            sqf.PECA = v2.PECA 
+            AND sqf.PROBLEMA = v2.PROBLEMA
         WHERE 
             v2.BARREIRA = 'PAINT'
         GROUP BY 
-            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+            sqf.PECA, sqf.PROBLEMA, 
+            v2.PECA, v2.PROBLEMA, 
+            v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
 
         UNION ALL
 
         SELECT 
             sqf.PECA AS PECA_SQF, 
             sqf.PROBLEMA AS PROBLEMA_SQF,
-            sqf.MODELO AS MODELO_SQF,
             v2.PECA AS PECA_VEREAGIR2,
             v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
-            v2.MODELO AS MODELO_VEREAGIR2,
             v2.ID AS ID_VEREAGIR2,
             v2.BARREIRA,
             MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
             MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+            v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
+
+            -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
+            (SELECT COUNT(*)
+            FROM SISTEMA_QUALIDADE_BODY sqf_inner
+            WHERE sqf_inner.PECA = sqf.PECA
+            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            ) AS TOTAL_OCORRENCIAS_APOS_BP,
+
+            -- Ajuste na lógica do STATUS_NOVO
             CASE 
-                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'Quebra de BP'
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'BP Válido'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) > v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'Quebra de BP'
+                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) <= v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'BP Válido'
                 WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
             END AS STATUS_NOVO
         FROM 
             SISTEMA_QUALIDADE_BODY sqf
-        LEFT JOIN 
+        LEFT JOIN
             VEREAGIR2 v2
-        ON 
-            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
+        ON
+            sqf.PECA = v2.PECA 
+            AND sqf.PROBLEMA = v2.PROBLEMA
         WHERE 
             v2.BARREIRA = 'BODY'
         GROUP BY 
-            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
-
-        UNION ALL
-
-        SELECT 
-            sqf.PECA AS PECA_SQF, 
-            sqf.PROBLEMA AS PROBLEMA_SQF,
-            sqf.MODELO AS MODELO_SQF,
-            v2.PECA AS PECA_VEREAGIR2,
-            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
-            v2.MODELO AS MODELO_VEREAGIR2,
-            v2.ID AS ID_VEREAGIR2,
-            v2.BARREIRA,
-            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
-            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
-            CASE 
-                WHEN MAX(v2.DATA_REGISTRO) IS NOT NULL AND MAX(v2.DATA_REGISTRO) < MAX(sqf.USER_DATA) THEN 'Quebra de BP'
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(v2.DATA_REGISTRO) > MAX(sqf.USER_DATA) THEN 'BP Válido'
-                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
-            END AS STATUS_NOVO
-        FROM 
-            SISTEMA_QUALIDADE_PDI_SAIDA sqf
-        LEFT JOIN 
-            VEREAGIR2 v2
-        ON 
-            sqf.PECA = v2.PECA AND sqf.PROBLEMA = v2.PROBLEMA AND sqf.MODELO = v2.MODELO
-        WHERE 
-            v2.BARREIRA = 'PDI'
-        GROUP BY 
-            sqf.PECA, sqf.PROBLEMA, sqf.MODELO, v2.PECA, v2.PROBLEMA, v2.MODELO, v2.ID, v2.BARREIRA
+            sqf.PECA, sqf.PROBLEMA, 
+            v2.PECA, v2.PROBLEMA, 
+            v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
     </cfquery>
 
-    
+
 <html lang="pt-BR">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/relatorios/assets/style.css?v2">
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style.css?v4">
         <style>
             .wide-column {
                 width: 300px;
             }
             .status-span {
-                display: inline-block;
-                padding: 5px;
-                line-height: 1.5; /* Ajuste a altura da linha conforme necessário */
-                white-space: normal; /* Permite a quebra de linha */
-                word-wrap: break-word; /* Quebra palavras longas */
-            }
+            display: inline-block;
+            padding: 5px;
+            line-height: 1.8; /* Aumente para ajustar o espaçamento entre as linhas */
+            white-space: normal; /* Permite quebra de linha */
+            word-wrap: break-word; /* Quebra palavras longas */
+            overflow: hidden; /* Garante que o conteúdo não saia do bloco */
+            text-align: center; /* Centraliza o texto dentro do bloco */
+            border-radius: 4px; /* Opcional para bordas arredondadas */
+        }
         </style>
     </head>
     <body>
@@ -403,8 +425,8 @@
                 <input type="text" id="searchPosicao" placeholder="Pesquisar Posição" onkeyup="filterTable()">
                 <input type="text" id="searchProblema" placeholder="Pesquisar Problema" onkeyup="filterTable()">
             </div>
-            
-        
+
+
             <table border="1" id="bodyTable">
                 <thead>
                     <tr>
@@ -543,8 +565,7 @@
                 <input type="text" id="searchPosicaoFAI" placeholder="Pesquisar Posição" onkeyup="filterTableFAI()">
                 <input type="text" id="searchProblemaFAI" placeholder="Pesquisar Problema" onkeyup="filterTableFAI()">
             </div>
-            
-        
+
             <table border="1" id="FAITable">
                 <thead>
                     <tr>
@@ -591,8 +612,7 @@
                 <input type="text" id="searchPosicaoPDI" placeholder="Pesquisar Posição" onkeyup="filterTablePDI()">
                 <input type="text" id="searchProblemaPDI" placeholder="Pesquisar Problema" onkeyup="filterTablePDI()">
             </div>
-            
-        
+
             <table border="1" id="PDITable">
                 <thead>
                     <tr>
@@ -627,7 +647,7 @@
                     </cfoutput>
                 </tbody>
             </table>
-        </div> 
+        </div>
 
         <div id="tableACOMP" class="table-container">
             <h2 style="color:gray">Acompanhamento BP</h2>
@@ -642,7 +662,7 @@
             <div class="search-container">
                 <button style="background-color:blue" class="btn-rounded" onclick="toggleBarreiraFilter('BODY')">BODY</button>
                 <button style="background-color:orange" class="btn-rounded" onclick="toggleBarreiraFilter('PAINT')">PAINT</button>
-                <button style="background-color:gold" class="btn-rounded" onclick="toggleBarreiraFilter('TRIM')">TRIM</button>
+                <button style="background-color:gold" class="btn-rounded" onclick="toggleBarreiraFilter('FA')">FA</button>
                 <button style="background-color:gray" class="btn-rounded" onclick="toggleBarreiraFilter('FAI')">FAI</button>
                 <button style="background-color:purple" class="btn-rounded" onclick="toggleBarreiraFilter('PDI')">PDI</button>
                 <button class="btn-rounded" onclick="toggleStatusFilter('FALTA CONTENÇÃO')">FALTA CONTENÇÃO</button>
@@ -658,7 +678,7 @@
                     ROUND(DATA_BP_PROCESSO - DATA_REGISTRO) AS DIAS
                 FROM VEREAGIR2
             </cfquery>
-            
+
             <table border="1" id="ACOMPTable">
                 <thead>
                     <tr>
@@ -673,6 +693,7 @@
                         <th>Status</th>
                         <th>Total de Dias Contenção</th>
                         <th>Total de Dias Definitivo</th>
+                        <th>Total de Ocorrências Após BP</th> <!-- Nova Coluna -->
                         <th>Selecionar</th>
                         <th>Status BP</th>
                     </tr>
@@ -688,24 +709,23 @@
                             <td>#POSICAO#</td>
                             <td>#PROBLEMA#</td>
                             <td>#BARREIRA#</td>
-                            <td>
+                            <td class="wide-column">
                                 <cfif STATUS EQ "FALTA CONTENÇÃO">
-                                    <span style="background-color: yellow; color: black; padding: 5px;">#STATUS#</span>
+                                    <span class="status-span" style="background-color: yellow; color: black;">#STATUS#</span>
                                 <cfelseif STATUS EQ "AG. BP DEFINITIVO">
-                                    <span style="background-color: darkorange; color: white; padding: 5px;">#STATUS#</span>
+                                    <span class="status-span" style="background-color: darkorange; color: white;">#STATUS#</span>
                                 <cfelseif STATUS EQ "CONCLUÍDO">
-                                    <span style="background-color: green; color: white; padding: 5px;">#STATUS#</span>
+                                    <span class="status-span" style="background-color: green; color: white;">#STATUS#</span>
                                 <cfelse>
-                                    <span>#STATUS#</span>
+                                    <span class="status-span">#STATUS#</span>
                                 </cfif>
                             </td>
-            
                             <!-- Coluna Total de Dias -->
                             <td>
                                 <cfset diasCalculado = "">
                                 <cfset dataBpProcesso = ""> <!-- Inicializa dataBpProcesso com valor padrão -->
                                 <cfset statusPrazo = "">
-                                
+
                                 <!-- Loop para obter o valor de diasCalculado e a data DATA_BP_PROCESSO para o ID correspondente -->
                                 <cfloop query="consulta_datas">
                                     <cfif consulta_datas.ID EQ consultas_acomp_cont.ID>
@@ -714,7 +734,7 @@
                                         <cfbreak>
                                     </cfif>
                                 </cfloop>
-                                
+
                                 <!-- Definição do status baseado nas condições para o title -->
                                 <cfif NOT Len(dataBpProcesso) AND diasCalculado LTE 1>
                                     <cfset statusPrazo = "Dentro do Prazo">
@@ -723,18 +743,18 @@
                                 <cfelseif diasCalculado GT 1>
                                     <cfset statusPrazo = "Finalizado Fora do Prazo">
                                 </cfif>
-                            
+
                                 <!-- Exibição do valor com o status no tooltip -->
                                 <span style="<cfif diasCalculado GT 1>color: red;<cfelseif diasCalculado LTE 1>color: green;</cfif> font-weight: bold;" title="#statusPrazo#">
                                     #diasCalculado#
                                 </span>
                             </td>
-                            
+
                             <!-- Coluna Total de Dias Definitivo -->
                             <td>
                                 <cfset diasDefinitivoCalculado = "">
                                 <cfset statusDefinitivoPrazo = ""> <!-- Inicializa a variável de status -->
-                            
+
                                 <!-- Loop para obter o valor de diasDefinitivoCalculado para o ID correspondente -->
                                 <cfloop query="consulta_data_definitivo">
                                     <cfif consulta_data_definitivo.ID EQ consultas_acomp_cont.ID>
@@ -756,7 +776,19 @@
                                     </span>
                                 </cfif>
                             </td>
-                            
+
+                            <!-- Nova Coluna Total de Ocorrências Após BP -->
+                            <td>
+                                <cfset totalOcorrenciasAposBP = 0>
+                                <cfloop query="result">
+                                    <cfif result.ID_VEREAGIR2 EQ consultas_acomp_cont.ID>
+                                        <cfset totalOcorrenciasAposBP = result.TOTAL_OCORRENCIAS_APOS_BP>
+                                        <cfbreak>
+                                    </cfif>
+                                </cfloop>
+                                #totalOcorrenciasAposBP#
+                            </td>
+
                             <cfif STATUS eq "FALTA CONTENÇÃO">
                                 <td class="text-nowrap">
                                     <button class="btn-rounded" onclick="self.location='ver_agir_edit.cfm?id_editar=#id#'">
@@ -765,9 +797,7 @@
                                 </td>
                             <cfelseif STATUS eq "AG. BP DEFINITIVO">
                                 <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_edit_def.cfm?id_editar=#id#'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
+                                    <button class="btn-rounded" onclick="self.location='ver_agir_edit_def.cfm?id_editar=#id#'"><i class="mdi mdi-pencil-outline"></i>Selecionar</button>
                                 </td>
                             <cfelseif STATUS eq "CONCLUÍDO">
                                 <td class="text-nowrap">
@@ -778,7 +808,7 @@
                             </cfif>
                             <td class="wide-column">
                                 <cfloop query="result">
-                                    <cfif result.ID_VEREAGIR2 EQ consultas_acomp_cont.ID AND result.MODELO_VEREAGIR2 EQ consultas_acomp_cont.MODELO>
+                                    <cfif result.ID_VEREAGIR2 EQ consultas_acomp_cont.ID>
                                         <cfif STATUS_NOVO EQ "Quebra de BP">
                                             <span class="status-span" style="background-color: red; color: white;">#STATUS_NOVO#</span>
                                         <cfelseif STATUS_NOVO EQ "BP Válido">
@@ -795,6 +825,6 @@
                 </tbody>
             </table>
         </div> 
-        <script src="/qualidade/relatorios/assets/script.js?v9"></script>
+        <script src="/qualidade/relatorios/assets/script.js?v1"></script>
     </body>
 </html>

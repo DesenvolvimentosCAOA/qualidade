@@ -379,6 +379,62 @@
         ORDER BY ordem, HH
     </cfquery>
 
+    <cfquery name="consulta_barreira_chassi" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, BARCODE,
+                CASE 
+                    WHEN INTERVALO BETWEEN '01:00' AND '05:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o BARCODE só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    
+                    -- Verifica se o BARCODE contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT BARCODE) AS totalVins,
+                
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                    -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                    ))
+                )
+            
+            AND MODELO LIKE 'CHASSI%'
+            GROUP BY BARREIRA, BARCODE, INTERVALO
+        )
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT BARCODE) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+
     <!--- Verificando se está logado  --->
 <cfif not isDefined("cookie.USER_APONTAMENTO_BODY") or cookie.USER_APONTAMENTO_BODY eq "">
     <script>
@@ -469,6 +525,8 @@
                             <td>
                                 <cfif FindNoCase("CABINE", MODELO) neq 0>
                                     HR
+                                <cfelseif FindNoCase("CHASSI", MODELO) neq 0>
+                                    CHASSI
                                 <cfelseif FindNoCase("TIGGO 5", MODELO) neq 0>
                                     T19
                                 <cfelseif FindNoCase("TIGGO 7", MODELO) neq 0>
@@ -488,7 +546,13 @@
                             <td>#POSICAO#</td>
                             <td>#PECA#</td>
                             <td>#ESTACAO#</td>
-                            <td>1</td>
+                            <td>
+                                <cfif len(PROBLEMA) GT 0>
+                                    1
+                                <cfelse>
+                                    
+                                </cfif>
+                            </td>
                             <td>#BARCODE#</td>
                             <td>
                                 <!-- Verificação de turno com base no INTERVALO -->
@@ -860,6 +924,18 @@
                                 <td></td>
                                 <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
                                 <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.APROVADOS[i]#</strong></td>
+                            </tr>
+                        </cfif>
+                    </cfloop>
+
+                    <cfloop index="i" from="1" to="#consulta_barreira_chassi.recordcount#">
+                        <cfif consulta_barreira_chassi.BARREIRA[i] EQ "CHASSI">
+                            <tr class="align-middle">
+                                <td colspan="1" class="text-end"><strong>CHASSI</strong></td>
+                                <td colspan="1" class="text-end"><strong>CHASSI</strong></td>
+                                <td></td>
+                                <td colspan="1" class="text-end"><strong>#consulta_barreira_chassi.TOTAL[i]#</strong></td>
+                                <td colspan="1" class="text-end"><strong>#consulta_barreira_chassi.APROVADOS[i]#</strong></td>
                             </tr>
                         </cfif>
                     </cfloop>

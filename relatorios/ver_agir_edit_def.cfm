@@ -13,7 +13,7 @@
             ORDER BY ID DESC
         </cfquery>
     </cfif>
-    
+
     <cfif isDefined("form.ver_bp") and form.ver_bp neq "">
         <cfquery name="atualiza" datasource="#BANCOSINC#">
             UPDATE INTCOLDFUSION.VEREAGIR2
@@ -28,22 +28,84 @@
     
         <cflocation url="ver_agir.cfm">
     </cfif>
-    
-    
+
+
     <html lang="pt-BR">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v4">        
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v5">   
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f9;
+                margin: 0;
+                padding: 0;
+            }
+            .table-container {
+                margin: 20px auto;
+                padding: 20px;
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                max-width: 800px;
+            }
+            h2 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .search-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .input-group {
+                flex: 1 1 45%;
+                margin-bottom: 15px;
+            }
+            .input-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+            .input-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+            .btn-rounded {
+                display: inline-block;
+                padding: 10px 20px;
+                margin: 10px 5px;
+                border: none;
+                border-radius: 20px;
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+                text-align: center;
+            }
+            .btn-rounded.back-btn {
+                background-color: #6c757d;
+            }
+            .btn-rounded:hover {
+                background-color: #0056b3;
+            }
+            .btn-rounded.back-btn:hover {
+                background-color: #5a6268;
+            }
+        </style>
+
     </head>
     <body>
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header>
-    
-        <div id="tableBody" class="table-container">
+
+        <div id="tableBody" class="table-container" style="margin-top:100px;">
             <h2 style="color: blue; font-size:30px;">Dados do Item</h2>
             <cfoutput>
                 <div class="search-container">

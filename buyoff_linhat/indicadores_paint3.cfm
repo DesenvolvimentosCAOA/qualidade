@@ -127,7 +127,7 @@
 
     <cfquery name="consulta_nconformidades_primer" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE
             WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -149,22 +149,22 @@
                     (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
                 ))
             )
-            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
+            GROUP BY PROBLEMA
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                 SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
                 ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
@@ -173,7 +173,7 @@
 
     <cfquery name="consulta_nconformidades_TopCoat" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE
             WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -195,22 +195,22 @@
                     (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
                 ))
             )
-            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
+            GROUP BY PROBLEMA
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                 SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
                 ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
@@ -219,7 +219,7 @@
 
     <cfquery name="consulta_nconformidades_val" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE
             WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -241,22 +241,22 @@
                     (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
                 ))
             )
-            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
+            GROUP BY PROBLEMA
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                 SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
                 ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
@@ -265,7 +265,7 @@
 
     <cfquery name="consulta_nconformidades_lib" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE
             WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -287,22 +287,22 @@
                     (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
                 ))
             )
-            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
+            GROUP BY PROBLEMA
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                 SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
                 ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
@@ -311,7 +311,7 @@
 
     <cfquery name="consulta_nconformidades_ecoat" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE
             WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -333,22 +333,22 @@
                     (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
                 ))
             )
-            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
+            GROUP BY PROBLEMA
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 5
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, 
                 SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            SELECT PROBLEMA, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
                 ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
@@ -436,8 +436,6 @@
                                     <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
                                 </tr>
                                 <tr class="text-nowrap">
-                                    <th scope="col">Peça</th>
-                                    <th scope="col">Posição</th>
                                     <th scope="col">Problema</th>
                                     <th scope="col">Total</th>
                                     <th scope="col">Pareto (%)</th>
@@ -446,8 +444,6 @@
                             <tbody class="table-group-divider">
                                 <cfoutput query="consulta_nconformidades_ecoat">
                                     <tr class="align-middle">
-                                        <td>#PECA#</td>
-                                        <td>#POSICAO#</td>
                                         <td style="font-weight: bold">#PROBLEMA#</td>
                                         <td>#TOTAL_POR_DEFEITO#</td>
                                         <td>#PARETO#%</td>
@@ -579,8 +575,6 @@
                                     <th scope="col" colspan="5" class="bg-primary">Principais Não Conformidades - Top 5</th>
                                 </tr>
                                 <tr class="text-nowrap">
-                                    <th scope="col">Peça</th>
-                                    <th scope="col">Posição</th>
                                     <th scope="col">Problema</th>
                                     <th scope="col">Total</th>
                                     <th scope="col">Pareto</th>
@@ -589,8 +583,6 @@
                             <tbody class="table-group-divider">
                                 <cfoutput query="consulta_nconformidades_primer">
                                     <tr class="align-middle">
-                                        <td>#PECA#</td>
-                                        <td>#POSICAO#</td>
                                         <td style="font-weight: bold">#PROBLEMA#</td>
                                         <td>#TOTAL_POR_DEFEITO#</td>
                                         <td>#PARETO#%</td>
@@ -724,8 +716,6 @@
                                             <th scope="col" colspan="5" class="bg-success">Principais Não Conformidades - Top 5</th>
                                         </tr>
                                         <tr class="text-nowrap">
-                                            <th scope="col">Peça</th>
-                                            <th scope="col">Posição</th>
                                             <th scope="col">Problema</th>
                                             <th scope="col">Total</th>
                                             <th scope="col">Pareto (%)</th>
@@ -734,8 +724,6 @@
                                     <tbody class="table-group-divider">
                                         <cfoutput query="consulta_nconformidades_TopCoat">
                                             <tr class="align-middle">
-                                                <td>#PECA#</td>
-                                                <td>#POSICAO#</td>
                                                 <td style="font-weight: bold">#PROBLEMA#</td>
                                                 <td>#TOTAL_POR_DEFEITO#</td>
                                                 <td>#PARETO#%</td>
@@ -867,8 +855,6 @@
                                             <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
                                         </tr>
                                         <tr class="text-nowrap">
-                                            <th scope="col">Peça</th>
-                                            <th scope="col">Posição</th>
                                             <th scope="col">Problema</th>
                                             <th scope="col">Total</th>
                                             <th scope="col">Pareto (%)</th>
@@ -877,8 +863,6 @@
                                     <tbody class="table-group-divider">
                                         <cfoutput query="consulta_nconformidades_val">
                                             <tr class="align-middle">
-                                                <td>#PECA#</td>
-                                                <td>#POSICAO#</td>
                                                 <td style="font-weight: bold">#PROBLEMA#</td>
                                                 <td>#TOTAL_POR_DEFEITO#</td>
                                                 <td>#PARETO#%</td>
@@ -1011,8 +995,6 @@
                                             <th scope="col" colspan="5" class="bg-secondary">Principais Não Conformidades - Top 5</th>
                                         </tr>
                                         <tr class="text-nowrap">
-                                            <th scope="col">Peça</th>
-                                            <th scope="col">Posição</th>
                                             <th scope="col">Problema</th>
                                             <th scope="col">Total</th>
                                             <th scope="col">Pareto (%)</th>
@@ -1021,8 +1003,6 @@
                                     <tbody class="table-group-divider">
                                         <cfoutput query="consulta_nconformidades_lib">
                                             <tr class="align-middle">
-                                                <td>#PECA#</td>
-                                                <td>#POSICAO#</td>
                                                 <td style="font-weight: bold">#PROBLEMA#</td>
                                                 <td>#TOTAL_POR_DEFEITO#</td>
                                                 <td>#PARETO#%</td>

@@ -125,7 +125,7 @@
               <div class="col col-3">
                 <div class="form-group">
                   <label class="form-label" for="formMotivoBloqueio">Motivo do Bloqueio</label>
-                  <input type="text" class="form-control" name="motivo_bloqueio" id="formMotivoBloqueio" value="#consulta_editar.motivo_bloqueio#" required/>
+                  <input maxlength="250" type="text" class="form-control" name="motivo_bloqueio" id="formMotivoBloqueio" value="#consulta_editar.motivo_bloqueio#" required/>
                 </div>
               </div>
               

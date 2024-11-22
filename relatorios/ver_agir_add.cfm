@@ -62,14 +62,75 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v6">        
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v6"> 
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f9;
+                margin: 0;
+                padding: 0;
+            }
+            .table-container {
+                margin: 20px auto;
+                padding: 20px;
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                max-width: 800px;
+            }
+            h2 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .search-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .input-group {
+                flex: 1 1 45%;
+                margin-bottom: 15px;
+            }
+            .input-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+            .input-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+            .btn-rounded {
+                display: inline-block;
+                padding: 10px 20px;
+                margin: 10px 5px;
+                border: none;
+                border-radius: 20px;
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+                text-align: center;
+            }
+            .btn-rounded.back-btn {
+                background-color: #6c757d;
+            }
+            .btn-rounded:hover {
+                background-color: #0056b3;
+            }
+            .btn-rounded.back-btn:hover {
+                background-color: #5a6268;
+            }
+        </style>       
     </head>
     <body>
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header>
 
-        <div id="tableBody" class="table-container">
+        <div id="tableBody" class="table-container" style="margin-top:100px;">
             <h2 style="color:#f6722c; font-size:30px;">Ver & Agir</h2>
             <form id="for-edit" method="POST">
                 <cfoutput>
@@ -174,7 +235,7 @@
                             <datalist id="grupos">
                                 <option value="BODY">
                                 <option value="PAINT">
-                                <option value="TRIM">
+                                <option value="FA">
                                 <option value="FAI">
                                 <option value="LOG">
                                 <option value="CKD">
@@ -192,8 +253,25 @@
                         </div>
                         <div class="input-group">
                             <label for="searchBarreira">Barreira</label>
-                            <input readonly required type="text" id="searchBarreira" name="ver_barreira" placeholder="Barreira" value="<cfif isDefined('url.tabela')><cfif url.tabela EQ 'sistema_qualidade_body'>BODY<cfelseif url.tabela EQ 'sistema_qualidade'>PAINT<cfelseif url.tabela EQ 'sistema_qualidade_fa'>TRIM<cfelseif url.tabela EQ 'sistema_qualidade_fai'>FAI<cfelseif url.tabela EQ 'sistema_qualidade_pdi_saida'>PDI</cfif></cfif>">
+                            <select id="searchBarreira" name="ver_barreira" onchange="updateInputValue(this)">
+                                <option value="" disabled selected>Selecione uma opção</option>
+                                <option value="BODY" <cfif isDefined('url.tabela') AND url.tabela EQ 'sistema_qualidade_body'>selected</cfif>>BODY</option>
+                                <option value="PAINT" <cfif isDefined('url.tabela') AND url.tabela EQ 'sistema_qualidade'>selected</cfif>>PAINT</option>
+                                <option value="FA" <cfif isDefined('url.tabela') AND url.tabela EQ 'sistema_qualidade_fa'>selected</cfif>>FA</option>
+                                <option value="FAI" <cfif isDefined('url.tabela') AND url.tabela EQ 'sistema_qualidade_fai'>selected</cfif>>FAI</option>
+                                <option value="PDI" <cfif isDefined('url.tabela') AND url.tabela EQ 'sistema_qualidade_pdi_saida'>selected</cfif>>PDI</option>
+                            </select>
+                            
                         </div>
+                        
+                        <script>
+                            // Função para atualizar o valor do input baseado na seleção do select
+                            function updateInputValue(selectElement) {
+                                const inputField = document.getElementById('hiddenSearchBarreira');
+                                inputField.value = selectElement.value || inputField.value;  // Caso nada seja selecionado, mantém o valor do input original
+                            }
+                        </script>
+                        
                         
                     </div>
                     <div class="search-container">

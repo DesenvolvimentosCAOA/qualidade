@@ -138,13 +138,16 @@ td:hover {
 }
 /* Estilizando o select */
 .search-container select {
-    border-radius: 20px; /* Borda arredondada */
-    padding: 15px 20px; /* Espaçamento interno do select */
-    font-size: 0.8rem; /* Tamanho da fonte */
-    border: 1px solid #5a8e99; /* Cor da borda */
-    outline: none; /* Remove o contorno ao focar */
-    width: 100%; /* Largura do select ocupa 100% do grupo */
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra leve para estilo */
+    padding: 10px; /* Ajuste o padding */
+    font-size: 0.9rem;
+    border: 1px solid #5a8e99;
+    outline: none;
+    width: 100%;
+    height: auto; /* Ajuste a altura */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    color: #000; /* Cor da fonte */
+    background-color: #fff; /* Cor do fundo */
+    z-index: 1; /* Certifique-se de que está acima de outros elementos */
 }
 
 /* Sombra e cor ao focar */
