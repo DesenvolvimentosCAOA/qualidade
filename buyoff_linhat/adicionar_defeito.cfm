@@ -114,6 +114,7 @@
                                     <option value="FA-T19-PROBLEMA">FA-T19-PROBLEMA</option>
                                     <option value="FA-SUBMOTOR-PEÇA">FA-SUBMOTOR-PEÇA</option>
                                     <option value="PAINT">PAINT</option>
+                                    <option value="PDI">PDI</option>
                                 </select>
                             </div>
                     </div>

@@ -7,10 +7,9 @@
     <li><a href="ver_agir.cfm">Ver e Agir</a></li>
     <li><a href="indicador.cfm">Indicadores</a></li>
           <li class="dropdown">
-            <a href="#">Relatórios</a>
+            <a href="#">Edição</a>
             <ul class="dropdown-menu">
-                <li><a href="#">Relatórios 8D</a></li>
-                <li><a href="#">Relatório</a></li>
+                <li><a href="/qualidade/relatorios/ver_agir_apagar.cfm">Apagar/Editar Lançamento</a></li>
             </ul>
         </li>
     <li><a href="logout.cfm">Sair</a></li>

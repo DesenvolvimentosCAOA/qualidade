@@ -567,7 +567,7 @@
             var usuario = prompt("Digite o nome de usuário:").toLowerCase(); // Converte para minúsculas
             var senha = prompt("Digite a senha:").toLowerCase(); // Converte para minúsculas
 
-            if (usuario === "admin" && senha === "3781") {
+            if (usuario === "admin" && senha === "8350") {
                 // Credenciais corretas, redireciona para a página de edição
             } else {
                 event.preventDefault();

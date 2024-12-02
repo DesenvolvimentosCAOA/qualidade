@@ -113,13 +113,13 @@
     </cfif>
     <!--- Deletar Item --->
     <cfif structKeyExists(url, "id") and url.id neq "">
-    <cfquery name="delete" datasource="#BANCOSINC#">
-       DELETE FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA WHERE ID = 
-       <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
-    </cfquery>
-    <script>
-       self.location = 'fa_barreira_cp7.cfm';
-    </script>
+      <cfquery name="delete" datasource="#BANCOSINC#">
+         DELETE FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA WHERE ID = 
+         <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
+      </cfquery>
+      <script>
+         self.location = 'fa_barreira_cp7.cfm';
+      </script>
     </cfif>
 <html lang="pt-BR">
    <head>
@@ -315,6 +315,7 @@
                <option value="N2">N2</option>
                <option value="N3">N3</option>
                <option value="N4">N4</option>
+               <option value="CRIPPLE">CRIPPLE</option>
                <option value="OK A-">OK A-</option>
                <option value="AVARIA">AVARIA</option>
             </select>
@@ -327,10 +328,38 @@
          <button type="submit" class="btn btn-primary">Enviar</button>
             <cfif isDefined("form.VIN") and form.VIN neq "">
                <cfquery name="buscaMES" datasource="#BANCOMES#">
-                   select rtrim(ltrim(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(
-                   replace(replace(p.name,'CONJUNTO',''),'TRIM',''),
-                   ' FL',''),'BRANCO',''),'PEROLA',''),'PRATA',''),'AZUL',''),
-                   'PRETO',''),'CINZA',''),'TXS','PL7'),'ESCURO',''),'NOVO MOTOR',''),'CINZA',''))) modelo,
+                   select rtrim(ltrim(replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     replace(
+                     p.name,'CONJUNTO',''),
+                     'TRIM',''),
+                     ' FL',''),
+                     'BRANCO',''),
+                     'GRB',''),
+                     'BLP',''),
+                     'WAP',''),
+                     'PEROLA',''),
+                     'PRATA',''),
+                     'AZUL',''),
+                     'PRETO',''),
+                     'CINZA',''),
+                     'TXS','PL7'),
+                     'ESCURO',''),
+                     'NOVO MOTOR',''),
+                     'CINZA',''))) modelo,
                    p.name, g.vin, g.IDProduct, g.*
                    from CTBLGravacao g
                    left join TBLProduct p on g.IDProduct = p.IDProduct

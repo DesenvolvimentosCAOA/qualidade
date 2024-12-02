@@ -5,39 +5,52 @@
     <cfcontent type="text/html; charset=UTF-8">
     <cfprocessingdirective pageEncoding="utf-8">
 
-    <cfif isDefined("url.tabela") and isDefined("url.id_editar")>
-        <!--- Valida se o nome da tabela é permitido para evitar SQL injection --->
-        <cfset tabelaPermitida = ListFind("sistema_qualidade,sistema_qualidade_body,sistema_qualidade_fa,sistema_qualidade_fai,sistema_qualidade_pdi_saida", url.tabela)>
-    
-        <cfif tabelaPermitida>
-            <cfquery name="consulta_editar" datasource="#BANCOSINC#">
-                SELECT * 
-                FROM INTCOLDFUSION.#url.tabela#
-                WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
-                ORDER BY ID DESC
-            </cfquery>
-        <cfelse>
-            <cfoutput>Erro: Tabela não permitida.</cfoutput>
-        </cfif>
-    <cfelse>
-        <cfoutput>Erro: Parâmetros inválidos.</cfoutput>
-    </cfif>
 
 <cfif structKeyExists(form, "data_registro")>
     <!--- Obter próximo maxId --->
     <cfquery name="obterMaxId" datasource="#BANCOSINC#">
        SELECT COALESCE(MAX(ID), 0) + 1 AS id FROM INTCOLDFUSION.VEREAGIR2
     </cfquery>
+    
+    <cfif isDefined("form.ver_vin") and form.ver_vin neq "">
+        <cfif isDefined("form.ver_vin") and form.ver_vin neq "">
+            <cfquery name="buscaMES" datasource="#BANCOMES#">
+                select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
+                rtrim(ltrim(replace(
+                    replace(
+                    replace(
+                    replace(
+                    replace(
+                    replace(
+                    replace(
+                    replace(
+                    replace(
+                    replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
+                    ' FL',''),
+                    'COMPLETO ',''),
+                    'COMPLETA ',''),
+                    'TXS','PL7'),
+                    'SOLDADO',''),
+                    'SOLDADA',''),
+                    'ESCURO',''),
+                    'NOVO MOTOR',''),
+                    'CINZA',''))) modelo
+                from TBLLot l
+                left join CTBLGravacao g on l.IDLot = g.IDLot
+                left join TBLProduct p on p.IDProduct = l.IDProduct
+                where l.code = UPPER('#form.ver_vin#')
+                and p.name like '%CARROCERIA%'
+                order by g.DtCreation desc
+            </cfquery>
+        </cfif>
 
 
 <cfquery name="insere" datasource="#BANCOSINC#">
-    INSERT INTO INTCOLDFUSION.VEREAGIR2 (ID, DATA_REGISTRO, DATA_SGQ, MODELO, ID_SGQ, VIN, PECA, POSICAO, PROBLEMA, SEVERIDADE, DETECCAO, OCORRENCIA, RPN, TURNO, GRUPO_RESPONSAVEL, STATUS, BARREIRA)
+    INSERT INTO INTCOLDFUSION.VEREAGIR2 (ID, DATA_REGISTRO,MODELO,VIN, PECA, POSICAO, PROBLEMA, SEVERIDADE, DETECCAO, OCORRENCIA, RPN, TURNO, GRUPO_RESPONSAVEL, STATUS, BARREIRA)
     VALUES(
         <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
         <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">,
-        <cfqueryparam value="#DateFormat(form.data_sgq, 'yyyy-mm-dd')# #TimeFormat(form.data_sgq, 'HH:mm:ss')#" cfsqltype="CF_SQL_TIMESTAMP">,
-        <cfqueryparam value="#UCase(form.ver_modelo)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_VARCHAR">,
+        <cfqueryparam value="#buscaMES.modelo#" cfsqltype="CF_SQL_VARCHAR">,
         <cfqueryparam value="#UCase(form.ver_vin)#" cfsqltype="CF_SQL_VARCHAR">,
         <cfqueryparam value="#UCase(form.ver_peca)#" cfsqltype="CF_SQL_VARCHAR">,
         <cfqueryparam value="#UCase(form.ver_posicao)#" cfsqltype="CF_SQL_VARCHAR">,
@@ -55,7 +68,7 @@
 <cflocation url="ver_agir.cfm">
 
 </cfif>
-
+</cfif>
 <html lang="pt-BR">
     <head>
         <meta charset="utf-8">
@@ -123,7 +136,8 @@
             .btn-rounded.back-btn:hover {
                 background-color: #5a6268;
             }
-        </style>       
+        </style>  
+
     </head>
     <body>
         <header class="titulo">
@@ -136,42 +150,32 @@
                 <cfoutput>
                     <div class="search-container">
                         <div class="input-group">
-                            <label for="searchVIN">
-                                <cfif ListFind("sistema_qualidade_fa,sistema_qualidade_fai,sistema_qualidade_pdi_saida", url.tabela)>
-                                    VIN
-                                <cfelse>
-                                    Barcode
-                                </cfif>
-                            </label>
-                            <input readonly type="text" id="searchVIN" name="ver_vin" placeholder="VIN" value="<cfif ListFind('sistema_qualidade_fa,sistema_qualidade_fai,sistema_qualidade_pdi_saida', url.tabela)>#consulta_editar.VIN#<cfelse>#consulta_editar.BARCODE#</cfif>">
+                            <label for="ver_vin">Vin</label>
+                            <input type="text" id="ver_vin" name="ver_vin" placeholder="VIN">
                         </div>
                         <div hidden class="input-group">
                             <label for="searchData">Data</label>
                             <input readonly type="date" id="searchData" name="data_registro" placeholder="Data" value="<cfoutput>#dateFormat(now(), 'yyyy-mm-dd')#</cfoutput>">
                         </div>
                         <div hidden class="input-group">
-                            <label for="searchDatasgq">Data e Hora SGQ</label>
-                            <input readonly type="datetime-local" id="searchDatasgq" name="data_sgq" placeholder="Data e Hora SGQ" value="#DateFormat(consulta_editar.user_data, 'yyyy-mm-dd')#T#TimeFormat(consulta_editar.user_data, 'HH:nn:ss')#">
-                        </div>
-                        <div hidden class="input-group">
                             <label for="searchStatus">Status</label>
                             <input type="text" id="searchStatus" name="ver_status" placeholder="Status" value="FALTA CONTENÇÃO">
                         </div>
-                        <div class="input-group">
+                        <div hidden class="input-group">
                             <label for="searchModelo">Modelo</label>
-                            <input readonly type="text" id="searchModelo" name="ver_modelo" placeholder="Modelo" value="#consulta_editar.modelo#">
+                            <input readonly type="text" id="searchModelo" name="ver_modelo" placeholder="Modelo">
                         </div>
                         <div class="input-group">
                             <label for="searchPeca">Peça</label>
-                            <input readonly required type="text" id="searchPeca" name="ver_peca" placeholder="Peça" value="#consulta_editar.peca#">
+                            <input  required type="text" id="searchPeca" name="ver_peca" placeholder="Peça">
                         </div>
                         <div class="input-group">
                             <label for="searchPosicao">Posição</label>
-                            <input readonly required type="text" id="searchPosicao" name="ver_posicao" placeholder="Posição" value="#consulta_editar.posicao#">
+                            <input  required type="text" id="searchPosicao" name="ver_posicao" placeholder="Posição">
                         </div>
                         <div class="input-group">
                             <label for="searchProblema">Problema</label>
-                            <input readonly required type="text" id="searchProblema" name="ver_problema" placeholder="Problema" value="#consulta_editar.problema#">
+                            <input  required type="text" id="searchProblema" name="ver_problema" placeholder="Problema">
                         </div>
                     </div>
                     <div class="search-container">
@@ -280,10 +284,8 @@
                         <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao" style="display:none;">Salvar Edição</button>
                         <button type="button" class="btn-rounded cancel-btn" id="btnCancelarEdicao" style="display:none;" onclick="cancelarEdicao()">Cancelar</button>
                     </div>
-            
                 </cfoutput>
             </form>
-            
         </div>
         <script src="/qualidade/relatorios/assets/script.js?v1"></script>
     </body>

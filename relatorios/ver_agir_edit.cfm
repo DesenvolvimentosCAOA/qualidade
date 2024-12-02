@@ -22,6 +22,8 @@
                 BP_CONTENCAO_PROCESSO = <cfqueryparam value="#UCase(form.ver_bp)#" cfsqltype="CF_SQL_VARCHAR">,
                 STATUS = <cfqueryparam value="#form.ver_status#" cfsqltype="CF_SQL_VARCHAR">,
                 DESCRICAO_CONTENCAO = <cfqueryparam value="#UCase(form.ver_contencao)#" cfsqltype="CF_SQL_VARCHAR">,
+                DESCRICAO_CONTENCAO2 = <cfqueryparam value="#UCase(form.ver_contencao2)#" cfsqltype="CF_SQL_VARCHAR">,
+                DESCRICAO_CONTENCAO3 = <cfqueryparam value="#UCase(form.ver_contencao3)#" cfsqltype="CF_SQL_VARCHAR">,
                 NECESSITA_QUALIDADE = <cfqueryparam value="#UCase(form.ver_qc)#" cfsqltype="CF_SQL_VARCHAR">,
                 RESPONSAVEL_CONTENCAO = <cfqueryparam value="#UCase(form.ver_responsavel)#" cfsqltype="CF_SQL_VARCHAR">,
                 BP_CONTENCAO_QUALIDADE = <cfqueryparam value="#UCase(form.ver_bp_contencao_qa)#" cfsqltype="CF_SQL_VARCHAR">,
@@ -180,8 +182,16 @@
                             <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="" oninput="verificaCamposPreenchidos()">
                         </div>
                         <div class="input-group">
-                            <label for="searchDescricaoC">Descrição de Contenção</label>
-                            <input required type="text" id="searchDescricaoC" name="ver_contencao" placeholder="Descrição de Contenção" oninput="verificaCamposPreenchidos()">
+                            <label for="searchDescricaoC">Descrição de Contenção 1</label>
+                            <input type="text" id="searchDescricaoC" name="ver_contencao" placeholder="Max 250 Caracteres" oninput="verificaCamposPreenchidos()">
+                        </div>
+                        <div class="input-group">
+                            <label for="searchDescricaoC2">Descrição de Contenção 2</label>
+                            <input type="text" id="searchDescricaoC2" name="ver_contencao2" placeholder="Max 250 Caracteres" oninput="verificaCamposPreenchidos()">
+                        </div>
+                        <div class="input-group">
+                            <label for="searchDescricaoC3">Descrição de Contenção 3</label>
+                            <input required type="text" id="searchDescricaoC3" name="ver_contencao3" placeholder="Max 250 Caracteres" oninput="verificaCamposPreenchidos()">
                         </div>
                         <div class="input-group">
                             <label for="searchQC">Necessita da validação Q.A?</label>

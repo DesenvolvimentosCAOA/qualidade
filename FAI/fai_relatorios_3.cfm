@@ -28,9 +28,9 @@
             </cfif>
             AND (
                     -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
                     OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
                         (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
@@ -40,7 +40,7 @@
         
         AND INTERVALO BETWEEN '00:00' AND '23:00'
     
-        ORDER BY BARREIRA ASC
+        ORDER BY INTERVALO DESC
     </cfquery>
     
     <cfquery name="consulta_barreira_tiggo7" datasource="#BANCOSINC#">
@@ -73,9 +73,9 @@
                 </cfif>
                 AND (
                     -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
                     OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
                         (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
@@ -128,9 +128,9 @@
                 </cfif>
                 AND (
                     -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
                     OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
                         (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
@@ -183,9 +183,9 @@
                 </cfif>
                 AND (
                     -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
                     OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
                         (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
@@ -238,9 +238,9 @@
                 </cfif>
                 AND (
                     -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
                     OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
                         (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
@@ -293,9 +293,9 @@
                 </cfif>
                 AND (
                     -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
                     OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
                         (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
@@ -348,9 +348,9 @@
                 </cfif>
                 AND (
                     -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
                     OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
                         (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
@@ -374,7 +374,7 @@
     </cfquery>
 
     <!--- Verificando se está logado  --->
-<cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
+<cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
     <script>
         alert("É necessario autenticação!!");
         self.location = '/qualidade/buyoff_linhat/index.cfm'
@@ -498,7 +498,7 @@
                                     <cfelseif ListFind("PVT", ESTACAO)>
                                         PVT
                                     <cfelseif ListFind("ENGENHARIA", ESTACAO)>
-                                        ENGENHARIA
+                                        ENG
                                     <cfelseif ListFind("MANUTENÇÃO", ESTACAO)>
                                         MANUTENÇÃO
                                     <cfelseif ListFind("LOGISTICA", ESTACAO)>
@@ -508,11 +508,11 @@
                                     <cfelseif ListFind("DOOWON", ESTACAO)>
                                         DOOWON
                                     <cfelseif ListFind("SMALL", ESTACAO)>
-                                        SMALL
+                                        S
                                     <cfelseif ListFind("CKD", ESTACAO)>
-                                        Q1
+                                        CKD
                                     <cfelseif ListFind("PAINT", ESTACAO)>
-                                        P    
+                                        P
                                     <cfelseif ListFind("LINHA T", ESTACAO)>
                                         T
                                     <cfelseif ListFind("LINHA F", ESTACAO)>
@@ -531,13 +531,40 @@
                                 <td>#ESTACAO#</td>
                                 <td>#VIN#</td>
                                 <td>
-                                    <!-- Verificação de turno com base no INTERVALO -->
-                                    <cfif ListFind("06:00,07:00,08:00,09:00,10:00,11:00,12:00,13:00,14:00,15:00", INTERVALO)>
-                                        1º TURNO
-                                    <cfelseif ListFind("15:50,16:00,17:00,18:00,19:00,20:00,21:00,22:00,23:00,00:00", INTERVALO)>
-                                        2º TURNO
-                                    <cfelseif ListFind("01:00,02:00,03:00,04:00,05:00", INTERVALO)>
-                                        3º TURNO
+                                    <!-- Verificação de turno com base no INTERVALO e dia da semana -->
+                                    <cfset diaSemana = DayOfWeek(Now())>
+                                    <cfset intervalo = INTERVALO>
+                                
+                                    <cfif (diaSemana GTE 2 AND diaSemana LTE 5)>
+                                        <cfif (intervalo GTE "06:00" AND intervalo LTE "15:48")>
+                                            1º Turno
+                                        <cfelseif (intervalo GTE "15:50" AND intervalo LTE "23:59") OR (intervalo GTE "00:00" AND intervalo LTE "00:00")>
+                                            2º Turno
+                                        <cfelseif (intervalo GTE "01:00" AND intervalo LTE "05:00")>
+                                            3º Turno
+                                        <cfelse>
+                                            -
+                                        </cfif>
+                                    <cfelseif (diaSemana EQ 6)>
+                                        <cfif (intervalo GTE "06:00" AND intervalo LTE "14:48")>
+                                            1º Turno
+                                        <cfelseif (intervalo GTE "14:50" AND intervalo LTE "23:59") OR (intervalo GTE "00:00" AND intervalo LTE "00:00")>
+                                            2º Turno
+                                        <cfelseif (intervalo GTE "01:00" AND intervalo LTE "05:00")>
+                                            3º Turno
+                                        <cfelse>
+                                            -
+                                        </cfif>
+                                    <cfelseif (diaSemana EQ 7)>
+                                        <cfif (intervalo GTE "06:00" AND intervalo LTE "15:48")>
+                                            1º Turno
+                                        <cfelseif (intervalo GTE "15:50" AND intervalo LTE "23:59") OR (intervalo GTE "00:00" AND intervalo LTE "00:00")>
+                                            2º Turno
+                                        <cfelseif (intervalo GTE "01:00" AND intervalo LTE "05:00")>
+                                            3º Turno
+                                        <cfelse>
+                                            -
+                                        </cfif>
                                     <cfelse>
                                         -
                                     </cfif>

@@ -494,959 +494,950 @@
     </cfif>
     
     <html lang="pt-BR">
-    <head>
-        <!-- Meta tags necessárias -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Indicadores - 1º turno</title>
-        <link rel="icon" href="./assets/chery.png" type="image/x-icon">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-        <link rel="stylesheet" href="assets/css/style.css?v=11"> 
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="assets/StyleBuyOFF.css?v9">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        <style>
-            .ticker {
-                    width: 10%;
-                    height: 50px;
-                    overflow: hidden;
-                    position: relative;
-                    background-color: #f0f0f0; /* Fundo cinza */
-                    border: 1px solid #ddd;
-                    box-sizing: border-box;
-                }
-
-                .ticker .ticker-content {
-                    position: absolute;
-                    white-space: nowrap;
-                    display: inline-block;
-                    animation: tickerMove 15s linear infinite; /* Reduzido o tempo para aumentar a velocidade */
-                    /* Ajusta a largura da tabela */
-                    width: auto;
-                    box-sizing: border-box;
-                }
-                .ticker:hover .ticker-content {
-                    animation-play-state: paused;
-        }
-
-                @keyframes tickerMove {
-                    0% { transform: translateX(100%); }
-                    100% { transform: translateX(-100%); }
-                }
-          </style>
-    </head>
-    <body>
-        <!-- Header com as imagens e o menu -->
-        <header class="titulo">
-            <cfinclude template="auxi/nav_links1.cfm">
-        </header><br><br><br>
-      
-        <!-- Filtro de data -->
-        <cfif IsNumeric(consulta_totais.UNDER_BODY_PERC) AND IsNumeric(consulta_totais.ROAD_TEST_PERC) AND IsNumeric(consulta_totais.SHOWER_PERC) AND IsNumeric(consulta_totais.SIGN_OFF_PERC)>
-            <cfset resultadoFinal = 1>
-            <cfif consulta_totais.UNDER_BODY_PERC NEQ 0>
-                <cfset resultadoFinal = resultadoFinal * (consulta_totais.UNDER_BODY_PERC / 100)>
-            </cfif>
-            <cfif consulta_totais.ROAD_TEST_PERC NEQ 0>
-                <cfset resultadoFinal = resultadoFinal * (consulta_totais.ROAD_TEST_PERC / 100)>
-            </cfif>
-            <cfif consulta_totais.SHOWER_PERC NEQ 0>
-                <cfset resultadoFinal = resultadoFinal * (consulta_totais.SHOWER_PERC / 100)>
-            </cfif>
-            <cfif consulta_totais.SIGN_OFF_PERC NEQ 0>
-                <cfset resultadoFinal = resultadoFinal * (consulta_totais.SIGN_OFF_PERC / 100)>
-            </cfif>
-            <cfset resultadoFinal = NumberFormat(resultadoFinal * 100, "9,999,999.00")>
-        <cfelse>
-            <cfset resultadoFinal = "Sem dados suficientes"> <!-- ou qualquer valor padrão que você queira usar -->
-        </cfif>
-        
-
-        
-        <div class="ticker">
-            <div class="ticker-content">
-                <cfoutput query="consulta_totais">
-                    <table border="0" cellpadding="15" cellspacing="0">
-                        <tbody>
-                            <tr>
-                                <td><strong>DRR:</strong></td>
-                                <td colspan="2"><strong>#resultadoFinal#%</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </cfoutput>
-            </div>
-        </div>
-        <div class="container">
-            
-            <h2>FAI - Indicadores 1º Turno</h2>
-            
-            <form method="get" action="fai_indicadores_1turno.cfm" class="form-inline">
-                <div class="form-group mx-sm-3 mb-2">
-                    <label for="filtroData" class="sr-only">Data:</label>
-                    <input type="date" class="form-control" name="filtroData" id="filtroData" value="<cfif isDefined('url.filtroData')>#url.filtroData#</cfif>"/>
-                </div>
-                <button class="btn btn-primary mb-2" type="submit">Filtrar</button>
-                <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='fai_indicadores_1turno.cfm'">Limpar</button>
-            </form>
-        </div>
-      
-        <!-- Exibindo tabelas e gráficos para cada barreira -->
-        <div class="container-fluid">
-            <div class="row">
-                <!-- Tabela H/H para Under Body 2 -->
-                <div class="col-md-4">
-                    <h3 style="margin-left:50px">Under Body 2</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm w-75">
-                            <thead class="bg-success">
-                                <tr>
-                                    <th>H/H</th>
-                                    <th>Prod</th>
-                                    <th>Aprov</th>
-                                    <th>%</th>
-                                    <th>DPV</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfoutput query="consulta_barreira">
-                                    <cfif BARREIRA eq 'UNDER BODY'>
-                                        <tr>
-                                            <td>#HH#</td>
-                                            <td>#TOTAL#</td>
-                                            <td>#APROVADOS#</td>
-                                            <td style="font-weight: bold;<cfif PORCENTAGEM gt '86.0'>color: green;<cfelseif PORCENTAGEM lt '86.0'> color: red;</cfif>">#PORCENTAGEM#%</td>
-                                            <td>#DPV#</td>
-                                        </tr>
-                                    </cfif>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-        
-                <!-- Tabela Pareto para Under Body 2 -->
-                <div class="col-md-4">
-                    <h3>Pareto - Under Body 2</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-custom-width move-left-table" border="1" id="tblStocks" data-excel-name="Veículos">
-                            <thead>
-                                <tr class="text-nowrap">
-                                    <th scope="col" colspan="5" class="bg-success">Principais Não Conformidades - Top 5</th>
-                                </tr>
-                                <tr class="text-nowrap">
-                                    <th scope="col">Shop</th>
-                                    <th scope="col">Peça</th>
-                                    <th scope="col">Problema</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Pareto</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-group-divider">
-                                <cfoutput query="consulta_nconformidades_underbody2">
-                                    <tr class="align-middle">
-                                        <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
-                                        <td>#PECA#</td>
-                                        <td style="font-weight: bold">#PROBLEMA#</td>
-                                        <td>#TOTAL_POR_DEFEITO#</td>
-                                        <td>#PARETO#%</td>
-                                    </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-        
-                <!-- Gráfico para Pareto - Under Body 2 -->
-                <div class="col-md-4 move-left">
-                    <h3>Under Body 2</h3>
-                    <canvas id="paretoChart" width="600" height="300"></canvas>
-                  </div>
-            </div>
-        </div><br><br>
-        
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var ctx = document.getElementById('paretoChart').getContext('2d');
-                var data = {
-                    labels: [
-                        <cfoutput query="consulta_nconformidades_underbody2">
-                            '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
-                        </cfoutput>
-                    ],
-                    datasets: [
-                        {
-                            label: 'Total de Defeitos',
-                            type: 'bar',
-                            data: [
-                                <cfoutput query="consulta_nconformidades_underbody2">
-                                    #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
-                                </cfoutput>
-                            ],
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Pareto (%)',
-                            type: 'line',
-                            data: [
-                                <cfoutput query="consulta_nconformidades_underbody2">
-                                    #PARETO#<cfif currentRow neq recordCount>,</cfif>
-                                </cfoutput>
-                            ],
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 2,
-                            fill: false,
-                            yAxisID: 'y-axis-2'
-                        }
-                    ]
-                };
-        
-                var options = {
-                    scales: {
-                        yAxes: [
-                            {
-                                ticks: {
-                                    beginAtZero: true
-                                },
-                                position: 'left',
-                                id: 'y-axis-1'
-                            },
-                            {
-                                ticks: {
-                                    beginAtZero: true,
-                                    callback: function(value) {
-                                        return value + "%";
-                                    }
-                                },
-                                position: 'right',
-                                id: 'y-axis-2'
-                            }
-                        ]
+        <head>
+            <!-- Meta tags necessárias -->
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <title>FAI Indicador-1º turno</title>
+            <link rel="icon" href="./assets/chery.png" type="image/x-icon">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+            <link rel="stylesheet" href="assets/css/style.css?v=11"> 
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+            <link rel="stylesheet" href="assets/StyleBuyOFF.css?v1">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css">
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <style>
+                .ticker {
+                        width: 10%;
+                        height: 50px;
+                        overflow: hidden;
+                        position: relative;
+                        background-color: #f0f0f0; /* Fundo cinza */
+                        border: 1px solid #ddd;
+                        box-sizing: border-box;
                     }
-                };
-        
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: data,
-                    options: options
-                });
-            });
-        </script>
-                <!-- Tabela e Gráfico para Road Test -->
-                <div class="container-fluid">
-                    <div class="row">
-                        <!-- Tabela H/H -->
-                        <div class="col-md-4">
-                            <h3 style="margin-left:50px">Road Test</h3>
-                            <div class="table-responsive">
-                                <table class="table table-hover table-sm w-75">
-                                    <thead class="bg-danger">
-                                        <tr>
-                                            <th>H/H</th>
-                                            <th>Prod</th>
-                                            <th>Aprov</th>
-                                            <th>%</th>
-                                            <th>DPV</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <cfoutput query="consulta_barreira">
-                                            <cfif BARREIRA eq 'Road Test'>
-                                                <tr>
-                                                    <td>#HH#</td>
-                                                    <td>#TOTAL#</td>
-                                                    <td>#APROVADOS#</td>
-                                                    <td style="font-weight: bold;<cfif PORCENTAGEM gt '86.0'>color: green;<cfelseif PORCENTAGEM lt '86.0'> color: red;</cfif>">#PORCENTAGEM#%</td>
-                                                    <td>#DPV#</td>
-                                                </tr>
-                                            </cfif>
-                                        </cfoutput>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+    
+                    .ticker .ticker-content {
+                        position: absolute;
+                        white-space: nowrap;
+                        display: inline-block;
+                        animation: tickerMove 15s linear infinite; /* Reduzido o tempo para aumentar a velocidade */
+                        /* Ajusta a largura da tabela */
+                        width: auto;
+                        box-sizing: border-box;
+                    }
+                    .ticker:hover .ticker-content {
+                        animation-play-state: paused;
+                    }
+    
+                    @keyframes tickerMove {
+                        0% { transform: translateX(100%); }
+                        100% { transform: translateX(-100%); }
+                    }
+            </style>
+        </head>
+        <body>
+            <!-- Header com as imagens e o menu -->
+            <header class="titulo">
+                <cfinclude template="auxi/nav_links1.cfm">
+            </header><br><br><br>
             
-                        <!-- Tabela de Pareto -->
-                        <div class="col-md-4">
-                            <h3>Pareto - Road Test</h3>
-                            <div class="table-responsive">
-                                <table class="table table-hover table-sm table-custom-width move-left-table" border="1" id="tblStocks" data-excel-name="Veículos">
-                                    <thead>
-                                        <tr class="text-nowrap">
-                                            <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
-                                        </tr>
-                                        <tr class="text-nowrap">
-                                            <th scope="col">Shop</th>
-                                            <th scope="col">Peça</th>
-                                            <th scope="col">Problema</th>
-                                            <th scope="col">Total</th>
-                                            <th scope="col">Pareto (%)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="table-group-divider">
-                                        <cfoutput query="consulta_nconformidades_roadtest">
-                                            <tr class="align-middle">
-                                                <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
-                                                <td>#PECA#</td>
-                                                <td style="font-weight: bold">#PROBLEMA#</td>
-                                                <td>#TOTAL_POR_DEFEITO#</td>
-                                                <td>#PARETO#%</td>
-                                            </tr>
-                                        </cfoutput>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!-- Canvas para o gráfico de Pareto -->
-                        <div class="col-md-4">
-                            <h3>Road Test</h3>
-                            <canvas id="paretochart3" width="400" height="300"></canvas>
-                        </div>
-                    </div>
-                </div>
+            <cfif IsNumeric(consulta_totais.UNDER_BODY_PERC) AND IsNumeric(consulta_totais.ROAD_TEST_PERC) AND IsNumeric(consulta_totais.SHOWER_PERC) AND IsNumeric(consulta_totais.SIGN_OFF_PERC)>
+                <cfset resultadoFinal = 1>
+                <cfif consulta_totais.UNDER_BODY_PERC NEQ 0>
+                    <cfset resultadoFinal = resultadoFinal * (consulta_totais.UNDER_BODY_PERC / 100)>
+                </cfif>
+                <cfif consulta_totais.ROAD_TEST_PERC NEQ 0>
+                    <cfset resultadoFinal = resultadoFinal * (consulta_totais.ROAD_TEST_PERC / 100)>
+                </cfif>
+                <cfif consulta_totais.SHOWER_PERC NEQ 0>
+                    <cfset resultadoFinal = resultadoFinal * (consulta_totais.SHOWER_PERC / 100)>
+                </cfif>
+                <cfif consulta_totais.SIGN_OFF_PERC NEQ 0>
+                    <cfset resultadoFinal = resultadoFinal * (consulta_totais.SIGN_OFF_PERC / 100)>
+                </cfif>
+                <cfset resultadoFinal = NumberFormat(resultadoFinal * 100, "9,999,999.00")>
+            <cfelse>
+                <cfset resultadoFinal = "Sem dados suficientes"> <!-- ou qualquer valor padrão que você queira usar -->
+            </cfif>
             
-                <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        var ctx = document.getElementById('paretochart3').getContext('2d');
-                        var data = {
-                            labels: [
-                                <cfoutput query="consulta_nconformidades_roadtest">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
-                                </cfoutput>
-                            ],
-                            datasets: [
-                                {
-                                    label: 'Total de Defeitos',
-                                    type: 'bar',
-                                    data: [
-                                        <cfoutput query="consulta_nconformidades_roadtest">
-                                            #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
-                                        </cfoutput>
-                                    ],
-                                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                                    borderColor: 'rgba(54, 162, 235, 1)',
-                                    borderWidth: 1
-                                },
-                                {
-                                    label: 'Pareto (%)',
-                                    type: 'line',
-                                    data: [
-                                        <cfoutput query="consulta_nconformidades_roadtest">
-                                            #PARETO#<cfif currentRow neq recordCount>,</cfif>
-                                        </cfoutput>
-                                    ],
-                                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                                    borderColor: 'rgba(255, 99, 132, 1)',
-                                    borderWidth: 2,
-                                    fill: false,
-                                    yAxisID: 'y-axis-2'
-                                }
-                            ]
-                        };
-            
-                        var options = {
-                            scales: {
-                                yAxes: [
-                                    {
-                                        ticks: {
-                                            beginAtZero: true
-                                        },
-                                        position: 'left',
-                                        id: 'y-axis-1'
-                                    },
-                                    {
-                                        ticks: {
-                                            beginAtZero: true,
-                                            callback: function(value) {
-                                                return value + "%";
-                                            }
-                                        },
-                                        position: 'right',
-                                        id: 'y-axis-2'
-                                    }
-                                ]
-                            }
-                        };
-            
-                        new Chart(ctx, {
-                            type: 'bar',
-                            data: data,
-                            options: options
-                        });
-                    });
-                </script>
-                <!-- Tabela e Gráfico para Shower -->
-                
-                <div class="container-fluid">
-                    <div class="row">
-                        <!-- Tabela H/H -->
-                        <div class="col-md-4">
-                            <h3 style="margin-left:50px">Shower</h3>
-                            <div class="table-responsive">
-                                <table class="table table-hover table-sm w-75">
-                                    <thead class="bg-danger">
-                                        <tr>
-                                            <th>H/H</th>
-                                            <th>Prod</th>
-                                            <th>Aprov</th>
-                                            <th>%</th>
-                                            <th>DPV</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <cfoutput query="consulta_barreira">
-                                            <cfif BARREIRA eq 'SHOWER'>
-                                                <tr>
-                                                    <td>#HH#</td>
-                                                    <td>#TOTAL#</td>
-                                                    <td>#APROVADOS#</td>
-                                                    <td style="font-weight: bold;<cfif PORCENTAGEM gt '86.0'>color: green;<cfelseif PORCENTAGEM lt '86.0'> color: red;</cfif>">#PORCENTAGEM#%</td>
-                                                    <td>#DPV#</td>
-                                                </tr>
-                                            </cfif>
-                                        </cfoutput>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-            
-                        <!-- Tabela de Pareto -->
-                        <div class="col-md-4">
-                            <h3>Pareto - Shower</h3>
-                            <div class="table-responsive">
-                                <table class="table table-hover table-sm table-custom-width move-left-table" border="1" id="tblStocks" data-excel-name="Veículos">
-                                    <thead>
-                                        <tr class="text-nowrap">
-                                            <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
-                                        </tr>
-                                        <tr class="text-nowrap">
-                                            <th scope="col">Shop</th>
-                                            <th scope="col">Peça</th>
-                                            <th scope="col">Problema</th>
-                                            <th scope="col">Total</th>
-                                            <th scope="col">Pareto (%)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="table-group-divider">
-                                        <cfoutput query="consulta_nconformidades_shower">
-                                            <tr class="align-middle">
-                                                <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
-                                                <td>#PECA#</td>
-                                                <td style="font-weight: bold">#PROBLEMA#</td>
-                                                <td>#TOTAL_POR_DEFEITO#</td>
-                                                <td>#PARETO#%</td>
-                                            </tr>
-                                        </cfoutput>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!-- Canvas para o gráfico de Pareto -->
-                        <div class="col-md-4">
-                            <h3>Shower</h3>
-                            <canvas id="paretochart4" width="400" height="300"></canvas>
-                        </div>
-                    </div>
-                </div>
-            
-                <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        var ctx = document.getElementById('paretochart4').getContext('2d');
-                        var data = {
-                            labels: [
-                                <cfoutput query="consulta_nconformidades_shower">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
-                                </cfoutput>
-                            ],
-                            datasets: [
-                                {
-                                    label: 'Total de Defeitos',
-                                    type: 'bar',
-                                    data: [
-                                        <cfoutput query="consulta_nconformidades_shower">
-                                            #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
-                                        </cfoutput>
-                                    ],
-                                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                                    borderColor: 'rgba(54, 162, 235, 1)',
-                                    borderWidth: 1
-                                },
-                                {
-                                    label: 'Pareto (%)',
-                                    type: 'line',
-                                    data: [
-                                        <cfoutput query="consulta_nconformidades_shower">
-                                            #PARETO#<cfif currentRow neq recordCount>,</cfif>
-                                        </cfoutput>
-                                    ],
-                                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                                    borderColor: 'rgba(255, 99, 132, 1)',
-                                    borderWidth: 2,
-                                    fill: false,
-                                    yAxisID: 'y-axis-2'
-                                }
-                            ]
-                        };
-            
-                        var options = {
-                            scales: {
-                                yAxes: [
-                                    {
-                                        ticks: {
-                                            beginAtZero: true
-                                        },
-                                        position: 'left',
-                                        id: 'y-axis-1'
-                                    },
-                                    {
-                                        ticks: {
-                                            beginAtZero: true,
-                                            callback: function(value) {
-                                                return value + "%";
-                                            }
-                                        },
-                                        position: 'right',
-                                        id: 'y-axis-2'
-                                    }
-                                ]
-                            }
-                        };
-            
-                        new Chart(ctx, {
-                            type: 'bar',
-                            data: data,
-                            options: options
-                        });
-                    });
-                </script>
-
-                <!-- Tabela e Gráfico para SIGN OFF -->
-                
-                <div class="container-fluid">
-                    <div class="row">
-                        <!-- Tabela H/H -->
-                        <div class="col-md-4">
-                            <h3 style="margin-left:50px">Sign-Off</h3>
-                            <div class="table-responsive">
-                                <table class="table table-hover table-sm w-75">
-                                    <thead class="bg-danger">
-                                        <tr>
-                                            <th>H/H</th>
-                                            <th>Prod</th>
-                                            <th>Aprov</th>
-                                            <th>%</th>
-                                            <th>DPV</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <cfoutput query="consulta_barreira">
-                                            <cfif BARREIRA eq 'SIGN OFF'>
-                                                <tr>
-                                                    <td>#HH#</td>
-                                                    <td>#TOTAL#</td>
-                                                    <td>#APROVADOS#</td>
-                                                    <td style="font-weight: bold;<cfif PORCENTAGEM gt '86.0'>color: green;<cfelseif PORCENTAGEM lt '86.0'> color: red;</cfif>">#PORCENTAGEM#%</td>
-                                                    <td>#DPV#</td>
-                                                </tr>
-                                            </cfif>
-                                        </cfoutput>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-            
-                        <!-- Tabela de Pareto -->
-                        <div class="col-md-4">
-                            <h3>Pareto - SIGN-OFF</h3>
-                            <div class="table-responsive">
-                                <table class="table table-hover table-sm table-custom-width move-left-table" border="1" id="tblStocks" data-excel-name="Veículos">
-                                    <thead>
-                                        <tr class="text-nowrap">
-                                            <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
-                                        </tr>
-                                        <tr class="text-nowrap">
-                                            <th scope="col">Shop</th>
-                                            <th scope="col">Peça</th>
-                                            <th scope="col">Problema</th>
-                                            <th scope="col">Total</th>
-                                            <th scope="col">Pareto (%)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="table-group-divider">
-                                        <cfoutput query="consulta_nconformidades_exok">
-                                            <tr class="align-middle">
-                                                <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
-                                                <td>#PECA#</td>
-                                                <td style="font-weight: bold">#PROBLEMA#</td>
-                                                <td>#TOTAL_POR_DEFEITO#</td>
-                                                <td>#PARETO#%</td>
-                                            </tr>
-                                        </cfoutput>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!-- Canvas para o gráfico de Pareto -->
-                        <div class="col-md-4">
-                            <h3>SIGN-OFF</h3>
-                            <canvas id="paretochart5" width="400" height="300"></canvas>
-                        </div>
-                    </div>
-                </div>
-            
-                <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        var ctx = document.getElementById('paretochart5').getContext('2d');
-                        var data = {
-                            labels: [
-                                <cfoutput query="consulta_nconformidades_exok">
-                                    '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
-                                </cfoutput>
-                            ],
-                            datasets: [
-                                {
-                                    label: 'Total de Defeitos',
-                                    type: 'bar',
-                                    data: [
-                                        <cfoutput query="consulta_nconformidades_exok">
-                                            #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
-                                        </cfoutput>
-                                    ],
-                                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                                    borderColor: 'rgba(54, 162, 235, 1)',
-                                    borderWidth: 1
-                                },
-                                {
-                                    label: 'Pareto (%)',
-                                    type: 'line',
-                                    data: [
-                                        <cfoutput query="consulta_nconformidades_exok">
-                                            #PARETO#<cfif currentRow neq recordCount>,</cfif>
-                                        </cfoutput>
-                                    ],
-                                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                                    borderColor: 'rgba(255, 99, 132, 1)',
-                                    borderWidth: 2,
-                                    fill: false,
-                                    yAxisID: 'y-axis-2'
-                                }
-                            ]
-                        };
-            
-                        var options = {
-                            scales: {
-                                yAxes: [
-                                    {
-                                        ticks: {
-                                            beginAtZero: true
-                                        },
-                                        position: 'left',
-                                        id: 'y-axis-1'
-                                    },
-                                    {
-                                        ticks: {
-                                            beginAtZero: true,
-                                            callback: function(value) {
-                                                return value + "%";
-                                            }
-                                        },
-                                        position: 'right',
-                                        id: 'y-axis-2'
-                                    }
-                                ]
-                            }
-                        };
-            
-                        new Chart(ctx, {
-                            type: 'bar',
-                            data: data,
-                            options: options
-                        });
-                    });
-                </script>
-
-                                
-        <div class="container-fluid">
-            <div class="row">
-                <!-- Tabela H/H -->
-                <div class="col-md-4">
-                    <h3 style="margin-left:50px">TUNEL DE LIBERAÇÃO</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm w-75">
-                            <thead class="bg-danger">
-                                <tr>
-                                    <th>H/H</th>
-                                    <th>Prod</th>
-                                    <th>Aprov</th>
-                                    <th>%</th>
-                                    <th>DPV</th>
-                                </tr>
-                            </thead>
+            <div class="ticker">
+                <div class="ticker-content">
+                    <cfoutput query="consulta_totais">
+                        <table border="1" cellpadding="5" cellspacing="0">
                             <tbody>
-                                <cfoutput query="consulta_barreira">
-                                    <cfif BARREIRA eq 'TUNEL DE LIBERACAO'>
-                                        <tr>
-                                            <td>#HH#</td>
-                                            <td>#TOTAL#</td>
-                                            <td>#APROVADOS#</td>
-                                            <td style="font-weight: bold;<cfif PORCENTAGEM gt '86.0'>color: green;<cfelseif PORCENTAGEM lt '86.0'> color: red;</cfif>">#PORCENTAGEM#%</td>
-                                            <td>#DPV#</td>
-                                        </tr>
-                                    </cfif>
-                                </cfoutput>
+                                <tr>
+                                    <td><strong>DRR</strong></td>
+                                    <td colspan="2"><strong>#resultadoFinal#%</strong></td>
+                                </tr>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-
-                <!-- Tabela de Pareto -->
-                <div class="col-md-4">
-                    <h3>Pareto - TUNEL DE LIBERAÇÃO</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-custom-width move-left-table" border="1" id="tblStocks" data-excel-name="Veículos">
-                            <thead>
-                                <tr class="text-nowrap">
-                                    <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
-                                </tr>
-                                <tr class="text-nowrap">
-                                    <th scope="col">Shop</th>
-                                    <th scope="col">Peça</th>
-                                    <th scope="col">Problema</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Pareto (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-group-divider">
-                                <cfoutput query="consulta_nconformidades_reinspecao">
-                                    <tr class="align-middle">
-                                        <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
-                                        <td>#PECA#</td>
-                                        <td style="font-weight: bold">#PROBLEMA#</td>
-                                        <td>#TOTAL_POR_DEFEITO#</td>
-                                        <td>#PARETO#%</td>
-                                    </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!-- Canvas para o gráfico de Pareto -->
-                <div class="col-md-4">
-                    <h3>TUNEL DE LIBERAÇÃO</h3>
-                    <canvas id="paretochart15" width="400" height="300"></canvas>
+                    </cfoutput>
                 </div>
             </div>
-        </div>
-
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var ctx = document.getElementById('paretochart15').getContext('2d');
-                var data = {
-                    labels: [
-                        <cfoutput query="consulta_nconformidades_reinspecao">
-                            '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
-                        </cfoutput>
-                    ],
-                    datasets: [
-                        {
-                            label: 'Total de Defeitos',
-                            type: 'bar',
-                            data: [
-                                <cfoutput query="consulta_nconformidades_reinspecao">
-                                    #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
-                                </cfoutput>
-                            ],
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Pareto (%)',
-                            type: 'line',
-                            data: [
-                                <cfoutput query="consulta_nconformidades_reinspecao">
-                                    #PARETO#<cfif currentRow neq recordCount>,</cfif>
-                                </cfoutput>
-                            ],
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 2,
-                            fill: false,
-                            yAxisID: 'y-axis-2'
-                        }
-                    ]
-                };
-
-                var options = {
-                    scales: {
-                        yAxes: [
-                            {
-                                ticks: {
-                                    beginAtZero: true
-                                },
-                                position: 'left',
-                                id: 'y-axis-1'
-                            },
-                            {
-                                ticks: {
-                                    beginAtZero: true,
-                                    callback: function(value) {
-                                        return value + "%";
-                                    }
-                                },
-                                position: 'right',
-                                id: 'y-axis-2'
-                            }
-                        ]
-                    }
-                };
-
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: data,
-                    options: options
-                });
-            });
-        </script>
-
-                <!-- Tabela e Gráfico de Pareto das Não Conformidades -->
+            <!-- Filtro de data -->
+            <div class="container">
+                <h2>FAI - Indicadores 1º Turno</h2>
+                <form method="get" action="fai_indicadores_1turno.cfm" class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="filtroData" class="sr-only">Data:</label>
+                        <input type="date" class="form-control" name="filtroData" id="filtroData" value="<cfif isDefined('url.filtroData')>#url.filtroData#</cfif>"/>
+                    </div>
+                    <button class="btn btn-primary mb-2" type="submit">Filtrar</button>
+                    <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='fai_indicadores_1turno.cfm'">Limpar</button>
+                </form>
+            </div>
+          
+            <!-- Exibindo tabelas e gráficos para cada barreira -->
             <div class="container-fluid">
                 <div class="row">
-                <div class="col-md-5">
-                    <h3>Pareto das Não Conformidades</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
-                            <thead>
-                                <tr class="text-nowrap">
-                                    <th scope="col" colspan="5" class="bg-warning">Principais Não Conformidades - Top 5</th>
-                                </tr>
-                                <tr class="text-nowrap">
-                                    <th scope="col">Shop</th>
-                                    <th scope="col">Peça</th>
-                                    <th scope="col">Problema</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Pareto (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-group-divider">
-                                <cfoutput query="consulta_nconformidades">
-                                    <tr class="align-middle">
-                                        <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
-                                        <td>#PECA#</td>
-                                        <td style="font-weight: bold">#PROBLEMA#</td>
-                                        <td>#TOTAL_POR_DEFEITO#</td>
-                                        <td>#PARETO#%</td>
+                    <!-- Tabela H/H para Under Body 2 -->
+                    <div class="col-md-4">
+                        <h3>Under Body 2</h3>
+                        <div class="table-responsive">
+                            <table style="font-size:12px;" class="table table-hover table-sm table-custom-width">
+                                <thead class="bg-success">
+                                    <tr>
+                                        <th>H/H</th>
+                                        <th>Prod</th>
+                                        <th>Aprov</th>
+                                        <th>%</th>
+                                        <th>DPV</th>
                                     </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <cfoutput query="consulta_barreira">
+                                        <cfif BARREIRA eq 'UNDER BODY'>
+                                            <tr>
+                                                <td>#HH#</td>
+                                                <td>#TOTAL#</td>
+                                                <td>#APROVADOS#</td>
+                                                <td style="font-weight: bold;<cfif PORCENTAGEM gt '86.0'>color: green;<cfelseif PORCENTAGEM lt '86.0'> color: red;</cfif>">#PORCENTAGEM#%</td>
+                                                <td>#DPV#</td>
+                                            </tr>
+                                        </cfif>
+                                    </cfoutput>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="container">
-                        <h3>Pareto Geral Buy Off's</h3>
-                        <canvas id="paretoChart2"></canvas>
+            
+                    <!-- Tabela Pareto para Under Body 2 -->
+                    <div class="col-md-4">
+                        <h3>Pareto - Under Body 2</h3>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos" style="font-size:12px;">
+                                <thead>
+                                    <tr class="text-nowrap">
+                                        <th scope="col" colspan="5" class="bg-success">Principais Não Conformidades - Top 5</th>
+                                    </tr>
+                                    <tr class="text-nowrap">
+                                        <th scope="col">Shop</th>
+                                        <th scope="col">Peça</th>
+                                        <th scope="col">Problema</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Pareto</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                    <cfoutput query="consulta_nconformidades_underbody2">
+                                        <tr class="align-middle">
+                                            <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
+                                            <td>#PECA#</td>
+                                            <td style="font-weight: bold">#PROBLEMA#</td>
+                                            <td>#TOTAL_POR_DEFEITO#</td>
+                                            <td>#PARETO#%</td>
+                                        </tr>
+                                    </cfoutput>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+            
+                    <!-- Gráfico para Pareto - Under Body 2 -->
+                    <div class="col-md-4">
+                        <h3>Under Body 2</h3>
+                        <canvas id="paretoChart" width="600" height="300"></canvas>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Script para o gráfico de Pareto -->
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var ctx = document.getElementById('paretoChart2').getContext('2d');
-                var data = {
-                    labels: [
-                        <cfoutput query="consulta_nconformidades">
-                            '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
-                        </cfoutput>
-                    ],
-                    datasets: [
-                        {
-                            label: 'Total de Defeitos',
-                            type: 'bar',
-                            data: [
-                                <cfoutput query="consulta_nconformidades">
-                                    #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
-                                </cfoutput>
-                            ],
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Pareto (%)',
-                            type: 'line',
-                            data: [
-                                <cfoutput query="consulta_nconformidades">
-                                    #PARETO#<cfif currentRow neq recordCount>,</cfif>
-                                </cfoutput>
-                            ],
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 2,
-                            fill: false,
-                            yAxisID: 'y-axis-2'
-                        }
-                    ]
-                };
-        
-                var options = {
-                    scales: {
-                        yAxes: [
+            
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var ctx = document.getElementById('paretoChart').getContext('2d');
+                    var data = {
+                        labels: [
+                            <cfoutput query="consulta_nconformidades_underbody2">
+                                '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                            </cfoutput>
+                        ],
+                        datasets: [
                             {
-                                ticks: {
-                                    beginAtZero: true
-                                },
-                                position: 'left',
-                                id: 'y-axis-1'
+                                label: 'Total de Defeitos',
+                                type: 'bar',
+                                data: [
+                                    <cfoutput query="consulta_nconformidades_underbody2">
+                                        #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
+                                    </cfoutput>
+                                ],
+                                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
                             },
                             {
-                                ticks: {
-                                    beginAtZero: true,
-                                    callback: function(value) {
-                                        return value + "%";
-                                    }
-                                },
-                                position: 'right',
-                                id: 'y-axis-2'
+                                label: 'Pareto (%)',
+                                type: 'line',
+                                data: [
+                                    <cfoutput query="consulta_nconformidades_underbody2">
+                                        #PARETO#<cfif currentRow neq recordCount>,</cfif>
+                                    </cfoutput>
+                                ],
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                yAxisID: 'y-axis-2'
                             }
                         ]
-                    }
-                };
-        
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: data,
-                    options: options
+                    };
+            
+                    var options = {
+                        scales: {
+                            yAxes: [
+                                {
+                                    ticks: {
+                                        beginAtZero: true
+                                    },
+                                    position: 'left',
+                                    id: 'y-axis-1'
+                                },
+                                {
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function(value) {
+                                            return value + "%";
+                                        }
+                                    },
+                                    position: 'right',
+                                    id: 'y-axis-2'
+                                }
+                            ]
+                        }
+                    };
+            
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: data,
+                        options: options
+                    });
                 });
+            </script>
+                    <!-- Tabela e Gráfico para Road Test -->
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- Tabela H/H -->
+                            <div class="col-md-4">
+                                <h3>Road Test</h3>
+                                <div class="table-responsive">
+                                    <table style="font-size:12px;" class="table table-hover table-sm table-custom-width">
+                                        <thead class="bg-danger">
+                                            <tr>
+                                                <th>H/H</th>
+                                                <th>Prod</th>
+                                                <th>Aprov</th>
+                                                <th>%</th>
+                                                <th>DPV</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <cfoutput query="consulta_barreira">
+                                                <cfif BARREIRA eq 'Road Test'>
+                                                    <tr>
+                                                        <td>#HH#</td>
+                                                        <td>#TOTAL#</td>
+                                                        <td>#APROVADOS#</td>
+                                                        <td style="font-weight: bold;<cfif PORCENTAGEM gt '86.0'>color: green;<cfelseif PORCENTAGEM lt '86.0'> color: red;</cfif>">#PORCENTAGEM#%</td>
+                                                        <td>#DPV#</td>
+                                                    </tr>
+                                                </cfif>
+                                            </cfoutput>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                
+                            <!-- Tabela de Pareto -->
+                            <div class="col-md-4">
+                                <h3>Pareto - Road Test</h3>
+                                <div class="table-responsive">
+                                    <table style="font-size:12px;" class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
+                                        <thead>
+                                            <tr class="text-nowrap">
+                                                <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
+                                            </tr>
+                                            <tr class="text-nowrap">
+                                                <th scope="col">Shop</th>
+                                                <th scope="col">Peça</th>
+                                                <th scope="col">Problema</th>
+                                                <th scope="col">Total</th>
+                                                <th scope="col">Pareto (%)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-group-divider">
+                                            <cfoutput query="consulta_nconformidades_roadtest">
+                                                <tr class="align-middle">
+                                                    <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
+                                                    <td>#PECA#</td>
+                                                    <td style="font-weight: bold">#PROBLEMA#</td>
+                                                    <td>#TOTAL_POR_DEFEITO#</td>
+                                                    <td>#PARETO#%</td>
+                                                </tr>
+                                            </cfoutput>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Canvas para o gráfico de Pareto -->
+                            <div class="col-md-4">
+                                <h3>Road Test</h3>
+                                <canvas id="paretochart3" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var ctx = document.getElementById('paretochart3').getContext('2d');
+                            var data = {
+                                labels: [
+                                    <cfoutput query="consulta_nconformidades_roadtest">
+                                        '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    </cfoutput>
+                                ],
+                                datasets: [
+                                    {
+                                        label: 'Total de Defeitos',
+                                        type: 'bar',
+                                        data: [
+                                            <cfoutput query="consulta_nconformidades_roadtest">
+                                                #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
+                                            </cfoutput>
+                                        ],
+                                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'Pareto (%)',
+                                        type: 'line',
+                                        data: [
+                                            <cfoutput query="consulta_nconformidades_roadtest">
+                                                #PARETO#<cfif currentRow neq recordCount>,</cfif>
+                                            </cfoutput>
+                                        ],
+                                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 2,
+                                        fill: false,
+                                        yAxisID: 'y-axis-2'
+                                    }
+                                ]
+                            };
+                
+                            var options = {
+                                scales: {
+                                    yAxes: [
+                                        {
+                                            ticks: {
+                                                beginAtZero: true
+                                            },
+                                            position: 'left',
+                                            id: 'y-axis-1'
+                                        },
+                                        {
+                                            ticks: {
+                                                beginAtZero: true,
+                                                callback: function(value) {
+                                                    return value + "%";
+                                                }
+                                            },
+                                            position: 'right',
+                                            id: 'y-axis-2'
+                                        }
+                                    ]
+                                }
+                            };
+                
+                            new Chart(ctx, {
+                                type: 'bar',
+                                data: data,
+                                options: options
+                            });
+                        });
+                    </script>
+                    <!-- Tabela e Gráfico para Shower -->
+                    
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- Tabela H/H -->
+                            <div class="col-md-4">
+                                <h3>Shower</h3>
+                                <div class="table-responsive">
+                                    <table style="font-size:12px;" class="table table-hover table-sm table-custom-width">
+                                        <thead class="bg-danger">
+                                            <tr>
+                                                <th>H/H</th>
+                                                <th>Prod</th>
+                                                <th>Aprov</th>
+                                                <th>%</th>
+                                                <th>DPV</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <cfoutput query="consulta_barreira">
+                                                <cfif BARREIRA eq 'SHOWER'>
+                                                    <tr>
+                                                        <td>#HH#</td>
+                                                        <td>#TOTAL#</td>
+                                                        <td>#APROVADOS#</td>
+                                                        <td style="font-weight: bold;<cfif PORCENTAGEM gt '86.0'>color: green;<cfelseif PORCENTAGEM lt '86.0'> color: red;</cfif>">#PORCENTAGEM#%</td>
+                                                        <td>#DPV#</td>
+                                                    </tr>
+                                                </cfif>
+                                            </cfoutput>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                
+                            <!-- Tabela de Pareto -->
+                            <div class="col-md-4">
+                                <h3>Pareto - Shower</h3>
+                                <div class="table-responsive">
+                                    <table style="font-size:12px;" class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
+                                        <thead>
+                                            <tr class="text-nowrap">
+                                                <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
+                                            </tr>
+                                            <tr class="text-nowrap">
+                                                <th scope="col">Shop</th>
+                                                <th scope="col">Peça</th>
+                                                <th scope="col">Problema</th>
+                                                <th scope="col">Total</th>
+                                                <th scope="col">Pareto (%)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-group-divider">
+                                            <cfoutput query="consulta_nconformidades_shower">
+                                                <tr class="align-middle">
+                                                    <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
+                                                    <td>#PECA#</td>
+                                                    <td style="font-weight: bold">#PROBLEMA#</td>
+                                                    <td>#TOTAL_POR_DEFEITO#</td>
+                                                    <td>#PARETO#%</td>
+                                                </tr>
+                                            </cfoutput>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Canvas para o gráfico de Pareto -->
+                            <div class="col-md-4">
+                                <h3>Shower</h3>
+                                <canvas id="paretochart4" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var ctx = document.getElementById('paretochart4').getContext('2d');
+                            var data = {
+                                labels: [
+                                    <cfoutput query="consulta_nconformidades_shower">
+                                        '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    </cfoutput>
+                                ],
+                                datasets: [
+                                    {
+                                        label: 'Total de Defeitos',
+                                        type: 'bar',
+                                        data: [
+                                            <cfoutput query="consulta_nconformidades_shower">
+                                                #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
+                                            </cfoutput>
+                                        ],
+                                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'Pareto (%)',
+                                        type: 'line',
+                                        data: [
+                                            <cfoutput query="consulta_nconformidades_shower">
+                                                #PARETO#<cfif currentRow neq recordCount>,</cfif>
+                                            </cfoutput>
+                                        ],
+                                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 2,
+                                        fill: false,
+                                        yAxisID: 'y-axis-2'
+                                    }
+                                ]
+                            };
+                
+                            var options = {
+                                scales: {
+                                    yAxes: [
+                                        {
+                                            ticks: {
+                                                beginAtZero: true
+                                            },
+                                            position: 'left',
+                                            id: 'y-axis-1'
+                                        },
+                                        {
+                                            ticks: {
+                                                beginAtZero: true,
+                                                callback: function(value) {
+                                                    return value + "%";
+                                                }
+                                            },
+                                            position: 'right',
+                                            id: 'y-axis-2'
+                                        }
+                                    ]
+                                }
+                            };
+                
+                            new Chart(ctx, {
+                                type: 'bar',
+                                data: data,
+                                options: options
+                            });
+                        });
+                    </script>
+    
+                    <!-- Tabela e Gráfico para ex-ok -->
+                    
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- Tabela H/H -->
+                            <div class="col-md-4">
+                                <h3>EX OK</h3>
+                                <div class="table-responsive">
+                                    <table style="font-size:12px;" class="table table-hover table-sm table-custom-width">
+                                        <thead class="bg-danger">
+                                            <tr>
+                                                <th>H/H</th>
+                                                <th>Prod</th>
+                                                <th>Aprov</th>
+                                                <th>%</th>
+                                                <th>DPV</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <cfoutput query="consulta_barreira">
+                                                <cfif BARREIRA eq 'SIGN OFF'>
+                                                    <tr>
+                                                        <td>#HH#</td>
+                                                        <td>#TOTAL#</td>
+                                                        <td>#APROVADOS#</td>
+                                                        <td style="font-weight: bold;<cfif PORCENTAGEM gt '86.0'>color: green;<cfelseif PORCENTAGEM lt '86.0'> color: red;</cfif>">#PORCENTAGEM#%</td>
+                                                        <td>#DPV#</td>
+                                                    </tr>
+                                                </cfif>
+                                            </cfoutput>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                
+                            <!-- Tabela de Pareto -->
+                            <div class="col-md-4">
+                                <h3>Pareto - EX-OK</h3>
+                                <div class="table-responsive">
+                                    <table style="font-size:12px;" class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
+                                        <thead>
+                                            <tr class="text-nowrap">
+                                                <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
+                                            </tr>
+                                            <tr class="text-nowrap">
+                                                <th scope="col">Shop</th>
+                                                <th scope="col">Peça</th>
+                                                <th scope="col">Problema</th>
+                                                <th scope="col">Total</th>
+                                                <th scope="col">Pareto (%)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-group-divider">
+                                            <cfoutput query="consulta_nconformidades_exok">
+                                                <tr class="align-middle">
+                                                    <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
+                                                    <td>#PECA#</td>
+                                                    <td style="font-weight: bold">#PROBLEMA#</td>
+                                                    <td>#TOTAL_POR_DEFEITO#</td>
+                                                    <td>#PARETO#%</td>
+                                                </tr>
+                                            </cfoutput>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Canvas para o gráfico de Pareto -->
+                            <div class="col-md-4">
+                                <h3>EX-OK</h3>
+                                <canvas id="paretochart5" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var ctx = document.getElementById('paretochart5').getContext('2d');
+                            var data = {
+                                labels: [
+                                    <cfoutput query="consulta_nconformidades_exok">
+                                        '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    </cfoutput>
+                                ],
+                                datasets: [
+                                    {
+                                        label: 'Total de Defeitos',
+                                        type: 'bar',
+                                        data: [
+                                            <cfoutput query="consulta_nconformidades_exok">
+                                                #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
+                                            </cfoutput>
+                                        ],
+                                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'Pareto (%)',
+                                        type: 'line',
+                                        data: [
+                                            <cfoutput query="consulta_nconformidades_exok">
+                                                #PARETO#<cfif currentRow neq recordCount>,</cfif>
+                                            </cfoutput>
+                                        ],
+                                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 2,
+                                        fill: false,
+                                        yAxisID: 'y-axis-2'
+                                    }
+                                ]
+                            };
+                
+                            var options = {
+                                scales: {
+                                    yAxes: [
+                                        {
+                                            ticks: {
+                                                beginAtZero: true
+                                            },
+                                            position: 'left',
+                                            id: 'y-axis-1'
+                                        },
+                                        {
+                                            ticks: {
+                                                beginAtZero: true,
+                                                callback: function(value) {
+                                                    return value + "%";
+                                                }
+                                            },
+                                            position: 'right',
+                                            id: 'y-axis-2'
+                                        }
+                                    ]
+                                }
+                            };
+                
+                            new Chart(ctx, {
+                                type: 'bar',
+                                data: data,
+                                options: options
+                            });
+                        });
+                    </script>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <!-- Tabela H/H -->
+                            <div class="col-md-4">
+                                <h3>TUNEL DE LIBERAÇÃO</h3>
+                                <div class="table-responsive">
+                                    <table style="font-size:12px;" class="table table-hover table-sm table-custom-width">
+                                        <thead class="bg-danger">
+                                            <tr>
+                                                <th>H/H</th>
+                                                <th>Prod</th>
+                                                <th>Aprov</th>
+                                                <th>%</th>
+                                                <th>DPV</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <cfoutput query="consulta_barreira">
+                                                <cfif BARREIRA eq 'TUNEL DE LIBERACAO'>
+                                                    <tr>
+                                                        <td>#HH#</td>
+                                                        <td>#TOTAL#</td>
+                                                        <td>#APROVADOS#</td>
+                                                        <td style="font-weight: bold;<cfif PORCENTAGEM gt '86.0'>color: green;<cfelseif PORCENTAGEM lt '86.0'> color: red;</cfif>">#PORCENTAGEM#%</td>
+                                                        <td>#DPV#</td>
+                                                    </tr>
+                                                </cfif>
+                                            </cfoutput>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+            
+                            <!-- Tabela de Pareto -->
+                            <div class="col-md-4">
+                                <h3>Pareto - TUNEL DE LIBERAÇÃO</h3>
+                                <div class="table-responsive">
+                                    <table style="font-size:12px;" class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
+                                        <thead>
+                                            <tr class="text-nowrap">
+                                                <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
+                                            </tr>
+                                            <tr class="text-nowrap">
+                                                <th scope="col">Shop</th>
+                                                <th scope="col">Peça</th>
+                                                <th scope="col">Problema</th>
+                                                <th scope="col">Total</th>
+                                                <th scope="col">Pareto (%)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-group-divider">
+                                            <cfoutput query="consulta_nconformidades_reinspecao">
+                                                <tr class="align-middle">
+                                                    <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
+                                                    <td>#PECA#</td>
+                                                    <td style="font-weight: bold">#PROBLEMA#</td>
+                                                    <td>#TOTAL_POR_DEFEITO#</td>
+                                                    <td>#PARETO#%</td>
+                                                </tr>
+                                            </cfoutput>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Canvas para o gráfico de Pareto -->
+                            <div class="col-md-4">
+                                <h3>TUNEL DE LIBERAÇÃO</h3>
+                                <canvas id="paretochart15" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var ctx = document.getElementById('paretochart15').getContext('2d');
+                            var data = {
+                                labels: [
+                                    <cfoutput query="consulta_nconformidades_reinspecao">
+                                        '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                                    </cfoutput>
+                                ],
+                                datasets: [
+                                    {
+                                        label: 'Total de Defeitos',
+                                        type: 'bar',
+                                        data: [
+                                            <cfoutput query="consulta_nconformidades_reinspecao">
+                                                #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
+                                            </cfoutput>
+                                        ],
+                                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'Pareto (%)',
+                                        type: 'line',
+                                        data: [
+                                            <cfoutput query="consulta_nconformidades_reinspecao">
+                                                #PARETO#<cfif currentRow neq recordCount>,</cfif>
+                                            </cfoutput>
+                                        ],
+                                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 2,
+                                        fill: false,
+                                        yAxisID: 'y-axis-2'
+                                    }
+                                ]
+                            };
+            
+                            var options = {
+                                scales: {
+                                    yAxes: [
+                                        {
+                                            ticks: {
+                                                beginAtZero: true
+                                            },
+                                            position: 'left',
+                                            id: 'y-axis-1'
+                                        },
+                                        {
+                                            ticks: {
+                                                beginAtZero: true,
+                                                callback: function(value) {
+                                                    return value + "%";
+                                                }
+                                            },
+                                            position: 'right',
+                                            id: 'y-axis-2'
+                                        }
+                                    ]
+                                }
+                            };
+            
+                            new Chart(ctx, {
+                                type: 'bar',
+                                data: data,
+                                options: options
+                            });
+                        });
+                    </script>
+    
+                    <!-- Tabela e Gráfico de Pareto das Não Conformidades -->
+                <div class="container-fluid">
+                    <div class="row">
+                    <div class="col-md-5">
+                        <h3>Pareto das Não Conformidades</h3>
+                        <div class="table-responsive">
+                            <table style="font-size:12px;" class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
+                                <thead>
+                                    <tr class="text-nowrap">
+                                        <th scope="col" colspan="5" class="bg-warning">Principais Não Conformidades - Top 5</th>
+                                    </tr>
+                                    <tr class="text-nowrap">
+                                        <th scope="col">Shop</th>
+                                        <th scope="col">Peça</th>
+                                        <th scope="col">Problema</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Pareto (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                    <cfoutput query="consulta_nconformidades">
+                                        <tr class="align-middle">
+                                            <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Paint'> color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
+                                            <td>#PECA#</td>
+                                            <td style="font-weight: bold">#PROBLEMA#</td>
+                                            <td>#TOTAL_POR_DEFEITO#</td>
+                                            <td>#PARETO#%</td>
+                                        </tr>
+                                    </cfoutput>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="container">
+                            <h3>Pareto Geral Buy Off's</h3>
+                            <canvas id="paretoChart2"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Script para o gráfico de Pareto -->
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var ctx = document.getElementById('paretoChart2').getContext('2d');
+                    var data = {
+                        labels: [
+                            <cfoutput query="consulta_nconformidades">
+                                '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                            </cfoutput>
+                        ],
+                        datasets: [
+                            {
+                                label: 'Total de Defeitos',
+                                type: 'bar',
+                                data: [
+                                    <cfoutput query="consulta_nconformidades">
+                                        #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
+                                    </cfoutput>
+                                ],
+                                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Pareto (%)',
+                                type: 'line',
+                                data: [
+                                    <cfoutput query="consulta_nconformidades">
+                                        #PARETO#<cfif currentRow neq recordCount>,</cfif>
+                                    </cfoutput>
+                                ],
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                yAxisID: 'y-axis-2'
+                            }
+                        ]
+                    };
+            
+                    var options = {
+                        scales: {
+                            yAxes: [
+                                {
+                                    ticks: {
+                                        beginAtZero: true
+                                    },
+                                    position: 'left',
+                                    id: 'y-axis-1'
+                                },
+                                {
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function(value) {
+                                            return value + "%";
+                                        }
+                                    },
+                                    position: 'right',
+                                    id: 'y-axis-2'
+                                }
+                            ]
+                        }
+                    };
+            
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: data,
+                        options: options
+                    });
+                });
+            </script>  
+            </div>      
+    
+     <meta http-equiv="refresh" content="40,URL=fai_indicadores_1turno.cfm">
+    
+      <!-- Setinha flutuante -->
+      <div class="floating-arrow" onclick="scrollToTop();">
+        <i class="material-icons">arrow_upward</i>
+    </div>
+    
+    <!-- Script para voltar ao topo suavemente -->
+    <script>
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
-        </script>  
-        </div>     
-
-<meta http-equiv="refresh" content="40,URL=fai_indicadores_1turno.cfm">
-
-
-  <!-- Setinha flutuante -->
-  <div class="floating-arrow" onclick="scrollToTop();">
-    <i class="material-icons">arrow_upward</i>
-</div>
-
-<!-- Script para voltar ao topo suavemente -->
-<script>
-    function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    }
-</script>
-
-    </body>
-</html>
-  
+        }
+    </script>
+        </body>
+    </html>
+      

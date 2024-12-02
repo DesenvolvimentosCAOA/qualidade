@@ -291,11 +291,29 @@
             SELECT ID, VIN,MODELO,BARREIRA  FROM sistema_qualidade_body ORDER BY ID DESC)
             WHERE ROWNUM = 1 
                     </cfquery>
- <!---                     <cfdump  var="#consulta1#"> --->
-                <div class="form-group col-md-2">
-                    <label for="formVIN">BARCODE</label>
-                    <input type="text" class="form-control form-control-sm" maxlength="17" name="vin" id="formVIN" required oninput="this.value = this.value.replace(/\s/g, '');">
-                </div>
+            <!---                     <cfdump  var="#consulta1#"> --->
+            <div class="form-group col-md-2">
+                <label for="formVIN">VIN</label>
+                <input type="text" class="form-control form-control-sm" minlength="17" name="vin" id="formVIN" title="Insira o VIN Completo" required="required" oninput="this.value = this.value.replace(/\s+/g, ''); localStorage.setItem('vin', this.value);" style="padding-right: 30px;">
+                <!-- Ícone "X" para limpar o campo -->
+                <span id="clearVin" style=" position: absolute; right: 43vw; top: 18.5%; transform: translateY(-50%); font-size: 25px; cursor: pointer; color: red;">&times;</span>
+            </div>
+
+            <script>
+                // Carregar o valor do VIN do localStorage quando a página for carregada
+                document.addEventListener('DOMContentLoaded', function() {
+                    var storedVin = localStorage.getItem('vin');
+                    if (storedVin) {
+                        document.getElementById('formVIN').value = storedVin;
+                    }
+                });
+
+                // Função para limpar o campo VIN quando o "X" for clicado
+                document.getElementById('clearVin').addEventListener('click', function() {
+                    document.getElementById('formVIN').value = '';  // Limpa o campo
+                    localStorage.removeItem('vin');  // Remove o VIN do localStorage
+                });
+            </script>
                                         <!--- Pesquisa MES --->
                     <cfquery name='buscaMES' datasource="#BANCOMES#">
                         select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
@@ -377,14 +395,14 @@
                     <div class="form-group col-md-2">
                         <label for="formEstacao">Responsável</label>
                         <select class="form-control form-control-sm" name="estacao" id="formEstacao" >
-                            <option value="">Selecione o Responsável:</option>
-                            <cfinclude template="auxi/estacao.cfm">
+                            <option value="BODY SHOP">BODY SHOP</option>
+                            <option value="CKD">CKD</option>
+                            <option value="LOGISTICA">LOGISTICA</option>
                         </select>
                     </div>
                     <div class="form-group col-md-2">
                         <label for="formCriticidade">Criticidade</label>
                         <select class="form-control form-control-sm" name="criticidade" id="formCriticidade">
-                            <option value="">Selecione</option>
                             <option value="N0">N0</option>
                             <option value="N1">N1</option>
                             <option value="N2">N2</option>

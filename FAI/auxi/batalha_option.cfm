@@ -11,7 +11,6 @@
 <option value="FR/RR">FR/RR</option>
 <option value="RH/LH">RH/LH</option>
 <option value="GERAL">GERAL</option>
-<option value="">Selecione o local:</option>
 <option value="A1">A1</option>
 <option value="A2">A2</option>
 <option value="A3">A3</option>
@@ -455,7 +454,6 @@
 <option value="Q25">Q25</option>
 
 
-<!----
 <option value="R1">R1</option>
 <option value="R2">R2</option>
 <option value="R3">R3</option>
@@ -525,5 +523,3 @@
 <option value="T21">T21</option>
 <option value="T22">T22</option>
 <option value="T23">T23</option>
-
---->

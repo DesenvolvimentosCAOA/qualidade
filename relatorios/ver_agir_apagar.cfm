@@ -135,6 +135,7 @@
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header><br><br><br><br><br>
+        <h2>Editar</h2>
         <div>
             <div class="search-container">
                 <input type="text" id="searchIDACOMP" placeholder="Pesquisar ID" onkeyup="filterTableACOMP()">
@@ -155,6 +156,7 @@
                         <th>Problema</th>
                         <th>Barreira</th>
                         <th>Status</th>
+                        <th>Editar</th>
                         <th>Deletar</th>
                     </tr>
                 </thead>
@@ -170,6 +172,10 @@
                             <td>#PROBLEMA#</td>
                             <td>#BARREIRA#</td>
                             <td>#STATUS#</td>
+                            <td class="text-nowrap">
+                                <button class="btn btn-primary" onclick="self.location='ver_agir_editar.cfm?id_editar=#id#'">
+                                    <i class="mdi mdi-pencil-outline"></i>Editar</button>
+                            </td>
                             <td>
                                 <button class="delete-button" onclick="deletar(#ID#);">
                                   <span class="icon-trash">

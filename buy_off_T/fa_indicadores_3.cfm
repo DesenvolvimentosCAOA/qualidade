@@ -20,7 +20,7 @@
             END HH,
             CASE 
                     WHEN COUNT(CASE WHEN PROBLEMA IS NULL THEN 1 WHEN PROBLEMA IS NOT NULL 
-                        AND (CRITICIDADE = 'N0' OR CRITICIDADE = 'OK A-') THEN 1 END) > 0 THEN 1
+                        AND (CRITICIDADE = 'N0' OR CRITICIDADE = 'OK A-' OR CRITICIDADE = 'CRIPPLE') THEN 1 END) > 0 THEN 1
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,

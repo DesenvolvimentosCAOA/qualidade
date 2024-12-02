@@ -18,6 +18,7 @@
     <cfquery name="consulta_total" datasource="#BANCOSINC#">
         SELECT COUNT(DISTINCT VIN) AS total_vin
         FROM massiva_fai
+        WHERE STATUS IS NULL
     </cfquery>
 
     <cfquery name="consulta_vins" datasource="#BANCOSINC#">

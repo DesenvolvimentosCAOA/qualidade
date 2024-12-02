@@ -50,7 +50,9 @@
             AND UPPER(ROAD_TEST) LIKE UPPER('%#url.filtroRoadTest#%')
         </cfif>
         AND PROBLEMA_REPARO IS NULL
+        AND PROBLEMA IS NOT NULL
         AND (CRITICIDADE IS NULL OR CRITICIDADE NOT IN ('N0', 'OK A-'))
+        AND (BARREIRA = 'SHOWER' OR BARREIRA = 'SIGN OFF' AND PROBLEMA = 'INFILTRACAO')
         ORDER BY ID DESC
     </cfquery>
     
@@ -100,7 +102,7 @@
             <!-- Required meta tags -->
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <title>FAI - REPARO shower/pista</title>
+            <title>FAI - REPARO shower</title>
             <link rel="icon" href="./assets/chery.png" type="image/x-icon">
             <link rel="stylesheet" href="assets/stylereparo.css?v1">
         </head>
@@ -112,7 +114,7 @@
             </header><br><br><br><br><br><br>
 
             <div class="container-fluid mt-4">
-                <h2 style="font-size:2vw" class="titulo2">Reparo - SHOWER / PISTA</h2><br>
+                <h2 style="font-size:2vw" class="titulo2">Reparo - SHOWER</h2><br>
                 <cfoutput>
                     <form class="filterTable" name="fitro" method="GET">
                         <div class="row">
@@ -164,7 +166,6 @@
                                 <cfif consulta.recordCount gt 0>
                                     <cfoutput query="consulta">
                                         <form method="post" action="fai_reparo_shower.cfm">
-                                            <cfif PROBLEMA NEQ "" AND (BARREIRA EQ "SHOWER")>
                                                 <tr class="align-middle">
                                                     <td class="text-center">#ID#</td>
                                                     <td>#dateFormat(USER_DATA, 'dd/mm/yyyy')#</td>
@@ -188,7 +189,6 @@
                                                         </button>
                                                     </td>
                                                 </tr>
-                                            </cfif>
                                         </form>
                                     </cfoutput>
                                 <cfelse>

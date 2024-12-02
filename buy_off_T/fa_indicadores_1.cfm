@@ -19,7 +19,7 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
               AND BARREIRA = 'T30'
               AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
@@ -62,7 +62,7 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
               AND BARREIRA = 'T19'
               AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
@@ -113,7 +113,7 @@
                 END HH,
                 CASE 
                     WHEN COUNT(CASE WHEN PROBLEMA IS NULL THEN 1 WHEN PROBLEMA IS NOT NULL 
-                        AND (CRITICIDADE = 'N0' OR CRITICIDADE = 'OK A-') THEN 1 END) > 0 THEN 1
+                        AND (CRITICIDADE = 'N0' OR CRITICIDADE = 'OK A-' OR CRITICIDADE = 'CRIPPLE') THEN 1 END) > 0 THEN 1
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,
@@ -162,7 +162,7 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
               AND BARREIRA = 'T33'
               AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
@@ -205,7 +205,7 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
             AND BARREIRA = 'C13'
             AND (
                     -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
@@ -246,7 +246,7 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
               AND BARREIRA not in 'CP7'
               AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
@@ -289,7 +289,7 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
               AND BARREIRA = 'F05'
               AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
@@ -332,7 +332,7 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
             AND BARREIRA = 'F10'
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
@@ -375,7 +375,7 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
             AND BARREIRA = 'SUB MOTOR'
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte

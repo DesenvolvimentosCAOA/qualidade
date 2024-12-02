@@ -147,32 +147,16 @@
                 <form onsubmit="return validarFormulario(event);" method="post" id="form_envio">
                     <div class="form-row">
                         <div class="form-group col-md-2">
-                            <label for="formData">
-                                Data</label>
-                            <input
-                                type="date"
-                                class="form-control form-control-sm"
-                                name="data"
-                                id="formData"
-                                value="<cfoutput>#dateFormat(now(), 'yyyy-mm-dd')#</cfoutput>"
-                                readonly="readonly"></div>
+                            <label for="formData">Data</label>
+                            <input type="date" class="form-control form-control-sm" name="data" id="formData" value="<cfoutput>#dateFormat(now(), 'yyyy-mm-dd')#</cfoutput>" readonly="readonly"></div>
                             <cfquery name="login" datasource="#BANCOSINC#">
                                 SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
                                 WHERE USER_NAME = '#cookie.USER_APONTAMENTO_FAI#'
                             </cfquery>
                             <cfoutput>
         <div class="form-group col-md-2">
-            <label for="formNome">
-                Inspetor</label>
-            <input
-                type="text"
-                class="form-control form-control-sm"
-                name="nome"
-                id="formNome"
-                required="required"
-                value="#login.USER_SIGN#"
-                readonly="readonly"></div>
-
+            <label for="formNome">Inspetor</label>
+            <input type="text" class="form-control form-control-sm" name="nome" id="formNome" required="required" value="#login.USER_SIGN#" readonly="readonly"></div>
             <cfquery name="consulta1" datasource="#BANCOSINC#">
                 SELECT * FROM (
                 SELECT ID, VIN,MODELO,BARREIRA  FROM SISTEMA_QUALIDADE_FAI ORDER BY ID DESC)
@@ -203,8 +187,7 @@
                                 Selecione a Peça</option>
                             <cfloop query="pecas">
                                 <cfoutput>
-                                    <option value="#defeito#">
-                                        #defeito#</option>
+                                    <option value="#defeito#">#defeito#</option>
                                 </cfoutput>
                             </cfloop>
                         </select>
@@ -216,15 +199,12 @@
                         </select>
                     </div>
                     <div class="form-group col-md-2">
-                        <label for="formProblema">
-                            Problema</label>
+                        <label for="formProblema">Problema</label>
                         <select class="form-control form-control-sm" name="problema" id="formProblema" oninput="transformToUpperCase(this)">
-                            <option value="">
-                                Selecione o Problema</option>
+                            <option value="">Selecione o Problema</option>
                             <cfloop query="defeitos">
                                 <cfoutput>
-                                    <option value="#defeito#">
-                                        #defeito#</option>
+                                    <option value="#defeito#">#defeito#</option>
                                 </cfoutput>
                             </cfloop>
                         </select>
@@ -232,7 +212,6 @@
                     <div class="form-group col-md-2">
                         <label for="formEstacao">Responsável</label>
                         <select class="form-control form-control-sm" name="estacao" id="formEstacao" style="width: 200px;">
-                            <option value=""> Selecione o Responsável:</option>
                             <cfinclude template="auxi/estacao.cfm">
                         </select>
                     </div>

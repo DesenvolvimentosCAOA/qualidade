@@ -29,14 +29,18 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a href="fai_liberacao.cfm">Liberação</a>
+            <li class="dropdown">
+                <a href="#">Liberação</a>
+                <ul class="dropdown-menu">
+                    <li><a href="fai_liberacao.cfm">Liberação - FAI</a></li>
+                    <li><a href="fai_liberacao_oka.cfm">Liberação OK A-</a></li>
+                </ul>
             </li>
             <li class="dropdown">
                 <a href="#">RELATÓRIOS</a>
                 <ul class="dropdown-menu">
                     <li><a href="fai_relatorios.cfm">Relatórios</a></li>
-                    <li><a href="fai_relatorios_summary.cfm">Relatório Summary</a></li>
+                    <li><a href="fai_relatorios_1.cfm">Relatório Summary</a></li>
                     <li><a href="fai_relatorios_completo.cfm">Relatório completo</a></li>
                 </ul>
             </li>

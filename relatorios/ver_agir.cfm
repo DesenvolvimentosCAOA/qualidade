@@ -238,7 +238,7 @@
             sqf.PECA = v2.PECA 
             AND sqf.PROBLEMA = v2.PROBLEMA
         WHERE 
-            v2.BARREIRA = 'FA'
+            v2.BARREIRA = 'FINAL ASSEMBLY'
         GROUP BY 
             sqf.PECA, sqf.PROBLEMA, 
             v2.PECA, v2.PROBLEMA, 
@@ -368,7 +368,6 @@
             v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
     </cfquery>
 
-
 <html lang="pt-BR">
     <head>
         <meta charset="utf-8">
@@ -376,6 +375,7 @@
         <title>VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <link rel="stylesheet" href="/qualidade/relatorios/assets/style.css?v4">
+
         <style>
             .wide-column {
                 width: 300px;
@@ -389,8 +389,9 @@
             overflow: hidden; /* Garante que o conteúdo não saia do bloco */
             text-align: center; /* Centraliza o texto dentro do bloco */
             border-radius: 4px; /* Opcional para bordas arredondadas */
-        }
+            }
         </style>
+
     </head>
     <body>
         <header class="titulo">
@@ -407,9 +408,11 @@
                         <a href="#" onclick="showTable('tableFA')">FA</a>
                         <a href="#" onclick="showTable('tableFAI')">FAI</a>
                         <a href="#" onclick="showTable('tablePDI')">PDI</a>
+                        <a href="/qualidade/relatorios/ver_agir_add2.cfm">BODY/PAINT(manual)</a>
+                        <a href="/qualidade/relatorios/ver_agir_add1.cfm">FA/FAI(manual)</a>
                 </div>
             </div>
-            <button class="btn-rounded" onclick="showTable('tableACOMP')">Acompanhamento Contenção</button>
+            <button class="btn-rounded" onclick="showTable('tableACOMP')">Acompanhamento</button>
             <button class="btn-rounded"></button>
             <button class="btn-rounded"></button>
         </div>
@@ -654,7 +657,7 @@
             <!-- Inputs de pesquisa -->
             <div class="search-container">
                 <input type="text" id="searchIDACOMP" placeholder="Pesquisar ID" onkeyup="filterTableACOMP()">
-                <input type="text" id="searchVINACOMP" placeholder="Pesquisar Vin" onkeyup="filterTableACOMP()">
+                <input type="text" id="searchVINACOMP" placeholder="SIM ou NÃO" onkeyup="filterTableACOMP()">
                 <input type="text" id="searchPecaACOMP" placeholder="Pesquisar Peça" onkeyup="filterTableACOMP()">
                 <input type="text" id="searchPosicaoACOMP" placeholder="Pesquisar Posição" onkeyup="filterTableACOMP()">
                 <input type="text" id="searchProblemaACOMP" placeholder="Pesquisar Problema" onkeyup="filterTableACOMP()">
@@ -662,7 +665,7 @@
             <div class="search-container">
                 <button style="background-color:blue" class="btn-rounded" onclick="toggleBarreiraFilter('BODY')">BODY</button>
                 <button style="background-color:orange" class="btn-rounded" onclick="toggleBarreiraFilter('PAINT')">PAINT</button>
-                <button style="background-color:gold" class="btn-rounded" onclick="toggleBarreiraFilter('FA')">FA</button>
+                <button style="background-color:gold" class="btn-rounded" onclick="toggleBarreiraFilter('FINAL ASSEMBLY')">FA</button>
                 <button style="background-color:gray" class="btn-rounded" onclick="toggleBarreiraFilter('FAI')">FAI</button>
                 <button style="background-color:purple" class="btn-rounded" onclick="toggleBarreiraFilter('PDI')">PDI</button>
                 <button class="btn-rounded" onclick="toggleStatusFilter('FALTA CONTENÇÃO')">FALTA CONTENÇÃO</button>
@@ -670,30 +673,21 @@
                 <button class="btn-rounded" onclick="toggleStatusFilter('AG. BP DEFINITIVO')">AG. BP DEFINITIVO</button>
                 <button style="background-color:red" class="btn-rounded" onclick="clearFilters()">LIMPAR</button> <!-- Botão para limpar filtros -->
             </div>
-            <cfquery name="consulta_datas" datasource="#BANCOSINC#">
-                SELECT
-                    ID,
-                    DATA_BP_PROCESSO,
-                    DATA_BP_DEFINITIVO_PROCESSO,
-                    ROUND(DATA_BP_PROCESSO - DATA_REGISTRO) AS DIAS
-                FROM VEREAGIR2
-            </cfquery>
-
             <table border="1" id="ACOMPTable">
                 <thead>
                     <tr>
-                        <th>RPN</th>
+                        <th>ID</th>
                         <th>Data</th>
                         <th>Modelo</th>
-                        <th>VIN/ Barcode</th>
+                        <th>Houve Intervenção Q.A?</th>
                         <th>Peça</th>
                         <th>Posição</th>
                         <th>Problema</th>
                         <th>Barreira</th>
                         <th>Status</th>
-                        <th>Total de Dias Contenção</th>
-                        <th>Total de Dias Definitivo</th>
-                        <th>Total de Ocorrências Após BP</th> <!-- Nova Coluna -->
+                        <th>Tempo Contenção</th>
+                        <th>Tempo Definitivo</th>
+                        <th>Ocorrências Após BP</th>
                         <th>Selecionar</th>
                         <th>Status BP</th>
                     </tr>
@@ -701,10 +695,10 @@
                 <tbody style="font-size:12px;background-color:red;">
                     <cfoutput query="consultas_acomp_cont">
                         <tr>
-                            <td>#RPN#</td>
+                            <td>#ID#</td>
                             <td>#lsdatetimeformat(DATA_REGISTRO, 'dd/mm/yyyy')#</td>
                             <td>#MODELO#</td>
-                            <td>#VIN#</td>
+                            <td>#NECESSITA_QUALIDADE#</td>
                             <td>#PECA#</td>
                             <td>#POSICAO#</td>
                             <td>#PROBLEMA#</td>

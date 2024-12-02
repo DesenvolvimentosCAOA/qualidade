@@ -31,7 +31,13 @@
     </li>
     
           <li><a href="fa_reparo.cfm">Reparo</a></li>
-          <li><a href="fa_liberacao_cp7.cfm">Liberação</a></li>
+          <li class="dropdown">
+            <a href="#">Liberação</a>
+            <ul class="dropdown-menu">
+              <li><a href="fa_liberacao_cp7.cfm">Liberação CP7</a></li>
+                <li><a href="fa_liberacao_oka.cfm">Liberação OK A-</a></li>
+            </ul>
+        </li>
     <li class="dropdown">
         <a href="#">Relatórios</a>
         <ul class="dropdown-menu">

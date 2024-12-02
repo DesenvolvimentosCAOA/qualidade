@@ -13,21 +13,27 @@
             ORDER BY ID DESC
         </cfquery>
     </cfif>
-    
-    <cfif isDefined("form.ver_bp") and form.ver_bp neq "">
+
+                
+    <cfif isDefined("form.BP_CONTENCAO_PROCESSO") and form.BP_CONTENCAO_PROCESSO neq "">
         <cfquery name="atualiza" datasource="#BANCOSINC#">
             UPDATE INTCOLDFUSION.VEREAGIR2
             SET
-                DATA_BP_DEFINITIVO_PROCESSO = <cfqueryparam value="#dateFormat(form.data_validacao, 'yyyy-mm-dd')#" cfsqltype="CF_SQL_DATE">,
-                BP_DEFINITIVO_PROCESSO = <cfqueryparam value="#UCase(form.ver_bp)#" cfsqltype="CF_SQL_VARCHAR">,
-                STATUS = <cfqueryparam value="#form.ver_status#" cfsqltype="CF_SQL_VARCHAR">,
-                NECESSITA_QUALIDADE = <cfqueryparam value="#form.ver_qc#" cfsqltype="CF_SQL_VARCHAR"> <!--- Aqui é onde o valor do rádio será salvo --->
-            WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
+                BP_CONTENCAO_PROCESSO = '#UCase(form.BP_CONTENCAO_PROCESSO)#',
+                GRUPO_RESPONSAVEL = '#UCase(form.GRUPO_RESPONSAVEL)#',
+                DESCRICAO_CONTENCAO = '#UCase(form.DESCRICAO_CONTENCAO)#',
+                NECESSITA_QUALIDADE = '#UCase(form.NECESSITA_QUALIDADE)#',
+                BP_CONTENCAO_QUALIDADE = '#UCase(form.BP_CONTENCAO_QUALIDADE)#',
+                DESCRICAO_CONT_QA = '#UCase(form.DESCRICAO_CONT_QA)#',
+                RESPONSAVEL_QUALIDADE = '#UCase(form.RESPONSAVEL_QUALIDADE)#',
+                BP_DEFINITIVO_PROCESSO = '#UCase(form.BP_DEFINITIVO_PROCESSO)#',
+                DESCRICAO_DEFINITIVO = '#UCase(form.DESCRICAO_DEFINITIVO)#',
+                RESPONSAVEL_DEFINITIVO = '#UCase(form.RESPONSAVEL_DEFINITIVO)#',
+                DATA_BP_DEFINITIVO_QUALIDADE = <cfqueryparam value="#form.data_bp_definitivo_qualidade#" cfsqltype="CF_SQL_TIMESTAMP">
+                WHERE ID = '#url.id_editar#'
         </cfquery>
-        
-        <cflocation url="ver_agir.cfm">
     </cfif>
-    
+
     <html lang="pt-BR">
         <head>
             <meta charset="utf-8">
@@ -96,7 +102,7 @@
                     background-color: #5a6268;
                 }
             </style>
-            
+
         </head>
         <body>
             <header class="titulo">
@@ -132,6 +138,7 @@
                             <input readonly required type="text" id="searchProblema" name="ver_problema" placeholder="Problema" value="#consulta_editar.problema#">
                         </div>
                     </div>
+
                     <div class="search-container">
                         <div class="input-group">
                             <label for="searchSeveridade">Severidade</label>
@@ -151,42 +158,43 @@
                         </div>
                     </div>
             </div>
-        
+
+                <form id="for-edit" method="POST">
             <div id="tableProcess" class="table-container Process">
                 <h2 style="color: yellow; font-size:30px;">AÇÃO DE CONTENÇÃO</h2>
                         <div class="search-container">
                             <div class="input-group">
                                 <label for="searchData">Data da Implementação</label>
-                                <input readonly type="date" id="searchValidacao" name="data_validacao" placeholder="Data da validação" value="#DateFormat(consulta_editar.data_bp_processo, 'yyyy-mm-dd')#">
+                                <input readonly type="date" id="searchValidacao" name="edit_data_validacao" placeholder="Data da validação" value="#DateFormat(consulta_editar.data_bp_processo, 'yyyy-mm-dd')#">
                             </div>
                                                   
                             <div class="input-group">
-                                <label for="searchBP">Ponto de Corte</label>
-                                <input required type="text" id="searchBP" name="ver_bp" placeholder="BP - VIN/BARCODE" value="#consulta_editar.bp_contencao_processo#">
+                                <label for="BP_CONTENCAO_PROCESSO">Ponto de Corte Contenção</label>
+                                <input type="text" id="BP_CONTENCAO_PROCESSO" name="BP_CONTENCAO_PROCESSO" placeholder="BP - VIN/BARCODE" value="#consulta_editar.bp_contencao_processo#">
                             </div>
                             <div class="input-group">
-                                <label for="searchResponsavel">Responsável pela Contenção</label>
-                                <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="#consulta_editar.grupo_responsavel#">
+                                <label for="grupo_responsavel">Responsável pela Contenção</label>
+                                <input type="text" id="grupo_responsavel" name="grupo_responsavel" placeholder="Responsável" value="#consulta_editar.grupo_responsavel#">
                             </div>
                             <div class="input-group">
-                                <label for="searchResponsavel">O que foi feito?</label>
-                                <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="#consulta_editar.descricao_contencao#">
+                                <label for="descricao_contencao">O que foi feito?</label>
+                                <input type="text" id="descricao_contencao" name="descricao_contencao" placeholder="Responsável" value="#consulta_editar.descricao_contencao#">
                             </div>
                             <div class="input-group">
-                                <label for="searchqc">Foi Necessário BP da Qualidade?</label>
-                                <input required type="text" id="searchqc" name="ver_qc" value="#consulta_editar.necessita_qualidade#">
+                                <label for="necessita_qualidade">Foi Necessário Ação da Qualidade?</label>
+                                <input type="text" id="necessita_qualidade" name="necessita_qualidade" value="#consulta_editar.necessita_qualidade#">
                             </div>
                             <div class="input-group">
-                                <label for="searchqc">BP da Qualidade - Contenção</label>
-                                <input required type="text" id="searchqc" name="ver_qc" value="#consulta_editar.bp_contencao_qualidade#">
+                                <label for="bp_contencao_qualidade">BP da Qualidade - Contenção (Se houver)</label>
+                                <input type="text" id="bp_contencao_qualidade" name="bp_contencao_qualidade" value="#consulta_editar.bp_contencao_qualidade#">
                             </div>
                             <div class="input-group">
-                                <label for="searchqc">Descrição da Contenção</label>
-                                <input required type="text" id="searchqc" name="ver_qc" value="#consulta_editar.descricao_cont_qa#">
+                                <label for="descricao_cont_qa">Descrição da Contenção</label>
+                                <input type="text" id="descricao_cont_qa" name="descricao_cont_qa" value="#consulta_editar.descricao_cont_qa#">
                             </div>
                             <div class="input-group">
-                                <label for="searchqc">Responsável QA pela Contenção</label>
-                                <input required type="text" id="searchqc" name="ver_qc" value="#consulta_editar.responsavel_qualidade#">
+                                <label for="responsavel_qualidade">Responsável QA pela Contenção</label>
+                                <input type="text" id="responsavel_qualidade" name="responsavel_qualidade" value="#consulta_editar.responsavel_qualidade#">
                             </div>
                         </div>
             </div>
@@ -195,29 +203,32 @@
                 <h2 style="color: green; font-size:30px;">AÇÃO DEFINITIVA</h2>
                         <div class="search-container">
                             <div class="input-group">
-                                <label for="searchData">Data da Implementação</label>
-                                <input readonly type="date" id="searchValidacao" name="data_validacao" placeholder="Data da validação" value="#DateFormat(consulta_editar.data_bp_definitivo_processo, 'yyyy-mm-dd')#">
+                                <label for="data_bp_definitivo_processo">Data da Ação Definitiva</label>
+                                <input readonly type="date" id="data_bp_definitivo_processo" name="data_bp_definitivo_processo" placeholder="Data da validação" value="#DateFormat(consulta_editar.data_bp_definitivo_processo, 'yyyy-mm-dd')#">
                             </div>
                                                   
                             <div class="input-group">
-                                <label for="searchBP">Ponto de Corte</label>
-                                <input required type="text" id="searchBP" name="ver_bp" placeholder="BP - VIN/BARCODE" value="#consulta_editar.bp_definitivo_processo#">
+                                <label for="bp_definitivo_processo">Ponto de Corte Definitivo</label>
+                                <input type="text" id="bp_definitivo_processo" name="bp_definitivo_processo" placeholder="BP - VIN/BARCODE" value="#consulta_editar.bp_definitivo_processo#">
                             </div>
                             <div class="input-group">
-                                <label for="searchResponsavel">O que foi feito?</label>
-                                <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="#consulta_editar.descricao_definitivo#">
+                                <label for="descricao_definitivo">O que foi feito?</label>
+                                <input type="text" id="descricao_definitivo" name="descricao_definitivo" placeholder="Responsável" value="#consulta_editar.descricao_definitivo#">
                             </div>
                             <div class="input-group">
-                                <label for="searchResponsavel">Responsável pela implementação</label>
-                                <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="#consulta_editar.responsavel_definitivo#">
+                                <label for="responsavel_definitivo">Responsável pela Ação Definitiva</label>
+                                <input type="text" id="responsavel_definitivo" name="responsavel_definitivo" placeholder="Responsável" value="#consulta_editar.responsavel_definitivo#">
                             </div>
                             <div class="input-group">
-                                <label for="searchResponsavel">Status de Conclusão</label>
-                                <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="#consulta_editar.status#">
+                                <label for="bp_definitivo_qualidade">BP da Qualidade - Definitivo</label>
+                                <input type="text" id="bp_definitivo_qualidade" name="bp_definitivo_qualidade" placeholder="Responsável" value="#consulta_editar.bp_definitivo_qualidade#">
                             </div>
                         </div>
                         <div class="search-container">
-                            <button type="button" class="btn-rounded back-btn" id="btnVoltar" onclick="voltar()">Voltar</button>
+                            <div class="search-container">
+                                <button type="button" class="btn-rounded back-btn" id="btnVoltar" onclick="voltar()">Voltar</button>
+                                <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao">Salvar</button>
+                            </div>
                             <script>
                                 function voltar() {
                                         // Redireciona para a página anterior
@@ -226,6 +237,8 @@
                             </script>
                         </div>
             </div>
+            
+        </form>
                 </cfoutput>
     </body>
 </html>

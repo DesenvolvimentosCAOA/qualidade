@@ -11,26 +11,27 @@
     <cfelse>
         <cfset mesSelecionado = url.mes> <!-- Mês selecionado da URL -->
     </cfif>
-    
+
     <!--TRIM SHOP-->
     <cfquery name="consulta_semanal" datasource="#BANCOSINC#">
         SELECT 
             TO_CHAR(DATA_BP_PROCESSO, 'IW') AS Semana,
-            AVG(ROUND(DATA_BP_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+            ROUND(AVG(DATA_BP_PROCESSO - DATA_REGISTRO), 2) AS Media_Dias
         FROM VEREAGIR2
         WHERE DATA_BP_PROCESSO IS NOT NULL
-        AND BARREIRA = 'FA'
+        AND BARREIRA = 'FINAL ASSEMBLY'
         AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
         GROUP BY TO_CHAR(DATA_BP_PROCESSO, 'IW')
         ORDER BY Semana
     </cfquery>
+
     <cfquery name="consulta_semanal_definitivo" datasource="#BANCOSINC#">
         SELECT 
             TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW') AS Semana,
-            AVG(ROUND(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+            ROUND(AVG(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO), 2) AS Media_Dias
         FROM VEREAGIR2
         WHERE DATA_BP_DEFINITIVO_PROCESSO IS NOT NULL
-        AND BARREIRA = 'FA'
+        AND BARREIRA = 'FINAL ASSEMBLY'
         AND TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
         GROUP BY TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW')
         ORDER BY Semana
@@ -40,7 +41,7 @@
     <cfquery name="consulta_semanal_paint" datasource="#BANCOSINC#">
         SELECT 
             TO_CHAR(DATA_BP_PROCESSO, 'IW') AS Semana,
-            AVG(ROUND(DATA_BP_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+            ROUND(AVG(DATA_BP_PROCESSO - DATA_REGISTRO), 2) AS Media_Dias
         FROM VEREAGIR2
         WHERE DATA_BP_PROCESSO IS NOT NULL
         AND BARREIRA = 'PAINT'
@@ -48,10 +49,11 @@
         GROUP BY TO_CHAR(DATA_BP_PROCESSO, 'IW')
         ORDER BY Semana
     </cfquery>
+
     <cfquery name="consulta_semanal_definitivo_paint" datasource="#BANCOSINC#">
         SELECT 
             TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW') AS Semana,
-            AVG(ROUND(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+            ROUND(AVG(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO), 2) AS Media_Dias
         FROM VEREAGIR2
         WHERE DATA_BP_DEFINITIVO_PROCESSO IS NOT NULL
         AND BARREIRA = 'PAINT'
@@ -64,7 +66,7 @@
     <cfquery name="consulta_semanal_body" datasource="#BANCOSINC#">
         SELECT 
             TO_CHAR(DATA_BP_PROCESSO, 'IW') AS Semana,
-            AVG(ROUND(DATA_BP_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+            ROUND(AVG(DATA_BP_PROCESSO - DATA_REGISTRO), 2) AS Media_Dias
         FROM VEREAGIR2
         WHERE DATA_BP_PROCESSO IS NOT NULL
         AND BARREIRA = 'BODY'
@@ -72,10 +74,11 @@
         GROUP BY TO_CHAR(DATA_BP_PROCESSO, 'IW')
         ORDER BY Semana
     </cfquery>
+
     <cfquery name="consulta_semanal_definitivo_body" datasource="#BANCOSINC#">
         SELECT 
             TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW') AS Semana,
-            AVG(ROUND(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+            ROUND(AVG(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO), 2) AS Media_Dias
         FROM VEREAGIR2
         WHERE DATA_BP_DEFINITIVO_PROCESSO IS NOT NULL
         AND BARREIRA = 'BODY'
@@ -88,7 +91,7 @@
     <cfquery name="consulta_semanal_fai" datasource="#BANCOSINC#">
         SELECT 
             TO_CHAR(DATA_BP_PROCESSO, 'IW') AS Semana,
-            AVG(ROUND(DATA_BP_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+            ROUND(AVG(DATA_BP_PROCESSO - DATA_REGISTRO), 2) AS Media_Dias
         FROM VEREAGIR2
         WHERE DATA_BP_PROCESSO IS NOT NULL
         AND BARREIRA = 'FAI'
@@ -96,10 +99,11 @@
         GROUP BY TO_CHAR(DATA_BP_PROCESSO, 'IW')
         ORDER BY Semana
     </cfquery>
+
     <cfquery name="consulta_semanal_definitivo_fai" datasource="#BANCOSINC#">
         SELECT 
             TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW') AS Semana,
-            AVG(ROUND(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+            ROUND(AVG(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO), 2) AS Media_Dias
         FROM VEREAGIR2
         WHERE DATA_BP_DEFINITIVO_PROCESSO IS NOT NULL
         AND BARREIRA = 'FAI'
@@ -112,7 +116,7 @@
     <cfquery name="consulta_semanal_pdi" datasource="#BANCOSINC#">
         SELECT 
             TO_CHAR(DATA_BP_PROCESSO, 'IW') AS Semana,
-            AVG(ROUND(DATA_BP_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+            ROUND(AVG(DATA_BP_PROCESSO - DATA_REGISTRO), 2) AS Media_Dias
         FROM VEREAGIR2
         WHERE DATA_BP_PROCESSO IS NOT NULL
         AND BARREIRA = 'PDI'
@@ -120,10 +124,11 @@
         GROUP BY TO_CHAR(DATA_BP_PROCESSO, 'IW')
         ORDER BY Semana
     </cfquery>
+    
     <cfquery name="consulta_semanal_definitivo_pdi" datasource="#BANCOSINC#">
         SELECT 
             TO_CHAR(DATA_BP_DEFINITIVO_PROCESSO, 'IW') AS Semana,
-            AVG(ROUND(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO)) AS Media_Dias
+            ROUND(AVG(DATA_BP_DEFINITIVO_PROCESSO - DATA_REGISTRO), 2) AS Media_Dias
         FROM VEREAGIR2
         WHERE DATA_BP_DEFINITIVO_PROCESSO IS NOT NULL
         AND BARREIRA = 'PDI'
@@ -152,7 +157,7 @@
         SELECT STATUS, COUNT(*) AS total_status
         FROM VEREAGIR2
         WHERE TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
-        AND BARREIRA = 'FA'
+        AND BARREIRA = 'FINAL ASSEMBLY'
         GROUP BY STATUS
     </cfquery>
 
@@ -275,7 +280,6 @@
                     }
                 }
                 };
-
                 var chart = new google.visualization.ColumnChart(document.getElementById('chart_div_1'));
                 chart.draw(data, options);
             }
@@ -290,7 +294,7 @@
 
                 <cfoutput query="consulta_semanal_definitivo">
                 var mediaDias = #Media_Dias#;
-                var corBarra = (mediaDias > 7) ? 'color: red' : 'color: green';
+                var corBarra = (mediaDias > 5) ? 'color: red' : 'color: green';
                 data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
                 </cfoutput>
 
@@ -372,7 +376,7 @@
 
                 <cfoutput query="consulta_semanal_definitivo_paint">
                 var mediaDias = #Media_Dias#;
-                var corBarra = (mediaDias > 7) ? 'color: red' : 'color: green';
+                var corBarra = (mediaDias > 5) ? 'color: red' : 'color: green';
                 data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
                 </cfoutput>
 
@@ -453,7 +457,7 @@
 
                 <cfoutput query="consulta_semanal_definitivo_body">
                 var mediaDias = #Media_Dias#;
-                var corBarra = (mediaDias > 7) ? 'color: red' : 'color: green';
+                var corBarra = (mediaDias > 5) ? 'color: red' : 'color: green';
                 data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
                 </cfoutput>
 
@@ -534,7 +538,7 @@
 
                 <cfoutput query="consulta_semanal_definitivo_fai">
                 var mediaDias = #Media_Dias#;
-                var corBarra = (mediaDias > 7) ? 'color: red' : 'color: green';
+                var corBarra = (mediaDias > 5) ? 'color: red' : 'color: green';
                 data.addRow(['Semana #Semana#', mediaDias, corBarra, mediaDias.toString()]);
                 </cfoutput>
 

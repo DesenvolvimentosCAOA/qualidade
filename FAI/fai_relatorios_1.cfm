@@ -10,7 +10,7 @@
         SELECT *
         FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
         WHERE 1 = 1 
-        AND BARREIRA NOT IN 'TUNEL DE LIBERACAO'
+        AND BARREIRA NOT IN 'LIBERACAO'
         <!--- Filtros de barreira e estação --->
         <cfif isDefined("url.filtroBARREIRA") and url.filtroBARREIRA neq "">
             AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroBARREIRA#%')
@@ -27,16 +27,16 @@
                 TRUNC(SYSDATE)
             </cfif>
     
-        AND (
-            -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-            ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-            -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-            OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-            -- Sábado: turno inicia às 06:00 e termina às 15:48
-            OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-        )
+            AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
         AND INTERVALO BETWEEN '06:00' AND '15:00'
-        ORDER BY ID DESC
+        ORDER BY BARREIRA DESC
     </cfquery>
     
     <cfquery name="consulta_barreira_tiggo7" datasource="#BANCOSINC#">
@@ -57,7 +57,7 @@
                 COUNT(DISTINCT VIN) AS totalVins,
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -107,7 +107,7 @@
                 COUNT(DISTINCT VIN) AS totalVins,
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -157,7 +157,7 @@
                 COUNT(DISTINCT VIN) AS totalVins,
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -207,7 +207,7 @@
                 COUNT(DISTINCT VIN) AS totalVins,
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -257,7 +257,7 @@
                 COUNT(DISTINCT VIN) AS totalVins,
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -294,7 +294,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                    WHEN INTERVALO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -307,7 +307,7 @@
                 COUNT(DISTINCT VIN) AS totalVins,
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
-            FROM INTCOLDFUSION.sistema_qualidade_fai
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
             WHERE TRUNC(USER_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
@@ -463,7 +463,7 @@
                                         <cfelseif ListFind("PVT", ESTACAO)>
                                             PVT
                                         <cfelseif ListFind("ENGENHARIA", ESTACAO)>
-                                            ENGENHARIA
+                                            ENG
                                         <cfelseif ListFind("MANUTENÇÃO", ESTACAO)>
                                             MANUTENÇÃO
                                         <cfelseif ListFind("LOGISTICA", ESTACAO)>
@@ -473,11 +473,11 @@
                                         <cfelseif ListFind("DOOWON", ESTACAO)>
                                             DOOWON
                                         <cfelseif ListFind("SMALL", ESTACAO)>
-                                            SMALL
+                                            S
                                         <cfelseif ListFind("CKD", ESTACAO)>
-                                            Q1
+                                            CKD
                                         <cfelseif ListFind("PAINT", ESTACAO)>
-                                            P    
+                                            P
                                         <cfelseif ListFind("LINHA T", ESTACAO)>
                                             T
                                         <cfelseif ListFind("LINHA F", ESTACAO)>
@@ -496,13 +496,40 @@
                                     <td>#ESTACAO#</td>
                                     <td>#VIN#</td>
                                     <td>
-                                        <!-- Verificação de turno com base no INTERVALO -->
-                                        <cfif ListFind("06:00,07:00,08:00,09:00,10:00,11:00,12:00,13:00,14:00,15:00", INTERVALO)>
-                                            1º TURNO
-                                        <cfelseif ListFind("15:50,16:00,17:00,18:00,19:00,20:00,21:00,22:00,23:00,00:00", INTERVALO)>
-                                            2º TURNO
-                                        <cfelseif ListFind("01:00,02:00,03:00,04:00,05:00", INTERVALO)>
-                                            3º TURNO
+                                        <!-- Verificação de turno com base no INTERVALO e dia da semana -->
+                                        <cfset diaSemana = DayOfWeek(Now())>
+                                        <cfset intervalo = INTERVALO>
+                                    
+                                        <cfif (diaSemana GTE 2 AND diaSemana LTE 5)>
+                                            <cfif (intervalo GTE "06:00" AND intervalo LTE "15:48")>
+                                                1º Turno
+                                            <cfelseif (intervalo GTE "15:50" AND intervalo LTE "23:59") OR (intervalo GTE "00:00" AND intervalo LTE "00:00")>
+                                                2º Turno
+                                            <cfelseif (intervalo GTE "01:00" AND intervalo LTE "05:00")>
+                                                3º Turno
+                                            <cfelse>
+                                                -
+                                            </cfif>
+                                        <cfelseif (diaSemana EQ 6)>
+                                            <cfif (intervalo GTE "06:00" AND intervalo LTE "14:48")>
+                                                1º Turno
+                                            <cfelseif (intervalo GTE "14:50" AND intervalo LTE "23:59") OR (intervalo GTE "00:00" AND intervalo LTE "00:00")>
+                                                2º Turno
+                                            <cfelseif (intervalo GTE "01:00" AND intervalo LTE "05:00")>
+                                                3º Turno
+                                            <cfelse>
+                                                -
+                                            </cfif>
+                                        <cfelseif (diaSemana EQ 7)>
+                                            <cfif (intervalo GTE "06:00" AND intervalo LTE "15:48")>
+                                                1º Turno
+                                            <cfelseif (intervalo GTE "15:50" AND intervalo LTE "23:59") OR (intervalo GTE "00:00" AND intervalo LTE "00:00")>
+                                                2º Turno
+                                            <cfelseif (intervalo GTE "01:00" AND intervalo LTE "05:00")>
+                                                3º Turno
+                                            <cfelse>
+                                                -
+                                            </cfif>
                                         <cfelse>
                                             -
                                         </cfif>

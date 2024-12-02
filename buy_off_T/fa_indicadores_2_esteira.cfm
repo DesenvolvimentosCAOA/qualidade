@@ -23,7 +23,7 @@
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
               AND BARREIRA = 'CP7'
               
               AND (
@@ -181,7 +181,7 @@
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
-                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA','CRIPPLE') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
                     
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
@@ -265,31 +265,23 @@
                     ELSE TRUNC(SYSDATE)
                 END
             </cfif>
-            
             AND PROBLEMA IS NOT NULL
             AND BARREIRA = 'CP7'
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
-            
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
             AND (
-                -- Para segunda a quinta-feira, exclui 15:00
-                (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 5 
-                    AND CASE 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
-                            ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
-                        END IN ('16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00', '01:00')
-                )
-                OR
-                -- Para sexta-feira, inclui 15:00
-                (TO_CHAR(USER_DATA, 'D') = '6' 
-                    AND CASE 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
-                            ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
-                        END IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00', '01:00')
-                )
+                CASE 
+                    WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
+                    WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
+                    ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
+                END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
-            
+            AND CASE 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
+                ELSE TRUNC(USER_DATA) 
+            END = CASE 
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+            END
         GROUP BY ESTACAO
         ORDER BY TOTAL_PROBLEMAS DESC
     </cfquery>
@@ -393,7 +385,7 @@
                 </cfif>
             AND PROBLEMA IS NOT NULL
             AND BARREIRA = 'LIBERACAO'
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
             AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
@@ -450,7 +442,7 @@
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
-                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA','CRIPPLE') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
                     
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
@@ -514,7 +506,7 @@
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
-                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA','CRIPPLE') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
                     ELSE 0

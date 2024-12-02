@@ -218,9 +218,10 @@
     
     <cfquery name="consulta_barreira" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT  
+            SELECT 
                 BARREIRA, VIN,
                 CASE 
+                    WHEN INTERVALO = '15:00' THEN '15:00~16:00'
                     WHEN INTERVALO = '15:50' THEN '16:00~17:00'
                     WHEN INTERVALO = '16:00' THEN '16:00~17:00'
                     WHEN INTERVALO = '17:00' THEN '17:00~18:00'
@@ -231,46 +232,71 @@
                     WHEN INTERVALO = '22:00' THEN '22:00~23:00'
                     WHEN INTERVALO = '23:00' THEN '23:00~00:00'
                     WHEN INTERVALO = '00:00' THEN '00:00~01:00'
-                    WHEN INTERVALO BETWEEN '01:00' AND '01:02' THEN '00:00~01:00'
+                    ELSE 'OUTROS'
                 END HH,
                 CASE 
-                    WHEN COUNT(CASE 
-            WHEN PROBLEMA IS NULL THEN 1 
-            WHEN PROBLEMA IS NOT NULL 
-                AND (CRITICIDADE = 'N0' OR CRITICIDADE = 'OK A-') THEN 1 
-            END) > 0 THEN 1
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+    
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,
-                COUNT(CASE WHEN PROBLEMA IS NOT NULL AND (CRITICIDADE IS NULL OR CRITICIDADE <> 'OK A-') THEN 1 END) AS totalProblemas
-            FROM sistema_qualidade_fai
-            WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:02' THEN TRUNC(USER_DATA - 1) ELSE TRUNC(USER_DATA) END 
-            = CASE WHEN SUBSTR('#url.filtroData#', 12,5) <= '01:02' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')-1) 
-            ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) END
+
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
+                WHERE 
+                (
+                    (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
+                        AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                        AND CASE 
+                                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
+                                ELSE TRUNC(USER_DATA) 
+                            END = CASE 
+                                    WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                                    ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                                END
+                    )
+                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
+                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                    AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                            END
+                    )
+                )
+
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, HH, 
-            COUNT(VIN) AS TOTAL, 
-            SUM(APROVADO_FLAG) AS APROVADOS, 
-            COUNT(VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-            ROUND(SUM(APROVADO_FLAG) / COUNT(VIN) * 100, 1) AS PORCENTAGEM, 
-            ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-            1 AS ordem
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                
+                -- Cálculo do DPV: total de VINs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                1 AS ordem
         FROM CONSULTA
-        WHERE HH IS NOT NULL
         GROUP BY BARREIRA, HH
         UNION ALL
         SELECT BARREIRA, 
-            'TTL' AS HH, 
-            COUNT(VIN) AS TOTAL, 
-            SUM(APROVADO_FLAG) AS APROVADOS, 
-            COUNT(VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
-            ROUND(SUM(APROVADO_FLAG) / COUNT(VIN) * 100, 1) AS PORCENTAGEM, 
-            ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-            2 AS ordem
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
         FROM CONSULTA
-        WHERE HH IS NOT NULL
         GROUP BY BARREIRA
         ORDER BY ordem, HH
     </cfquery>
@@ -278,29 +304,43 @@
     <cfquery name="consulta_nconformidades" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
-            FROM INTCOLDFUSION.sistema_qualidade_fai FAI
-            WHERE 
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
+            WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+            AND CASE 
+                -- Se for até 02:00, considerar o dia anterior
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                -- Senão, considerar o próprio dia
+                ELSE TRUNC(USER_DATA) 
+            END = CASE 
+                -- Filtragem similar para o parâmetro de filtroData
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+            END
+            AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              
+              AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
                     ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                AND CASE 
-                    WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:02' THEN TRUNC(USER_DATA - 1) 
-                    ELSE TRUNC(USER_DATA) 
-                END = CASE 
-                    WHEN SUBSTR('#url.filtroData#', 12, 5) <= '01:02' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
-                    ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
-                END
-                AND PROBLEMA IS NOT NULL
-            GROUP BY PROBLEMA, PECA, ESTACAO
+            )
+            AND CASE 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
+                ELSE TRUNC(USER_DATA) 
+            END = CASE 
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+            END
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -319,16 +359,22 @@
         WITH CONSULTA AS (
             SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE TRUNC(USER_DATA) =
-                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
-                    #CreateODBCDate(url.filtroData)#
-                <cfelse>
-                    TRUNC(SYSDATE)
-                </cfif>
+            WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+            AND CASE 
+                -- Se for até 02:00, considerar o dia anterior
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                -- Senão, considerar o próprio dia
+                ELSE TRUNC(USER_DATA) 
+            END = CASE 
+                -- Filtragem similar para o parâmetro de filtroData
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+            END
             AND PROBLEMA IS NOT NULL
-            AND BARREIRA = 'UNDER BODY'
-            AND CRITICIDADE NOT IN ('OK A-')
-            AND (
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'UNDER BODY'
+              
+              AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
@@ -336,20 +382,20 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:02' THEN TRUNC(USER_DATA - 1) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
-                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '01:02' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
-            GROUP BY PROBLEMA, PECA, ESTACAO
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -368,15 +414,21 @@
          WITH CONSULTA AS (
             SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE TRUNC(USER_DATA) =
-                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
-                    #CreateODBCDate(url.filtroData)#
-                <cfelse>
-                    TRUNC(SYSDATE)
-                </cfif>
+            WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+            AND CASE 
+                -- Se for até 02:00, considerar o dia anterior
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                -- Senão, considerar o próprio dia
+                ELSE TRUNC(USER_DATA) 
+            END = CASE 
+                -- Filtragem similar para o parâmetro de filtroData
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+            END
             AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
               AND BARREIRA = 'ROAD TEST'
-            AND CRITICIDADE NOT IN ('OK A-')
+              
               AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
@@ -385,20 +437,20 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:02' THEN TRUNC(USER_DATA - 1) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
-                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '01:02' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
-            GROUP BY PROBLEMA, PECA, ESTACAO
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -417,16 +469,22 @@
         WITH CONSULTA AS (
             SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE TRUNC(USER_DATA) =
-                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
-                    #CreateODBCDate(url.filtroData)#
-                <cfelse>
-                    TRUNC(SYSDATE)
-                </cfif>
+            WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+            AND CASE 
+                -- Se for até 02:00, considerar o dia anterior
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                -- Senão, considerar o próprio dia
+                ELSE TRUNC(USER_DATA) 
+            END = CASE 
+                -- Filtragem similar para o parâmetro de filtroData
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+            END
             AND PROBLEMA IS NOT NULL
-            AND BARREIRA = 'SHOWER'
-            AND CRITICIDADE NOT IN ('OK A-')
-            AND (
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'SHOWER'
+              
+              AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
@@ -434,20 +492,20 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:02' THEN TRUNC(USER_DATA - 1) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
-                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '01:02' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
-            GROUP BY PROBLEMA, PECA, ESTACAO
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -466,15 +524,21 @@
        WITH CONSULTA AS (
             SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE TRUNC(USER_DATA) =
-                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
-                    #CreateODBCDate(url.filtroData)#
-                <cfelse>
-                    TRUNC(SYSDATE)
-                </cfif>
+            WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+            AND CASE 
+                -- Se for até 02:00, considerar o dia anterior
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                -- Senão, considerar o próprio dia
+                ELSE TRUNC(USER_DATA) 
+            END = CASE 
+                -- Filtragem similar para o parâmetro de filtroData
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+            END
             AND PROBLEMA IS NOT NULL
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
               AND BARREIRA = 'SIGN OFF'
-            AND CRITICIDADE NOT IN ('OK A-')
+              
               AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
@@ -483,20 +547,20 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:02' THEN TRUNC(USER_DATA - 1) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
-                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '01:02' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
-            GROUP BY PROBLEMA, PECA, ESTACAO
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -515,16 +579,22 @@
         WITH CONSULTA AS (
             SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE TRUNC(USER_DATA) =
-                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
-                    #CreateODBCDate(url.filtroData)#
-                <cfelse>
-                    TRUNC(SYSDATE)
-                </cfif>
+            WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+            AND CASE 
+                -- Se for até 02:00, considerar o dia anterior
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1)
+                -- Senão, considerar o próprio dia
+                ELSE TRUNC(USER_DATA) 
+            END = CASE 
+                -- Filtragem similar para o parâmetro de filtroData
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+            END
             AND PROBLEMA IS NOT NULL
-            AND BARREIRA = 'TUNEL DE LIBERACAO'
-            AND CRITICIDADE NOT IN ('OK A-')
-            AND (
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+              AND BARREIRA = 'TUNEL DE LIBERACAO'
+              
+              AND (
                 CASE 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
                     WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
@@ -532,20 +602,20 @@
                 END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
             )
             AND CASE 
-                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:02' THEN TRUNC(USER_DATA - 1) 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
                 ELSE TRUNC(USER_DATA) 
             END = CASE 
-                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '01:02' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
             END
-            GROUP BY PROBLEMA, PECA, ESTACAO
+              GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
-            WHERE ROWNUM <= 5
+            WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
             SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
@@ -568,7 +638,7 @@
     </script>
 </cfif>
     
-    <html lang="pt-BR">
+<html lang="pt-BR">
     <head>
         <!-- Meta tags necessárias -->
         <meta charset="utf-8">
@@ -604,13 +674,13 @@
                 }
                 .ticker:hover .ticker-content {
                     animation-play-state: paused;
-        }
+                }
 
                 @keyframes tickerMove {
                     0% { transform: translateX(100%); }
                     100% { transform: translateX(-100%); }
                 }
-          </style>
+        </style>
     </head>
     <body>
         <!-- Header com as imagens e o menu -->
@@ -671,7 +741,7 @@
                 <div class="col-md-4">
                     <h3>Under Body 2</h3>
                     <div class="table-responsive">
-                        <table class="table table-hover table-sm table-custom-width">
+                        <table style="font-size:12px;" class="table table-hover table-sm table-custom-width">
                             <thead class="bg-success">
                                 <tr>
                                     <th>H/H</th>
@@ -702,7 +772,7 @@
                 <div class="col-md-4">
                     <h3>Pareto - Under Body 2</h3>
                     <div class="table-responsive">
-                        <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
+                        <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos" style="font-size:12px;">
                             <thead>
                                 <tr class="text-nowrap">
                                     <th scope="col" colspan="5" class="bg-success">Principais Não Conformidades - Top 5</th>
@@ -815,7 +885,7 @@
                         <div class="col-md-4">
                             <h3>Road Test</h3>
                             <div class="table-responsive">
-                                <table class="table table-hover table-sm table-custom-width">
+                                <table style="font-size:12px;" class="table table-hover table-sm table-custom-width">
                                     <thead class="bg-danger">
                                         <tr>
                                             <th>H/H</th>
@@ -846,7 +916,7 @@
                         <div class="col-md-4">
                             <h3>Pareto - Road Test</h3>
                             <div class="table-responsive">
-                                <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
+                                <table style="font-size:12px;" class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
                                     <thead>
                                         <tr class="text-nowrap">
                                             <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
@@ -959,7 +1029,7 @@
                         <div class="col-md-4">
                             <h3>Shower</h3>
                             <div class="table-responsive">
-                                <table class="table table-hover table-sm table-custom-width">
+                                <table style="font-size:12px;" class="table table-hover table-sm table-custom-width">
                                     <thead class="bg-danger">
                                         <tr>
                                             <th>H/H</th>
@@ -990,7 +1060,7 @@
                         <div class="col-md-4">
                             <h3>Pareto - Shower</h3>
                             <div class="table-responsive">
-                                <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
+                                <table style="font-size:12px;" class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
                                     <thead>
                                         <tr class="text-nowrap">
                                             <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
@@ -1104,7 +1174,7 @@
                         <div class="col-md-4">
                             <h3>EX OK</h3>
                             <div class="table-responsive">
-                                <table class="table table-hover table-sm table-custom-width">
+                                <table style="font-size:12px;" class="table table-hover table-sm table-custom-width">
                                     <thead class="bg-danger">
                                         <tr>
                                             <th>H/H</th>
@@ -1135,7 +1205,7 @@
                         <div class="col-md-4">
                             <h3>Pareto - EX-OK</h3>
                             <div class="table-responsive">
-                                <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
+                                <table style="font-size:12px;" class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
                                     <thead>
                                         <tr class="text-nowrap">
                                             <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
@@ -1246,7 +1316,7 @@
                         <div class="col-md-4">
                             <h3>TUNEL DE LIBERAÇÃO</h3>
                             <div class="table-responsive">
-                                <table class="table table-hover table-sm table-custom-width">
+                                <table style="font-size:12px;" class="table table-hover table-sm table-custom-width">
                                     <thead class="bg-danger">
                                         <tr>
                                             <th>H/H</th>
@@ -1277,7 +1347,7 @@
                         <div class="col-md-4">
                             <h3>Pareto - TUNEL DE LIBERAÇÃO</h3>
                             <div class="table-responsive">
-                                <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
+                                <table style="font-size:12px;" class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
                                     <thead>
                                         <tr class="text-nowrap">
                                             <th scope="col" colspan="5" class="bg-danger">Principais Não Conformidades - Top 5</th>
@@ -1389,7 +1459,7 @@
                 <div class="col-md-5">
                     <h3>Pareto das Não Conformidades</h3>
                     <div class="table-responsive">
-                        <table class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
+                        <table style="font-size:12px;" class="table table-hover table-sm table-custom-width" border="1" id="tblStocks" data-excel-name="Veículos">
                             <thead>
                                 <tr class="text-nowrap">
                                     <th scope="col" colspan="5" class="bg-warning">Principais Não Conformidades - Top 5</th>
@@ -1496,14 +1566,11 @@
             });
         </script>  
         </div>      
-
-   <meta http-equiv="refresh" content="40,URL=fai_indicadores_2turno.cfm">
-
+    <meta http-equiv="refresh" content="40,URL=fai_indicadores_2turno.cfm">
   <!-- Setinha flutuante -->
   <div class="floating-arrow" onclick="scrollToTop();">
     <i class="material-icons">arrow_upward</i>
 </div>
-
 <!-- Script para voltar ao topo suavemente -->
 <script>
     function scrollToTop() {

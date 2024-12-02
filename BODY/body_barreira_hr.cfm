@@ -29,33 +29,33 @@
     </cfquery>
 
             <!--- Pesquisa MES --->
- <cfquery name='buscaMES' datasource="#BANCOMES#">
-        select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
-        rtrim(ltrim(replace(
-            replace(
-            replace(
-            replace(
-            replace(
-            replace(
-            replace(
-            replace(
-            replace(
-            replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
-            ' FL',''),
-            'COMPLETO ',''),
-            'COMPLETA ',''),
-            'TXS','PL7'),
-            'SOLDADO',''),
-            'SOLDADA',''),
-            'ESCURO',''),
-            'NOVO MOTOR',''),
-            'CINZA',''))) modelo
-        from TBLLot l
-        left join CTBLGravacao g on l.IDLot = g.IDLot
-      left join TBLProduct p on p.IDProduct = l.IDProduct
-        where l.code = VIN
-      and p.name like '%CABINE%'
- </cfquery>
+    <cfquery name='buscaMES' datasource="#BANCOMES#">
+            select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
+            rtrim(ltrim(replace(
+                replace(
+                replace(
+                replace(
+                replace(
+                replace(
+                replace(
+                replace(
+                replace(
+                replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
+                ' FL',''),
+                'COMPLETO ',''),
+                'COMPLETA ',''),
+                'TXS','PL7'),
+                'SOLDADO',''),
+                'SOLDADA',''),
+                'ESCURO',''),
+                'NOVO MOTOR',''),
+                'CINZA',''))) modelo
+            from TBLLot l
+            left join CTBLGravacao g on l.IDLot = g.IDLot
+        left join TBLProduct p on p.IDProduct = l.IDProduct
+            where l.code = VIN
+        and p.name like '%CABINE%'
+    </cfquery>
  
     <!--- Verifica se o formulário foi enviado --->
  <cfif structKeyExists(form, "nome") and structKeyExists(form, "vin") and structKeyExists(form, "modelo") and structKeyExists(form, "local") and structKeyExists(form, "N_Conformidade") and structKeyExists(form, "posicao") and structKeyExists(form, "problema")>

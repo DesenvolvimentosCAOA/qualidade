@@ -12,7 +12,7 @@
 <!---  Consulta  --->
 <cfquery name="consulta_cripple" datasource="#BANCOSINC#">
   SELECT *
-  FROM INTCOLDFUSION.MASSIVA_FAI
+  FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
   WHERE 1 = 1 
   AND STATUS IS NULL
   <cfif isDefined("url.filtroDefeito") and url.filtroDefeito neq "">
@@ -20,6 +20,7 @@
   </cfif>
   ORDER BY ID desc
 </cfquery>
+
 
 <script>
   function atualizarRegistro(id) {
@@ -33,7 +34,7 @@
 <cfif structKeyExists(url, "delete_id") and url.delete_id neq "">
   <!-- Executa o DELETE no banco de dados -->
   <cfquery name="delete" datasource="#BANCOSINC#">
-      DELETE FROM INTCOLDFUSION.massiva_fai
+      DELETE FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
       WHERE ID = <cfqueryparam value="#url.delete_id#" cfsqltype="CF_SQL_INTEGER">
   </cfquery>
 
@@ -55,7 +56,7 @@
 
         <cfif isDefined("url.deletarOK") and url.deletarOK eq "true">
             <cfquery datasource="#BANCOSINC#">
-                UPDATE INTCOLDFUSION.MASSIVA_FAI 
+                UPDATE INTCOLDFUSION.SISTEMA_QUALIDADE_BODY 
                 SET STATUS = 'LIBERADO' 
                 WHERE STATUS = 'OK'
             </cfquery>
@@ -74,7 +75,7 @@
 <cfif structKeyExists(url, "id") and url.id neq "">
   <!-- Atualizando as colunas específicas e setando o STATUS como OK -->
   <cfquery name="update" datasource="#BANCOSINC#">
-      UPDATE INTCOLDFUSION.massiva_fai
+      UPDATE INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
       SET 
           STATUS = 'OK'
       WHERE ID = <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
@@ -89,7 +90,7 @@
 
 <cfif structKeyExists(form, "confirmDelete") and form.confirmDelete EQ "yes">
   <cfquery datasource="#BANCOSINC#">
-      DELETE FROM MASSIVA_FAI
+      DELETE FROM SISTEMA_QUALIDADE_BODY
   </cfquery>
   <script>
       alert("Todos os registros foram deletados com sucesso.");
@@ -129,8 +130,8 @@
                   })
                   .catch(error => console.error('Erro:', error));
           }
-        </script>
-
+      </script>
+      
       <style>
             /* Estilo para o botão Deletar (btn-apagar) */
             .btn-apagar {
@@ -253,13 +254,14 @@
               background-color: #f2f2f2; /* Cor de fundo para cabeçalhos da tabela */
           }
       </style>
-
+    
     </head>
     <body>
         <header>
             <cfinclude template="auxi/nav_links1.cfm">
         </header><br><br><br><br><br>
         <h3 class="text-center mt-2">Massiva</h3>
+        
           <cfoutput>
             <form class="filterTable mt-5" name="filtro" method="GET">
                 <div class="d-flex align-items-end">
@@ -508,11 +510,11 @@
     </form>
       <cfif isDefined("form.Defeito") and form.Defeito neq "">
           <cfquery name="insert" datasource="#BANCOSINC#">
-              INSERT INTO INTCOLDFUSION.MASSIVA_FAI (ID, VIN, USER_DATA)
+              INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_BODY (ID, VIN, USER_DATA)
               SELECT NVL(MAX(ID), 0) + 1, 
               '#form.Defeito#',
               SYSDATE
-              FROM INTCOLDFUSION.MASSIVA_FAI
+              FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
           </cfquery>
           <div class="alert alert-success" role="alert">
               Cadastrado com sucesso

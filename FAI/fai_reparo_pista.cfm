@@ -19,7 +19,6 @@
     </script>
 </cfif>
 
-
     <!--- Consulta --->
     <cfquery name="consulta" datasource="#BANCOSINC#">
         SELECT *
@@ -50,7 +49,9 @@
             AND UPPER(ROAD_TEST) LIKE UPPER('%#url.filtroRoadTest#%')
         </cfif>
         AND PROBLEMA_REPARO IS NULL
+        AND PROBLEMA IS NOT NULL
         AND (CRITICIDADE IS NULL OR CRITICIDADE NOT IN ('N0', 'OK A-'))
+        AND BARREIRA = 'ROAD TEST'
         ORDER BY ID DESC
     </cfquery>
     

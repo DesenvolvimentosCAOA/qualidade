@@ -292,6 +292,7 @@
                      <option value="N2">N2</option>
                      <option value="N3">N3</option>
                      <option value="N4">N4</option>
+                     <option value="CRIPPLE">CRIPPLE</option>
                      <option value="OK A-">OK A-</option>
                      <option value="AVARIA">AVARIA</option>
                   </select>

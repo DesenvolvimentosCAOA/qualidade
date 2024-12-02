@@ -89,7 +89,7 @@
         }
     </script>
 
-<cfif structKeyExists(url, "id") and url.id neq "">
+<cfif structKeyExists(url, "id") and url.id neq "" and structKeyExists(url, "vin") and structKeyExists(url, "barreira")>
     <!-- Consulta para obter o USER_SIGN e salvar no campo RESPONSAVEL_LIBERACAO -->
     <cfquery name="login" datasource="#BANCOSINC#">
         SELECT USER_NAME, USER_SIGN 
@@ -97,32 +97,53 @@
         WHERE USER_NAME = <cfqueryparam value="#cookie.USER_APONTAMENTO_FA#" cfsqltype="CF_SQL_VARCHAR">
     </cfquery>
 
-    <!-- Atualizando as colunas específicas e setando o STATUS como OK -->
-    <cfquery name="update" datasource="#BANCOSINC#">
-        UPDATE INTCOLDFUSION.sistema_qualidade_fa
-        SET PECA = NULL,
-            POSICAO = NULL,
-            PROBLEMA = NULL,
-            ESTACAO = NULL,
-            TIPO_REPARO = NULL,
-            REPARADOR = NULL,
-            CRITICIDADE = NULL,
-            DATA_REPARO = NULL,
-            PECA_REPARO = NULL,
-            POSICAO_REPARO = NULL,
-            PROBLEMA_REPARO = NULL,
-            RESPONSAVEL_REPARO = NULL,
-            STATUS = 'OK',
-            RESPONSAVEL_LIBERACAO = <cfqueryparam value="#login.USER_SIGN#" cfsqltype="CF_SQL_VARCHAR">
-        WHERE ID = <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
+    <!-- Verificar a quantidade de registros com o mesmo VIN e BARREIRA -->
+    <cfquery name="countVIN" datasource="#BANCOSINC#">
+        SELECT COUNT(*) AS total
+        FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
+        WHERE VIN = <cfqueryparam value="#url.vin#" cfsqltype="CF_SQL_VARCHAR">
+          AND BARREIRA = <cfqueryparam value="#url.barreira#" cfsqltype="CF_SQL_VARCHAR">
+          AND ID <> <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
     </cfquery>
 
-    <!-- Redirecionamento -->
-    <script>
-        self.location = 'fa_editar.cfm';
-    </script>
-</cfif>
+    <!-- Se houver mais de um registro com o mesmo VIN e BARREIRA -->
+    <cfif countVIN.total GT 0>
+        <!-- Apagar o registro específico com o ID, VIN e BARREIRA -->
+        <cfquery name="delete" datasource="#BANCOSINC#">
+            DELETE FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
+            WHERE ID = <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
+              AND VIN = <cfqueryparam value="#url.vin#" cfsqltype="CF_SQL_VARCHAR">
+              AND BARREIRA = <cfqueryparam value="#url.barreira#" cfsqltype="CF_SQL_VARCHAR">
+        </cfquery>
+        <script>
+            self.location = 'fa_editar.cfm?vin=#url.vin#&barreira=#url.barreira#';
+        </script>
 
+    <!-- Se houver apenas um registro com o VIN e BARREIRA -->
+    <cfelse>
+        <!-- Atualizar o registro específico com o ID -->
+        <cfquery name="update" datasource="#BANCOSINC#">
+            UPDATE INTCOLDFUSION.SISTEMA_QUALIDADE_FA
+            SET PECA = NULL,
+                POSICAO = NULL,
+                PROBLEMA = NULL,
+                ESTACAO = NULL,
+                TIPO_REPARO = NULL,
+                REPARADOR = NULL,
+                CRITICIDADE = NULL,
+                DATA_REPARO = NULL,
+                PECA_REPARO = NULL,
+                POSICAO_REPARO = NULL,
+                PROBLEMA_REPARO = NULL,
+                RESPONSAVEL_REPARO = NULL,
+                STATUS = 'OK',
+                RESPONSAVEL_LIBERACAO = <cfqueryparam value="#login.USER_SIGN#" cfsqltype="CF_SQL_VARCHAR">
+            WHERE ID = <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
+              AND VIN = <cfqueryparam value="#url.vin#" cfsqltype="CF_SQL_VARCHAR">
+              AND BARREIRA = <cfqueryparam value="#url.barreira#" cfsqltype="CF_SQL_VARCHAR">
+        </cfquery>
+    </cfif>
+</cfif>
 
     <html lang="pt-BR">
         <head>
@@ -242,10 +263,21 @@
                                                         </button>
                                                     </td>
                                                     <td class="text-nowrap">
-                                                        <button class="btn-apagar" onclick="atualizarRegistro(#ID#);">
+                                                        <button class="btn-apagar" onclick="atualizarRegistro(#ID#, '#VIN#', '#BARREIRA#');">
                                                             <i class="material-icons delete-icon"></i> Apagar
                                                         </button>
-                                                    </td>                                                    
+                                                    </td>
+                                                    
+                                                    <script>
+                                                        function atualizarRegistro(id, vin, barreira) {
+                                                            // Criar a URL com id, vin e barreira
+                                                            var url = 'fa_editar.cfm?id=' + id + '&vin=' + encodeURIComponent(vin) + '&barreira=' + encodeURIComponent(barreira);
+                                                            
+                                                            // Redirecionar para a URL
+                                                            window.location.href = url;
+                                                        }
+                                                    </script>
+                                                                                           
                                                 </tr>
                                         </form>
                                     </cfoutput>
