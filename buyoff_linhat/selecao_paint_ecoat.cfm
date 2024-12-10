@@ -197,40 +197,64 @@
         <title>E-COAT</title>
         <link rel="icon" href="./assets/chery.png" type="image/x-icon">
         <link rel="stylesheet" href="assets/StyleBuyOFF.css?v6">
- <script>
-    function validarFormulario(event) {
-        // Validação do BARCODE com requisição AJAX
-        var barcode = document.getElementById('formVIN').value; // Obtém o valor do input formVIN
-        var problema = document.getElementById('formProblema').value; // Certifique-se de que há um campo com id 'formProblema'
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'verificar_barcode.cfm', true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var response = xhr.responseText.trim();
-                if (response === 'EXISTE_COM_CONDICAO') {
-                    alert('O BARCODE já existe na tabela com PROBLEMA vazio. Não é possível prosseguir com PROBLEMA preenchido.');
-                    event.preventDefault(); // Impede o envio do formulário
-                } else if (response === 'PROBLEMA_EXISTE_FORM_NULO') {
-                    alert('O BARCODE já existe na tabela com um problema registrado. O campo PROBLEMA no formulário não pode estar vazio.');
-                    event.preventDefault(); // Impede o envio do formulário
-                } else if (response === 'EXISTE') {
-                    alert('O BARCODE já existe na tabela. Por favor, verifique os dados.');
-                    event.preventDefault(); // Impede o envio do formulário
-                } else if (response === 'PERMITIR_ENVIO') {
-                    // Permite o envio do formulário
-                    document.getElementById('form_envio').submit();
-                } else {
-                    document.getElementById('form_envio').submit();
+        <script>
+            function validarFormulario(event) {
+                // Obtenha o valor do campo "problema"
+                var problemaInput = document.getElementById('formProblema');
+                var problema = problemaInput.value;
+        
+                // Obtenha a lista de opções do datalist
+                var datalist = document.getElementById('defeitos-list');
+                var options = datalist.options;
+        
+                // Verifique se o valor do input corresponde a uma das opções do datalist
+                var isValid = false;
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i].value === problema) {
+                        isValid = true;
+                        break;
+                    }
                 }
+        
+                // Se o valor não for válido, impede o envio do formulário
+                if (!isValid) {
+                    alert('Por favor, selecione um problema válido da lista.');
+                    event.preventDefault();
+                    return; // Sai da função para não executar o restante da validação
+                }
+        
+                // Validação do BARCODE com requisição AJAX
+                var barcode = document.getElementById('formVIN').value; // Obtém o valor do input formVIN
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'verificar_barcode.cfm', true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var response = xhr.responseText.trim();
+                        if (response === 'EXISTE_COM_CONDICAO') {
+                            alert('O BARCODE já existe na tabela com PROBLEMA vazio. Não é possível prosseguir com PROBLEMA preenchido.');
+                            event.preventDefault(); // Impede o envio do formulário
+                        } else if (response === 'PROBLEMA_EXISTE_FORM_NULO') {
+                            alert('O BARCODE já existe na tabela com um problema registrado. O campo PROBLEMA no formulário não pode estar vazio.');
+                            event.preventDefault(); // Impede o envio do formulário
+                        } else if (response === 'EXISTE') {
+                            alert('O BARCODE já existe na tabela. Por favor, verifique os dados.');
+                            event.preventDefault(); // Impede o envio do formulário
+                        } else if (response === 'PERMITIR_ENVIO') {
+                            // Permite o envio do formulário
+                            document.getElementById('form_envio').submit();
+                        } else {
+                            document.getElementById('form_envio').submit();
+                        }
+                    }
+                };
+                xhr.send('barcode=' + encodeURIComponent(barcode) + '&problema=' + encodeURIComponent(problema) + '&barreira=ECOAT');
+        
+                // Impede o envio até a resposta da requisição AJAX
+                event.preventDefault();
             }
-        };
-        xhr.send('barcode=' + encodeURIComponent(barcode) + '&problema=' + encodeURIComponent(problema) + '&barreira=ECOAT');
-    
-        // Impede o envio até a resposta da requisição AJAX
-        event.preventDefault();
-    }
- </script>
+        </script>
+        
  
     </head>
     <body>
@@ -270,8 +294,7 @@
                     </cfquery>
             <div class="form-group col-md-2">
                 <label for="formVIN">BARCODE</label>
-                <input type="text" class="form-control form-control-sm" maxlength="6" name="vin" id="formVIN" required
-                    oninput="this.value = this.value.replace(/\D/g, '');" pattern="\d{6}">
+                <input type="text" class="form-control form-control-sm" maxlength="6" name="vin" id="formVIN" required oninput="this.value = this.value.replace(/\D/g, '');" pattern="\d{6}">
             </div>
                                         <!--- Pesquisa MES --->
                     <cfquery name='buscaMES' datasource="#BANCOMES#">
