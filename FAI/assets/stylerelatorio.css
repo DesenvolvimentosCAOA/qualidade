@@ -109,6 +109,17 @@ body {
     border-color: #6c757d;
 }
 
+.btn-danger{
+    color:white;
+    background-color: red;
+    border-color: black;
+}
+.btn-danger:hover{
+    color:rgb(128, 125, 125);
+    background-color: rgb(177, 7, 7);
+    border-color: rgb(53, 51, 51);
+}
+
 .btn-secondary:hover {
     color: #fff;
     background-color: #5a6268;

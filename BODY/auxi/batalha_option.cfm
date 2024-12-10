@@ -442,7 +442,6 @@
 <option value="Q25">Q25</option>
 
 
-<!----
 <option value="R1">R1</option>
 <option value="R2">R2</option>
 <option value="R3">R3</option>
@@ -512,5 +511,3 @@
 <option value="T21">T21</option>
 <option value="T22">T22</option>
 <option value="T23">T23</option>
-
---->

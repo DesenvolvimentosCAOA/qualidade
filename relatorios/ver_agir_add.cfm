@@ -60,7 +60,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>VER & AGIR</title>
+        <title>CADASTRO - VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v6"> 
         <style>

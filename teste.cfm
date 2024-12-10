@@ -7,6 +7,8 @@
 
     <cfquery name="consulta" datasource="#BANCOMES#">
         DECLARE @filtroData DATE;
+        DECLARE @inicioTurno DATETIME;
+        DECLARE @fimTurno DATETIME;
     
         SET @filtroData = 
         <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -14,6 +16,13 @@
         <cfelse>
             CAST(GETDATE() AS DATE)
         </cfif>;
+    
+        SET @inicioTurno = DATEADD(HOUR, 6, CAST(@filtroData AS DATETIME));
+        SET @fimTurno = CASE 
+                            WHEN DATEPART(WEEKDAY, @filtroData) BETWEEN 2 AND 5 THEN DATEADD(MINUTE, 948, @inicioTurno)
+                            WHEN DATEPART(WEEKDAY, @filtroData) = 6 THEN DATEADD(MINUTE, 888, @inicioTurno)
+                            ELSE DATEADD(MINUTE, 948, @inicioTurno)
+                        END;
     
         SELECT COUNT(DISTINCT l.code) AS distinct_count
         FROM TBLMovEv m
@@ -23,86 +32,81 @@
         LEFT JOIN TBLMovType mt ON mt.IDMovType = m.IDMovType
         WHERE a.code IN ('T03_SUV')  
           AND mt.code LIKE 'E%'
-          AND (
-              -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48
-              (
-                  DATEPART(WEEKDAY, m.DtTimeStamp) BETWEEN 2 AND 5 
-                  AND m.DtTimeStamp BETWEEN 
-                      DATEADD(HOUR, 6, CAST(@filtroData AS DATETIME)) 
-                      AND DATEADD(MINUTE, 948, CAST(@filtroData AS DATETIME))
-              )
-              -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-              OR (
-                  DATEPART(WEEKDAY, m.DtTimeStamp) = 6 
-                  AND m.DtTimeStamp BETWEEN 
-                      DATEADD(HOUR, 6, CAST(@filtroData AS DATETIME)) 
-                      AND DATEADD(MINUTE, 888, CAST(@filtroData AS DATETIME))
-              )
-              -- Sábado: turno inicia às 06:00 e termina às 14:48
-              OR (
-                  DATEPART(WEEKDAY, m.DtTimeStamp) = 7 
-                  AND m.DtTimeStamp BETWEEN 
-                      DATEADD(HOUR, 6, CAST(@filtroData AS DATETIME)) 
-                      AND DATEADD(MINUTE, 948, CAST(@filtroData AS DATETIME))
-              )
-          )
+          AND m.DtTimeStamp BETWEEN @inicioTurno AND @fimTurno
           AND CAST(m.DtTimeStamp AS DATE) = @filtroData;
     </cfquery>
-
+    
     <cfquery name="consulta_f" datasource="#BANCOMES#">
         DECLARE @filtroData DATE;
-
+        DECLARE @inicioTurno DATETIME;
+        DECLARE @fimTurno DATETIME;
+        DECLARE @diaSeguinte DATE;
+    
+        -- Define o valor de @filtroData
         SET @filtroData = 
         <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
             <cfqueryparam value="#url.filtroData#" cfsqltype="cf_sql_date">
         <cfelse>
             CAST(GETDATE() AS DATE)
         </cfif>;
-
+    
+        -- Ajusta o dia seguinte
+        SET @diaSeguinte = DATEADD(DAY, 1, @filtroData);
+    
+        -- Define os horários de início e término com base no dia da semana
+        IF DATEPART(WEEKDAY, @filtroData) BETWEEN 2 AND 5 -- Segunda a Quinta
+        BEGIN
+            -- Horário de início às 15:50
+            SET @inicioTurno = DATEADD(MINUTE, 950, CAST(@filtroData AS DATETIME));
+    
+            -- Horário de término às 00:59:59 do dia seguinte
+            SET @fimTurno = DATEADD(MINUTE, 59, CAST(@diaSeguinte AS DATETIME));
+        END
+        ELSE IF DATEPART(WEEKDAY, @filtroData) = 6 -- Sexta-feira
+        BEGIN
+            -- Horário de início às 14:50
+            SET @inicioTurno = DATEADD(MINUTE, 890, CAST(@filtroData AS DATETIME));
+    
+            -- Horário de término às 23:00
+            SET @fimTurno = DATEADD(MINUTE, 1380, CAST(@filtroData AS DATETIME));
+        END
+    
+        -- Consulta principal
         SELECT COUNT(DISTINCT l.code) AS distinct_count
         FROM TBLMovEv m
         LEFT JOIN TBLProduct p ON m.IDProduct = p.IDProduct
         LEFT JOIN TBLLot l ON l.IDLot = m.IDLot
         LEFT JOIN TBLAddress a ON m.IDAddress = a.IDAddress
         LEFT JOIN TBLMovType mt ON mt.IDMovType = m.IDMovType
-        WHERE a.code IN ('KEEPER_F_SUV')  
-        AND mt.code LIKE 'E%'
-        AND (
-            -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48
+        WHERE a.code IN ('T03_SUV')  
+          AND mt.code LIKE 'E%'
+          AND 
+          (
+            -- Caso esteja entre 00:00:00 e 00:59:59 do dia seguinte, considere como o dia anterior
             (
-                DATEPART(WEEKDAY, m.DtTimeStamp) BETWEEN 2 AND 5 
-                AND m.DtTimeStamp BETWEEN 
-                    DATEADD(HOUR, 6, CAST(@filtroData AS DATETIME)) 
-                    AND DATEADD(MINUTE, 948, CAST(@filtroData AS DATETIME))
+              m.DtTimeStamp BETWEEN @inicioTurno AND @fimTurno
+              OR (m.DtTimeStamp BETWEEN CAST(@diaSeguinte AS DATETIME) AND DATEADD(MINUTE, 59, CAST(@diaSeguinte AS DATETIME)))
             )
-            -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-            OR (
-                DATEPART(WEEKDAY, m.DtTimeStamp) = 6 
-                AND m.DtTimeStamp BETWEEN 
-                    DATEADD(HOUR, 6, CAST(@filtroData AS DATETIME)) 
-                    AND DATEADD(MINUTE, 888, CAST(@filtroData AS DATETIME))
-            )
-            -- Sábado: turno inicia às 06:00 e termina às 14:48
-            OR (
-                DATEPART(WEEKDAY, m.DtTimeStamp) = 7 
-                AND m.DtTimeStamp BETWEEN 
-                    DATEADD(HOUR, 6, CAST(@filtroData AS DATETIME)) 
-                    AND DATEADD(MINUTE, 948, CAST(@filtroData AS DATETIME))
-            )
-        )
-        AND CAST(m.DtTimeStamp AS DATE) = @filtroData;
+          )
+          AND CAST(m.DtTimeStamp AS DATE) = @filtroData;
     </cfquery>
 
-    <cfquery name="consulta_2" datasource="#BANCOMES#">
+    <cfquery name="consulta_f1" datasource="#BANCOMES#">
         DECLARE @filtroData DATE;
+        DECLARE @diaSeguinte DATE;
 
+        -- Define o valor de @filtroData
         SET @filtroData = 
-        <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
-            <cfqueryparam value="#url.filtroData#" cfsqltype="cf_sql_date">
-        <cfelse>
-            CAST(GETDATE() AS DATE)
-        </cfif>;
+            <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                <cfqueryparam value="#url.filtroData#" cfsqltype="cf_sql_date">
+            <cfelse>
+                CAST(GETDATE() AS DATE)
+            </cfif>;
 
+        -- Calcula o dia seguinte à data do filtro
+        SET @diaSeguinte = DATEADD(DAY, 1, @filtroData);
+
+        -- Consulta para pegar os dados entre 00:00:00 e 00:59:59 do dia seguinte
         SELECT COUNT(DISTINCT l.code) AS distinct_count
         FROM TBLMovEv m
         LEFT JOIN TBLProduct p ON m.IDProduct = p.IDProduct
@@ -111,35 +115,12 @@
         LEFT JOIN TBLMovType mt ON mt.IDMovType = m.IDMovType
         WHERE a.code IN ('T03_SUV')  
         AND mt.code LIKE 'E%'
-        AND (
-            -- Segunda a Quinta-feira
-            (
-                DATEPART(WEEKDAY, m.DtTimeStamp) BETWEEN 2 AND 5
-                AND (
-                    (CONVERT(VARCHAR(5), m.DtTimeStamp, 108) BETWEEN '15:50' AND '23:59')
-                    OR (CONVERT(VARCHAR(5), m.DtTimeStamp, 108) BETWEEN '00:00' AND '02:00' AND CAST(DATEADD(DAY, -1, m.DtTimeStamp) AS DATE) = @filtroData)
-                )
-            )
-            OR -- Sexta-feira
-            (
-                DATEPART(WEEKDAY, m.DtTimeStamp) = 6
-                AND (
-                    (CONVERT(VARCHAR(5), m.DtTimeStamp, 108) BETWEEN '15:00' AND '23:59')
-                    OR (CONVERT(VARCHAR(5), m.DtTimeStamp, 108) BETWEEN '00:00' AND '02:00' AND CAST(DATEADD(DAY, -1, m.DtTimeStamp) AS DATE) = @filtroData)
-                )
-            )
-        )
-        AND (
-            CASE 
-                WHEN CONVERT(VARCHAR(5), m.DtTimeStamp, 108) <= '02:00' THEN CAST(DATEADD(DAY, -1, m.DtTimeStamp) AS DATE) 
-                ELSE CAST(m.DtTimeStamp AS DATE) 
-            END = CASE 
-                WHEN SUBSTRING('#url.filtroData#', 12, 5) <= '02:00' THEN CAST(DATEADD(DAY, -1, CONVERT(DATETIME, '#url.filtroData#', 120)) AS DATE) 
-                ELSE CAST(CONVERT(DATETIME, '#url.filtroData#', 120) AS DATE) 
-            END
-        )
+        AND m.DtTimeStamp >= CAST(@diaSeguinte AS DATETIME)  -- 00:00:00 do dia seguinte
+        AND m.DtTimeStamp < DATEADD(MINUTE, 60, CAST(@diaSeguinte AS DATETIME))  -- 00:59:59 do dia seguinte
     </cfquery>
 
+<cfset total_count = consulta_f.distinct_count + consulta_f1.distinct_count>
+ 
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -282,16 +263,10 @@
                 <input style="color:red;font-weight: bold;font-size:24px;" type="text" placeholder="Conceito Central" value="#consulta.distinct_count#">
             </div>
         </cfoutput>
-        <cfoutput query="consulta_f">
+        <cfoutput>
             <div class="nodo" id="central">
                 <label>Apontamento Linha F 1º Turno</label>
-                <input style="color:red;font-weight: bold;font-size:24px;" type="text" placeholder="Conceito Central" value="#consulta_f.distinct_count#">
-            </div>
-        </cfoutput>
-        <cfoutput query="consulta_2">
-            <div class="nodo" id="central">
-                <label>Apontamento Linha F 2º turno</label>
-                <input style="color:red;font-weight: bold;font-size:24px;" type="text" placeholder="Conceito Central" value="#consulta_2.distinct_count#">
+                <input style="color:red;font-weight: bold;font-size:24px;" type="text" placeholder="Conceito Central" value="#total_count#">
             </div>
         </cfoutput>
         <svg id="svg"></svg>

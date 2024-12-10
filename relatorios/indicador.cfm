@@ -940,4 +940,5 @@
             </div>
         </div>
     </body>
+    <meta http-equiv="refresh" content="40,URL=indicador.cfm">
 </html>

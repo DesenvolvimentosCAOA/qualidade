@@ -1,44 +1,44 @@
 ﻿<cfinvoke  method="inicializando" component="cf.ini.index">
-    <cfsetting requestTimeOut = "0">
+<cfsetting requestTimeOut = "0">
+
+    <cfif isDefined("form.file")>
+
+        <cffile action="upload" 
+            destination="#raizpasta#/qualidade/" 
+            attributes="normal" 
+            
+            result="import" nameconflict="makeunique">
+    <cfelse>
+
+        <font> Erro!, nenhum arquivo foi importado! </font>
+
+    </cfif>
     
-        <cfif isDefined("form.file")>
+<cfset file_imp = import.serverfile>
+
+<cfspreadsheet 
+    action="read"
+    src="#raizpasta#/qualidade/#file_imp#"
+    query="importado">
     
-            <cffile action="upload" 
-                destination="#raizpasta#/qualidade/" 
-                attributes="normal" 
-                
-                result="import" nameconflict="makeunique">
-        <cfelse>
-    
-            <font> Erro!, nenhum arquivo foi importado! </font>
-    
-        </cfif>
-        
-    <cfset file_imp = import.serverfile>
-    
-    <cfspreadsheet 
-        action="read"
-        src="#raizpasta#/qualidade/#file_imp#"
-        query="importado">
-        
-    <cfset max=importado.RecordCount>
+<cfset max=importado.RecordCount>
 
 <cfoutput> 
     <cfloop query="importado" startRow="2" endRow="#max#">
         <!--- Verifica se o VIN já existe na tabela --->
         <cfquery name="valida" datasource="#BANCOSINC#">
-            SELECT * FROM INTCOLDFUSION.MASSIVA_FAI WHERE VIN = <cfqueryparam value="#importado.COL_1#" cfsqltype="cf_sql_varchar">
+            SELECT * FROM INTCOLDFUSION.MASSIVA_FA WHERE VIN = <cfqueryparam value="#importado.COL_1#" cfsqltype="cf_sql_varchar">
         </cfquery>
     
         <!--- Se o VIN não existe, insere um novo registro --->
         <cfif valida.recordCount eq 0>
     
             <cfquery name="Insere" datasource="#BANCOSINC#">
-                INSERT INTO INTCOLDFUSION.MASSIVA_FAI (ID, VIN, USER_DATA)
+                INSERT INTO INTCOLDFUSION.MASSIVA_FA (ID, VIN, USER_DATA)
                 SELECT NVL(MAX(ID),0) + 1, 
                        <cfqueryparam value="#importado.COL_1#" cfsqltype="cf_sql_varchar">, 
                        SYSDATE
-                FROM INTCOLDFUSION.MASSIVA_FAI
+                FROM INTCOLDFUSION.MASSIVA_FA
             </cfquery>
     
             <br><font style="font-size:18"> Inserido: #importado.COL_1# </font>  <br>

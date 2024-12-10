@@ -218,6 +218,7 @@
                         </div>
                         <div class="search-container">
                             <button type="button" class="btn-rounded back-btn" id="btnVoltar" onclick="voltar()">Voltar</button>
+                            <button type="button" onclick="self.location='auxi/email_qa.cfm'" form="form_meta" class="btn-rounded back-btn" id="btnVoltar">Enviar e-mail</button>
                             <script>
                                 function voltar() {
                                         // Redireciona para a página anterior

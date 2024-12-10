@@ -22,7 +22,9 @@
                 BP_DEFINITIVO_PROCESSO = <cfqueryparam value="#UCase(form.ver_bp)#" cfsqltype="CF_SQL_VARCHAR">,
                 RESPONSAVEL_DEFINITIVO = <cfqueryparam value="#UCase(form.ver_responsavel)#" cfsqltype="CF_SQL_VARCHAR">,
                 DESCRICAO_DEFINITIVO = <cfqueryparam value="#UCase(form.ver_descricao)#" cfsqltype="CF_SQL_VARCHAR">,
-                STATUS = <cfqueryparam value="#form.ver_status#" cfsqltype="CF_SQL_VARCHAR" >
+                STATUS = <cfqueryparam value="#form.ver_status#" cfsqltype="CF_SQL_VARCHAR" >,
+                BP_DEFINITIVO_QUALIDADE = <cfqueryparam value="#UCase(form.save_bp)#" cfsqltype="CF_SQL_VARCHAR">,
+                DATA_BP_DEFINITIVO_QUALIDADE = <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
             WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
         </cfquery>
     
@@ -34,7 +36,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>VER & AGIR</title>
+        <title>DEFINITIVO - VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v5">   
         <style>
@@ -153,41 +155,46 @@
                     </div>
                 </div>
         </div>
-
         <div id="tableProcess" class="table-container Process">
             <h2 style="color: gold; font-size:30px;">Ação de Contenção</h2>
                 <div class="search-container">
                     <div class="search-container">
-                        <div class="search-container">
-                            <div class="input-group">
-                                <label for="searchData">Data de Contenção</label>
-                                <input readonly required type="text" id="searchData" name="ver_data" value="#dateFormat(consulta_editar.data_bp_processo, 'dd/mm/yyyy')#">
-                            </div>                            
+                        <div class="input-group">
+                            <label for="searchData">Data de Contenção Processo</label>
+                            <input readonly type="date" id="searchValidacao" name="edit_data_validacao" placeholder="Data da validação" value="#DateFormat(consulta_editar.data_bp_processo, 'yyyy-mm-dd')#">
                         </div>
                         <div class="input-group">
-                            <label for="searchData">BP de Contenção</label>
-                            <input readonly required type="text" id="searchData" name="ver_data" value="#consulta_editar.bp_contencao_processo#">
-                        </div> 
+                            <label for="BP_CONTENCAO_PROCESSO">BP de Contenção Processo</label>
+                            <input type="text" id="BP_CONTENCAO_PROCESSO" name="BP_CONTENCAO_PROCESSO" placeholder="BP - VIN/BARCODE" value="#consulta_editar.bp_contencao_processo#">
+                        </div>
+                        <div class="input-group">
+                            <label for="grupo_responsavel">Responsável pela Contenção Processo</label>
+                            <input type="text" id="grupo_responsavel" name="grupo_responsavel" placeholder="Responsável" value="#consulta_editar.grupo_responsavel#">
+                        </div>
+                        <div class="input-group">
+                            <label for="descricao_contencao">Descrição da Contenção Processo</label>
+                            <input type="text" id="descricao_contencao" name="descricao_contencao" placeholder="Responsável" value="#consulta_editar.descricao_contencao#">
+                        </div>
+                        <div class="input-group">
+                            <label for="necessita_qualidade" style="color:red">Foi Necessário Ação da Qualidade?</label>
+                            <input type="text" id="necessita_qualidade" name="necessita_qualidade" value="#consulta_editar.necessita_qualidade#">
+                        </div>
+                        <div class="input-group">
+                            <label for="bp_contencao_qualidade" style="color:red">BP da Qualidade - Contenção (Se houver)</label>
+                            <input type="text" id="bp_contencao_qualidade" name="bp_contencao_qualidade" value="#consulta_editar.bp_contencao_qualidade#">
+                        </div>
+                        <div class="input-group">
+                            <label for="descricao_cont_qa" style="color:red">Descrição da Contenção QA (Se houver)</label>
+                            <input type="text" id="descricao_cont_qa" name="descricao_cont_qa" value="#consulta_editar.descricao_cont_qa#">
+                        </div>
+                        <div class="input-group">
+                            <label for="responsavel_qualidade" style="color:red">Responsável QA pela Contenção (Se houver)</label>
+                            <input type="text" id="responsavel_qualidade" name="responsavel_qualidade" value="#consulta_editar.responsavel_qualidade#">
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label for="searchData">Descrição de Contenção</label>
-                        <input style="width: 500px" readonly required type="text" id="searchData" name="ver_data" value="#consulta_editar.descricao_contencao#">
-                    </div> 
                 </div>
-                <div class="search-container">
-                    <div class="input-group" id="containerBPContencao" style="width:20vw;">
-                        <label for="searchBPQA">BP de Contenção Q.A</label>
-                        <input readonly type="text" id="searchBPQA" name="ver_data" value="#consulta_editar.bp_contencao_qualidade#">
-                    </div>
-                    <div class="input-group" id="containerDescricaoContencao" style="width:30vw;">
-                        <label for="searchDescricaoQA">Descrição de Contenção Q.A</label>
-                        <input readonly type="text" id="searchDescricaoQA" name="ver_data" value="#consulta_editar.DESCRICAO_CONT_QA#">
-                    </div>
-                </div>
-                
-        </div>
             </cfoutput>
-
+        </div>
         <div id="tableProcess" class="table-container Process">
             <h2 style="color: green; font-size:30px;">AÇÃO DEFINITIVA</h2>
             <form id="for-edit" method="POST">
@@ -195,29 +202,38 @@
                     <div class="search-container">
                         <div hidden class="input-group">
                             <label for="searchData">Data da Validação</label>
-                            <input readonly type="date" id="searchValidacao" name="data_validacao" placeholder="Data da validação" value="#dateFormat(now(), 'yyyy-mm-dd')#">
+                            <input readonly type="date" id="searchValidacao" name="data_validacao" value="#dateFormat(now(), 'yyyy-mm-dd')#">
                         </div>
+                        <div class="input-group">
+                            <label for="searchBP">Ponto de Corte Definitivo do Processo</label>
+                            <input required type="text" id="searchBP" name="ver_bp"  value="" oninput="verificaCamposPreenchidos()">
+                        </div>
+                        <div class="input-group">
+                            <label for="ver_responsavel">Responsável (Processo)</label>
+                            <input required type="text" id="ver_responsavel" name="ver_responsavel"  value="" oninput="verificaCamposPreenchidos()">
+                        </div>
+                        <div class="input-group">
+                            <label for="searchDescricao">Descrição Definitivo (Processo)</label>
+                            <input required type="text" id="searchDescricao" name="ver_descricao" placeholder="Max 250 caracteres" value="" oninput="verificaCamposPreenchidos()">
+                        </div>   
+                        <div class="input-group">
+                            <label for="save_bp">BP Definitivo (Qualidade)</label>
+                            <input type="text" id="save_bp" name="save_bp">
+                        </div>      
                         <div class="input-group">
                             <label for="searchStatus">STATUS</label>
                             <input readonly type="text" id="searchSTATUS" name="ver_status" placeholder="Status de Conclusão" value="">
-                        </div>
-                        <div class="input-group">
-                            <label for="searchBP">Ponto de Corte</label>
-                            <input required type="text" id="searchBP" name="ver_bp" placeholder="BP - VIN/BARCODE" value="" oninput="verificaCamposPreenchidos()">
-                        </div>
-                        <div class="input-group">
-                            <label for="searchResponsavel">Responsável</label>
-                            <input required type="text" id="searchResponsavel" name="ver_responsavel" placeholder="Responsável" value="" oninput="verificaCamposPreenchidos()">
-                        </div>
-                        <div class="input-group">
-                            <label for="searchDescricao">Descrição</label>
-                            <input required type="text" id="searchDescricao" name="ver_descricao" placeholder="Max 250 caracteres" value="" oninput="verificaCamposPreenchidos()">
-                        </div>                        
+                        </div>              
                         <script>
+                            // Função para voltar
+                            function voltar() {
+                                // Redireciona para a página anterior
+                                window.history.back(); // ou utilize: window.location.href = 'pagina-desejada.cfm'; para redirecionar a uma página específica
+                                }
                             function verificaCamposPreenchidos() {
                                 // Obtém os valores dos campos
                                 var pontoCorte = document.getElementById("searchBP").value;
-                                var responsavel = document.getElementById("searchResponsavel").value;
+                                var responsavel = document.getElementById("ver_responsavel").value;
                                 var descricao = document.getElementById("searchDescricao").value;
                                 var statusField = document.getElementById("searchSTATUS");
                         
@@ -244,51 +260,8 @@
                         </script>
                     </div>
                     <div class="search-container">
-                        <!-- Primeiro input que controla a visibilidade -->
-                        <div hidden class="input-group">
-                            <label for="searchqc">BP Definitivo Q.A.1</label> 
-                            <input required type="text" id="searchqc" name="ver_qc" value="#consulta_editar.necessita_qualidade#">
-                        </div>
-                    
-                        <!-- Segundo input que será visível ou invisível conforme o valor do primeiro input -->
-                        <div class="input-group" id="inputBPDefinitivo" style="display: none;">
-                            <label for="searchBPdefinitivo">BP Definitivo Q.A.</label>
-                            <input type="text" id="searchBPdefinitivo" name="ver_br_qa">
-                        </div>
-                    </div>
-                    
-                    <script>
-                        function toggleBPDefinitivo() {
-                            const firstInput = document.getElementById("searchqc").value;
-                            const secondInput = document.getElementById("searchBPdefinitivo");
-                            const secondInputGroup = document.getElementById("inputBPDefinitivo");
-                    
-                            // Exibe ou oculta o segundo input e define se é obrigatório
-                            if (firstInput.trim().toUpperCase() === "SIM") {
-                                secondInputGroup.style.display = "block";
-                                secondInput.setAttribute("required", "required"); // Torna obrigatório
-                            } else {
-                                secondInputGroup.style.display = "none";
-                                secondInput.removeAttribute("required"); // Remove obrigatoriedade
-                            }
-                        }
-                    
-                        // Chama a função quando a página carrega para configurar a visibilidade e obrigatoriedade iniciais
-                        window.onload = toggleBPDefinitivo;
-                    
-                        // Chama a função sempre que o valor do primeiro input muda
-                        document.getElementById("searchqc").addEventListener("input", toggleBPDefinitivo);
-
-                        // Função para voltar
-                        function voltar() {
-                            // Redireciona para a página anterior
-                            window.history.back(); // ou utilize: window.location.href = 'pagina-desejada.cfm'; para redirecionar a uma página específica
-                        }
-                    </script>
-                    
-                    <div class="search-container">
-                        <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao">Salvar</button>
                         <button type="button" class="btn-rounded back-btn" id="btnVoltar" onclick="voltar()">Voltar</button>
+                        <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao">Salvar</button>
                     </div>
                 </cfoutput>
             </form>

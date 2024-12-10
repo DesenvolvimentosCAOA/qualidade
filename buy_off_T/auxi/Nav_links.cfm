@@ -44,7 +44,7 @@
           <li><a href="fa_relatorios.cfm">Relatórios</a></li>
         <cfif isDefined("cookie.user_level_final_assembly") and cookie.user_level_final_assembly eq "G">
             <li><a href="fa_relatorios_1.cfm">Relatórios CP7</a></li>
-            <li><a href="fa_relatorios_summary.cfm">Relatórios BUY OFF's Summary</a></li>
+<!---             <li><a href="fa_relatorios_summary.cfm">Relatórios BUY OFF's Summary</a></li> --->
         </cfif>
         </ul>
     </li>
@@ -76,16 +76,19 @@
             </li>
         </ul>
     </li>
-    <cfif isDefined("cookie.user_level_final_assembly") and cookie.user_level_final_assembly eq "G">
+    
         <li class="dropdown">
         <a href="#">Outros</a>
         <ul class="dropdown-menu">
+        <cfif isDefined("cookie.user_level_final_assembly") and cookie.user_level_final_assembly eq "G">
             <li><a href="/qualidade/buyoff_linhat/adicionar_defeito.cfm">Adicionar Defeitos</a></li>
             <li><a href="./fa_editar.cfm">Editar Lançamento</a></li>
             <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver & Agir</a></li>
+        </cfif>
+        <li><a href="./acompanhamento_massiva.cfm">Acompanhamento Massiva</a></li>
+        <li><a href="./cadastro_defeitos.cfm">Adicionar Massiva</a></li>
         </ul>
         </li>
-    </cfif>
     <li><a href="logout.cfm">Sair</a></li>
   </ul>
 </nav>

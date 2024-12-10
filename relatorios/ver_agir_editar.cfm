@@ -15,22 +15,20 @@
     </cfif>
 
                 
-    <cfif isDefined("form.BP_CONTENCAO_PROCESSO") and form.BP_CONTENCAO_PROCESSO neq "">
+    <cfif isDefined("form.edit_data_validacao") and form.edit_data_validacao neq "">
         <cfquery name="atualiza" datasource="#BANCOSINC#">
             UPDATE INTCOLDFUSION.VEREAGIR2
             SET
                 BP_CONTENCAO_PROCESSO = '#UCase(form.BP_CONTENCAO_PROCESSO)#',
-                GRUPO_RESPONSAVEL = '#UCase(form.GRUPO_RESPONSAVEL)#',
-                DESCRICAO_CONTENCAO = '#UCase(form.DESCRICAO_CONTENCAO)#',
-                NECESSITA_QUALIDADE = '#UCase(form.NECESSITA_QUALIDADE)#',
-                BP_CONTENCAO_QUALIDADE = '#UCase(form.BP_CONTENCAO_QUALIDADE)#',
-                DESCRICAO_CONT_QA = '#UCase(form.DESCRICAO_CONT_QA)#',
-                RESPONSAVEL_QUALIDADE = '#UCase(form.RESPONSAVEL_QUALIDADE)#',
-                BP_DEFINITIVO_PROCESSO = '#UCase(form.BP_DEFINITIVO_PROCESSO)#',
-                DESCRICAO_DEFINITIVO = '#UCase(form.DESCRICAO_DEFINITIVO)#',
-                RESPONSAVEL_DEFINITIVO = '#UCase(form.RESPONSAVEL_DEFINITIVO)#',
-                DATA_BP_DEFINITIVO_QUALIDADE = <cfqueryparam value="#form.data_bp_definitivo_qualidade#" cfsqltype="CF_SQL_TIMESTAMP">
-                WHERE ID = '#url.id_editar#'
+                GRUPO_RESPONSAVEL = '#UCase(form.grupo_responsavel)#',
+                RESPONSAVEL_QUALIDADE = '#UCase(form.responsavel_qualidade)#',
+                bp_definitivo_processo = '#UCase(form.savedefinitivo)#',
+                descricao_contencao = '#UCase(form.save_descricao)#',
+                necessita_qualidade = '#UCase(form.save_resp)#',
+                bp_contencao_qualidade = '#UCase(form.save_def)#',
+                descricao_cont_qa = '#UCase(form.save_bp)#'
+
+            WHERE ID = '#url.id_editar#'
         </cfquery>
     </cfif>
 
@@ -38,7 +36,7 @@
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-            <title>VER & AGIR</title>
+            <title>EDITAR - VER & AGIR</title>
             <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
             <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v3">
             <style>
@@ -159,85 +157,86 @@
                     </div>
             </div>
 
-                <form id="for-edit" method="POST">
+        <form id="for-edit" method="POST">
             <div id="tableProcess" class="table-container Process">
                 <h2 style="color: yellow; font-size:30px;">AÇÃO DE CONTENÇÃO</h2>
-                        <div class="search-container">
-                            <div class="input-group">
-                                <label for="searchData">Data da Implementação</label>
-                                <input readonly type="date" id="searchValidacao" name="edit_data_validacao" placeholder="Data da validação" value="#DateFormat(consulta_editar.data_bp_processo, 'yyyy-mm-dd')#">
-                            </div>
-                                                  
-                            <div class="input-group">
-                                <label for="BP_CONTENCAO_PROCESSO">Ponto de Corte Contenção</label>
-                                <input type="text" id="BP_CONTENCAO_PROCESSO" name="BP_CONTENCAO_PROCESSO" placeholder="BP - VIN/BARCODE" value="#consulta_editar.bp_contencao_processo#">
-                            </div>
-                            <div class="input-group">
-                                <label for="grupo_responsavel">Responsável pela Contenção</label>
-                                <input type="text" id="grupo_responsavel" name="grupo_responsavel" placeholder="Responsável" value="#consulta_editar.grupo_responsavel#">
-                            </div>
-                            <div class="input-group">
-                                <label for="descricao_contencao">O que foi feito?</label>
-                                <input type="text" id="descricao_contencao" name="descricao_contencao" placeholder="Responsável" value="#consulta_editar.descricao_contencao#">
-                            </div>
-                            <div class="input-group">
-                                <label for="necessita_qualidade">Foi Necessário Ação da Qualidade?</label>
-                                <input type="text" id="necessita_qualidade" name="necessita_qualidade" value="#consulta_editar.necessita_qualidade#">
-                            </div>
-                            <div class="input-group">
-                                <label for="bp_contencao_qualidade">BP da Qualidade - Contenção (Se houver)</label>
-                                <input type="text" id="bp_contencao_qualidade" name="bp_contencao_qualidade" value="#consulta_editar.bp_contencao_qualidade#">
-                            </div>
-                            <div class="input-group">
-                                <label for="descricao_cont_qa">Descrição da Contenção</label>
-                                <input type="text" id="descricao_cont_qa" name="descricao_cont_qa" value="#consulta_editar.descricao_cont_qa#">
-                            </div>
-                            <div class="input-group">
-                                <label for="responsavel_qualidade">Responsável QA pela Contenção</label>
-                                <input type="text" id="responsavel_qualidade" name="responsavel_qualidade" value="#consulta_editar.responsavel_qualidade#">
-                            </div>
-                        </div>
+                <div class="search-container">
+                    <div class="input-group">
+                        <label for="searchData">Data de Contenção Processo</label>
+                        <input readonly type="date" id="searchValidacao" name="edit_data_validacao" placeholder="Data da validação" value="#DateFormat(consulta_editar.data_bp_processo, 'yyyy-mm-dd')#">
+                    </div>
+                    <div class="input-group">
+                        <label for="BP_CONTENCAO_PROCESSO">BP de Contenção Processo</label>
+                        <input type="text" id="BP_CONTENCAO_PROCESSO" name="BP_CONTENCAO_PROCESSO" placeholder="BP - VIN/BARCODE" value="#consulta_editar.bp_contencao_processo#">
+                    </div>
+                    <div class="input-group">
+                        <label for="grupo_responsavel">Responsável pela Contenção Processo</label>
+                        <input type="text" id="grupo_responsavel" name="grupo_responsavel" placeholder="Responsável" value="#consulta_editar.grupo_responsavel#">
+                    </div>
+                    <div class="input-group">
+                        <label for="descricao_contencao">Descrição da Contenção Processo</label>
+                        <input type="text" id="descricao_contencao" name="descricao_contencao" placeholder="Responsável" value="#consulta_editar.descricao_contencao#">
+                    </div>
+                    <div class="input-group">
+                        <label for="necessita_qualidade">Foi Necessário Ação da Qualidade?</label>
+                        <input type="text" id="necessita_qualidade" name="necessita_qualidade" value="#consulta_editar.necessita_qualidade#">
+                    </div>
+                    <div class="input-group">
+                        <label for="bp_contencao_qualidade">BP de contenção da Qualidade (Se houver)</label>
+                        <input type="text" id="bp_contencao_qualidade" name="bp_contencao_qualidade" value="#consulta_editar.bp_contencao_qualidade#">
+                    </div>
+                    <div class="input-group">
+                        <label for="descricao_cont_qa">Descrição da Contenção</label>
+                        <input type="text" id="descricao_cont_qa" name="descricao_cont_qa" value="#consulta_editar.descricao_cont_qa#">
+                    </div>
+                    <div class="input-group">
+                        <label for="responsavel_qualidade">Responsável QA pela Contenção</label>
+                        <input type="text" id="responsavel_qualidade" name="responsavel_qualidade" value="#consulta_editar.responsavel_qualidade#">
+                    </div>
+                </div>
             </div>
 
             <div id="tableProcess" class="table-container Process">
                 <h2 style="color: green; font-size:30px;">AÇÃO DEFINITIVA</h2>
-                        <div class="search-container">
-                            <div class="input-group">
-                                <label for="data_bp_definitivo_processo">Data da Ação Definitiva</label>
-                                <input readonly type="date" id="data_bp_definitivo_processo" name="data_bp_definitivo_processo" placeholder="Data da validação" value="#DateFormat(consulta_editar.data_bp_definitivo_processo, 'yyyy-mm-dd')#">
-                            </div>
-                                                  
-                            <div class="input-group">
-                                <label for="bp_definitivo_processo">Ponto de Corte Definitivo</label>
-                                <input type="text" id="bp_definitivo_processo" name="bp_definitivo_processo" placeholder="BP - VIN/BARCODE" value="#consulta_editar.bp_definitivo_processo#">
-                            </div>
-                            <div class="input-group">
-                                <label for="descricao_definitivo">O que foi feito?</label>
-                                <input type="text" id="descricao_definitivo" name="descricao_definitivo" placeholder="Responsável" value="#consulta_editar.descricao_definitivo#">
-                            </div>
-                            <div class="input-group">
-                                <label for="responsavel_definitivo">Responsável pela Ação Definitiva</label>
-                                <input type="text" id="responsavel_definitivo" name="responsavel_definitivo" placeholder="Responsável" value="#consulta_editar.responsavel_definitivo#">
-                            </div>
-                            <div class="input-group">
-                                <label for="bp_definitivo_qualidade">BP da Qualidade - Definitivo</label>
-                                <input type="text" id="bp_definitivo_qualidade" name="bp_definitivo_qualidade" placeholder="Responsável" value="#consulta_editar.bp_definitivo_qualidade#">
-                            </div>
-                        </div>
-                        <div class="search-container">
-                            <div class="search-container">
-                                <button type="button" class="btn-rounded back-btn" id="btnVoltar" onclick="voltar()">Voltar</button>
-                                <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao">Salvar</button>
-                            </div>
-                            <script>
-                                function voltar() {
-                                        // Redireciona para a página anterior
-                                        window.history.back(); // ou utilize: window.location.href = 'pagina-desejada.cfm'; para redirecionar a uma página específica
-                                    }
-                            </script>
-                        </div>
+                <div class="search-container">
+                    <div class="input-group">
+                        <label for="saveData">Data Definitivo (Processo)</label>
+                        <input readonly type="date" id="saveData" name="saveData" value="#DateFormat(consulta_editar.data_bp_definitivo_processo, 'yyyy-mm-dd')#">
+                    </div>
+                    <div class="input-group">
+                        <label for="savedefinitivo">BP Definitivo (Processo)</label>
+                        <input type="text" id="savedefinitivo" name="savedefinitivo" value="#consulta_editar.bp_definitivo_processo#">
+                    </div>
+                    <div class="input-group">
+                        <label for="save_descricao">Descrição Definitivo (Processo)</label>
+                        <input type="text" id="save_descricao" name="save_descricao" value="#consulta_editar.descricao_definitivo#">
+                    </div>
+                    <div class="input-group">
+                        <label for="save_resp">Responsável Definitivo (Processo)</label>
+                        <input type="text" id="save_resp" name="save_resp" value="#consulta_editar.RESPONSAVEL_DEFINITIVO#">
+                    </div>
+                    <div class="input-group">
+                        <label for="save_def">Data BP Definitivo (Qualidade)</label>
+                        <input type="text" id="save_def" name="save_def" value="#consulta_editar.data_bp_definitivo_qualidade#">
+                    </div>
+                    <div class="input-group">
+                        <label for="save_bp">BP Definitivo (Qualidade)</label>
+                        <input type="text" id="save_bp" name="save_bp" value="#consulta_editar.bp_definitivo_qualidade#">
+                    </div>
+                </div>
+                <div class="search-container">
+                    <div class="search-container">
+                        <button type="button" class="btn-rounded back-btn" id="btnVoltar" onclick="voltar()">Voltar</button>
+                        <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao">Salvar</button>
+                    </div>
+                    <script>
+                        function voltar() {
+                                // Redireciona para a página anterior
+                                window.history.back(); // ou utilize: window.location.href = 'pagina-desejada.cfm'; para redirecionar a uma página específica
+                            }
+                    </script>
+                </div>
             </div>
-            
         </form>
                 </cfoutput>
     </body>

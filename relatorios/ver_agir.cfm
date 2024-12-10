@@ -372,9 +372,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>VER & AGIR</title>
+        <title>INÍCIO - VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/relatorios/assets/style.css?v4">
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style.css?v5">
 
         <style>
             .wide-column {
@@ -656,6 +656,11 @@
             <h2 style="color:gray">Acompanhamento BP</h2>
             <!-- Inputs de pesquisa -->
             <div class="search-container">
+                <button class="Btn" id="report" type="Button">
+                <svg class="svgIcon" viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"></path></svg>
+                <span class="icon2"></span>
+                <span class="tooltip">Download</span>
+                </button>
                 <input type="text" id="searchIDACOMP" placeholder="Pesquisar ID" onkeyup="filterTableACOMP()">
                 <input type="text" id="searchVINACOMP" placeholder="SIM ou NÃO" onkeyup="filterTableACOMP()">
                 <input type="text" id="searchPecaACOMP" placeholder="Pesquisar Peça" onkeyup="filterTableACOMP()">
@@ -818,6 +823,18 @@
                     </cfoutput>
                 </tbody>
             </table>
+             <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+             <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+             <script src="/cf/assets/js/home/js/table2excel.js?v=2"></script>
+             <script>
+                 // Gerando Excel da tabela
+                 var table2excel = new Table2Excel();
+                 document.getElementById('report').addEventListener('click', function() {
+                     table2excel.export(document.querySelectorAll('#ACOMPTable'));
+                 });
+             </script>
         </div> 
         <script src="/qualidade/relatorios/assets/script.js?v1"></script>
     </body>

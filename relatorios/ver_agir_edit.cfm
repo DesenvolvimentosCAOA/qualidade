@@ -40,7 +40,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>VER & AGIR</title>
+        <title>CONTENÇÃO - VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v4">  
         <style>
@@ -111,7 +111,7 @@
         </header>
     
         <div id="tableBody" class="table-container">
-            <h2 style="color: blue; font-size:30px;">Dados do Item</h2>
+            <h2 style="color: blue; font-size:30px;margin-top:5vw;">Dados do Item</h2>
             <cfoutput>
                 <div class="search-container">
                     <div class="input-group">
@@ -191,7 +191,7 @@
                         </div>
                         <div class="input-group">
                             <label for="searchDescricaoC3">Descrição de Contenção 3</label>
-                            <input required type="text" id="searchDescricaoC3" name="ver_contencao3" placeholder="Max 250 Caracteres" oninput="verificaCamposPreenchidos()">
+                            <input type="text" id="searchDescricaoC3" name="ver_contencao3" placeholder="Max 250 Caracteres" oninput="verificaCamposPreenchidos()">
                         </div>
                         <div class="input-group">
                             <label for="searchQC">Necessita da validação Q.A?</label>

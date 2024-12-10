@@ -1,5 +1,30 @@
 ﻿<cfinvoke  method="inicializando" component="cf.ini.index">
 <cfsetting requestTimeOut = "0">
+    
+        <cfif isDefined("form.file")>
+    
+            <cffile action="upload" 
+                destination="#raizpasta#/qualidade/" 
+                attributes="normal" 
+                
+                result="import" nameconflict="makeunique">
+        <cfelse>
+    
+            <font> Erro!, nenhum arquivo foi importado! </font>
+    
+        </cfif>
+        
+    <cfset file_imp = import.serverfile>
+    <cfspreadsheet 
+        action="read"
+        src="#raizpasta#/qualidade/#file_imp#"
+        query="importado">
+        
+    <cfset max=importado.RecordCount>
+
+<!--- essa linha é pra teste salvar o arquivo no meu pc--->
+
+<!---<cfsetting requestTimeOut = "0">
 
     <cfif isDefined("form.file")>
 
@@ -15,31 +40,23 @@
     </cfif>
     
 <cfset file_imp = import.serverfile>
-
 <cfspreadsheet 
     action="read"
     src="C:/Users/jefferson.teixeira/Downloads/ArquivosExcel/#file_imp#"
     query="importado">
     
-<cfset max=importado.RecordCount>
+<cfset max=importado.RecordCount> --->
 
-<cfoutput> 
+<cfoutput>
     <cfloop query="importado" startRow="2" endRow="#max#">
-        <!--- Verifica se o VIN já existe na tabela --->
-        <cfquery name="valida" datasource="#BANCOSINC#">
-            SELECT * FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY WHERE BARCODE = <cfqueryparam value="#importado.COL_1#" cfsqltype="cf_sql_varchar">
-        </cfquery>
-
             <cfquery name="Insere" datasource="#BANCOSINC#">
-                INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_BODY (ID, VIN, USER_DATA)
-                SELECT NVL(MAX(ID),0) + 1, 
-                       <cfqueryparam value="#importado.COL_1#" cfsqltype="cf_sql_varchar">, 
-                       SYSDATE
+                INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_BODY (ID, USER_DATA, USER_COLABORADOR, BARCODE, PECA, POSICAO, PROBLEMA, ESTACAO, MODELO, INTERVALO, CRITICIDADE, ULTIMO_REGISTRO, BARREIRA)
+                SELECT NVL(MAX(ID),0) + 1,
+                SYSDATE, '#importado.COL_1#', '#importado.COL_2#', '#importado.COL_3#', '#importado.COL_4#', '#importado.COL_5#','#importado.COL_6#','#importado.COL_7#', '#importado.COL_8#','N0', SYSDATE, 'SUPERFICIE'
                 FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
             </cfquery>
-            <br><font style="font-size:18"> Inserido: #importado.COL_1# </font>  <br>
+            <br><font style="font-size:18"> Inserido: #importado.COL_3#</font>  <br>
     </cfloop>
-    
 </cfoutput> 
 
 

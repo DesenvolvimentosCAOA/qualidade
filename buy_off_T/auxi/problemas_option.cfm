@@ -72,7 +72,7 @@
 <option value="GIRANDO">GIRANDO</option>
 <option value="ILEGÍVEL">ILEGÍVEL</option>
 <option value="INCORRETO">INCORRETO</option>
-<option value="INTERFERÊCIA">INTERFERÊCIA</option>
+<option value="INTERFERÊNCIA">INTERFERÊNCIA</option>
 <option value="INVERTIDO">INVERTIDO</option>
 <option value="JUNTA RÍGIDA">JUNTA RÍGIDA</option>
 <option value="LANÇAMENTO INCORRETO">LANÇAMENTO INCORRETO</option>

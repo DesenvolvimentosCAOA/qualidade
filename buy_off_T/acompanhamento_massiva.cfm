@@ -5,25 +5,25 @@
     <!-- Consulta para obter todos os VINs -->
     <cfquery name="consulta_cripple" datasource="#BANCOSINC#">
         SELECT DISTINCT VIN, ID 
-        FROM massiva_fai
+        FROM MASSIVA_FA
     </cfquery>
 
     <!-- Consulta para obter apenas os VINs com Liberados -->
     <cfquery name="consulta_cripple_ok" datasource="#BANCOSINC#">
         SELECT DISTINCT VIN, ID 
-        FROM massiva_fai
+        FROM MASSIVA_FA
         WHERE status = 'OK'
     </cfquery>
 
     <cfquery name="consulta_total" datasource="#BANCOSINC#">
         SELECT COUNT(DISTINCT VIN) AS total_vin
-        FROM massiva_fai
+        FROM MASSIVA_FA
         WHERE (STATUS IS NULL OR STATUS = 'OK')
     </cfquery>
 
     <cfquery name="consulta_vins" datasource="#BANCOSINC#">
         SELECT COUNT(DISTINCT VIN) AS total_vin
-        FROM massiva_fai
+        FROM MASSIVA_FA
         WHERE status = 'OK'
     </cfquery>
 
@@ -32,19 +32,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabela Massiva FAI</title>
+    <title>Tabela Massiva FA</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 </head>
 <body>
     <header class="titulo">
-        <cfinclude template="auxi/nav_links1.cfm">
+        <cfinclude template="auxi/nav_links.cfm">
     </header><br><br><br><br>
 
     <div class="container mt-4">
         <cfoutput>
             <cfset diferenca = consulta_total.total_vin - consulta_vins.total_vin>
-            <h2 class="mb-4">Dados Massiva FAI:</h2>
+            <h2 class="mb-4">Dados Massiva FA:</h2>
             <h4 style="color:purple">Total de Massiva: #consulta_total.total_vin#</h4>
             <h4 style="color:green">Total de Massiva OK: #consulta_vins.total_vin#</h4>
             <h4 style="color:red">Faltam: #diferenca#</h4>

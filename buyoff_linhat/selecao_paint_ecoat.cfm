@@ -296,13 +296,13 @@
                         and p.name  like '%PINTADA%'
                     </cfquery>
  
- <cfset modelo = buscaMES.modelo>
- 
- <!--- Verifica se o modelo é null e substitui por "HR" se necessário --->
- <cfif isNull(modelo) or len(trim(modelo)) EQ 0>
-    <cfset modelo = "HR">
- </cfif>
- <!--- <cfdump var="#buscaMES#"> --->
+                    <cfset modelo = buscaMES.modelo>
+                    
+                    <!--- Verifica se o modelo é null e substitui por "HR" se necessário --->
+                    <cfif isNull(modelo) or len(trim(modelo)) EQ 0>
+                        <cfset modelo = "HR">
+                    </cfif>
+                    <!--- <cfdump var="#buscaMES#"> --->
                     <div class="form-group col-md-2">
                         <label for="formModelo">Modelo</label>
                         <input type="text" class="form-control form-control-sm" maxlength="17" name="modelo" id="formModelo" readonly value="#buscaMES.name#">

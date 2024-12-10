@@ -182,9 +182,9 @@
                 </cfif>
                 AND (
                     -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:00:00'))
                     -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
                     OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
                         (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
