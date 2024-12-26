@@ -83,11 +83,10 @@
                   <option value="T33">T33</option>
                   <option value="C13">C13</option>
                   <option value="F05">F05</option>
-                  <option value="F10">F10</option>
-
+                  <option value="F10">F10</option> ---->
+                  <option value="SHOWER">SHOWER</option>
                   <option value="UNDER BODY">UNDER BODY</option>
                   <option value="ROAD TEST">ROAD TEST</option>
-                  <option value="SHOWER">SHOWER</option> ---->
                   <option value="SIGN OFF">SIGN OFF</option>
                 </select>
               </div>

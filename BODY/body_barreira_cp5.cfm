@@ -215,6 +215,32 @@
         <link rel="stylesheet" href="/qualidade/FAI/assets/style_barreiras.css?v1">
  <script>
     function validarFormulario(event) {
+        // Obtenha o valor do campo "problema"
+        var problemaInput = document.getElementById('formProblema');
+                var problema = problemaInput.value;
+        
+                // Valide apenas se o campo estiver preenchido
+                if (problema) {
+                    // Obtenha a lista de opções do datalist
+                    var datalist = document.getElementById('defeitos-list');
+                    var options = datalist.options;
+        
+                    // Verifique se o valor do input corresponde a uma das opções do datalist
+                    var isValid = false;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value === problema) {
+                            isValid = true;
+                            break;
+                        }
+                    }
+        
+                    // Se o valor não for válido, impede o envio do formulário
+                    if (!isValid) {
+                        alert('Por favor, selecione um problema válido da lista.');
+                        event.preventDefault();
+                        return; // Sai da função para não executar o restante da validação
+                    }
+                }
         // Validação do BARCODE com requisição AJAX
         var barcode = document.getElementById('formVIN').value; // Obtém o valor do input formVIN
         var problema = document.getElementById('formProblema').value; // Certifique-se de que há um campo com id 'formProblema'

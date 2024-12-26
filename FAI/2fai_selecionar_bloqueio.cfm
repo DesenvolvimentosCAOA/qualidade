@@ -32,7 +32,7 @@
         <cfif cgi.QUERY_STRING does not contain "filtro">
             AND TRUNC(USER_DATA) = TRUNC(SYSDATE)
         </cfif>
-        ORDER BY ID DESC
+        ORDER BY USER_DATA DESC
     </cfquery>    
     
     

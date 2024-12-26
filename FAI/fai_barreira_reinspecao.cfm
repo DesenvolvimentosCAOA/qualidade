@@ -126,9 +126,10 @@
          <!-- Required meta tags -->
          <meta charset="utf-8">
          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-         <title>TUNEL DE LIBERACAO</title>
+         <title>TUNEL DE LIBERAÇÃO</title>
          <link rel="icon" href="./assets/chery.png" type="image/x-icon">
          <link rel="stylesheet" href="assets/style_barreiras.css?v1">
+
          <script>
                     // Carrega o VIN salvo ao carregar a página
            window.onload = function() {
@@ -137,90 +138,111 @@
                     document.getElementById('formVIN').value = savedVIN;
                  }
            };
-            function validarFormulario(event) {
-                // Validação geral dos campos
-                var peça = document.getElementById('formNConformidade').value;
-                var criticidade = document.getElementById('formCriticidade').value;
-                var posição = document.getElementById('formPosicao').value;
-                var responsável = document.getElementById('formEstacao').value;
-                var problema = document.getElementById('formProblema').value;
-                var vin = document.getElementById('formVIN').value;
-            
-                // Verificação do comprimento do VIN
-                if (vin.length !== 17) {
-                    alert('O VIN deve ter exatamente 17 caracteres.');
-                    event.preventDefault(); // Impede o envio do formulário
-                    return false;
-                }
-            
-                // Verificação dos primeiros 4 caracteres do VIN
-                var vinPrefixo = vin.substring(0, 4);
-                var vinPermitidos = ['95PJ', '95PZ', '95PB', '95PE', '95PD', '95PF'];
-            
-                if (!vinPermitidos.includes(vinPrefixo)) {
-                    alert('O VIN não existe');
-                    event.preventDefault(); // Impede o envio do formulário
-                    return false;
-                }
-            
-                if (peça) {
-                    if (!posição) {
+           function validarFormulario(event) {
+               // Validação geral dos campos
+               var peça = document.getElementById('formNConformidade').value;
+               var problema = document.getElementById('formProblema').value;
+               var criticidade = document.getElementById('formCriticidade').value;
+               var posição = document.getElementById('formPosicao').value;
+               var responsável = document.getElementById('formEstacao').value;
+               var vin = document.getElementById('formVIN').value;
+
+               // Verificação do comprimento do VIN
+               if (vin.length !== 17) {
+                  alert('O VIN deve ter exatamente 17 caracteres.');
+                  event.preventDefault(); // Impede o envio do formulário
+                  return false;
+               }
+
+               // Verificação dos primeiros 4 caracteres do VIN
+               var vinPrefixo = vin.substring(0, 4);
+               var vinPermitidos = ['95PJ', '95PZ', '95PB', '95PE', '95PD', '95PF'];
+
+               if (!vinPermitidos.includes(vinPrefixo)) {
+                  alert('O VIN não existe');
+                  event.preventDefault(); // Impede o envio do formulário
+                  return false;
+               }
+
+               // Validação condicional para "Peça" e "Problema"
+               if (peça) {
+                  var datalistPecas = document.getElementById('pecasList');
+                  var isPeçaValida = Array.from(datalistPecas.options).some(option => option.value === peça);
+
+                  if (!isPeçaValida) {
+                        alert('Por favor, selecione uma peça válida da lista.');
+                        event.preventDefault(); // Impede o envio do formulário
+                        return false;
+                  }
+               }
+
+               if (problema) {
+                  var datalistProblemas = document.getElementById('problemasList');
+                  var isProblemaValido = Array.from(datalistProblemas.options).some(option => option.value === problema);
+
+                  if (!isProblemaValido) {
+                        alert('Por favor, selecione um problema válido da lista.');
+                        event.preventDefault(); // Impede o envio do formulário
+                        return false;
+                  }
+               }
+
+               // Validação adicional caso "Peça" esteja preenchida
+               if (peça) {
+                  if (!posição) {
                         alert('Por favor, selecione uma posição.');
                         event.preventDefault(); // Impede o envio do formulário
                         return false;
-                    }
-            
-                    if (!problema) {
-                        alert('Por favor, selecione um problema.');
-                        event.preventDefault(); // Impede o envio do formulário
-                        return false;
-                    }
-            
-                    if (!responsável) {
+                  }
+
+                  if (!responsável) {
                         alert('Por favor, selecione um responsável.');
                         event.preventDefault(); // Impede o envio do formulário
                         return false;
-                    }
-            
-                    if (!criticidade) {
+                  }
+
+                  if (!criticidade) {
                         alert('Por favor, selecione uma criticidade.');
                         event.preventDefault(); // Impede o envio do formulário
                         return false;
-                    }
-                }
-                // Salvando o VIN no localStorage
-     localStorage.setItem('vin', vin);
-            
-                // Validação do VIN com requisição AJAX
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'verificar_vin.cfm', true);
-                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
+                  }
+               }
+
+               // Salvando o VIN no localStorage
+               localStorage.setItem('vin', vin);
+
+               // Validação do VIN com requisição AJAX
+               var xhr = new XMLHttpRequest();
+               xhr.open('POST', 'verificar_vin.cfm', true);
+               xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+               xhr.onreadystatechange = function () {
+                  if (xhr.readyState === 4 && xhr.status === 200) {
                         var response = xhr.responseText.trim();
                         if (response === 'EXISTE_COM_CONDICAO') {
-                            alert('O VIN já foi inserido como OK. Não é possível prosseguir com o VIN NG.');
-                            event.preventDefault(); // Impede o envio do formulário
+                           alert('O VIN já foi inserido como OK. Não é possível prosseguir com o VIN NG.');
+                           event.preventDefault(); // Impede o envio do formulário
                         } else if (response === 'PROBLEMA_EXISTE_FORM_NULO') {
-                            alert('O VIN já existe na tabela com um problema registrado. O campo PROBLEMA no formulário não pode estar vazio.');
-                            event.preventDefault(); // Impede o envio do formulário
+                           alert('O VIN já existe na tabela com um problema registrado. O campo PROBLEMA no formulário não pode estar vazio.');
+                           event.preventDefault(); // Impede o envio do formulário
                         } else if (response === 'EXISTE') {
-                            alert('O VIN já existe na tabela. Por favor, verifique os dados.');
-                            event.preventDefault(); // Impede o envio do formulário
+                           alert('O VIN já existe na tabela. Por favor, verifique os dados.');
+                           event.preventDefault(); // Impede o envio do formulário
                         } else if (response === 'PERMITIR_ENVIO') {
-                            // Permite o envio do formulário
-                            document.getElementById('form_envio').submit();
+                           // Permite o envio do formulário
+                           document.getElementById('form_envio').submit();
                         } else {
-                            document.getElementById('form_envio').submit();
+                           document.getElementById('form_envio').submit();
                         }
-                    }
-                };
-                xhr.send('vin=' + vin + '&problema=' + problema + '&barreira=TUNEL DE LIBERACAO');
-            
-                // Impede o envio até a resposta da requisição AJAX
-                event.preventDefault();
+                  }
+               };
+               xhr.send('vin=' + vin + '&problema=' + problema + '&barreira=TUNEL DE LIBERACAO');
+
+               // Impede o envio até a resposta da requisição AJAX
+               event.preventDefault();
             }
+
          </script>
+
       </head>
       <body>
          <!-- Header com as imagens e o menu -->
@@ -292,34 +314,35 @@
                   </div>
                </div>
                <div class="form-row">
-                 <div class="form-group col-md-2">
-                    <label for="formNConformidade">Peça</label>
-                    <select class="form-control form-control-sm" name="N_Conformidade" id="formNConformidade">
+                  <div class="form-group col-md-2">
+                     <label for="formNConformidade">Peça</label>
+                     <input class="form-control form-control-sm" list="pecasList" name="N_Conformidade" id="formNConformidade" placeholder="Selecione a Peça">
+                     <datalist id="pecasList">
                         <option value="">Selecione a Peça</option>
                         <cfloop query="pecas">
-                            <cfoutput>
-                                <option value="#defeito#">#defeito#</option>
-                            </cfoutput>
+                              <cfoutput>
+                                 <option value="#defeito#">#defeito#</option>
+                              </cfoutput>
                         </cfloop>
-                    </select>
-                </div>
+                     </datalist>
+                  </div>
                   <div class="form-group col-md-2">
                        <label for="formPosicao"> Posição</label>
                        <select class="form-control form-control-sm" name="posicao" id="formPosicao">
                            <cfinclude template="/qualidade/FAI/auxi/batalha_option.cfm">
                        </select>
                    </div>
-                   <div class="form-group col-md-2">
-                       <label for="formProblema">Problema</label>
-                       <select class="form-control form-control-sm" name="problema" id="formProblema" oninput="transformToUpperCase(this)">
-                           <option value=""> Selecione a Peça</option>
-                           <cfloop query="defeitos">
-                               <cfoutput>
-                                   <option value="#defeito#">#defeito#</option>
-                               </cfoutput>
-                           </cfloop>
-                       </select>
-                   </div>
+                  <div class="form-group col-md-2">
+                     <label for="formProblema">Problema</label>
+                     <input class="form-control form-control-sm" list="problemasList" name="problema" id="formProblema" placeholder="Selecione o Problema">
+                     <datalist id="problemasList">
+                        <cfloop query="defeitos">
+                              <cfoutput>
+                                 <option value="#defeito#">#defeito#</option>
+                              </cfoutput>
+                        </cfloop>
+                     </datalist>
+                  </div>
                   <div class="form-group col-md-2">
                      <label for="formEstacao">Responsável</label>
                      <select class="form-control form-control-sm" name="estacao" id="formEstacao" style="width: 200px;">
@@ -436,9 +459,9 @@
                <!-- Inserção com o intervalo e USER_DATA corretos -->
                <cfquery name="insere" datasource="#BANCOSINC#">
                   INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_FAI (
-                  ID, USER_DATA, USER_COLABORADOR, VIN, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, STATUS, ULTIMO_REGISTRO
+                  ID, USER_DATA, USER_COLABORADOR, VIN, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, STATUS
                   ) VALUES (
-                     seq_id.NEXTVAL,
+                    <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
                     <cfqueryparam value="#userDataInserir#" cfsqltype="CF_SQL_TIMESTAMP">,
                     <cfqueryparam value="#form.nome#" cfsqltype="CF_SQL_VARCHAR">,
                     <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">,
@@ -464,9 +487,7 @@
                     <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">= 'N3' OR 
                     <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">= 'N4'  THEN 'EM REPARO'
                   ELSE 'LIBERADO'
-                  END,
-                  <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
-                  )
+                  END)
                </cfquery>
                <cfoutput>
                   <script>

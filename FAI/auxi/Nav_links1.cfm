@@ -89,7 +89,6 @@
                     <li><a href="2fai_selecionar_bloqueio.cfm">Bloquear veículos</a></li>
                     <li><a href="4fai_selecionar_desbloqueio.cfm">Desbloquear Veículo</a></li>
                     <cfif isDefined("cookie.user_level_fai") and cookie.user_level_fai eq "G">
-                        <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver & Agir</a></li>
                     </cfif>
                 </ul>
             </li>

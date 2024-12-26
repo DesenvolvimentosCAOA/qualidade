@@ -498,7 +498,7 @@
                                     </cfif>
                                 </td>
 
-                                <td>#lsdatetimeformat(url.filtroData, 'dd/mm/yyyy')#</td>
+                                <td>#lsdatetimeformat(url.filtroData, 'dd/mm/yyyy')#⠀</td>
                                 <td></td>
                                 <td></td>
                                 <td>#PROBLEMA#</td>

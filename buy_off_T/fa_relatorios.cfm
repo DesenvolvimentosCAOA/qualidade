@@ -28,6 +28,12 @@
         <cfif isDefined("url.filtroPECA") and url.filtroPECA neq "">
             AND UPPER(PECA) LIKE UPPER('%#url.filtroPECA#%')
         </cfif>
+        <cfif isDefined("url.filtroPOSICAO") and url.filtroPOSICAO neq "">
+            AND UPPER(POSICAO) LIKE UPPER('%#url.filtroPOSICAO#%')
+        </cfif>
+        <cfif isDefined("url.filtroPROBLEMA") and url.filtroPROBLEMA neq "">
+            AND UPPER(PROBLEMA) LIKE UPPER('%#url.filtroPROBLEMA#%')
+        </cfif>
         AND USER_DATA >= TO_DATE('#filtroDataStart#', 'yyyy-mm-dd') 
         AND USER_DATA < TO_DATE('#filtroDataEnd#', 'yyyy-mm-dd') + 1
         ORDER BY ID DESC
@@ -39,7 +45,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Relatórios</title>
-        <link rel="stylesheet" href="assets/stylerelatorio.css?v1">
+        <link rel="stylesheet" href="assets/stylerelatorio.css?v3">
         <link rel="icon" href="./assets/chery.png" type="image/x-icon">
     </head>
     <body>
@@ -54,7 +60,7 @@
                 ORDER BY DEFEITO
             </cfquery>
             <form method="get">
-                <div class="form-row">
+                <div class="form-row" style='margin-bottom:2vw;'>
                     <div class="form-group col-md-1">
                         <label for="formDataStart">Data Inicial</label>
                         <input type="date" class="form-control form-control-sm" name="filtroDataStart" id="formDataStart">
@@ -95,9 +101,9 @@
                         <label for="formEstacao">Responsável</label>
                         <select class="form-control form-control-sm" name="filtroestacao" id="formEstacao">
                             <option value="" disables selected>Selecione o Responsável:</option>
-                            <option value="Linha T">Linha T</option>
-                            <option value="Linha C">Linha C</option>
-                            <option value="Linha F">Linha F</option>
+                            <option value="LINHA T">Linha T</option>
+                            <option value="LINHA C">Linha C</option>
+                            <option value="LINHA F">Linha F</option>
                             <option value="BODY">BODY</option>
                             <option value="PAINT">PAINT</option>
                             <option value="SMALL">SMALL</option>
@@ -110,7 +116,18 @@
                             <option value="CKDL">CKDL</option>
                             <option value="DOOWON">DOOWON</option>
                             <option value="CP7">CP7</option>
-                            <option value="SUB-MONTAGEM">SUB-MONTAGEM</option>
+                            <option value="SUB-PAINEL">SUB-PAINEL</option>
+                            <option value="SUB-DISCO">SUB-DISCO</option>
+                            <option value="SUB-AGREGADO">SUB-AGREGADO</option>
+                            <option value="SUB-MOTOR">SUB-MOTOR</option>
+                            <option value="SUB-RADIADOR">SUB-RADIADOR</option>
+                            <option value="SUB-PCH">SUB-PCH</option>
+                            <option value="SUB-RETROVISOR">SUB-RETROVISOR</option>
+                            <option value="SUB-MAÇANETA">SUB-MAÇANETA</option>
+                            <option value="SUB-MOLDURAS">SUB-MOLDURAS</option>
+                            <option value="SUB-RODAS">SUB-RODAS</option>
+                            <option value="SUB-FORRO DE TETO">SUB-FORRO DE TETO</option>
+                            <option value="SUB-SPOILER">SUB-SPOILER</option>
                             <option value="PCP">PCP</option>
                             <option value="REPARO FA">REPARO FA</option>
                         </select>
@@ -128,10 +145,18 @@
                             <option value="N4">N4</option>
                         </select>
                     </div>
-                    
+                </div>
+                <div class="form-row">
                     <div class="form-group col-md-1">
                         <label for="formPECA">Peça</label>
                         <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroPECA" id="formPECA">
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="formPOSICAO">Posição</label>
+                        <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroPOSICAO" id="formPOSICAO">
+                    </div>                    <div class="form-group col-md-1">
+                        <label for="formPROBLEMA">Problema</label>
+                        <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroPROBLEMA" id="formPROBLEMA">
                     </div>
                     <div class="form-group col-md-3">
                         <button type="submit" class="btn btn-primary mt-4">Pesquisar</button>

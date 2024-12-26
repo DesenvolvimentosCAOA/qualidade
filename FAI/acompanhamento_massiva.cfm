@@ -6,6 +6,7 @@
     <cfquery name="consulta_cripple" datasource="#BANCOSINC#">
         SELECT DISTINCT VIN, ID 
         FROM massiva_fai
+        WHERE STATUS IS NULL
     </cfquery>
 
     <!-- Consulta para obter apenas os VINs com Liberados -->
@@ -21,10 +22,14 @@
         WHERE (STATUS IS NULL OR STATUS = 'OK')
     </cfquery>
 
-    <cfquery name="consulta_vins" datasource="#BANCOSINC#">
+    <cfquery name="consulta_vins_ok" datasource="#BANCOSINC#">
         SELECT COUNT(DISTINCT VIN) AS total_vin
         FROM massiva_fai
         WHERE status = 'OK'
+    </cfquery>
+
+    <cfquery name="contagem_fa" datasource="#BANCOSINC#">
+        
     </cfquery>
 
 <!DOCTYPE html>
@@ -43,10 +48,10 @@
 
     <div class="container mt-4">
         <cfoutput>
-            <cfset diferenca = consulta_total.total_vin - consulta_vins.total_vin>
+            <cfset diferenca = consulta_total.total_vin - consulta_vins_ok.total_vin>
             <h2 class="mb-4">Dados Massiva FAI:</h2>
             <h4 style="color:purple">Total de Massiva: #consulta_total.total_vin#</h4>
-            <h4 style="color:green">Total de Massiva OK: #consulta_vins.total_vin#</h4>
+            <h4 style="color:green">Total de Massiva OK: #consulta_vins_ok.total_vin#</h4>
             <h4 style="color:red">Faltam: #diferenca#</h4>
         </cfoutput><br><br><br>
         <div class="row">
@@ -61,7 +66,7 @@
                     <tbody>
                         <cfset countT1A = 0>
                         <cfset countT1A_OK = 0>
-                        
+
                         <!-- Contagem de todos os VINs que começam com "95PD" -->
                         <cfoutput query="consulta_cripple">
                             <cfif left(VIN, 4) EQ "95PD">
@@ -71,7 +76,7 @@
 
                         <!-- Contagem de VINs com status 'OK' que começam com "95PD" -->
                         <cfoutput query="consulta_cripple_ok">
-                            <cfif left(VIN, 4) EQ "95PD">
+                            <cfif left(VIN, 4) EQ "95PD" >
                                 <cfset countT1A_OK = countT1A_OK + 1>
                             </cfif>
                         </cfoutput>

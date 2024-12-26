@@ -30,7 +30,6 @@
         <li><a href="./body_editar.cfm" >Editar Lançamento</a></li>
         <li><a href="./cadastro_defeitos.cfm" >Upload de Arquivos</a></li>
         <cfif isDefined("cookie.user_level_body") and cookie.user_level_body eq "G">
-            <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver & Agir</a></li>
         </cfif>
       </ul>
     </li>

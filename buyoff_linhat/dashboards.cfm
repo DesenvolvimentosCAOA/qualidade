@@ -295,33 +295,33 @@
         </script>
         <div class="wrap">
             <div class="button-container bottom-buttons">
-                <a href="https://app.powerbi.com/view?r=eyJrIjoiYTU4Y2JiNGEtNDY5My00ZjQ0LWI1OTMtZDQ3OTg2NTE3MmE3IiwidCI6IjE2OTE1YmY1LTg2YmUtNDM1YS04NDhmLWNlMDJjNjA4NzliMyJ9" class="button hint">
+                <a href="https://caoamontadora.sharepoint.com/:u:/s/CockpitBI2/EbWR2nq_gFpFtRiNm4I7newBgHKdcLYnwIitnPa0XqmEQA?e=vmHFS2" class="button hint">
                     <div class="hint-dot">BODY</div>
                     <div class="hint-content">Dashboard-Body</div>
                 </a>
-                <a href="https://app.powerbi.com/view?r=eyJrIjoiZWVlY2I2MDctODAzOC00ZGRhLTkyOTYtYmQzYWQ4M2VhNTIwIiwidCI6IjE2OTE1YmY1LTg2YmUtNDM1YS04NDhmLWNlMDJjNjA4NzliMyJ9" class="button hint">
+                <a href="https://caoamontadora.sharepoint.com/:u:/s/CockpitBI2/EbyxK29bB5hJsR3nx4NElvUBwgOCbjykRxVPgv2UwqL0oA?e=6FtaB2" class="button hint">
                     <div class="hint-dot">PAINT</div>
                     <div class="hint-content">Dashboard-Paint</div>
                 </a>
-                <a href="https://app.powerbi.com/view?r=eyJrIjoiNGYxMDIyM2UtMjY0Ni00YTBiLWJiZDItZjZjYmY0MDQxZDQ5IiwidCI6IjE2OTE1YmY1LTg2YmUtNDM1YS04NDhmLWNlMDJjNjA4NzliMyJ9" class="button hint">
+                <a href="https://caoamontadora.sharepoint.com/:u:/s/CockpitBI2/EeH_L_Nbq3pOqmU-kdLstlkB7MJ9DiPrqtdr4CI7dOfFdg?e=YbgFSw" class="button hint">
                     <div class="hint-dot">FA</div>
                     <div class="hint-content">Dashboard-FA</div>
                 </a>
-                <a href="https://app.powerbi.com/view?r=eyJrIjoiNmM1YzgwODQtZjBlMi00ZmE0LWFkMTEtNDAyMjZkZWRhZTg0IiwidCI6IjE2OTE1YmY1LTg2YmUtNDM1YS04NDhmLWNlMDJjNjA4NzliMyJ9" class="button hint">
+                <a href="https://caoamontadora.sharepoint.com/:u:/s/CockpitBI2/EYBYQIXIOmNFr17WlDf73IkBpm8oRzcSir3VuHhypPs5xA?e=BjWC7F" class="button hint">
                     <div class="hint-dot">FAI</div>
                     <div class="hint-content">Dashboard-FAI</div>
                 </a>
-                <a href="https://app.powerbi.com/view?r=eyJrIjoiOTVjM2Y1ZjMtNjUxZC00Yzk4LWI3NmYtZTMyYWEwZWE4OWI2IiwidCI6IjE2OTE1YmY1LTg2YmUtNDM1YS04NDhmLWNlMDJjNjA4NzliMyJ9" class="button hint">
+                <a href="https://caoamontadora.sharepoint.com/:u:/s/CockpitBI2/EeBOJ3bV6JZNnPv0pPkRx7sBLUveUmG8V3aRW7IeKWSm7A?e=6PdEmK" class="button hint">
                     <div class="hint-dot">PDI</div>
                     <div class="hint-content">Dashboard-PDI</div>
                 </a>
             </div>
             <div class="button-container bottom-buttons">
-                <a href="https://app.powerbi.com/view?r=eyJrIjoiYmZkNzkwZmQtNDZlMy00OGQ0LThlMzQtOTVlMzExOWUwMTBhIiwidCI6IjE2OTE1YmY1LTg2YmUtNDM1YS04NDhmLWNlMDJjNjA4NzliMyJ9" class="button hint">
+                <a href="https://caoamontadora.sharepoint.com/:u:/s/CockpitBI2/ERyhiNp8CBVGuFj4okt0--cBCLq2uhRe19zQ_b9Tyjkx0Q?e=VoiT8O" class="button hint">
                     <div class="hint-dot">Field Issues</div>
                     <div class="hint-content">KPI-Field Issues</div>
                 </a>
-                <a href="https://app.powerbi.com/view?r=eyJrIjoiOTAwNTdlY2ItN2RlMC00MWM5LThlNDItMWEwNzRkZWM2ZmZkIiwidCI6IjE2OTE1YmY1LTg2YmUtNDM1YS04NDhmLWNlMDJjNjA4NzliMyJ9" class="button hint">
+                <a href="https://caoamontadora.sharepoint.com/:u:/s/CockpitBI2/EeT6_22uSlNNkxY22Qpuen0BeMSipObwC8YitYC6cehbTg?e=oMtZGr" class="button hint">
                     <div class="hint-dot">RNC's</div>
                     <div class="hint-content">KPI RNC</div>
                 </a>

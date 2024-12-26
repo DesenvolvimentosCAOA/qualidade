@@ -10,7 +10,7 @@
     <script>
         alert("É necessario autenticação!!");
         self.location = '/qualidade/buyoff_linhat/index.cfm'
-    </script> 
+    </script>
 </cfif>
 
 <cfif not isDefined("cookie.user_level_final_assembly") or cookie.user_level_final_assembly eq "R">

@@ -89,6 +89,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="formShop">Shop:</label>
                                 <select class="form-control" name="Shop" id="formShop" required>
+                                    <option value="REPARO-DEFEITO">REPARO-DEFEITO</option>
                                     <option value="FA">FA</option>
                                     <option value="FAI-ROLO-PROBLEMA">FAI-UB2-PROBLEMA</option>
                                     <option value="FAI-ROLO-PEÇA">FAI-UB2-PEÇA</option>

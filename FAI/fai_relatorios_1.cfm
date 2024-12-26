@@ -443,7 +443,7 @@
                                         </cfif>
                                     </td>
 
-                                    <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
+                                    <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#⠀</td>
                                     <td></td>
                                     <td></td>
                                     <td>#PROBLEMA#</td>

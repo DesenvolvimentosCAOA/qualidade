@@ -28,6 +28,9 @@
         <cfif isDefined("url.filtroPECA") and url.filtroPECA neq "">
             AND UPPER(PECA) LIKE UPPER('%#url.filtroPECA#%')
         </cfif>
+        <cfif isDefined("url.filtroStatus") and url.filtroStatus neq "">
+            AND UPPER(STATUS) LIKE UPPER('%#url.filtroStatus#%')
+        </cfif>
         AND USER_DATA >= TO_DATE('#filtroDataStart#', 'yyyy-mm-dd') 
         AND USER_DATA < TO_DATE('#filtroDataEnd#', 'yyyy-mm-dd') + 1
         ORDER BY ID DESC
@@ -101,6 +104,15 @@
                             <option value="N2" <cfif isDefined('url.filtroCRITICIDADE') AND url.filtroCRITICIDADE EQ "N2">selected</cfif>>N2</option>
                             <option value="N3" <cfif isDefined('url.filtroCRITICIDADE') AND url.filtroCRITICIDADE EQ "N3">selected</cfif>>N3</option>
                             <option value="N4" <cfif isDefined('url.filtroCRITICIDADE') AND url.filtroCRITICIDADE EQ "N4">selected</cfif>>N4</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="formStatus">Status</label>
+                        <select class="form-control form-control-sm" name="filtroStatus" id="formSTATUS">
+                            <option value="">Selecione</option>
+                            <option value="LIBERADO" <cfif isDefined('url.filtroStatus') AND url.filtroStatus EQ "LIBERADO">selected</cfif>>LIBERADO</option>
+                            <option value="REPARO CAOA" <cfif isDefined('url.filtroStatus') AND url.filtroStatus EQ "REPARO CAOA">selected</cfif>>REPARO CAOA</option>
+                            <option value="REPARO PDI" <cfif isDefined('url.filtroStatus') AND url.filtroStatus EQ "REPARO PDI">selected</cfif>>REPARO PDI</option>
                         </select>
                     </div>
                 </cfoutput>

@@ -423,6 +423,7 @@
                             <th scope="col">BARCODE</th>
                             <th scope="col">Turno</th>
                             <th scope="col">Criticidade</th>
+                            <th scope="col">Cor</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -474,6 +475,7 @@
                                         </cfif>
                                     </td>
                                     <td>#CRITICIDADE#</td>
+                                    <td>#ListLast(MODELO, " ")#</td>
                             </cfloop>
                             
                             <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">

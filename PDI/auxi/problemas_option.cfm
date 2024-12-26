@@ -7,6 +7,7 @@
 <option value="BAIXO">BAIXO</option>
 <option value="BATE E VOLTA">BATE E VOLTA</option>
 <option value="BOLHAS">BOLHAS</option>
+<option value="CASCA DE LARANJA">CASCA DE LARANJA</option>
 <option value="CHAPA RASGADA">CHAPA RASGADA</option>
 <option value="COM BOLHAS">COM BOLHAS</option>
 <option value="COM FALHA">COM FALHA</option>
@@ -71,6 +72,7 @@
 <option value="GAP/FLUSH">GAP/FLUSH</option>
 <option value="GIRANDO">GIRANDO</option>
 <option value="ILEGÍVEL">ILEGÍVEL</option>
+<option value="INFILTRAÇÃO">INFILTRAÇÃO</option>
 <option value="INCORRETO">INCORRETO</option>
 <option value="INTERFERÊCIA">INTERFERÊCIA</option>
 <option value="INVERTIDO">INVERTIDO</option>
@@ -115,7 +117,10 @@
 <option value="PONTO DE SOLDA ALTO">PONTO DE SOLDA ALTO</option>
 <option value="PRESO">PRESO</option>
 <option value="PRESO NA LANTERNA">PRESO NA LANTERNA</option>
+<option value="PULVERIZADO">PULVERIZADO</option>
 <option value="QUEBRADO">QUEBRADO</option>
+<option value="QUEIMADO">QUEIMADO</option>
+<option value="PINTURA QUEIMADA">PINTURA QUEIMADA</option>
 <option value="RASGADO">RASGADO</option>
 <option value="REBARBA DE FITA">REBARBA DE FITA</option>
 <option value="REBARBA DE PLÁSTICO">REBARBA DE PLÁSTICO</option>

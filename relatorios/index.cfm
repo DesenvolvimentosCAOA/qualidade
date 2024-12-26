@@ -3,6 +3,33 @@
     <cfheader name="Pragma" value="no-cache">
     <cfheader name="Expires" value="0">
 
+    <!--- Valida o usuário para Ver & Agir --->
+<cfif isDefined("form.ver_login")>
+    <cfquery name="validausuario" datasource="#BANCOSINC#">
+        SELECT USER_ID, USER_NAME, USER_PASSWORD, TRIM(USER_LEVEL) AS USER_LEVEL, USER_SIGN 
+        FROM reparo_fa_users 
+        WHERE UPPER(USER_NAME) = UPPER('#form.ver_login#')
+        AND USER_PASSWORD = UPPER('#form.ver_senha#')
+    </cfquery>
+    
+    <!--- Se usuário válido, cria cookies e redireciona --->
+    <cfif validausuario.recordcount GT 0>
+        <cfcookie name="user_apontamento_fa" value="#form.ver_login#">
+        <cfcookie name="user_level_final_assembly" value="#validausuario.USER_LEVEL#">
+        
+        <cfif validausuario.USER_LEVEL EQ "R">
+            <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/indicador.cfm"/>
+        <cfelseif validausuario.USER_LEVEL EQ "P">
+            <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/indicador.cfm"/>
+        <cfelse>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/ver_agir.cfm"/>
+        </cfif>
+    <cfelse>
+        <!--- Mensagem de erro --->
+        <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
+    </cfif>
+</cfif>
+
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -138,6 +165,7 @@
         display: none;
         }
     </style>
+
     </head>
     <body>
         <form method="post" onsubmit="return validarVerLogin()">

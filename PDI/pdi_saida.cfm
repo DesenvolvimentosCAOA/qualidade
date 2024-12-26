@@ -59,51 +59,80 @@
          <link rel="stylesheet" href="/qualidade/buyoff_linhat/assets/StyleBuyOFF.css?v1">
          <script>
             function validarFormulario(event) {
-                // Validação geral dos campos
-                var peça = document.getElementById('formNConformidade').value;
+                // Obtenha os valores dos campos
+                var peçaInput = document.getElementById('formNConformidade');
+                var peça = peçaInput.value;
+                var problemaInput = document.getElementById('formProblema');
+                var problema = problemaInput.value;
                 var criticidade = document.getElementById('formCriticidade').value;
                 var posição = document.getElementById('formPosicao').value;
                 var responsável = document.getElementById('formEstacao').value;
-                var problema = document.getElementById('formProblema').value;
                 var vin = document.getElementById('formVIN').value;
-      
-                // Verificação do comprimento do VIN
+        
+                // Validação do VIN (comprimento)
                 if (vin.length !== 17) {
                     alert('O VIN deve ter exatamente 17 caracteres.');
                     event.preventDefault(); // Impede o envio do formulário
                     return false;
                 }
         
+                // Validação do campo "Peça"
+                var peçaDatalist = document.getElementById('pecasList');
+                var peçaOptions = peçaDatalist.options;
+                var peçaIsValid = false;
+                for (var i = 0; i < peçaOptions.length; i++) {
+                    if (peçaOptions[i].value === peça) {
+                        peçaIsValid = true;
+                        break;
+                    }
+                }
+        
+                if (!peçaIsValid) {
+                    alert('Por favor, selecione uma peça válida da lista. Caso não tenha acione a liderança para adicionar');
+                    event.preventDefault();
+                    return false;
+                }
+        
+                // Validação do campo "Problema" (do novo datalist)
+                var problemasDatalist = document.getElementById('problemasList');
+                var problemasOptions = problemasDatalist.options;
+                var problemaIsValid = false;
+                for (var i = 0; i < problemasOptions.length; i++) {
+                    if (problemasOptions[i].value === problema) {
+                        problemaIsValid = true;
+                        break;
+                    }
+                }
+        
+                if (!problemaIsValid) {
+                    alert('Por favor, selecione um problema válido da lista. Caso não tenha acione a liderança para adicionar');
+                    event.preventDefault();
+                    return false;
+                }
+        
+                // Validações adicionais
                 if (peça) {
                     if (!posição) {
                         alert('Por favor, selecione uma posição.');
-                        event.preventDefault(); // Impede o envio do formulário
-                        return false;
-                    }
-        
-                    if (!problema) {
-                        alert('Por favor, selecione um problema.');
-                        event.preventDefault(); // Impede o envio do formulário
+                        event.preventDefault();
                         return false;
                     }
         
                     if (!responsável) {
                         alert('Por favor, selecione um responsável.');
-                        event.preventDefault(); // Impede o envio do formulário
+                        event.preventDefault();
                         return false;
                     }
         
                     if (!criticidade) {
                         alert('Por favor, selecione uma criticidade.');
-                        event.preventDefault(); // Impede o envio do formulário
+                        event.preventDefault();
                         return false;
                     }
                 }
         
-                // Impede o envio do formulário até a resposta da requisição AJAX
-                event.preventDefault();
-        
-                // Validação do VIN com requisição AJAX
+                // AJAX para validação do VIN
+                event.preventDefault(); // Impede o envio do formulário até a resposta da requisição AJAX
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'verificar_vin.cfm', true);
                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -129,9 +158,11 @@
                 // Envia a requisição AJAX
                 xhr.send('vin=' + vin + '&problema=' + problema + '&barreira=PDI');
             }
+        
             // Associa a função de validação ao evento de envio do formulário
             document.getElementById('form_envio').addEventListener('submit', validarFormulario);
         </script>
+        
         
       </head>
       <body>
@@ -213,9 +244,7 @@
                   <div class="form-group col-md-2">
                      <label for="formEstacao">Responsável</label>
                      <select class="form-control form-control-sm" name="estacao" id="formEstacao" style="width: 200px;">
-                        <option value="">
-                           Selecione o Responsável:
-                        </option>
+                        <option value="">Selecione o Responsável:</option>
                         <cfinclude template="auxi/estacao.cfm">
                      </select>
                   </div>

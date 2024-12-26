@@ -109,7 +109,7 @@
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header>
-    
+
         <div id="tableBody" class="table-container">
             <h2 style="color: blue; font-size:30px;margin-top:5vw;">Dados do Item</h2>
             <cfoutput>

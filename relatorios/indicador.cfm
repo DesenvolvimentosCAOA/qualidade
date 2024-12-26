@@ -140,40 +140,40 @@
     <cfquery name="contagemStatus_Body" datasource="#BANCOSINC#">
         SELECT STATUS, COUNT(*) AS total_status
         FROM VEREAGIR2
-        WHERE TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
-        AND BARREIRA = 'BODY'
+        WHERE  BARREIRA = 'BODY'
+        AND STATUS NOT IN 'CONCLUÍDO'
         GROUP BY STATUS
     </cfquery>
 
     <cfquery name="contagemStatus_paint" datasource="#BANCOSINC#">
         SELECT STATUS, COUNT(*) AS total_status
         FROM VEREAGIR2
-        WHERE TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
-        AND BARREIRA = 'PAINT'
+        WHERE BARREIRA = 'PAINT'
+        AND STATUS NOT IN 'CONCLUÍDO'
         GROUP BY STATUS
     </cfquery>
 
     <cfquery name="contagemStatus_fa" datasource="#BANCOSINC#">
         SELECT STATUS, COUNT(*) AS total_status
         FROM VEREAGIR2
-        WHERE TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
-        AND BARREIRA = 'FINAL ASSEMBLY'
+        WHERE BARREIRA = 'FINAL ASSEMBLY'
+        AND STATUS NOT IN 'CONCLUÍDO'
         GROUP BY STATUS
     </cfquery>
 
     <cfquery name="contagemStatus_fai" datasource="#BANCOSINC#">
         SELECT STATUS, COUNT(*) AS total_status
         FROM VEREAGIR2
-        WHERE TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
-        AND BARREIRA = 'FAI'
+        WHERE BARREIRA = 'FAI'
+        AND STATUS NOT IN 'CONCLUÍDO'
         GROUP BY STATUS
     </cfquery>
 
     <cfquery name="contagemStatus_pdi" datasource="#BANCOSINC#">
         SELECT STATUS, COUNT(*) AS total_status
         FROM VEREAGIR2
-        WHERE TO_CHAR(DATA_REGISTRO, 'YYYY-MM') = <cfqueryparam value="#mesSelecionado#" cfsqltype="cf_sql_varchar">
-        AND BARREIRA = 'PDI'
+        WHERE BARREIRA = 'PDI'
+        AND STATUS NOT IN 'CONCLUÍDO'
         GROUP BY STATUS
     </cfquery>
 

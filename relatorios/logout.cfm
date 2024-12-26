@@ -22,4 +22,4 @@
     <cfcookie name="USER_APONTAMENTO_VER" expires="now">
 </cfif>
 
-<cflocation url="/qualidade/buyoff_linhat/index.cfm" addtoken="false">
+<cflocation url="/qualidade/relatorios/index.cfm" addtoken="false">

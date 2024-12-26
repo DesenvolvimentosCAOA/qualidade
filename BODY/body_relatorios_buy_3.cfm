@@ -51,18 +51,12 @@
                     WHEN INTERVALO BETWEEN '01:00' AND '00:00' THEN 'OUTROS'
                 END HH,
                 CASE 
-                    -- Verifica se o BARCODE só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
                     AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
-                    
-                    -- Verifica se o BARCODE contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-    
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT BARCODE) AS totalVins,
-                
-                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
             WHERE TRUNC(USER_DATA) = 
@@ -72,33 +66,29 @@
                     TRUNC(SYSDATE)
                 </cfif>
                 AND (
-                -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
-                -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
-                -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
-                    (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
-                    (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
-                ))
-            )
-            
-            AND MODELO LIKE 'TIGGO 7%'
+                    ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                        (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                    ))
+                )
+                AND MODELO LIKE 'TIGGO 7%'
             GROUP BY BARREIRA, BARCODE, INTERVALO
         )
         SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT BARCODE) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
+               'TTL' AS HH, 
+               COUNT(DISTINCT BARCODE) AS TOTAL, 
+               SUM(APROVADO_FLAG) AS APROVADOS, 
+               COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
+               ROUND(CASE WHEN COUNT(DISTINCT BARCODE) > 0 THEN SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100 ELSE 0 END, 1) AS PORCENTAGEM, 
+               ROUND(CASE WHEN SUM(totalVins) > 0 THEN SUM(totalProblemas) / SUM(totalVins) ELSE 0 END, 2) AS DPV,
+               2 AS ordem
         FROM CONSULTA
         GROUP BY BARREIRA
         ORDER BY ordem, HH
     </cfquery>
-
+    
     <cfquery name="consulta_barreira_tiggo5" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT 
@@ -143,13 +133,13 @@
             GROUP BY BARREIRA, BARCODE, INTERVALO
         )
         SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT BARCODE) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
+               'TTL' AS HH, 
+               COUNT(DISTINCT BARCODE) AS TOTAL, 
+               SUM(APROVADO_FLAG) AS APROVADOS, 
+               COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
+               ROUND(CASE WHEN COUNT(DISTINCT BARCODE) > 0 THEN SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100 ELSE 0 END, 1) AS PORCENTAGEM, 
+               ROUND(CASE WHEN SUM(totalVins) > 0 THEN SUM(totalProblemas) / SUM(totalVins) ELSE 0 END, 2) AS DPV,
+               2 AS ordem
         FROM CONSULTA
         GROUP BY BARREIRA
         ORDER BY ordem, HH
@@ -199,13 +189,13 @@
             GROUP BY BARREIRA, BARCODE, INTERVALO
         )
         SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT BARCODE) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
+               'TTL' AS HH, 
+               COUNT(DISTINCT BARCODE) AS TOTAL, 
+               SUM(APROVADO_FLAG) AS APROVADOS, 
+               COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
+               ROUND(CASE WHEN COUNT(DISTINCT BARCODE) > 0 THEN SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100 ELSE 0 END, 1) AS PORCENTAGEM, 
+               ROUND(CASE WHEN SUM(totalVins) > 0 THEN SUM(totalProblemas) / SUM(totalVins) ELSE 0 END, 2) AS DPV,
+               2 AS ordem
         FROM CONSULTA
         GROUP BY BARREIRA
         ORDER BY ordem, HH
@@ -255,13 +245,13 @@
             GROUP BY BARREIRA, BARCODE, INTERVALO
         )
         SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT BARCODE) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
+               'TTL' AS HH, 
+               COUNT(DISTINCT BARCODE) AS TOTAL, 
+               SUM(APROVADO_FLAG) AS APROVADOS, 
+               COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
+               ROUND(CASE WHEN COUNT(DISTINCT BARCODE) > 0 THEN SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100 ELSE 0 END, 1) AS PORCENTAGEM, 
+               ROUND(CASE WHEN SUM(totalVins) > 0 THEN SUM(totalProblemas) / SUM(totalVins) ELSE 0 END, 2) AS DPV,
+               2 AS ordem
         FROM CONSULTA
         GROUP BY BARREIRA
         ORDER BY ordem, HH
@@ -311,13 +301,13 @@
             GROUP BY BARREIRA, BARCODE, INTERVALO
         )
         SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT BARCODE) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
+               'TTL' AS HH, 
+               COUNT(DISTINCT BARCODE) AS TOTAL, 
+               SUM(APROVADO_FLAG) AS APROVADOS, 
+               COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
+               ROUND(CASE WHEN COUNT(DISTINCT BARCODE) > 0 THEN SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100 ELSE 0 END, 1) AS PORCENTAGEM, 
+               ROUND(CASE WHEN SUM(totalVins) > 0 THEN SUM(totalProblemas) / SUM(totalVins) ELSE 0 END, 2) AS DPV,
+               2 AS ordem
         FROM CONSULTA
         GROUP BY BARREIRA
         ORDER BY ordem, HH
@@ -367,13 +357,13 @@
             GROUP BY BARREIRA, BARCODE, INTERVALO
         )
         SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT BARCODE) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
+               'TTL' AS HH, 
+               COUNT(DISTINCT BARCODE) AS TOTAL, 
+               SUM(APROVADO_FLAG) AS APROVADOS, 
+               COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
+               ROUND(CASE WHEN COUNT(DISTINCT BARCODE) > 0 THEN SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100 ELSE 0 END, 1) AS PORCENTAGEM, 
+               ROUND(CASE WHEN SUM(totalVins) > 0 THEN SUM(totalProblemas) / SUM(totalVins) ELSE 0 END, 2) AS DPV,
+               2 AS ordem
         FROM CONSULTA
         GROUP BY BARREIRA
         ORDER BY ordem, HH
@@ -423,13 +413,13 @@
             GROUP BY BARREIRA, BARCODE, INTERVALO
         )
         SELECT BARREIRA, 
-                'TTL' AS HH, 
-                COUNT(DISTINCT BARCODE) AS TOTAL, 
-                SUM(APROVADO_FLAG) AS APROVADOS, 
-                COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
-                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100, 1) AS PORCENTAGEM, 
-                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
-                2 AS ordem
+               'TTL' AS HH, 
+               COUNT(DISTINCT BARCODE) AS TOTAL, 
+               SUM(APROVADO_FLAG) AS APROVADOS, 
+               COUNT(DISTINCT BARCODE) - SUM(APROVADO_FLAG) AS REPROVADOS,
+               ROUND(CASE WHEN COUNT(DISTINCT BARCODE) > 0 THEN SUM(APROVADO_FLAG) / COUNT(DISTINCT BARCODE) * 100 ELSE 0 END, 1) AS PORCENTAGEM, 
+               ROUND(CASE WHEN SUM(totalVins) > 0 THEN SUM(totalProblemas) / SUM(totalVins) ELSE 0 END, 2) AS DPV,
+               2 AS ordem
         FROM CONSULTA
         GROUP BY BARREIRA
         ORDER BY ordem, HH

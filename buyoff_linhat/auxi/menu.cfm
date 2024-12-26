@@ -9,6 +9,12 @@
             <p>Dashboard</p></a
           >
         </li>
+        <li>
+          <a href="../relatorios/index.cfm"
+            ><ion-icon name="bar-chart-outline"></ion-icon>
+            <p>Ver & Agir</p></a
+          >
+        </li>
       </ul>
       <ul>
         <span>SHOP's</span>

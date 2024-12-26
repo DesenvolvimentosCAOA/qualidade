@@ -180,7 +180,7 @@
                 ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
                 OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                -- Sábado: turno inicia às 06:00 e termina às 14:48
                 OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
                 AND INTERVALO BETWEEN '06:00' AND '15:00'
@@ -1094,7 +1094,7 @@
                 chart.draw(data, options);
             }
         </script> --->
-<!---             <meta http-equiv="refresh" content="40,URL=fa_indicadores_1_esteira.cfm"> --->
+        <meta http-equiv="refresh" content="40,URL=fa_indicadores_1_esteira.cfm">
     </body>
 </html>
 

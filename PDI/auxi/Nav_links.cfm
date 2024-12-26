@@ -41,7 +41,6 @@
         <ul class="dropdown-menu">
             <li><a href="./pdi_editar.cfm">Editar Lançamento</a></li>
             <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "G">
-                <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver & Agir</a></li>
             </cfif>
         </ul>
         </li>

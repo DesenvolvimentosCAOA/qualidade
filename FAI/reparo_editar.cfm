@@ -47,13 +47,13 @@
 
     <cfquery name="problema" datasource="#BANCOSINC#">
         SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
-        WHERE SHOP LIKE 'FAI%'
+        WHERE SHOP = 'REPARO-DEFEITO'
         ORDER BY DEFEITO
     </cfquery>
 
     <cfquery name="pecas" datasource="#BANCOSINC#">
         SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
-        WHERE SHOP LIKE 'FAI%'
+        WHERE SHOP = 'FA'
         ORDER BY DEFEITO
     </cfquery>
 
@@ -91,9 +91,7 @@
                             <input type="text" class="form-control" name="reparador" id="formReparador" value="#login.USER_SIGN#" readonly/>
                         </div>
                     </div>
-
                 </div>
-
                 <div class="row mb-4">
                     <div class="col">
                         <div class="form-group col-md-2">
@@ -160,9 +158,8 @@
                 
                 <div class="bt_ms mb-5">
                     
-                    <button type="submit" id="bt_reset" onclick="history.back()" class="btn btn-warning">Voltar</button>
+                    <button type ="reset" onclick="history.back()" class="btn btn-warning">Voltar</button>
                     <button type="submit" form="for-edit" class="btn btn-primary">Salvar</button>
-                    
                     <cfif isDefined("form.vin") and form.vin neq "">
                         <cfquery name="atualiza" datasource="#BANCOSINC#">
                             UPDATE INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
@@ -194,6 +191,32 @@
     <footer class="text-center py-4">
         <p>&copy; 2024 Sistema de gestão da qualidade.</p>
     </footer>
+    <script>
+        document.getElementById('for-edit').addEventListener('submit', function(event) {
+            // Função para validar o input com datalist
+            function validateDatalist(inputId, datalistId) {
+                const input = document.getElementById(inputId);
+                const datalist = document.getElementById(datalistId);
+                const options = Array.from(datalist.options).map(option => option.value);
+    
+                if (!options.includes(input.value)) {
+                    alert(`O valor no campo "${input.previousElementSibling.textContent}" deve corresponder a uma das opções.`);
+                    input.focus();
+                    return false;
+                }
+                return true;
+            }
+    
+            // Verificar os campos "Problema" e "Reparo Realizado"
+            const isValidProblemaReparo = validateDatalist('formProblemaReparo', 'problemasDatalist');
+            const isValidReparo = validateDatalist('formReparo', 'reparoList');
+    
+            // Cancelar envio se alguma validação falhar
+            if (!isValidProblemaReparo || !isValidReparo) {
+                event.preventDefault();
+            }
+        });
+    </script>
     
 </body>
 </html>

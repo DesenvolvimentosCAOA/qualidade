@@ -5,6 +5,26 @@
     <cfcontent type="text/html; charset=UTF-8">
     <cfprocessingdirective pageEncoding="utf-8">
 
+    <!--- Verificando se está logado  --->
+    <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
+        <script>
+            alert("É necessário autorização!!");
+            history.back(); // Voltar para a página anterior
+        </script>
+        </cfif>
+        <cfif not isDefined("cookie.user_level_final_assembly") or cookie.user_level_final_assembly eq "R">
+            <script>
+                alert("É necessário autorização!!");
+                history.back(); // Voltar para a página anterior
+            </script>
+        </cfif>
+        <cfif not isDefined("cookie.user_level_final_assembly") or cookie.user_level_final_assembly eq "P">
+            <script>
+                alert("É necessário autorização!!");
+                history.back(); // Voltar para a página anterior
+            </script>
+        </cfif>
+
     <cfquery name="consultas" datasource="#BANCOSINC#">
         SELECT * 
         FROM (
@@ -29,8 +49,7 @@
             AND PROBLEMA IS NOT NULL
             ORDER BY ID DESC
         )
-        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
-        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
+        WHERE USER_DATA >= TRUNC(SYSDATE) -10
     </cfquery>
 
     <cfquery name="consultas_paint" datasource="#BANCOSINC#">
@@ -57,8 +76,7 @@
         AND PROBLEMA IS NOT NULL
         ORDER BY ID DESC
         )
-        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
-        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
+        WHERE USER_DATA >= TRUNC(SYSDATE) -10 -- Final da semana atual
     </cfquery>
 
     <cfquery name="consultas_fa" datasource="#BANCOSINC#">
@@ -85,8 +103,7 @@
             AND PROBLEMA IS NOT NULL
             ORDER BY ID DESC
         )
-        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
-        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
+        WHERE USER_DATA >= TRUNC(SYSDATE) -10
     </cfquery>
 
     <cfquery name="consultas_fai" datasource="#BANCOSINC#">
@@ -113,8 +130,7 @@
             AND PROBLEMA IS NOT NULL
             ORDER BY ID DESC
         )
-        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
-        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
+        WHERE USER_DATA >= TRUNC(SYSDATE) -10
     </cfquery>
 
     <cfquery name="consultas_pdi" datasource="#BANCOSINC#">
@@ -141,8 +157,7 @@
             AND PROBLEMA IS NOT NULL
             ORDER BY ID DESC
         )
-        WHERE USER_DATA >= TRUNC(SYSDATE, 'IW') -- Início da semana atual
-        AND USER_DATA < TRUNC(SYSDATE, 'IW') + 7 -- Final da semana atual
+        WHERE USER_DATA >= TRUNC(SYSDATE) -10
     </cfquery>
 
     <cfquery name="consultas_acomp_cont" datasource="#BANCOSINC#">
@@ -222,14 +237,16 @@
             WHERE sqf_inner.PECA = sqf.PECA
             AND sqf_inner.PROBLEMA = sqf.PROBLEMA
             AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            AND CRITICIDADE NOT IN 'N0'
             ) AS TOTAL_OCORRENCIAS_APOS_BP,
-
-            -- Ajuste na lógica do STATUS_NOVO
-            CASE 
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) > v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'Quebra de BP'
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) <= v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'BP Válido'
-                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
-            END AS STATUS_NOVO
+             -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
+    (SELECT MAX(sqf_inner.USER_DATA)
+     FROM SISTEMA_QUALIDADE_FA sqf_inner
+     WHERE sqf_inner.PECA = sqf.PECA
+       AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+       AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+       AND CRITICIDADE NOT IN ('N0')
+    ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
         FROM 
             SISTEMA_QUALIDADE_FA sqf
         LEFT JOIN
@@ -244,7 +261,7 @@
             v2.PECA, v2.PROBLEMA, 
             v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
 
-                UNION ALL
+        UNION ALL
 
         SELECT 
             sqf.PECA AS PECA_SQF, 
@@ -263,14 +280,17 @@
             WHERE sqf_inner.PECA = sqf.PECA
             AND sqf_inner.PROBLEMA = sqf.PROBLEMA
             AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            AND CRITICIDADE NOT IN 'N0'
             ) AS TOTAL_OCORRENCIAS_APOS_BP,
+             -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
+    (SELECT MAX(sqf_inner.USER_DATA)
+     FROM SISTEMA_QUALIDADE_FAI sqf_inner
+     WHERE sqf_inner.PECA = sqf.PECA
+       AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+       AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+       AND CRITICIDADE NOT IN ('N0')
+    ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
 
-            -- Ajuste na lógica do STATUS_NOVO
-            CASE 
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) > v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'Quebra de BP'
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) <= v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'BP Válido'
-                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
-            END AS STATUS_NOVO
         FROM 
             SISTEMA_QUALIDADE_FAI sqf
         LEFT JOIN
@@ -304,14 +324,17 @@
             WHERE sqf_inner.PECA = sqf.PECA
             AND sqf_inner.PROBLEMA = sqf.PROBLEMA
             AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            AND CRITICIDADE NOT IN 'N0'
             ) AS TOTAL_OCORRENCIAS_APOS_BP,
+             -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
+    (SELECT MAX(sqf_inner.USER_DATA)
+     FROM SISTEMA_QUALIDADE sqf_inner
+     WHERE sqf_inner.PECA = sqf.PECA
+       AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+       AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+       AND CRITICIDADE NOT IN ('N0')
+    ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
 
-            -- Ajuste na lógica do STATUS_NOVO
-            CASE 
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) > v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'Quebra de BP'
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) <= v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'BP Válido'
-                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
-            END AS STATUS_NOVO
         FROM 
             SISTEMA_QUALIDADE sqf
         LEFT JOIN
@@ -338,21 +361,23 @@
             MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
             MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
             v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
-
             -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
             (SELECT COUNT(*)
             FROM SISTEMA_QUALIDADE_BODY sqf_inner
             WHERE sqf_inner.PECA = sqf.PECA
             AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            AND TRUNC(sqf_inner.USER_DATA) >= TRUNC(v2.DATA_BP_DEFINITIVO_PROCESSO)
+            AND CRITICIDADE NOT IN 'N0'
             ) AS TOTAL_OCORRENCIAS_APOS_BP,
+             -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
+    (SELECT MAX(sqf_inner.USER_DATA)
+     FROM SISTEMA_QUALIDADE_BODY sqf_inner
+     WHERE sqf_inner.PECA = sqf.PECA
+       AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+       AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+       AND CRITICIDADE NOT IN ('N0')
+    ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
 
-            -- Ajuste na lógica do STATUS_NOVO
-            CASE 
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) > v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'Quebra de BP'
-                WHEN MAX(sqf.USER_DATA) IS NOT NULL AND MAX(sqf.USER_DATA) <= v2.DATA_BP_DEFINITIVO_PROCESSO THEN 'BP Válido'
-                WHEN MAX(v2.DATA_REGISTRO) IS NULL THEN NULL
-            END AS STATUS_NOVO
         FROM 
             SISTEMA_QUALIDADE_BODY sqf
         LEFT JOIN
@@ -408,8 +433,6 @@
                         <a href="#" onclick="showTable('tableFA')">FA</a>
                         <a href="#" onclick="showTable('tableFAI')">FAI</a>
                         <a href="#" onclick="showTable('tablePDI')">PDI</a>
-                        <a href="/qualidade/relatorios/ver_agir_add2.cfm">BODY/PAINT(manual)</a>
-                        <a href="/qualidade/relatorios/ver_agir_add1.cfm">FA/FAI(manual)</a>
                 </div>
             </div>
             <button class="btn-rounded" onclick="showTable('tableACOMP')">Acompanhamento</button>
@@ -693,8 +716,9 @@
                         <th>Tempo Contenção</th>
                         <th>Tempo Definitivo</th>
                         <th>Ocorrências Após BP</th>
-                        <th>Selecionar</th>
                         <th>Status BP</th>
+                        <th>Selecionar</th>
+                        <th>Última Ocorrência</th>
                     </tr>
                 </thead>
                 <tbody style="font-size:12px;background-color:red;">
@@ -787,6 +811,13 @@
                                 </cfloop>
                                 #totalOcorrenciasAposBP#
                             </td>
+                            <td>
+                                <cfif totalOcorrenciasAposBP GTE 1>
+                                    <span style="color: red; font-weight: bold;">QUEBRA DE BP</span>
+                                    <cfelse>
+                                        <span style="color: green; font-weight: bold;">BP VÁLIDO</span>
+                                </cfif>
+                            </td>
 
                             <cfif STATUS eq "FALTA CONTENÇÃO">
                                 <td class="text-nowrap">
@@ -805,19 +836,21 @@
                                     </button>
                                 </td>
                             </cfif>
-                            <td class="wide-column">
+                            <td>
+                                <cfset ultimaDataOcorrenciaAposBP = ""> <!-- Inicializa a variável -->
+                                <!-- Loop para obter a última data da ocorrência após BP -->
                                 <cfloop query="result">
                                     <cfif result.ID_VEREAGIR2 EQ consultas_acomp_cont.ID>
-                                        <cfif STATUS_NOVO EQ "Quebra de BP">
-                                            <span class="status-span" style="background-color: red; color: white;">#STATUS_NOVO#</span>
-                                        <cfelseif STATUS_NOVO EQ "BP Válido">
-                                            <span class="status-span" style="background-color: green; color: white;">#STATUS_NOVO#</span>
-                                        <cfelse>
-                                            <span class="status-span">#STATUS_NOVO#</span>
-                                        </cfif>
+                                        <cfset ultimaDataOcorrenciaAposBP = result.ULTIMA_DATA_OCORRENCIA_APOS_BP>
                                         <cfbreak>
                                     </cfif>
                                 </cfloop>
+                                <!-- Exibe a data formatada ou N/A -->
+                                <cfif Len(ultimaDataOcorrenciaAposBP)>
+                                    #lsdatetimeformat(ultimaDataOcorrenciaAposBP, 'dd/mm/yyyy HH:mm')#
+                                <cfelse>
+                                    N/A
+                                </cfif>
                             </td>
                         </tr>
                     </cfoutput>

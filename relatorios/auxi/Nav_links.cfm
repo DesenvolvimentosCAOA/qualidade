@@ -5,11 +5,20 @@
   
   <ul>
     <li><a href="ver_agir.cfm">Ver e Agir</a></li>
-    <li><a href="indicador.cfm">Indicadores</a></li>
+    <li class="dropdown">
+        <a href="#">Indicadores</a>
+            <ul class="dropdown-menu">
+               <li><a href="indicador.cfm">Indicador Status</a></li>
+               <li><a href="indicador_presenca_area.cfm">Indicador Presença</a></li>
+            </ul>
+    </li>
           <li class="dropdown">
             <a href="#">Edição</a>
             <ul class="dropdown-menu">
                 <li><a href="/qualidade/relatorios/ver_agir_apagar.cfm">Apagar/Editar Lançamento</a></li>
+                <li><a href="/qualidade/relatorios/presenca.cfm">Presença</a></li>
+
+                
             </ul>
         </li>
     <li><a href="logout.cfm">Sair</a></li>
@@ -17,7 +26,6 @@
 </nav>
 
 <style>
-
     .dropdown-submenu {
     position: relative;
     }
@@ -289,22 +297,20 @@
     }
 
     .dropdown-menu li {
-        list-style: none;
-    } 
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 14px;
+} 
 
     .dropdown-menu li a {
         color: white;
         padding: 8px 16px;
-        /* Ajuste o padding se necessário */
         text-decoration: none;
         display: block;
         text-align: left;
         font-size: 12px;
-        /* Ajuste o tamanho da fonte aqui */
         line-height: 1.2;
-        /* Ajuste o espaçamento entre linhas */
         letter-spacing: normal;
-        /* Ajuste o espaçamento entre letras se necessário */
     }
 
     /* Hover do sub menu */

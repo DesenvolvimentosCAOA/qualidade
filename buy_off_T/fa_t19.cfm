@@ -28,7 +28,7 @@
        SELECT *
        FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
        WHERE USER_DATA >= TRUNC(SYSDATE) AND USER_DATA < TRUNC(SYSDATE) + 1
-       AND BARREIRA = 'CP7'
+       AND BARREIRA = 'T19'
        <cfif isDefined("url.filtroDefeito") and url.filtroDefeito neq "">
        AND UPPER(PROBLEMA) LIKE UPPER('%#url.filtroDefeito#%')</cfif>
        ORDER BY ID DESC
@@ -45,7 +45,7 @@
     <!--- Passo 2: Verificar o STATUS_BLOQUEIO em todas as linhas retornadas --->
     <cfset bloqueado = false>
     <cfloop query="consultaVIN">
-       <cfif consultaVIN.STATUS_BLOQUEIO EQ "BLOQUEADO" AND consultaVIN.BARREIRA_BLOQUEIO EQ "CP7">
+       <cfif consultaVIN.STATUS_BLOQUEIO EQ "BLOQUEADO" AND consultaVIN.BARREIRA_BLOQUEIO EQ "T19">
        <cfset bloqueado = true>
        <cfbreak>
        <!--- Para de verificar após encontrar um bloqueio --->
@@ -118,14 +118,14 @@
          <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
       </cfquery>
       <script>
-         self.location = 'fa_barreira_cp7.cfm';
+         self.location = 'fa_t19.cfm';
       </script>
     </cfif>
 <html lang="pt-BR">
    <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <title>CP7</title>
+      <title>T19</title>
       <link rel="icon" href="./assets/chery.png" type="image/x-icon">
       <link rel="stylesheet" href="assets/StyleBuyOFF.css?v1">
       <script>
@@ -249,7 +249,7 @@
                      }
                }
             };
-            xhr.send('vin=' + vin + '&problema=' + problema + '&barreira=CP7');
+            xhr.send('vin=' + vin + '&problema=' + problema + '&barreira=T19');
          
             // Impede o envio até a resposta da requisição AJAX
             event.preventDefault();
@@ -261,17 +261,25 @@
          <cfinclude template="auxi/nav_links.cfm">
       </header>
       <div class="container mt-4">
-         <h2 class="titulo2">CP7</h2><br>
+         <h2 class="titulo2">T19</h2><br>
+
          <cfquery name="pecas" datasource="#BANCOSINC#">
             SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
-            WHERE SHOP = 'FA'
+            WHERE SHOP = 'FA-T19-PEÇA'
             ORDER BY DEFEITO
          </cfquery>
+
+         <cfquery name="defeitos" datasource="#BANCOSINC#">
+            SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
+            WHERE SHOP = 'FA-SUBMOTOR-PROBLEMA'
+            ORDER BY DEFEITO
+         </cfquery>
+         
          <form onsubmit="return validarFormulario(event);" method="post" id="form_envio">
             <div class="form-row">
                <div class="form-group col-md-2">
                   <label for="formData">Data</label>
-                     <input type="date" class="form-control form-control-sm" name="data" id="formData" value="<cfoutput>#dateFormat(now(), 'yyyy-mm-dd')#</cfoutput>"readonly="readonly">
+                  <input type="date" class="form-control form-control-sm" name="data" id="formData" value="<cfoutput>#dateFormat(now(), 'yyyy-mm-dd')#</cfoutput>"readonly="readonly">
                </div>
             <cfquery name="login" datasource="#BANCOSINC#">
                SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
@@ -309,7 +317,7 @@
                <div class="form-group col-md-2">
                   <label for="formLocal">Local</label>
                   <select class="form-control form-control-sm" name="local" id="formLocal" required="required" readonly="readonly">
-                     <option value="CP7">CP7</option>
+                     <option value="T19">T19</option>
                   </select>
             </cfoutput>
                </div>
@@ -428,21 +436,21 @@
                </cfquery>
             </cfif>
                 <!--- Inserir item --->
-                <!-- Verifica se o VIN existe na BARREIRA 'CP7' -->
+                <!-- Verifica se o VIN existe na BARREIRA 'T19' -->
                 <!-- Verifica se o VIN já existe e obtém a USER_DATA se existir -->
                 <cfquery name="verificaIntervalo" datasource="#BANCOSINC#">
                    SELECT INTERVALO
                    FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
                    WHERE VIN = 
                    <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">
-                   AND BARREIRA = 'CP7'
+                   AND BARREIRA = 'T19'
                 </cfquery>
                 <!-- Verifica se a consulta retornou resultados -->
                 <cfset intervaloInserir = "" />
                 <cfset userDataInserir = Now() />
                 <!-- Define um valor padrão para USER_DATA -->
                 <cfif not IsNull(verificaIntervalo) AND verificaIntervalo.recordCount gt 0>
-                <!-- Se o VIN existe na BARREIRA 'CP7', usa o intervalo existente -->
+                <!-- Se o VIN existe na BARREIRA 'T19', usa o intervalo existente -->
                 <cfset intervaloInserir = verificaIntervalo.INTERVALO>
                 <!-- Obtém a USER_DATA se o VIN existir -->
                 <cfquery name="verificaUserData" datasource="#BANCOSINC#">
@@ -450,7 +458,7 @@
                    FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
                    WHERE VIN = 
                    <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">
-                   AND BARREIRA = 'CP7'
+                   AND BARREIRA = 'T19'
                 </cfquery>
                 <cfset userDataInserir = verificaUserData.USER_DATA>
                 <!-- Copia a USER_DATA -->
@@ -496,7 +504,7 @@
                 </cfquery>
                 <cfoutput>
                    <script>
-                      window.location.href = 'fa_barreira_cp7.cfm';
+                      window.location.href = 'fa_t19.cfm';
                    </script>
                 </cfoutput>
                 </cfif>
@@ -554,7 +562,7 @@
           <script>
              function deletar(id) {
                  if (confirm("Tem certeza que deseja deletar este item?")) {
-                     window.location.href = "fa_barreira_cp7.cfm?id=" + id;
+                     window.location.href = "fa_t19.cfm?id=" + id;
                  }
              }
           </script>

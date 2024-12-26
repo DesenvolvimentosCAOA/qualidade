@@ -55,7 +55,7 @@
         AND (BARREIRA = 'SHOWER' OR BARREIRA = 'SIGN OFF' AND PROBLEMA = 'INFILTRACAO')
         ORDER BY ID DESC
     </cfquery>
-    
+
     <!--- Atualizar Item--->
     <cfif structKeyExists(form, "btSalvarID") and structKeyExists(form, "Tipo") and form.btSalvarID neq "" and form.Tipo neq "">
         <cfquery name="atualizar" datasource="#BANCOSINC#">

@@ -70,7 +70,7 @@
                     -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
                     OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
                     -- Sábado: turno inicia às 06:00 e termina às 15:48
-                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                    OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
                 )
             AND MODELO LIKE 'TIGGO 7%'
                 AND INTERVALO BETWEEN '06:00' AND '15:00'
@@ -320,7 +320,7 @@
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
                 OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
             AND MODELO = 'CHASSI HR HDB 4WD DBLE'
                 AND INTERVALO BETWEEN '06:00' AND '15:00'

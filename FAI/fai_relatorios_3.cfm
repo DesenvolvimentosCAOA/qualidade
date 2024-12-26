@@ -477,8 +477,7 @@
                                         TL
                                     </cfif>
                                 </td>
-
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
+                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#⠀</td>
                                 <td></td>
                                 <td></td>
                                 <td>#PROBLEMA#</td>
@@ -530,45 +529,7 @@
                                     </td>
                                 <td>#ESTACAO#</td>
                                 <td>#VIN#</td>
-                                <td>
-                                    <!-- Verificação de turno com base no INTERVALO e dia da semana -->
-                                    <cfset diaSemana = DayOfWeek(Now())>
-                                    <cfset intervalo = INTERVALO>
-                                
-                                    <cfif (diaSemana GTE 2 AND diaSemana LTE 5)>
-                                        <cfif (intervalo GTE "06:00" AND intervalo LTE "15:48")>
-                                            1º Turno
-                                        <cfelseif (intervalo GTE "15:50" AND intervalo LTE "23:59") OR (intervalo GTE "00:00" AND intervalo LTE "00:00")>
-                                            2º Turno
-                                        <cfelseif (intervalo GTE "01:00" AND intervalo LTE "05:00")>
-                                            3º Turno
-                                        <cfelse>
-                                            -
-                                        </cfif>
-                                    <cfelseif (diaSemana EQ 6)>
-                                        <cfif (intervalo GTE "06:00" AND intervalo LTE "14:48")>
-                                            1º Turno
-                                        <cfelseif (intervalo GTE "14:50" AND intervalo LTE "23:59") OR (intervalo GTE "00:00" AND intervalo LTE "00:00")>
-                                            2º Turno
-                                        <cfelseif (intervalo GTE "01:00" AND intervalo LTE "05:00")>
-                                            3º Turno
-                                        <cfelse>
-                                            -
-                                        </cfif>
-                                    <cfelseif (diaSemana EQ 7)>
-                                        <cfif (intervalo GTE "06:00" AND intervalo LTE "15:48")>
-                                            1º Turno
-                                        <cfelseif (intervalo GTE "15:50" AND intervalo LTE "23:59") OR (intervalo GTE "00:00" AND intervalo LTE "00:00")>
-                                            2º Turno
-                                        <cfelseif (intervalo GTE "01:00" AND intervalo LTE "05:00")>
-                                            3º Turno
-                                        <cfelse>
-                                            -
-                                        </cfif>
-                                    <cfelse>
-                                        -
-                                    </cfif>
-                                </td>
+                                <td>3º TURNO</td>
                                 <td>#CRITICIDADE#</td>
                                 <td>#INTERVALO#</td>
                             </tr>

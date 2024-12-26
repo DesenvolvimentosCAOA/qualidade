@@ -203,24 +203,27 @@
                 var problemaInput = document.getElementById('formProblema');
                 var problema = problemaInput.value;
         
-                // Obtenha a lista de opções do datalist
-                var datalist = document.getElementById('defeitos-list');
-                var options = datalist.options;
+                // Valide apenas se o campo estiver preenchido
+                if (problema) {
+                    // Obtenha a lista de opções do datalist
+                    var datalist = document.getElementById('defeitos-list');
+                    var options = datalist.options;
         
-                // Verifique se o valor do input corresponde a uma das opções do datalist
-                var isValid = false;
-                for (var i = 0; i < options.length; i++) {
-                    if (options[i].value === problema) {
-                        isValid = true;
-                        break;
+                    // Verifique se o valor do input corresponde a uma das opções do datalist
+                    var isValid = false;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value === problema) {
+                            isValid = true;
+                            break;
+                        }
                     }
-                }
         
-                // Se o valor não for válido, impede o envio do formulário
-                if (!isValid) {
-                    alert('Por favor, selecione um problema válido da lista.');
-                    event.preventDefault();
-                    return; // Sai da função para não executar o restante da validação
+                    // Se o valor não for válido, impede o envio do formulário
+                    if (!isValid) {
+                        alert('Por favor, selecione um problema válido da lista.');
+                        event.preventDefault();
+                        return; // Sai da função para não executar o restante da validação
+                    }
                 }
         
                 // Validação do BARCODE com requisição AJAX
@@ -466,52 +469,31 @@
                 }
             }
         </script>    
- 
- <div class="floating-arrow" onclick="scrollToTop();">
-    <i class="material-icons">arrow_upward</i>
- </div>
- 
- <!-- Script para voltar ao topo suavemente -->
- <script>
-    function scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    }
- </script>        
- 
- 
- 
- <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const vinInput = document.getElementById('formVIN');
- 
-        vinInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Impede a ação padrão do Enter
-                vinInput.focus(); // Mantém o foco no mesmo campo de entrada
-            }
-        });
-    });
- </script>
- 
- 
- 
- <!---- impede de enviar o form ao final da leitura do barcode ---->
- <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const vinInput = document.getElementById('formVIN');
- 
-        vinInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Impede a ação padrão do Enter
-                vinInput.focus(); // Mantém o foco no mesmo campo de entrada
-            }
-        });
-    });
- </script>
- 
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const vinInput = document.getElementById('formVIN');
+        
+                vinInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault(); // Impede a ação padrão do Enter
+                        vinInput.focus(); // Mantém o foco no mesmo campo de entrada
+                    }
+                });
+            });
+        </script>
+        <!---- impede de enviar o form ao final da leitura do barcode ---->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const vinInput = document.getElementById('formVIN');
+        
+                vinInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault(); // Impede a ação padrão do Enter
+                        vinInput.focus(); // Mantém o foco no mesmo campo de entrada
+                    }
+                });
+            });
+        </script>
     </body>
  </html>
     
