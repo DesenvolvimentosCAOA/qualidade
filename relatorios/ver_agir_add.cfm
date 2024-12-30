@@ -31,7 +31,7 @@
 
 
 <cfquery name="insere" datasource="#BANCOSINC#">
-    INSERT INTO INTCOLDFUSION.VEREAGIR2 (ID, DATA_REGISTRO, DATA_SGQ, MODELO, ID_SGQ, VIN, PECA, POSICAO, PROBLEMA, SEVERIDADE, DETECCAO, OCORRENCIA, RPN, TURNO, GRUPO_RESPONSAVEL, STATUS, BARREIRA)
+    INSERT INTO INTCOLDFUSION.VEREAGIR2 (ID, DATA_REGISTRO, DATA_SGQ, MODELO, ID_SGQ, VIN, PECA, POSICAO, PROBLEMA, SEVERIDADE, DETECCAO, OCORRENCIA, RPN, TURNO, GRUPO_RESPONSAVEL, STATUS, BARREIRA, USUARIO)
     VALUES(
         <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
         <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">,
@@ -49,7 +49,8 @@
         <cfqueryparam value="#UCase(form.ver_turno)#" cfsqltype="CF_SQL_VARCHAR">,
         <cfqueryparam value="#UCase(form.ver_grupo)#" cfsqltype="CF_SQL_VARCHAR">,
         <cfqueryparam value="#UCase(form.ver_status)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_barreira)#" cfsqltype="CF_SQL_VARCHAR">
+        <cfqueryparam value="#UCase(form.ver_barreira)#" cfsqltype="CF_SQL_VARCHAR">,
+        <cfqueryparam value="#UCase(form.nome)#" cfsqltype="CF_SQL_VARCHAR">
     )
 </cfquery>
 <cflocation url="ver_agir.cfm">
@@ -134,6 +135,14 @@
             <h2 style="color:#f6722c; font-size:30px;">Ver & Agir</h2>
             <form id="for-edit" method="POST">
                 <cfoutput>
+                    <cfquery name="login" datasource="#BANCOSINC#">
+                        SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
+                        WHERE USER_NAME = '#cookie.user_apontamento_fa#'
+                    </cfquery>
+                    <div class="input-group">
+                        <label for="formNome">Usuário</label>
+                        <input style="width:500px;" type="text" class="form-control form-control-sm" name="nome" id="formNome" required value="#login.USER_SIGN#" readonly>
+                    </div>
                     <div class="search-container">
                         <div class="input-group">
                             <label for="searchVIN">

@@ -8,7 +8,6 @@
 
     <!--COnsulta para CP5 ESTEIRA SUV-->
 
-        
     <cfquery name="consulta_barreira" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT 
@@ -175,7 +174,7 @@
             AND PROBLEMA IS NOT NULL
             AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
             AND BARREIRA = 'SUPERFICIE'
-            
+
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
                 ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
@@ -578,9 +577,6 @@
                             }
                         </script>
                         <div id="paretoChartcp5" style="width: 500px; height: 400px;"></div>
-
-
-        
             
                         <div class="col-md-3">
                             <h3>Insp. Superfície</h3>

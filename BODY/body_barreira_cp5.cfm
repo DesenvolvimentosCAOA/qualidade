@@ -213,20 +213,32 @@
         <title>CP5</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <link rel="stylesheet" href="/qualidade/FAI/assets/style_barreiras.css?v1">
- <script>
-    function validarFormulario(event) {
-        // Obtenha o valor do campo "problema"
-        var problemaInput = document.getElementById('formProblema');
-                var problema = problemaInput.value;
+        <script>
+            function validarFormulario(event) {
+                // Obtenha os valores dos campos
+                var peca = document.getElementById('formNConformidade').value.trim();
+                var posicao = document.getElementById('formPosicao').value.trim();
+                var problema = document.getElementById('formProblema').value.trim();
+                var responsavel = document.getElementById('formEstacao').value.trim();
+                var criticidade = document.getElementById('formCriticidade').value.trim();
         
-                // Valide apenas se o campo estiver preenchido
+                // Verifica se qualquer um dos campos está preenchido
+                if (peca || posicao || problema || responsavel || criticidade) {
+                    // Verifica se todos os campos estão preenchidos
+                    if (!peca || !posicao || !problema || !responsavel || !criticidade) {
+                        alert('Por favor, preencha todos os campos obrigatórios: Peça, Posição, Problema, Responsável e Criticidade.');
+                        event.preventDefault(); // Impede o envio do formulário
+                        return; // Sai da função
+                    }
+                }
+        
+                // Validação adicional do campo "Problema"
                 if (problema) {
-                    // Obtenha a lista de opções do datalist
+                    var problemaInput = document.getElementById('formProblema');
                     var datalist = document.getElementById('defeitos-list');
                     var options = datalist.options;
-        
-                    // Verifique se o valor do input corresponde a uma das opções do datalist
                     var isValid = false;
+        
                     for (var i = 0; i < options.length; i++) {
                         if (options[i].value === problema) {
                             isValid = true;
@@ -234,45 +246,42 @@
                         }
                     }
         
-                    // Se o valor não for válido, impede o envio do formulário
                     if (!isValid) {
                         alert('Por favor, selecione um problema válido da lista.');
                         event.preventDefault();
                         return; // Sai da função para não executar o restante da validação
                     }
                 }
-        // Validação do BARCODE com requisição AJAX
-        var barcode = document.getElementById('formVIN').value; // Obtém o valor do input formVIN
-        var problema = document.getElementById('formProblema').value; // Certifique-se de que há um campo com id 'formProblema'
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'verificar_barcode.cfm', true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var response = xhr.responseText.trim();
-                if (response === 'EXISTE_COM_CONDICAO') {
-                    alert('O BARCODE já existe na tabela com PROBLEMA vazio. Não é possível prosseguir com PROBLEMA preenchido.');
-                    event.preventDefault(); // Impede o envio do formulário
-                } else if (response === 'PROBLEMA_EXISTE_FORM_NULO') {
-                    alert('O BARCODE já existe na tabela com um problema registrado. O campo PROBLEMA no formulário não pode estar vazio.');
-                    event.preventDefault(); // Impede o envio do formulário
-                } else if (response === 'EXISTE') {
-                    alert('O BARCODE já existe na tabela. Por favor, verifique os dados.');
-                    event.preventDefault(); // Impede o envio do formulário
-                } else if (response === 'PERMITIR_ENVIO') {
-                    // Permite o envio do formulário
-                    document.getElementById('form_envio').submit();
-                } else {
-                    document.getElementById('form_envio').submit();
-                }
+        
+                // Validação do BARCODE com requisição AJAX
+                var barcode = document.getElementById('formVIN').value.trim();
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'verificar_barcode.cfm', true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var response = xhr.responseText.trim();
+                        if (response === 'EXISTE_COM_CONDICAO') {
+                            alert('O BARCODE já existe na tabela com PROBLEMA vazio. Não é possível prosseguir com PROBLEMA preenchido.');
+                            event.preventDefault(); // Impede o envio do formulário
+                        } else if (response === 'PROBLEMA_EXISTE_FORM_NULO') {
+                            alert('O BARCODE já existe na tabela com um problema registrado. O campo PROBLEMA no formulário não pode estar vazio.');
+                            event.preventDefault(); // Impede o envio do formulário
+                        } else if (response === 'EXISTE') {
+                            alert('O BARCODE já existe na tabela. Por favor, verifique os dados.');
+                            event.preventDefault(); // Impede o envio do formulário
+                        } else {
+                            document.getElementById('form_envio').submit();
+                        }
+                    }
+                };
+                xhr.send('barcode=' + encodeURIComponent(barcode) + '&problema=' + encodeURIComponent(problema) + '&barreira=CP5');
+        
+                // Impede o envio até a resposta da requisição AJAX
+                event.preventDefault();
             }
-        };
-        xhr.send('barcode=' + encodeURIComponent(barcode) + '&problema=' + encodeURIComponent(problema) + '&barreira=CP5');
-    
-        // Impede o envio até a resposta da requisição AJAX
-        event.preventDefault();
-    }
- </script>
+        </script>
+        
  
     </head>
     <body>

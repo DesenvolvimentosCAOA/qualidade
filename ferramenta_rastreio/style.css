@@ -1,0 +1,166 @@
+﻿body{
+    margin: 0;
+    background-color: black;
+    color: white;
+    max-height: 99.9%;
+}
+.flex{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+}
+
+.header{
+    justify-content: space-between;
+    background-color: #00385a;
+    max-width: 700px;
+    padding-right: 2vh;
+    padding-left: 3vw;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    color:white;
+}
+
+.g-1{
+    flex-grow: 1;
+}
+
+.comp{
+    padding-left: 1vw;
+    width: 74vw;
+    justify-content:space-between;
+}
+
+.v-center{
+    align-items: center;
+}
+
+.row{
+    flex-direction: row;
+}
+
+.column{
+    flex-direction: column;
+}
+
+#logo{
+    height: 12vh;
+}
+
+
+#square{
+    font-size: 15vh;
+}
+
+.lab-casa{
+    color: white;
+    text-decoration: none;
+    font-size: 6vh;
+}
+
+.info-cab {
+    font-size: 3vh;
+    max-width: 45%;
+    margin-left: 5vh;
+}
+
+input{
+    background-color: white;
+    color: #292c2e;
+    width: 50%;
+    height: 4vh;
+    border: none;
+    border-radius: 1vh;
+    text-align: left;
+    font-size: 2.5vh;
+    padding-left: 1.2vh;
+}
+
+.ch{
+    margin-top: 6vh;
+    margin-bottom: 4vh;
+}
+
+.veic-cab{
+    margin-top: 5vh;
+}
+
+.vin{
+    min-width: 36vw;  
+    margin: auto; 
+    font-size: 5vh;
+}
+
+.vin input{
+    text-align: center !important;
+}
+
+.vin label{
+    align-self: center;
+}
+
+#invalido{
+    color: red;
+    font-size: 3.3vh;
+    margin-bottom: 4vh;
+}
+
+#valido{
+    color: green;
+    font-size: 3.3vh;
+    margin-bottom: 4vh;
+}
+
+#aguardando{
+    color: yellow;
+    font-size: 3.3vh;
+    margin-bottom: 4vh;
+}
+
+form{
+    margin-bottom: 1vh;
+}
+
+@media (max-width: 500px){
+    body{
+        flex-direction: column !important;
+    }
+    .header{
+        flex-direction: row !important;
+        min-width: 96vw;
+        align-items: center;
+    }
+    .comp{
+        width: 98%;
+    }
+
+    #square{
+        font-size: 10vh;
+    }
+
+    #logo{
+        height: 10vh;
+    }
+
+    .lab-casa{
+        font-size: 4vh;
+    }
+
+    .vin{
+        margin-top: 10vh;
+    }
+
+}
+
+
+.btn {
+    border-radius: 5px;
+    background-color: blue;
+    color: white;
+    padding: 10px 20px; /* Você pode ajustar o preenchimento (padding) para definir a altura e largura */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    width: 250px;
+    font-size: 16px;
+  }

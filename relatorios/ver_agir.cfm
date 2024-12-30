@@ -76,7 +76,7 @@
         AND PROBLEMA IS NOT NULL
         ORDER BY ID DESC
         )
-        WHERE USER_DATA >= TRUNC(SYSDATE) -10 -- Final da semana atual
+        WHERE USER_DATA >= TRUNC(SYSDATE) -5 -- Final da semana atual
     </cfquery>
 
     <cfquery name="consultas_fa" datasource="#BANCOSINC#">
@@ -103,7 +103,7 @@
             AND PROBLEMA IS NOT NULL
             ORDER BY ID DESC
         )
-        WHERE USER_DATA >= TRUNC(SYSDATE) -10
+        WHERE USER_DATA >= TRUNC(SYSDATE) -5
     </cfquery>
 
     <cfquery name="consultas_fai" datasource="#BANCOSINC#">
@@ -130,7 +130,7 @@
             AND PROBLEMA IS NOT NULL
             ORDER BY ID DESC
         )
-        WHERE USER_DATA >= TRUNC(SYSDATE) -10
+        WHERE USER_DATA >= TRUNC(SYSDATE) -5
     </cfquery>
 
     <cfquery name="consultas_pdi" datasource="#BANCOSINC#">
@@ -157,7 +157,7 @@
             AND PROBLEMA IS NOT NULL
             ORDER BY ID DESC
         )
-        WHERE USER_DATA >= TRUNC(SYSDATE) -10
+        WHERE USER_DATA >= TRUNC(SYSDATE) -5
     </cfquery>
 
     <cfquery name="consultas_acomp_cont" datasource="#BANCOSINC#">
@@ -240,13 +240,13 @@
             AND CRITICIDADE NOT IN 'N0'
             ) AS TOTAL_OCORRENCIAS_APOS_BP,
              -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
-    (SELECT MAX(sqf_inner.USER_DATA)
-     FROM SISTEMA_QUALIDADE_FA sqf_inner
-     WHERE sqf_inner.PECA = sqf.PECA
-       AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-       AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
-       AND CRITICIDADE NOT IN ('N0')
-    ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
+            (SELECT MAX(sqf_inner.USER_DATA)
+            FROM SISTEMA_QUALIDADE_FA sqf_inner
+            WHERE sqf_inner.PECA = sqf.PECA
+            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            AND CRITICIDADE NOT IN ('N0')
+            ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
         FROM 
             SISTEMA_QUALIDADE_FA sqf
         LEFT JOIN
@@ -283,13 +283,13 @@
             AND CRITICIDADE NOT IN 'N0'
             ) AS TOTAL_OCORRENCIAS_APOS_BP,
              -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
-    (SELECT MAX(sqf_inner.USER_DATA)
-     FROM SISTEMA_QUALIDADE_FAI sqf_inner
-     WHERE sqf_inner.PECA = sqf.PECA
-       AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-       AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
-       AND CRITICIDADE NOT IN ('N0')
-    ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
+            (SELECT MAX(sqf_inner.USER_DATA)
+            FROM SISTEMA_QUALIDADE_FAI sqf_inner
+            WHERE sqf_inner.PECA = sqf.PECA
+            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            AND CRITICIDADE NOT IN ('N0')
+            ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
 
         FROM 
             SISTEMA_QUALIDADE_FAI sqf
@@ -327,13 +327,13 @@
             AND CRITICIDADE NOT IN 'N0'
             ) AS TOTAL_OCORRENCIAS_APOS_BP,
              -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
-    (SELECT MAX(sqf_inner.USER_DATA)
-     FROM SISTEMA_QUALIDADE sqf_inner
-     WHERE sqf_inner.PECA = sqf.PECA
-       AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-       AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
-       AND CRITICIDADE NOT IN ('N0')
-    ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
+            (SELECT MAX(sqf_inner.USER_DATA)
+            FROM SISTEMA_QUALIDADE sqf_inner
+            WHERE sqf_inner.PECA = sqf.PECA
+            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            AND CRITICIDADE NOT IN ('N0')
+            ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
 
         FROM 
             SISTEMA_QUALIDADE sqf
@@ -370,13 +370,13 @@
             AND CRITICIDADE NOT IN 'N0'
             ) AS TOTAL_OCORRENCIAS_APOS_BP,
              -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
-    (SELECT MAX(sqf_inner.USER_DATA)
-     FROM SISTEMA_QUALIDADE_BODY sqf_inner
-     WHERE sqf_inner.PECA = sqf.PECA
-       AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-       AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
-       AND CRITICIDADE NOT IN ('N0')
-    ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
+            (SELECT MAX(sqf_inner.USER_DATA)
+            FROM SISTEMA_QUALIDADE_BODY sqf_inner
+            WHERE sqf_inner.PECA = sqf.PECA
+            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+            AND CRITICIDADE NOT IN ('N0')
+            ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
 
         FROM 
             SISTEMA_QUALIDADE_BODY sqf
