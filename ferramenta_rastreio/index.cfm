@@ -76,59 +76,50 @@
         
     
         <body class="flex row">
-            
-            <!--- Sesão de cabeçalho de informções na lateral esquerda  --->
+            <!--- Sesão de cabeçalho de informações na lateral esquerda  --->
             <section class="header flex column">
-                    <a href="http://mes.caoa.com.br:1234/pcfui#/page/Mosaic" target="_blank">
-                        <img src="/cf/assets/images/CAOATEC-MES.png" alt="logo" id="logo">
-                    </a>
-                        <label>
-                        
+                <h2>Sistema de Gestão da Qualidade</h2>
+                    <label>
                         <div class="card col-12 mt-3">
-                        <div class="card-body">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                            <tr>
-                                <tr><th>Historico:</th></tr>
-                                <th>⠀⠀VIN⠀⠀</th>
-                                <th>⠀⠀⠀⠀⠀⠀Modelo⠀⠀⠀⠀⠀⠀⠀</th>
-                                <th>⠀⠀Usuário⠀⠀⠀⠀</th>
-                                <!--- <th>Data⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</th> --->
-                            </tr>
-                            </thead>
-                            <tbody>
-                        <cfloop query="buscaHistorico">
-                            <cfoutput>
-                                <tr class="text-right">
-                                    <td class="text-center">#buscaHistorico.vin#</td>
-                                    <td class="text-center">#buscaHistorico.modelo#</td>
-                                    <td class="text-center">#buscaHistorico.usuario#</td>
-                                    <!--- <td class="text-center">#buscaHistorico.data_save#</td> --->
-                                    <!---<td style="color:<cfif busca.CHECK eq 0>red;<cfelse>green;</cfif>" class="text-center"><cfif busca.CHECK eq 0>Aguardando<cfelse>OK</cfif></td>--->
-                                </tr>
-                            </cfoutput>
-                        </cfloop>
-
-                            </tbody>
-                        </table>
+                            <div class="card-body">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <tr><th>Historico:</th></tr>
+                                            <th>⠀⠀VIN⠀⠀</th>
+                                            <th>⠀⠀⠀⠀⠀⠀Modelo⠀⠀⠀⠀⠀⠀⠀</th>
+                                            <th>⠀⠀Usuário⠀⠀⠀⠀</th>
+                                            <!--- <th>Data⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</th> --->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                <cfloop query="buscaHistorico">
+                                    <cfoutput>
+                                        <tr class="text-right">
+                                            <td class="text-center">#buscaHistorico.vin#</td>
+                                            <td class="text-center">#buscaHistorico.modelo#</td>
+                                            <td class="text-center">#buscaHistorico.usuario#</td>
+                                            <!--- <td class="text-center">#buscaHistorico.data_save#</td> --->
+                                            <!---<td style="color:<cfif busca.CHECK eq 0>red;<cfelse>green;</cfif>" class="text-center"><cfif busca.CHECK eq 0>Aguardando<cfelse>OK</cfif></td>--->
+                                        </tr>
+                                    </cfoutput>
+                                </cfloop>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                        
-                        </label>
+                    </label>
                     </a>
                         <i class="mdi mdi-truck-fast" id="square"></i>
                     </div>
             </section>
-    
             <!--- Container do corpo principal da pagina - Preto --->
             <div class="flex column">
-    
                 <cfoutput>
                 <!--- Sessão de Retorno de info Cabine e Chassi --->
                 <div class="comp flex">
                     <div class="info-cab flex column g-1">
-                        <label class="ch">Rastreio</label>
-    
+                        <label class="ch">Adicionar Check List</label>
                         <label>Leia o VIN</label>
                         <form id="form1" name="form1" method="POST" onsubmit="mudarFoco(atual, 'etiq')">
                             <input onfocus="myFunction(this)" id="cod" name="cod" type="text" value="<cfif isDefined("form.cod")>#form.cod#<cfelse></cfif>" onblur="mudarFoco(this, 'etiq')" <cfif isDefined("buscaMES.name") and buscaMES.name NEQ ''><cfelse>autofocus</cfif>>
@@ -148,7 +139,6 @@
                         </form>
                         <label id="invalido">
                         </label>
-    
                         <!--- Se não encontrar informações para o paramentro informado--->
                                             <!--- Se não encontrar informações para o paramentro informado--->
                         <cfif isDefined("form.valida") and isDefined("form.etiqv") and form.etiqv NEQ ''>

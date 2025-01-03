@@ -512,18 +512,7 @@
                                         </cfif>
                                     </td>
                                     <td>#BARCODE#</td>
-                                    <td>
-                                        <!-- Verificação de turno com base no INTERVALO -->
-                                        <cfif ListFind("06:00,07:00,08:00,09:00,10:00,11:00,12:00,13:00,14:00,15:00", INTERVALO)>
-                                            1º
-                                        <cfelseif ListFind("15:50,16:00,17:00,18:00,19:00,20:00,21:00,22:00,23:00,00:00", INTERVALO)>
-                                            2º
-                                        <cfelseif ListFind("01:00,02:00,03:00,04:00,05:00", INTERVALO)>
-                                            3º
-                                        <cfelse>
-                                            -
-                                        </cfif>
-                                    </td>
+                                    <td>1º TURNO</td>
                                     <td>#CRITICIDADE#</td>
                             </cfloop>
                             

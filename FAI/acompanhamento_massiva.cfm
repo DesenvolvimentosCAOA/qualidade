@@ -28,9 +28,6 @@
         WHERE status = 'OK'
     </cfquery>
 
-    <cfquery name="contagem_fa" datasource="#BANCOSINC#">
-        
-    </cfquery>
 
 <!DOCTYPE html>
 <html lang="pt">

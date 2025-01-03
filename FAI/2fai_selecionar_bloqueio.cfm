@@ -22,7 +22,7 @@
         SELECT *
         FROM INTCOLDFUSION.sistema_qualidade_body
         WHERE 1 = 1
-        AND DATA_BLOQUEIO IS NULL
+        AND (DATA_BLOQUEIO IS NULL OR STATUS_BLOQUEIO = 'DESBLOQUEADO')
         <cfif isDefined("url.filtroID") and url.filtroID neq "">
             AND ID = <cfqueryparam value="#url.filtroID#" cfsqltype="cf_sql_integer">
         </cfif>
@@ -34,8 +34,7 @@
         </cfif>
         ORDER BY USER_DATA DESC
     </cfquery>    
-    
-    
+
     <html lang="pt-BR">
         <head>
             <!-- Required meta tags -->

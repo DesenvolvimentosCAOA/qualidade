@@ -10,13 +10,13 @@
   }
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #007fff;" id="headerr">
-    <img src="/cf/assets/images/CAOATEC.png" height="55" style="margin: 0px 20px 0px 10px" class="d-inline-block align-top" alt="Logo">
-    <a class="navbar-brand" href="">Ferramenta de Rastreio</a>
+<h5 style="margin-right:20px;color:white;">Sistema de Gestão da Qualidade</h5>
+    <a class="navbar-brand" href="">Check List</a>
 
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="index.cfm">Ferramenta</a>
+          <a class="nav-link" href="index.cfm">Cadastrar Check List</a>
         </li>
       </ul>
     </div>

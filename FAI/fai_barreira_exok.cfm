@@ -128,121 +128,126 @@
          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
          <title>SIGN OFF</title>
          <link rel="icon" href="./assets/chery.png" type="image/x-icon">
-         <link rel="stylesheet" href="assets/style_barreiras.css?v1">
-
+         <link rel="stylesheet" href="assets/style_barreiras.css?v4">
          <script>
-                    // Carrega o VIN salvo ao carregar a página
-           window.onload = function() {
-                 var savedVIN = localStorage.getItem('vin');
-                 if (savedVIN) {
+            // Carrega o VIN salvo ao carregar a página
+            window.onload = function () {
+                var savedVIN = localStorage.getItem('vin');
+                if (savedVIN) {
                     document.getElementById('formVIN').value = savedVIN;
-                 }
-           };
-           function validarFormulario(event) {
-               // Validação geral dos campos
-               var peça = document.getElementById('formNConformidade').value;
-               var problema = document.getElementById('formProblema').value;
-               var criticidade = document.getElementById('formCriticidade').value;
-               var posição = document.getElementById('formPosicao').value;
-               var responsável = document.getElementById('formEstacao').value;
-               var vin = document.getElementById('formVIN').value;
-
-               // Verificação do comprimento do VIN
-               if (vin.length !== 17) {
-                  alert('O VIN deve ter exatamente 17 caracteres.');
-                  event.preventDefault(); // Impede o envio do formulário
-                  return false;
-               }
-
-               // Verificação dos primeiros 4 caracteres do VIN
-               var vinPrefixo = vin.substring(0, 4);
-               var vinPermitidos = ['95PJ', '95PZ', '95PB', '95PE', '95PD', '95PF'];
-
-               if (!vinPermitidos.includes(vinPrefixo)) {
-                  alert('O VIN não existe');
-                  event.preventDefault(); // Impede o envio do formulário
-                  return false;
-               }
-
-               // Validação condicional para "Peça" e "Problema"
-               if (peça) {
-                  var datalistPecas = document.getElementById('pecasList');
-                  var isPeçaValida = Array.from(datalistPecas.options).some(option => option.value === peça);
-
-                  if (!isPeçaValida) {
+                }
+            };
+        
+            function validarFormulario(event) {
+                var button = document.querySelector('button[type="submit"]');
+                var peça = document.getElementById('formNConformidade').value;
+                var problema = document.getElementById('formProblema').value;
+                var criticidade = document.getElementById('formCriticidade').value;
+                var posição = document.getElementById('formPosicao').value;
+                var responsável = document.getElementById('formEstacao').value;
+                var vin = document.getElementById('formVIN').value;
+        
+                // Validação do comprimento do VIN
+                if (vin.length !== 17) {
+                    alert('O VIN deve ter exatamente 17 caracteres.');
+                    event.preventDefault();
+                    return false;
+                }
+        
+                // Verificação dos primeiros 4 caracteres do VIN
+                var vinPrefixo = vin.substring(0, 4);
+                var vinPermitidos = ['95PJ', '95PZ', '95PB', '95PE', '95PD', '95PF'];
+        
+                if (!vinPermitidos.includes(vinPrefixo)) {
+                    alert('O VIN não existe');
+                    event.preventDefault();
+                    return false;
+                }
+        
+                // Validação condicional para "Peça" e "Problema"
+                if (peça) {
+                    var datalistPecas = document.getElementById('pecasList');
+                    var isPeçaValida = Array.from(datalistPecas.options).some(option => option.value === peça);
+        
+                    if (!isPeçaValida) {
                         alert('Por favor, selecione uma peça válida da lista.');
-                        event.preventDefault(); // Impede o envio do formulário
+                        event.preventDefault();
                         return false;
-                  }
-               }
-
-               if (problema) {
-                  var datalistProblemas = document.getElementById('problemasList');
-                  var isProblemaValido = Array.from(datalistProblemas.options).some(option => option.value === problema);
-
-                  if (!isProblemaValido) {
+                    }
+                }
+        
+                if (problema) {
+                    var datalistProblemas = document.getElementById('problemasList');
+                    var isProblemaValido = Array.from(datalistProblemas.options).some(option => option.value === problema);
+        
+                    if (!isProblemaValido) {
                         alert('Por favor, selecione um problema válido da lista.');
-                        event.preventDefault(); // Impede o envio do formulário
+                        event.preventDefault();
                         return false;
-                  }
-               }
-
-               // Validação adicional caso "Peça" esteja preenchida
-               if (peça) {
-                  if (!posição) {
+                    }
+                }
+        
+                // Validação adicional caso "Peça" esteja preenchida
+                if (peça) {
+                    if (!posição) {
                         alert('Por favor, selecione uma posição.');
-                        event.preventDefault(); // Impede o envio do formulário
+                        event.preventDefault();
                         return false;
-                  }
-
-                  if (!responsável) {
+                    }
+        
+                    if (!responsável) {
                         alert('Por favor, selecione um responsável.');
-                        event.preventDefault(); // Impede o envio do formulário
+                        event.preventDefault();
                         return false;
-                  }
-
-                  if (!criticidade) {
+                    }
+        
+                    if (!criticidade) {
                         alert('Por favor, selecione uma criticidade.');
-                        event.preventDefault(); // Impede o envio do formulário
+                        event.preventDefault();
                         return false;
-                  }
-               }
-
-               // Salvando o VIN no localStorage
-               localStorage.setItem('vin', vin);
-
-               // Validação do VIN com requisição AJAX
-               var xhr = new XMLHttpRequest();
-               xhr.open('POST', 'verificar_vin.cfm', true);
-               xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-               xhr.onreadystatechange = function () {
-                  if (xhr.readyState === 4 && xhr.status === 200) {
+                    }
+                }
+        
+                // Salvando o VIN no localStorage
+                localStorage.setItem('vin', vin);
+        
+                // Desativa o botão por 3 segundos
+                button.disabled = true;
+        
+                setTimeout(() => {
+                    button.disabled = false;
+                }, 3000);
+        
+                // Validação do VIN com requisição AJAX
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'verificar_vin.cfm', true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
                         var response = xhr.responseText.trim();
                         if (response === 'EXISTE_COM_CONDICAO') {
-                           alert('O VIN já foi inserido como OK. Não é possível prosseguir com o VIN NG.');
-                           event.preventDefault(); // Impede o envio do formulário
+                            alert('O VIN já foi inserido como OK. Não é possível prosseguir com o VIN NG.');
+                            event.preventDefault();
                         } else if (response === 'PROBLEMA_EXISTE_FORM_NULO') {
-                           alert('O VIN já existe na tabela com um problema registrado. O campo PROBLEMA no formulário não pode estar vazio.');
-                           event.preventDefault(); // Impede o envio do formulário
+                            alert('O VIN já existe na tabela com um problema registrado. O campo PROBLEMA no formulário não pode estar vazio.');
+                            event.preventDefault();
                         } else if (response === 'EXISTE') {
-                           alert('O VIN já existe na tabela. Por favor, verifique os dados.');
-                           event.preventDefault(); // Impede o envio do formulário
+                            alert('O VIN já existe na tabela. Por favor, verifique os dados.');
+                            event.preventDefault();
                         } else if (response === 'PERMITIR_ENVIO') {
-                           // Permite o envio do formulário
-                           document.getElementById('form_envio').submit();
+                            // Permite o envio do formulário
+                            document.getElementById('form_envio').submit();
                         } else {
-                           document.getElementById('form_envio').submit();
+                            document.getElementById('form_envio').submit();
                         }
-                  }
-               };
-               xhr.send('vin=' + vin + '&problema=' + problema + '&barreira=SIGN OFF');
-
-               // Impede o envio até a resposta da requisição AJAX
-               event.preventDefault();
+                    }
+                };
+                xhr.send('vin=' + vin + '&problema=' + problema + '&barreira=SIGN OFF');
+        
+                // Impede o envio até a resposta da requisição AJAX
+                event.preventDefault();
             }
-
-         </script>
-
+        </script>
       </head>
       <body>
          <!-- Header com as imagens e o menu -->
@@ -367,7 +372,10 @@
                   </div>
                </div>
                <div class="form-row"></div>
+               
                <button type="submit" class="btn btn-primary">Enviar</button>
+
+
                <!----acrescenta o modelo no banco de dados ---->
                <cfif isDefined("form.VIN") and form.VIN neq "">
                <cfquery name="buscaMES" datasource="#BANCOMES#">
