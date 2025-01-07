@@ -630,6 +630,55 @@
         SELECT * FROM CONSULTA4
     </cfquery>
 
+    <cfquery name="consulta_nconformidades_cp8_n0" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
+            WHERE TRUNC(USER_DATA) =
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+            AND PROBLEMA IS NOT NULL
+            AND BARREIRA = 'SIGN OFF'
+            AND CRITICIDADE NOT IN ('N1', 'N2', 'N3', 'N4','AVARIA','OK A-')
+            AND (
+                CASE 
+                    WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:00' AND TO_CHAR(USER_DATA, 'HH24:MI') < '15:50' THEN '15:00' 
+                    WHEN TO_CHAR(USER_DATA, 'HH24:MI') >= '15:50' AND TO_CHAR(USER_DATA, 'HH24:MI') < '16:00' THEN '15:50' 
+                    ELSE TO_CHAR(USER_DATA, 'HH24') || ':00' 
+                END IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+            )
+            AND CASE 
+                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '05:00' THEN TRUNC(USER_DATA - 1) 
+                ELSE TRUNC(USER_DATA) 
+            END = CASE 
+                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '05:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+            END
+            GROUP BY PROBLEMA, PECA, ESTACAO
+            ORDER BY COUNT(*) DESC
+        ),
+        CONSULTA2 AS (
+            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
+                ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
+            FROM CONSULTA
+            WHERE ROWNUM <= 10
+        ),
+        CONSULTA3 AS (
+            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
+                SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
+            FROM CONSULTA2
+        ),
+        CONSULTA4 AS (
+            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+                ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
+            FROM CONSULTA3
+        )
+        SELECT * FROM CONSULTA4
+    </cfquery>
+
    <!-- Verificando se está logado -->
    <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
     <script>
@@ -1379,6 +1428,36 @@
                             <h3>TUNEL DE LIBERAÇÃO</h3>
                             <canvas id="paretochart15" width="400" height="300"></canvas>
                         </div>
+                        <div class="col-md-5">
+                            <h3>Pareto - SIGN OFF N0</h3>
+                            <div class="table-responsive">
+                                <table style="font-size:12px" class="table table-hover table-sm" border="1" id="tblStocks" style="width: 100%;" data-excel-name="Veículos" style="font-size: 12px;>
+                                    <thead>
+                                        <tr class="text-nowrap">
+                                            <th scope="col" colspan="5" class="bg-success">Principais Não Conformidades - top 10</th>
+                                        </tr>
+                                        <tr class="text-nowrap">
+                                            <th scope="col">Shop</th>
+                                            <th scope="col">Peça</th>
+                                            <th scope="col">Problema</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col">Pareto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-group-divider">
+                                        <cfoutput query="consulta_nconformidades_cp8_N0">
+                                            <tr class="align-middle">
+                                                <td style="font-weight: bold;<cfif ESTACAO eq 'Linha T'>color: gold;<cfelseif ESTACAO eq 'Linha C'>color: gold;<cfelseif ESTACAO eq 'Linha F'>color: gold;<cfelseif ESTACAO eq 'Paint'>color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
+                                                <td>#PECA#</td>
+                                                <td style="font-weight: bold">#PROBLEMA#</td>
+                                                <td>#TOTAL_POR_DEFEITO#</td>
+                                                <td>#PARETO#%</td>
+                                            </tr>
+                                        </cfoutput>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
         
@@ -1494,77 +1573,77 @@
                 </div>
             </div>
         </div>
-        <!-- Script para o gráfico de Pareto -->
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var ctx = document.getElementById('paretoChart2').getContext('2d');
-                var data = {
-                    labels: [
-                        <cfoutput query="consulta_nconformidades">
-                            '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
-                        </cfoutput>
-                    ],
-                    datasets: [
-                        {
-                            label: 'Total de Defeitos',
-                            type: 'bar',
-                            data: [
-                                <cfoutput query="consulta_nconformidades">
-                                    #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
-                                </cfoutput>
-                            ],
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Pareto (%)',
-                            type: 'line',
-                            data: [
-                                <cfoutput query="consulta_nconformidades">
-                                    #PARETO#<cfif currentRow neq recordCount>,</cfif>
-                                </cfoutput>
-                            ],
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 2,
-                            fill: false,
-                            yAxisID: 'y-axis-2'
-                        }
-                    ]
-                };
-        
-                var options = {
-                    scales: {
-                        yAxes: [
+            <!-- Script para o gráfico de Pareto -->
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var ctx = document.getElementById('paretoChart2').getContext('2d');
+                    var data = {
+                        labels: [
+                            <cfoutput query="consulta_nconformidades">
+                                '#PROBLEMA# (#TOTAL_POR_DEFEITO#)'<cfif currentRow neq recordCount>,</cfif>
+                            </cfoutput>
+                        ],
+                        datasets: [
                             {
-                                ticks: {
-                                    beginAtZero: true
-                                },
-                                position: 'left',
-                                id: 'y-axis-1'
+                                label: 'Total de Defeitos',
+                                type: 'bar',
+                                data: [
+                                    <cfoutput query="consulta_nconformidades">
+                                        #TOTAL_POR_DEFEITO#<cfif currentRow neq recordCount>,</cfif>
+                                    </cfoutput>
+                                ],
+                                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
                             },
                             {
-                                ticks: {
-                                    beginAtZero: true,
-                                    callback: function(value) {
-                                        return value + "%";
-                                    }
-                                },
-                                position: 'right',
-                                id: 'y-axis-2'
+                                label: 'Pareto (%)',
+                                type: 'line',
+                                data: [
+                                    <cfoutput query="consulta_nconformidades">
+                                        #PARETO#<cfif currentRow neq recordCount>,</cfif>
+                                    </cfoutput>
+                                ],
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                yAxisID: 'y-axis-2'
                             }
                         ]
-                    }
-                };
-        
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: data,
-                    options: options
+                    };
+            
+                    var options = {
+                        scales: {
+                            yAxes: [
+                                {
+                                    ticks: {
+                                        beginAtZero: true
+                                    },
+                                    position: 'left',
+                                    id: 'y-axis-1'
+                                },
+                                {
+                                    ticks: {
+                                        beginAtZero: true,
+                                        callback: function(value) {
+                                            return value + "%";
+                                        }
+                                    },
+                                    position: 'right',
+                                    id: 'y-axis-2'
+                                }
+                            ]
+                        }
+                    };
+            
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: data,
+                        options: options
+                    });
                 });
-            });
-        </script>  
+            </script>  
         </div>      
     <meta http-equiv="refresh" content="40,URL=fai_indicadores_2turno.cfm">
   <!-- Setinha flutuante -->

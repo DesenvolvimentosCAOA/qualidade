@@ -84,8 +84,7 @@
             <li><a href="/qualidade/buyoff_linhat/adicionar_defeito.cfm">Adicionar Defeitos</a></li>
             <li><a href="./fa_editar.cfm">Editar Lançamento</a></li>
         </cfif>
-        <li><a href="./acompanhamento_massiva.cfm">Acompanhamento Massiva</a></li>
-        <li><a href="./cadastro_defeitos.cfm">Adicionar Massiva</a></li>
+        <li><a href="./acompanhamento_massiva_fa.cfm">Acompanhamento Massiva</a></li>
         </ul>
         </li>
     <li><a href="logout.cfm">Sair</a></li>

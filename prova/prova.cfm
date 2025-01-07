@@ -44,7 +44,7 @@
     </cfoutput>
     <script>
         setTimeout(function() {
-            window.location.href = "./buyoff_linhat/index.cfm";
+            window.location.href = "../buyoff_linhat/index.cfm";
         }, 2000); // 2000 ms = 2 segundos
     </script>
 </cfif>

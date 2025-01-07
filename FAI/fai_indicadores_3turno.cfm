@@ -476,6 +476,52 @@
         SELECT * FROM CONSULTA4
     </cfquery>
 
+    <cfquery name="consulta_nconformidades_cp8_n0" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
+            WHERE TRUNC(USER_DATA) =
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+            AND PROBLEMA IS NOT NULL
+            AND BARREIRA = 'SIGN OFF'
+            AND CRITICIDADE NOT IN ('N1', 'N2', 'N3', 'N4','AVARIA','OK A-')
+            AND (
+                -- Segunda a Quinta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                -- Sexta-feira: turno inicia às 01:02 e termina às 06:10 do mesmo dia
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '01:02:00' AND '06:10:00'))
+                -- Sábado: turno inicia na sexta-feira às 23:00 e termina no sábado às 04:25
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (
+                    (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '23:00:00' AND '23:59:59') OR
+                    (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '00:00:00' AND '04:25:00')
+                ))
+            )
+            GROUP BY PROBLEMA, PECA, ESTACAO
+            ORDER BY COUNT(*) DESC
+        ),
+        CONSULTA2 AS (
+            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
+                ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
+            FROM CONSULTA
+            WHERE ROWNUM <= 10
+        ),
+        CONSULTA3 AS (
+            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
+                SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
+            FROM CONSULTA2
+        ),
+        CONSULTA4 AS (
+            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+                ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
+            FROM CONSULTA3
+        )
+        SELECT * FROM CONSULTA4
+    </cfquery>
+
     <!-- Verificando se está logado -->
     <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
         <script>
@@ -1224,6 +1270,36 @@
                             <div class="col-md-4">
                                 <h3>TUNEL DE LIBERAÇÃO</h3>
                                 <canvas id="paretochart15" width="400" height="300"></canvas>
+                            </div>
+                            <div class="col-md-5">
+                                <h3>Pareto - SIGN OFF N0</h3>
+                                <div class="table-responsive">
+                                    <table style="font-size:12px" class="table table-hover table-sm" border="1" id="tblStocks" style="width: 100%;" data-excel-name="Veículos" style="font-size: 12px;>
+                                        <thead>
+                                            <tr class="text-nowrap">
+                                                <th scope="col" colspan="5" class="bg-success">Principais Não Conformidades - top 10</th>
+                                            </tr>
+                                            <tr class="text-nowrap">
+                                                <th scope="col">Shop</th>
+                                                <th scope="col">Peça</th>
+                                                <th scope="col">Problema</th>
+                                                <th scope="col">Total</th>
+                                                <th scope="col">Pareto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table-group-divider">
+                                            <cfoutput query="consulta_nconformidades_cp8_N0">
+                                                <tr class="align-middle">
+                                                    <td style="font-weight: bold;<cfif ESTACAO eq 'TRIM'>color: gold;<cfelseif ESTACAO eq 'Linha C'>color: gold;<cfelseif ESTACAO eq 'Linha F'>color: gold;<cfelseif ESTACAO eq 'Paint'>color: orange;<cfelseif ESTACAO eq 'BODY'>color: blue;<cfelseif ESTACAO eq 'CKD'>color: green;</cfif>">#ESTACAO#</td>
+                                                    <td>#PECA#</td>
+                                                    <td style="font-weight: bold">#PROBLEMA#</td>
+                                                    <td>#TOTAL_POR_DEFEITO#</td>
+                                                    <td>#PARETO#%</td>
+                                                </tr>
+                                            </cfoutput>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
