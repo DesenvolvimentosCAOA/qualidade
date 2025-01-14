@@ -1,6 +1,6 @@
 <cfinvoke  method="inicializando" component="cf.ini.index">
 
-    <cfif not isDefined("cookie.userCall")>
+    <cfif not isDefined("cookie.USER_APONTAMENTO_CL")>
        <script>
         alert("É necessario autorização!!");
         self.location = 'login_rastreio/index.cfm'
@@ -16,7 +16,7 @@
         self.location = 'cadastro.cfm';
       </script>
     </cfif>
- 
+
      <html lang="pt">
          <head>
          <cfoutput>
@@ -205,7 +205,7 @@
                  var data = new Date(2010,0,01);
                    // Converte a data para GMT
                    data = data.toGMTString();
-                document.cookie = 'userCall=; expires=' + data + '; path=/';
+                document.cookie = 'USER_APONTAMENTO_CL=; expires=' + data + '; path=/';
                 self.location = 'login_rastreio/index.cfm';
              }
           </script>

@@ -558,13 +558,13 @@
                 }
                 .ticker:hover .ticker-content {
                     animation-play-state: paused;
-        }
+                }
 
                 @keyframes tickerMove {
                     0% { transform: translateX(100%); }
                     100% { transform: translateX(-100%); }
                 }
-          </style>
+        </style>
     </head>
     <body>
         <!-- Header com as imagens e o menu -->
@@ -765,7 +765,7 @@
             <div class="row">
                 <!-- Tabela H/H para validacao -->
                 <div class="col-md-4">
-                    <h3 style="margin-left:50px">Inspção de Superfície</h3>
+                    <h3 style="margin-left:50px">Inspeção de Superfície</h3>
                     <div class="table-responsive">
                         <table class="table table-hover table-sm w-75">
                             <thead class="bg-success">

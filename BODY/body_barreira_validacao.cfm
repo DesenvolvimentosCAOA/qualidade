@@ -57,6 +57,8 @@
         where l.code = VIN
       and p.name like '%CARROCERIA%'
  </cfquery>
+
+ 
  
     <!--- Verifica se o formulário foi enviado --->
  <cfif structKeyExists(form, "nome") and structKeyExists(form, "vin") and structKeyExists(form, "modelo") and structKeyExists(form, "local") and structKeyExists(form, "N_Conformidade") and structKeyExists(form, "posicao") and structKeyExists(form, "problema")>
@@ -129,6 +131,12 @@
         where l.code = '#form.VIN#'
         and p.name like '%CARROCERIA%'
     </cfquery>
+    <cfif buscaMES2.recordcount EQ 0>
+        <script>
+            alert("Vin inválido ou campo vazio");
+            window.location.href="body_barreira_validacao.cfm";
+        </script>
+    </cfif>
  
     <!--- Inserir item --->
     <cfset intervaloInserir = "" />
@@ -171,6 +179,7 @@
        </cfif>
     </cfif>
     
+<cfif buscaMES2.recordcount GT 0>
     <!-- Realiza a inserção na tabela -->
     <cfquery name="insere" datasource="#BANCOSINC#">
        INSERT INTO INTCOLDFUSION.sistema_qualidade_body (ID, USER_DATA, USER_COLABORADOR, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, ULTIMO_REGISTRO)
@@ -190,7 +199,7 @@
            <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
        )
     </cfquery>
-    
+</cfif>
  
     <cfoutput><script>window.location.href = 'body_barreira_validacao.cfm';</script></cfoutput>
     

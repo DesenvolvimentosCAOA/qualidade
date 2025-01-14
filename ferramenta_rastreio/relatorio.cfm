@@ -1,7 +1,7 @@
 ﻿<cfinvoke  method="inicializando" component="cf.ini.index">
 
 <!--- Verificando se está logado --->
-<cfif not isDefined("cookie.userCall") or cookie.userCall eq "">
+<cfif not isDefined("cookie.USER_APONTAMENTO_CL") or cookie.USER_APONTAMENTO_CL eq "">
   <script>
       alert("É necessario autenticação!!");
       self.location = 'login_rastreio/index.cfm'
@@ -20,7 +20,7 @@
 <cfquery name="valida" datasource="sincprod">
 
 select usuario, permissao from intcoldfusion.usuarios_ferramenta_rastreio
-where lower(usuario) like lower('%#cookie.userCall#%') 
+where lower(usuario) like lower('%#cookie.USER_APONTAMENTO_CL#%') 
 
 </cfquery>
 

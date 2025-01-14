@@ -147,21 +147,48 @@
                 AND (SHOP = 'PDI' OR USER_LEVEL = 'G'OR USER_LEVEL = 'P')
             </cfquery>
         
-        <!---    <CFDUMP VAR="#validausuario#"> --->
-        <cfif validausuario.recordcount GT 0>
-            <cfcookie name="user_apontamento_pdi" value="#FORM.PDI_LOGIN#">
-            <cfcookie name="user_level_pdi" value="#validausuario.USER_LEVEL#">
-            <cfif validausuario.user_level eq "R" OR validausuario.user_level eq "E">
-                <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_entrada.cfm"/>
-            <cfelseif validausuario.user_level eq "P">
-                <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_indicadores_1turno.cfm"/>
+            <!---    <CFDUMP VAR="#validausuario#"> --->
+            <cfif validausuario.recordcount GT 0>
+                <cfcookie name="user_apontamento_pdi" value="#FORM.PDI_LOGIN#">
+                <cfcookie name="user_level_pdi" value="#validausuario.USER_LEVEL#">
+                <cfif validausuario.user_level eq "R" OR validausuario.user_level eq "E">
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_entrada.cfm"/>
+                <cfelseif validausuario.user_level eq "P">
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_indicadores_1turno.cfm"/>
+                <cfelse>
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_saida.cfm"/>
+                </cfif>
             <cfelse>
-                <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_saida.cfm"/>
+                <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
             </cfif>
-        <cfelse>
-            <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
         </cfif>
+    </cfoutput>
+
+
+    <!--- valida o usuário para PDI --->
+    <cfoutput>
+        <cfif isDefined("form.CL_LOGIN")>
+            <cfquery name="validausuario" datasource="#BANCOSINC#">
+                SELECT ID, USUARIO, SENHA, trim (PERMISSAO) PERMISSAO, USUARIO FROM usuarios_ferramenta_rastreio 
+                WHERE upper(USUARIO) = UPPER('#form.CL_LOGIN#')
+                AND SENHA = UPPER('#form.CL_SENHA#')
+                AND (PERMISSAO = '2'OR PERMISSAO = '0')
+            </cfquery>
         
+            <!---    <CFDUMP VAR="#validausuario#"> --->
+            <cfif validausuario.recordcount GT 0>
+                <cfcookie name="user_apontamento_cl" value="#FORM.CL_LOGIN#">
+                <cfcookie name="user_level_cl" value="#validausuario.permissao#">
+                <cfif validausuario.permissao eq "1" OR validausuario.permissao eq "0">
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/ferramenta_rastreio/index.cfm"/>
+                <cfelseif validausuario.permissao eq "P">
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/ferramenta_rastreio/index.cfm"/>
+                <cfelse>
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/ferramenta_rastreio/index.cfm"/>
+                </cfif>
+            <cfelse>
+                <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
+            </cfif>
         </cfif>
     </cfoutput>
 
@@ -459,7 +486,6 @@
         <div id="pdi_erro_numerico" class="alert alert-danger" style="display: none; width: 100%; margin-top: 10px;">A senha deve conter apenas números.</div>
     </form>
 </div>
-
 <!-- JavaScript -->
 <script>
     function validarPDILogin() {
@@ -483,6 +509,53 @@
         // Caso não haja erro, limpar mensagens de erro (opcional)
         document.getElementById('pdi_erro').style.display = 'none';
         document.getElementById('pdi_erro_numerico').style.display = 'none';
+
+        return true; // Permite o envio do formulário
+    }
+</script>
+
+<!-- Formulário de PDI -->
+<div id="form-cl" class="form-section" style="display: none;">
+    <form method="post" onsubmit="return validarCLLogin()">
+        <h2 style="color:purple">Check List</h2>
+        <div class="form-group">
+            <label for="cl_login">Login:</label>
+            <input type="text" class="form-control" id="cl_login" name="cl_login" oninput="this.value = this.value.toLowerCase()">
+        </div>
+        <div class="form-group">
+            <label for="cl_senha">Senha:</label>
+            <input type="password" class="form-control" id="cl_senha" name="cl_senha">
+        </div>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+        <button type="reset" class="btn btn-secondary" onclick="ocultarForm('cl')">Cancelar</button>
+        <!-- Elemento para exibir mensagem de erro -->
+        <div id="cl_erro" class="alert alert-danger" style="display: none; width: 100%; margin-top: 10px;">Usuário ou senha incorretos.</div>
+        <div id="cl_erro_numerico" class="alert alert-danger" style="display: none; width: 100%; margin-top: 10px;">A senha deve conter apenas números.</div>
+    </form>
+</div>
+<!-- JavaScript -->
+<script>
+    function validarCLLogin() {
+        var login = document.getElementById('cl_login').value;
+        var senha = document.getElementById('cl_senha').value;
+
+        // Validar se a senha contém apenas números
+        if (!(/^\d+$/.test(senha))) {
+            document.getElementById('cl_erro_numerico').style.display = 'block';
+            document.getElementById('cl_erro').style.display = 'none';
+            return false; // Impede o envio do formulário
+        }
+
+        // Exemplo simples de validação
+        if (login === "" || senha === "") {
+            document.getElementById('cl_erro').style.display = 'block';
+            document.getElementById('cl_erro_numerico').style.display = 'none';
+            return false; // Impede o envio do formulário
+        }
+
+        // Caso não haja erro, limpar mensagens de erro (opcional)
+        document.getElementById('cl_erro').style.display = 'none';
+        document.getElementById('cl_erro_numerico').style.display = 'none';
 
         return true; // Permite o envio do formulário
     }

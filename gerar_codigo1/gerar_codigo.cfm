@@ -9,10 +9,9 @@
        <cfquery name="consulta" datasource="#BANCOSINC#">
           SELECT *
           FROM INTCOLDFUSION.gerar_codigo
-          WHERE SHOP IS NULL
+          WHERE SHOP = 'FAI'
           ORDER BY ID DESC
        </cfquery>
-   
        <!--- Verifica se o formulário foi enviado --->
        <cfif structKeyExists(form, "vin")>
          <!--- Obter próximo maxId --->
@@ -22,10 +21,11 @@
          
          <!--- Inserir novo registro --->
          <cfquery name="insere" datasource="#BANCOSINC#">
-            INSERT INTO INTCOLDFUSION.gerar_codigo (ID, CODIGO) 
+            INSERT INTO INTCOLDFUSION.gerar_codigo (ID, CODIGO, SHOP) 
             VALUES (
                <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
-               <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">
+               <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">,
+               'FAI'
             )
          </cfquery>
          <cfoutput>

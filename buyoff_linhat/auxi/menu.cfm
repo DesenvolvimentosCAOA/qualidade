@@ -55,6 +55,12 @@
           >
         </li>
         <li class="">
+          <a href="#" title="Login CL" onclick="mostrarForm('cl')"
+            ><ion-icon name="chevron-forward-outline"></ion-icon>
+            <p>Check List</p></a
+          >
+        </li>
+        <li class="">
           <a href="#" title="Cadastro" onclick="validarAcessoCadastro()"
             ><ion-icon name="chevron-forward-outline"></ion-icon>
             <p>Cadastro</p></a

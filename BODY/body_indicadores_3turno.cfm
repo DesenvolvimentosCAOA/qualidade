@@ -699,7 +699,7 @@
             <div class="row">
                 <!-- Tabela H/H para validacao -->
                 <div class="col-md-4">
-                    <h3 style="margin-left:50px">Insp. Superfície</h3>
+                    <h3 style="margin-left:50px">Inspeção de Superfície</h3>
                     <div class="table-responsive">
                         <table class="table table-hover table-sm w-75">
                             <thead class="bg-success">

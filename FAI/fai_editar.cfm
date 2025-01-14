@@ -129,7 +129,7 @@
             TIPO_REPARO = NULL,
             REPARADOR = NULL,
             CRITICIDADE = NULL,
-            DATA_REPARO = NULL,
+            REPARO_DATA = NULL,
             PECA_REPARO = NULL,
             POSICAO_REPARO = NULL,
             PROBLEMA_REPARO = NULL,

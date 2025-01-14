@@ -11,7 +11,7 @@
             and l.code = '#url.cabine#'
         </cfquery>
     </cfif>
-    
+
     <!--- Se for informado o barcode do CHASSI ao invés do VIN --->
     <cfif isDefined("url.chassi") and len(url.chassi) lt 7>
         <cfquery name="buscaVIN" datasource="#BANCOMES#">

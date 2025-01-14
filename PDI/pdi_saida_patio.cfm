@@ -359,7 +359,8 @@
                         "KMHK281HF": "KONA EV",
                         "95PBLK31D": "TIGGO 5x 48v ADAS LOW",
                         "95PEFL31D": "Tiggo 7 ICE LOW",
-                        "95PFEM61D": "TIGGO 8 FL3"
+                        "95PFEM61D": "TIGGO 8 FL3",
+                        "LVVDC21B0": "Arrizo 6"
                   };
               
                   const vinInput = document.getElementById("formVIN");

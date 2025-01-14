@@ -26,7 +26,7 @@
     <cfif buscaMES.recordcount EQ 0>
         <script>
             alert("Vin inválido ou campo vazio");
-            window.location.href="index.cfm";
+            window.location.href="lancamento.cfm";
         </script>
     </cfif>
 </cfif>
@@ -42,7 +42,7 @@
     <cfif buscaExistente.recordcount GT 0>
         <script>
             alert("Esse código <cfoutput>#form.cod#</cfoutput> já existe dentro da base de dados!");
-            window.location.href="index.cfm";
+            window.location.href="lancamento.cfm";
         </script>
     <cfelse>
         <cfquery name="maxId" datasource="#BANCOSINC#">
@@ -62,7 +62,7 @@
             <cfqueryparam value="#form.etiqv#" cfsqltype="CF_SQL_VARCHAR">
         )            
     </cfquery>
-    <cflocation url="index.cfm">
+    <cflocation url="lancamento.cfm">
 </cfif>
     </cfif>
 </cfif>
@@ -87,73 +87,28 @@
 <cfelse>
     <cfset newCaixa = maxCaixa>
 </cfif>
-<!-- Calcular registros restantes para 100 -->
-<cfset registrosRestantes = 100 - countCaixa>
 
     <html>
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
             <link rel="shortcut icon" href="/cf/assets/images/favicon.png" />
-            <title>Check List</title>
+            <title>Ferramenta - Rastreio</title>
             <link rel="stylesheet" href="style.css?v=9">
             <link rel="stylesheet" href="/cf/assets/vendors/iconfonts/mdi/css/materialdesignicons.min.css?v=2">
-            <style>
-                    body {
-                    overflow: hidden;
-                }
-                @keyframes piscar {
-                    0% { color: white; }
-                    33% { color: red; }
-                    66% { color: red; }
-                    100% { color: white; }
-                }
-        
-                .piscando {
-                    font-size: 20px;
-                    animation: piscar 1s infinite;
-                }
-            </style>
         </head>
+        
+    
         <body class="flex row">
             <section class="header flex column">
                 <h2>Sistema de Gestão da Qualidade</h2>
-                <cfif registrosRestantes EQ 0>
-                    <script>
-                        // Criar um elemento de mensagem
-                        const messageDiv = document.createElement('div');
-                        messageDiv.style.position = 'fixed';
-                        messageDiv.style.top = '50%';
-                        messageDiv.style.left = '50%';
-                        messageDiv.style.transform = 'translate(-50%, -50%)';
-                        messageDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
-                        messageDiv.style.color = 'white';
-                        messageDiv.style.padding = '20px';
-                        messageDiv.style.borderRadius = '10px';
-                        messageDiv.style.fontSize = '18px';
-                        messageDiv.style.fontWeight = 'bold';
-                        messageDiv.style.zIndex = '1000';
-                        messageDiv.style.textAlign = 'center';
-                        messageDiv.innerText = 'A caixa está cheia! Por favor, troque para a próxima caixa.';
-                        // Adicionar o elemento ao corpo da página
-                        document.body.appendChild(messageDiv);
-                
-                        // Remover a mensagem após 5 segundos
-                        setTimeout(() => {
-                            document.body.removeChild(messageDiv);
-                        }, 5000);
-                    </script>
-                <cfelse>
-                    <div>
-                        Restam <cfoutput>#registrosRestantes#</cfoutput> registros para atingir 100, na caixa <cfoutput>#maxCaixa#</cfoutput>.
-                    </div>
-                </cfif>
                     <label>
                         <div class="card col-12 mt-3">
                             <div class="card-body">
                                 <table class="table table-striped table-hover">
                                     <thead>
                                         <tr>
+                                            <tr><th>Historico:</th></tr>
                                             <th>⠀⠀VIN⠀⠀</th>
                                             <th>⠀⠀⠀⠀⠀⠀Modelo⠀⠀⠀⠀⠀⠀⠀</th>
                                             <th>⠀⠀Usuário⠀⠀⠀⠀</th>
@@ -189,24 +144,19 @@
                         <label class="ch">Adicionar Check List</label>
                         <label>Leia o VIN</label>
                         <form id="form1" name="form1" method="POST">
-                            <input 
-                                id="cod" 
-                                name="cod" 
-                                type="text" 
-                                maxlength="17" 
-                                oninput="checkVinLength()" 
-                                autofocus 
-                                value="<cfif isDefined('form.cod')>#form.cod#<cfelse></cfif>">
+                            <input id="cod" name="cod" type="text" value="<cfif isDefined('form.cod')>#form.cod#<cfelse></cfif>" <cfif isDefined('buscaMES.name') and buscaMES.name NEQ ''><cfelse>autofocus</cfif>>
                             </br></br>
                             <label>Leia a Caixa</label></br>
                             <input id="etiqv" name="etiqv" type="text" value="#newCaixa#"><br><br>
                             <button class="btn" type="submit" id="btn" name="button">Confirmar</button>
                         </form>
+    
                     </div>
                     <div class="info-cab flex column g-1">
                     <label class="ch">Usuário Logado - #USER_APONTAMENTO_CL#</label>
-                        <button id="expireCookieBtn" type="button" onclick="redirect()" form="form_meta" class="btn btn-danger m-2">Sair</button>
-                        <button id="expireCookieBtn" type="button" onclick="redirect2()" form="form_meta" class="btn btn-danger m-2">Pesquisa</button>
+                    <button id="expireCookieBtn" type="button" onclick="redirect()" form="form_meta" class="btn btn-danger m-2">Sair</button>
+                    <button id="expireCookieBtn" type="button" onclick="redirect2()" form="form_meta" class="btn btn-danger m-2">Retornar</button>
+
                         </div>
                     </div>
                 </div>
@@ -214,14 +164,8 @@
                 </cfoutput>
             </div>
     
-            <script>
-                function checkVinLength() {
-                    const vinInput = document.getElementById("cod");
-                    if (vinInput.value.length === 17) {
-                        document.getElementById("form1").submit();
-                    }
-                }
-                function redirect() {
+    <script>
+        function redirect() {
                 // Redirecionar para outra página
                 window.location.href = 'cookie.cfm';
             }
@@ -229,7 +173,7 @@
                 // Redirecionar para outra página
                 window.location.href = 'relatorio.cfm';
             }
-            </script>
+    </script>
     
         </body>
     

@@ -209,7 +209,7 @@
                     AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                     AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:00' THEN TRUNC(USER_DATA - 1) 
                             ELSE TRUNC(USER_DATA) 
                         END = CASE 
                                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 

@@ -179,9 +179,7 @@
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
                 ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                -- Sábado: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') BETWEEN '6' AND '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
                 AND INTERVALO BETWEEN '06:00' AND '15:00'
             GROUP BY BARREIRA, VIN, INTERVALO

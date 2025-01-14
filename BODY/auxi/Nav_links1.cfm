@@ -18,9 +18,9 @@
     <li class="dropdown">
       <a href="#">Indicadores</a>
       <ul class="dropdown-menu">
-        <li><a href="./body_indicadores_1.cfm">1º Turno</a></li>
-        <li><a href="./body_indicadores_2.cfm">2º Turno</a></li>
-        <li><a href="./body_indicadores_3.cfm">3º Turno</a></li>
+        <li><a href="./body_indicadores_1turno.cfm">1º Turno</a></li>
+        <li><a href="./body_indicadores_2turno.cfm">2º Turno</a></li>
+        <li><a href="./body_indicadores_3turno.cfm">3º Turno</a></li>
       </ul>
     </li>
     <li class="dropdown">

@@ -25,7 +25,7 @@
                         <a href="fai_indicadores_3turno_reparo.cfm">Indicador Reparo 3º turno</a>
                     </li>
                     <li>
-                        <a href="fai_relatorios_reparo.cfm">Relatório de Reparo</a>
+                        <a href="fai_relatorios_1reparo.cfm">Relatório de Reparo</a>
                     </li>
                 </ul>
             </li>

@@ -1,2 +1,2 @@
-<cfcookie name="userCall" expires="now">
-  <meta http-equiv="refresh" content="0; url=login_rastreio/index.cfm">
+<cfcookie name="USER_APONTAMENTO_CL" expires="now">
+  <meta http-equiv="refresh" content="0; url=/qualidade/buyoff_linhat/index.cfm">

@@ -814,9 +814,81 @@
                             </cfloop>
 
                             <cfloop index="i" from="1" to="#consulta_barreira_hr.recordcount#">
-                                <cfif consulta_barreira_hr.BARREIRA[i] EQ "SIGN OFF">
+                                <cfif consulta_barreira_hr.BARREIRA[i] EQ "TUNEL DE LIBERACAO">
                                     <tr class="align-middle">
                                         <td colspan="1" class="text-end"><strong>SIGN OFF</strong></td>
+                                        <td colspan="1" class="text-end"><strong>HR</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
+                                <cfif consulta_barreira_tiggo7.BARREIRA[i] EQ "TUNEL DE LIBERACAO">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>TUNEL DE LIBERACAO</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1E</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo7.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo5.recordcount#">
+                                <cfif consulta_barreira_tiggo5.BARREIRA[i] EQ "TUNEL DE LIBERACAO">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>TUNEL DE LIBERACAO</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T19</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo5.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tiggo18.recordcount#">
+                                <cfif consulta_barreira_tiggo18.BARREIRA[i] EQ "TUNEL DE LIBERACAO">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>TUNEL DE LIBERACAO</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T18</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tiggo18.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_t1a.recordcount#">
+                                <cfif consulta_barreira_t1a.BARREIRA[i] EQ "TUNEL DE LIBERACAO">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>TUNEL DE LIBERACAO</strong></td>
+                                        <td colspan="1" class="text-end"><strong>T1A</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_tl.recordcount#">
+                                <cfif consulta_barreira_tl.BARREIRA[i] EQ "TUNEL DE LIBERACAO">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>TUNEL DE LIBERACAO</strong></td>
+                                        <td colspan="1" class="text-end"><strong>TL</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_hr.recordcount#">
+                                <cfif consulta_barreira_hr.BARREIRA[i] EQ "TUNEL DE LIBERACAO">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>TUNEL DE LIBERACAO</strong></td>
                                         <td colspan="1" class="text-end"><strong>HR</strong></td>
                                         <td></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>

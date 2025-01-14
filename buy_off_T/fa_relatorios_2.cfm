@@ -20,7 +20,7 @@
         AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
         AND BARREIRA NOT IN 'LIBERACAO'
         AND (
-            (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
+            (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 5 -- Segunda a Quinta-feira
                         AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                         AND CASE 
                                 WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
@@ -30,8 +30,8 @@
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
-                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                OR (TO_CHAR(USER_DATA, 'D') BETWEEN 6 AND 7 -- Sexta-feira
+                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00')
                     AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
                             WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
@@ -76,7 +76,18 @@
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
+                OR (TO_CHAR(USER_DATA, 'D') = '6' -- Sexta-feira
+                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                    AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                            END
+                    )
+                    OR (TO_CHAR(USER_DATA, 'D') = '7' -- sábado
                     AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                     AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
@@ -122,7 +133,7 @@
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade_fa
-                WHERE 
+            WHERE 
                 (
                     (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
                         AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
@@ -134,7 +145,18 @@
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
+                OR (TO_CHAR(USER_DATA, 'D') = '6' -- Sexta-feira
+                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                    AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                            END
+                    )
+                    OR (TO_CHAR(USER_DATA, 'D') = '7' -- sábado
                     AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                     AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
@@ -180,7 +202,7 @@
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade_fa
-                WHERE 
+            WHERE 
                 (
                     (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
                         AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
@@ -192,7 +214,18 @@
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
+                OR (TO_CHAR(USER_DATA, 'D') = '6' -- Sexta-feira
+                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                    AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                            END
+                    )
+                    OR (TO_CHAR(USER_DATA, 'D') = '7' -- sábado
                     AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                     AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
@@ -238,7 +271,7 @@
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade_fa
-                WHERE 
+            WHERE 
                 (
                     (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
                         AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
@@ -250,7 +283,18 @@
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
+                OR (TO_CHAR(USER_DATA, 'D') = '6' -- Sexta-feira
+                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                    AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                            END
+                    )
+                    OR (TO_CHAR(USER_DATA, 'D') = '7' -- sábado
                     AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                     AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
@@ -296,7 +340,7 @@
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.sistema_qualidade_fa
-                WHERE 
+            WHERE 
                 (
                     (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
                         AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
@@ -308,7 +352,18 @@
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
+                OR (TO_CHAR(USER_DATA, 'D') = '6' -- Sexta-feira
+                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                    AND CASE 
+                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '01:00' THEN TRUNC(USER_DATA - 1) 
+                            ELSE TRUNC(USER_DATA) 
+                        END = CASE 
+                                WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
+                                ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
+                            END
+                    )
+                    OR (TO_CHAR(USER_DATA, 'D') = '7' -- sábado
                     AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                     AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 

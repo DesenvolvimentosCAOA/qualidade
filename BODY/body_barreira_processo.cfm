@@ -61,40 +61,40 @@
     <!--- Verifica se o formulário foi enviado --->
  <cfif structKeyExists(form, "nome") and structKeyExists(form, "vin") and structKeyExists(form, "modelo") and structKeyExists(form, "local") and structKeyExists(form, "N_Conformidade") and structKeyExists(form, "posicao") and structKeyExists(form, "problema")>
  
- <!--- Passo 1: Consulta para verificar se o VIN existe na tabela sistema_qualidade_body --->
- <cfquery name="consultaVIN" datasource="#BANCOSINC#">
-    SELECT STATUS_BLOQUEIO, BARREIRA_BLOQUEIO 
-    FROM sistema_qualidade_body 
-    WHERE BARCODE = <cfqueryparam value="#form.vin#" cfsqltype="CF_SQL_VARCHAR">
- </cfquery>
+    <!--- Passo 1: Consulta para verificar se o VIN existe na tabela sistema_qualidade_body --->
+    <cfquery name="consultaVIN" datasource="#BANCOSINC#">
+        SELECT STATUS_BLOQUEIO, BARREIRA_BLOQUEIO 
+        FROM sistema_qualidade_body 
+        WHERE BARCODE = <cfqueryparam value="#form.vin#" cfsqltype="CF_SQL_VARCHAR">
+    </cfquery>
+    
+    <!--- Passo 2: Verificar o STATUS_BLOQUEIO em todas as linhas retornadas --->
+    <cfset bloqueado = false>
+    <cfloop query="consultaVIN">
+        <cfif consultaVIN.STATUS_BLOQUEIO EQ "BLOQUEADO" AND consultaVIN.BARREIRA_BLOQUEIO EQ "ECOAT">
+            <cfset bloqueado = true>
+            <cfbreak> <!--- Para de verificar após encontrar um bloqueio --->
+        </cfif>
+    </cfloop>
  
- <!--- Passo 2: Verificar o STATUS_BLOQUEIO em todas as linhas retornadas --->
- <cfset bloqueado = false>
- <cfloop query="consultaVIN">
-    <cfif consultaVIN.STATUS_BLOQUEIO EQ "BLOQUEADO" AND consultaVIN.BARREIRA_BLOQUEIO EQ "ECOAT">
-        <cfset bloqueado = true>
-        <cfbreak> <!--- Para de verificar após encontrar um bloqueio --->
-    </cfif>
- </cfloop>
- 
- <!--- Se bloqueado for true, exibir uma mensagem em JavaScript e impedir o envio do formulário --->
- <cfif bloqueado>
-    <script>
-        // Cria e exibe o modal
-        document.addEventListener("DOMContentLoaded", function() {
-            var modalHtml = `
-                <div id="blockModal" style="display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
-                    <div style="background: white; padding: 20px; border-radius: 5px; text-align: center;">
-                        <p>O veículo está bloqueado, separe o veículo e acione a Liderança!</p>
-                        <button onclick="window.history.back()">Voltar</button>
+    <!--- Se bloqueado for true, exibir uma mensagem em JavaScript e impedir o envio do formulário --->
+    <cfif bloqueado>
+        <script>
+            // Cria e exibe o modal
+            document.addEventListener("DOMContentLoaded", function() {
+                var modalHtml = `
+                    <div id="blockModal" style="display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
+                        <div style="background: white; padding: 20px; border-radius: 5px; text-align: center;">
+                            <p>O veículo está bloqueado, separe o veículo e acione a Liderança!</p>
+                            <button onclick="window.history.back()">Voltar</button>
+                        </div>
                     </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-        });
-    </script>
-    <cfabort>
- </cfif>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+            });
+        </script>
+        <cfabort>
+    </cfif>
  <!--- Se o código chegou até aqui, significa que o VIN não está bloqueado. O formulário pode ser enviado. --->
  
     <!--- Obter próximo maxId --->
@@ -129,6 +129,12 @@
         where l.code = '#form.VIN#'
         and p.name like '%CARROCERIA%'
     </cfquery>
+        <cfif buscaMES2.recordcount EQ 0>
+            <script>
+                alert("Vin inválido ou campo vazio");
+                window.location.href="body_barreira_processo.cfm";
+            </script>
+        </cfif>
  
     <!--- Inserir item --->
     <cfset intervaloInserir = "" />
@@ -171,6 +177,7 @@
        </cfif>
     </cfif>
     
+<cfif buscaMES2.recordcount GT 0>
     <!-- Realiza a inserção na tabela -->
     <cfquery name="insere" datasource="#BANCOSINC#">
        INSERT INTO INTCOLDFUSION.sistema_qualidade_body (ID, USER_DATA, USER_COLABORADOR, BARCODE, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, ULTIMO_REGISTRO)
@@ -190,7 +197,7 @@
            <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
        )
     </cfquery>
-    
+</cfif>
  
     <cfoutput><script>window.location.href = 'body_barreira_processo.cfm';</script></cfoutput>
     

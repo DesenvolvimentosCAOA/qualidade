@@ -38,7 +38,7 @@
                 )
         
         AND INTERVALO BETWEEN '00:00' AND '23:00'
-    
+        AND PROBLEMA_REPARO IS NOT NULL
         ORDER BY INTERVALO DESC
     </cfquery>
     
@@ -82,6 +82,7 @@
                     ))
                 )
             AND MODELO LIKE 'TIGGO 7%'
+            AND PROBLEMA_REPARO IS NOT NULL
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, 
@@ -137,6 +138,7 @@
                     ))
                 )
             AND MODELO LIKE 'TIGGO 5%'
+            AND PROBLEMA_REPARO IS NOT NULL
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, 
@@ -192,6 +194,7 @@
                     ))
                 )
             AND MODELO LIKE 'TIGGO 8 %'
+            AND PROBLEMA_REPARO IS NOT NULL
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, 
@@ -247,6 +250,7 @@
                     ))
                 )
             AND MODELO LIKE 'TIGGO 83%'
+            AND PROBLEMA_REPARO IS NOT NULL
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, 
@@ -302,6 +306,7 @@
                     ))
                 )
             AND MODELO LIKE 'TL %'
+            AND PROBLEMA_REPARO IS NOT NULL
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, 
@@ -357,6 +362,7 @@
                     ))
                 )
             AND MODELO LIKE '%HR %'
+            AND PROBLEMA_REPARO IS NOT NULL
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, 
@@ -416,9 +422,9 @@
         </header>
 
         <div class="container">
-            <button class="btn btn-warning mb-2 ml-2" onclick="self.location='fai_relatorios_1.cfm'">1º Turno</button>
-            <button class="btn btn-warning mb-2 ml-2" onclick="self.location='fai_relatorios_2.cfm'">2º Turno</button>
-            <button style="background-color:green; color:white;" class="btn btn-warning mb-2 ml-2" onclick="self.location='fai_relatorios_3.cfm'">3º Turno</button>
+            <button class="btn btn-warning mb-2 ml-2" onclick="self.location='fai_relatorios_1reparo.cfm'">1º Turno</button>
+            <button class="btn btn-warning mb-2 ml-2" onclick="self.location='fai_relatorios_2reparo.cfm'">2º Turno</button>
+            <button style="background-color:green; color:white;" class="btn btn-warning mb-2 ml-2" onclick="self.location='fai_relatorios_3reparo.cfm'">3º Turno</button>
             <h2>Relatório CP8 3º Turno</h2>
             <form method="get">
                 <div class="form-row">
@@ -427,7 +433,7 @@
                             <label for="filtroData" class="sr-only">Data:</label>
                             <input type="date" class="form-control" name="filtroData" id="filtroData" value="<cfif isDefined('url.filtroData')>#url.filtroData#</cfif>" onchange="this.form.submit();"/>
                         </div>
-                        <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='fai_relatorios_3.cfm'">Limpar</button>
+                        <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='fai_relatorios_3reparo.cfm'">Limpar</button>
                         <button class="btn btn-warning mb-2 ml-2" type="button" id="report">Download</button>
                     </cfoutput>
                 </div>
@@ -453,7 +459,7 @@
                         <th scope="col">VIN/BARCODE</th>
                         <th scope="col">Turno</th>
                         <th scope="col">Criticidade</th>
-                        <th scope="col">Intervalo</th>
+                        <th scope="col">Reparo Realizado</th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
@@ -476,61 +482,61 @@
                                         TL
                                     </cfif>
                                 </td>
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#⠀</td>
+                                <td>#lsdatetimeformat(REPARO_DATA, 'dd/mm/yyyy')#⠀</td>
                                 <td></td>
                                 <td></td>
-                                <td>#PROBLEMA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PECA#</td>
+                                <td>#PROBLEMA_REPARO#</td>
+                                <td>#POSICAO_REPARO#</td>
+                                <td>#PECA_REPARO#</td>
                                 <td>
-                                    <cfif ESTACAO eq "BODY">
+                                    <cfif RESPONSAVEL_REPARO eq "BODY">
                                         B
-                                    <cfelseif ListFind("PCPM", ESTACAO)>
+                                    <cfelseif ListFind("PCPM", RESPONSAVEL_REPARO)>
                                         PCPM
-                                    <cfelseif ListFind("FAI", ESTACAO)>
+                                    <cfelseif ListFind("FAI", RESPONSAVEL_REPARO)>
                                         FAI
-                                    <cfelseif ListFind("TRIM", ESTACAO)>
+                                    <cfelseif ListFind("TRIM", RESPONSAVEL_REPARO)>
                                         T
-                                    <cfelseif ListFind("PCP", ESTACAO)>
+                                    <cfelseif ListFind("PCP", RESPONSAVEL_REPARO)>
                                         PCP
-                                    <cfelseif ListFind("PVT", ESTACAO)>
+                                    <cfelseif ListFind("PVT", RESPONSAVEL_REPARO)>
                                         PVT
-                                    <cfelseif ListFind("ENGENHARIA", ESTACAO)>
+                                    <cfelseif ListFind("ENGENHARIA", RESPONSAVEL_REPARO)>
                                         ENG
-                                    <cfelseif ListFind("MANUTENÇÃO", ESTACAO)>
+                                    <cfelseif ListFind("MANUTENÇÃO", RESPONSAVEL_REPARO)>
                                         MANUTENÇÃO
-                                    <cfelseif ListFind("LOGISTICA", ESTACAO)>
+                                    <cfelseif ListFind("LOGISTICA", RESPONSAVEL_REPARO)>
                                         LOG
-                                    <cfelseif ListFind("CKDL", ESTACAO)>
+                                    <cfelseif ListFind("CKDL", RESPONSAVEL_REPARO)>
                                         CKDL
-                                    <cfelseif ListFind("DOOWON", ESTACAO)>
+                                    <cfelseif ListFind("DOOWON", RESPONSAVEL_REPARO)>
                                         DOOWON
-                                    <cfelseif ListFind("SMALL", ESTACAO)>
+                                    <cfelseif ListFind("SMALL", RESPONSAVEL_REPARO)>
                                         S
-                                    <cfelseif ListFind("CKD", ESTACAO)>
+                                    <cfelseif ListFind("CKD", RESPONSAVEL_REPARO)>
                                         CKD
-                                    <cfelseif ListFind("PAINT", ESTACAO)>
+                                    <cfelseif ListFind("PAINT", RESPONSAVEL_REPARO)>
                                         P
-                                    <cfelseif ListFind("LINHA T", ESTACAO)>
+                                    <cfelseif ListFind("LINHA T", RESPONSAVEL_REPARO)>
                                         T
-                                    <cfelseif ListFind("LINHA F", ESTACAO)>
+                                    <cfelseif ListFind("LINHA F", RESPONSAVEL_REPARO)>
                                         T
-                                    <cfelseif ListFind("LINHA C", ESTACAO)>
+                                    <cfelseif ListFind("LINHA C", RESPONSAVEL_REPARO)>
                                         C
-                                    <cfelseif ListFind("SUB-MONTAGEM", ESTACAO)>
+                                    <cfelseif ListFind("SUB-MONTAGEM", RESPONSAVEL_REPARO)>
                                         T
                                     </cfif>
                                 </td>
                                 <td> 
-                                    <cfif PROBLEMA Neq "">
+                                    <cfif PROBLEMA_REPARO Neq "">
                                         1
                                     </cfif>
                                     </td>
-                                <td>#ESTACAO#</td>
+                                <td>#RESPONSAVEL_REPARO#</td>
                                 <td>#VIN#</td>
                                 <td>3º TURNO</td>
                                 <td>#CRITICIDADE#</td>
-                                <td>#INTERVALO#</td>
+                                <td>#TIPO_REPARO#</td>
                             </tr>
                         </cfloop>
                         <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">
@@ -804,18 +810,6 @@
                                     <td></td>
                                     <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.TOTAL[i]#</strong></td>
                                     <td colspan="1" class="text-end"><strong>#consulta_barreira_tl.APROVADOS[i]#</strong></td>
-                                </tr>
-                            </cfif>
-                        </cfloop>
-
-                        <cfloop index="i" from="1" to="#consulta_barreira_hr.recordcount#">
-                            <cfif consulta_barreira_hr.BARREIRA[i] EQ "SIGN OFF">
-                                <tr class="align-middle">
-                                    <td colspan="1" class="text-end"><strong>SIGN OFF</strong></td>
-                                    <td colspan="1" class="text-end"><strong>HR</strong></td>
-                                    <td></td>
-                                    <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.TOTAL[i]#</strong></td>
-                                    <td colspan="1" class="text-end"><strong>#consulta_barreira_hr.APROVADOS[i]#</strong></td>
                                 </tr>
                             </cfif>
                         </cfloop>

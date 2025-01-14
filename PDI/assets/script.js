@@ -56,7 +56,8 @@ const vinModelMap = {
         "LNNBBDAT7": "Tiggo 8 PHEV",
         "LNNBBDAT8": "Tiggo 8 PHEV",
         "LNNBBDAT9": "Tiggo 8 PHEV",
-        "LNNBBDATX": "Tiggo 8 PHEV"    
+        "LNNBBDATX": "Tiggo 8 PHEV" ,
+        "LVVDC21B0": "Arrizo 6"
 };
 
 const vinInput = document.getElementById("formVIN");

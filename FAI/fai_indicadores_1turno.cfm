@@ -241,7 +241,7 @@
         )
         SELECT * FROM CONSULTA4
     </cfquery>
-    
+
     <cfquery name="consulta_nconformidades_underbody2" datasource="#BANCOSINC#">
          WITH CONSULTA AS (
             SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
@@ -372,7 +372,7 @@
         )
         SELECT * FROM CONSULTA4
     </cfquery>
-    
+
     <cfquery name="consulta_nconformidades_exok" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
@@ -385,7 +385,7 @@
                 </cfif>
             AND PROBLEMA IS NOT NULL
             AND BARREIRA = 'SIGN OFF'
-            AND CRITICIDADE NOT IN ('OK A-')
+            AND CRITICIDADE NOT IN ('OK A-','N0','AVARIA')
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
                 ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
