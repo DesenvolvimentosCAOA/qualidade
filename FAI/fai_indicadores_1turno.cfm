@@ -211,7 +211,7 @@
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
-            AND PROBLEMA IS NOT NULL
+                AND PROBLEMA IS NOT NULL
                 AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
                 ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))

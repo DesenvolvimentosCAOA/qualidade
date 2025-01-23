@@ -6,10 +6,10 @@
 <cfprocessingdirective pageEncoding="utf-8">
 <!--- Verificando se está logado  --->
 <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
-<script>
-   alert("É necessario autenticação!!");
-   self.location = '/qualidade/buyoff_linhat/index.cfm'
-</script>
+   <script>
+      alert("É necessario autenticação!!");
+      self.location = '/qualidade/buyoff_linhat/index.cfm'
+   </script>
 </cfif>
 <cfif not isDefined("cookie.user_level_final_assembly") or cookie.user_level_final_assembly eq "R">
 <script>

@@ -30,52 +30,52 @@
     
  
             <!--- Pesquisa MES --->
- <cfquery name='buscaMES' datasource="#BANCOMES#">
-        select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
-        rtrim(ltrim(replace(
-            replace(
-            replace(
-            replace(
-            replace(
-            replace(
-            replace(
-            replace(
-            replace(
-            replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
-            ' FL',''),
-            'COMPLETO ',''),
-            'COMPLETA ',''),
-            'TXS','PL7'),
-            'SOLDADO',''),
-            'SOLDADA',''),
-            'ESCURO',''),
-            'NOVO MOTOR',''),
-            'CINZA',''))) modelo
-        from TBLLot l
-        left join CTBLGravacao g on l.IDLot = g.IDLot
-      left join TBLProduct p on p.IDProduct = l.IDProduct
-        where l.code = VIN
-      and p.name like '%CARROCERIA%'
- </cfquery>
+    <cfquery name='buscaMES' datasource="#BANCOMES#">
+            select l.code, l.IDProduct, p.name, l.IDLot, g.IDLot, g.VIN,
+            rtrim(ltrim(replace(
+                replace(
+                replace(
+                replace(
+                replace(
+                replace(
+                replace(
+                replace(
+                replace(
+                replace(replace(p.name,'CARROCERIA',''),'PINTADA',''),
+                ' FL',''),
+                'COMPLETO ',''),
+                'COMPLETA ',''),
+                'TXS','PL7'),
+                'SOLDADO',''),
+                'SOLDADA',''),
+                'ESCURO',''),
+                'NOVO MOTOR',''),
+                'CINZA',''))) modelo
+            from TBLLot l
+            left join CTBLGravacao g on l.IDLot = g.IDLot
+        left join TBLProduct p on p.IDProduct = l.IDProduct
+            where l.code = VIN
+        and p.name like '%CARROCERIA%'
+    </cfquery>
  
     <!--- Verifica se o formulário foi enviado --->
  <cfif structKeyExists(form, "nome") and structKeyExists(form, "vin") and structKeyExists(form, "modelo") and structKeyExists(form, "local") and structKeyExists(form, "N_Conformidade") and structKeyExists(form, "posicao") and structKeyExists(form, "problema")>
  
- <!--- Passo 1: Consulta para verificar se o VIN existe na tabela sistema_qualidade_body --->
- <cfquery name="consultaVIN" datasource="#BANCOSINC#">
-    SELECT STATUS_BLOQUEIO, BARREIRA_BLOQUEIO 
-    FROM sistema_qualidade_body 
-    WHERE BARCODE = <cfqueryparam value="#form.vin#" cfsqltype="CF_SQL_VARCHAR">
- </cfquery>
+    <!--- Passo 1: Consulta para verificar se o VIN existe na tabela sistema_qualidade_body --->
+    <cfquery name="consultaVIN" datasource="#BANCOSINC#">
+        SELECT STATUS_BLOQUEIO, BARREIRA_BLOQUEIO 
+        FROM sistema_qualidade_body 
+        WHERE BARCODE = <cfqueryparam value="#form.vin#" cfsqltype="CF_SQL_VARCHAR">
+    </cfquery>
  
- <!--- Passo 2: Verificar o STATUS_BLOQUEIO em todas as linhas retornadas --->
- <cfset bloqueado = false>
- <cfloop query="consultaVIN">
-    <cfif consultaVIN.STATUS_BLOQUEIO EQ "BLOQUEADO" AND consultaVIN.BARREIRA_BLOQUEIO EQ "ECOAT">
-        <cfset bloqueado = true>
-        <cfbreak> <!--- Para de verificar após encontrar um bloqueio --->
-    </cfif>
- </cfloop>
+    <!--- Passo 2: Verificar o STATUS_BLOQUEIO em todas as linhas retornadas --->
+    <cfset bloqueado = false>
+    <cfloop query="consultaVIN">
+        <cfif consultaVIN.STATUS_BLOQUEIO EQ "BLOQUEADO" AND consultaVIN.BARREIRA_BLOQUEIO EQ "ECOAT">
+            <cfset bloqueado = true>
+            <cfbreak> <!--- Para de verificar após encontrar um bloqueio --->
+        </cfif>
+    </cfloop>
  
  <!--- Se bloqueado for true, exibir uma mensagem em JavaScript e impedir o envio do formulário --->
  <cfif bloqueado>

@@ -57,6 +57,12 @@
         ORDER BY DEFEITO
     </cfquery>
 
+    <cfquery name="realizado" datasource="#BANCOSINC#">
+        SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
+        WHERE SHOP = 'REPARO-REALIZADO'
+        ORDER BY DEFEITO
+    </cfquery>
+
     <h1 class="text-center mt-2">Editar</h1>
     <div class="container col-10">
         <form id="for-edit" method="POST">
@@ -148,8 +154,11 @@
                             <input list="reparoList" class="form-control" id="formReparo" name="tipo_reparo" required>
                             <datalist id="reparoList">
                                 <option value="">Selecione a Estação</option>
-                                <!-- Inclua o arquivo que gera as opções dinamicamente -->
-                                <cfinclude template="auxi/tipo_reparo.cfm">
+                                <cfloop query="realizado">
+                                    <cfoutput>
+                                        <option value="#defeito#">#defeito#</option>
+                                    </cfoutput>
+                                </cfloop>
                             </datalist>
                         </div>
                         

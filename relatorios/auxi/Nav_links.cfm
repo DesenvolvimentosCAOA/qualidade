@@ -17,7 +17,7 @@
             <ul class="dropdown-menu">
                 <li><a href="/qualidade/relatorios/ver_agir_apagar.cfm">Apagar/Editar Lançamento</a></li>
                 <li><a href="/qualidade/relatorios/presenca.cfm">Presença</a></li>
-
+                <li><a href="/qualidade/relatorios/powerpoint.cfm">Treinamento Presença</a></li>
                 
             </ul>
         </li>
@@ -29,7 +29,6 @@
     .dropdown-submenu {
     position: relative;
     }
-
     .submenu {
     display: none;
     position: absolute;

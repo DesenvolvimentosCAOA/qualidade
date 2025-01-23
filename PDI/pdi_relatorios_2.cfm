@@ -563,6 +563,43 @@
         ORDER BY HH
     </cfquery>
 
+    <cfquery name="consulta_barreira_arrizo" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN, MODELO,
+                CASE 
+                    WHEN INTERVALO BETWEEN '01:00' AND '00:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
+            WHERE INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                AND MODELO LIKE 'ARRIZO%'
+                AND CASE WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) ELSE TRUNC(USER_DATA) END 
+            = CASE WHEN SUBSTR('#url.filtroData#', 12,5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')-1) 
+            ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) END
+            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+        )
+        SELECT BARREIRA,
+            'TTL' AS HH, 
+            COUNT(DISTINCT VIN) AS TOTAL, 
+            SUM(APROVADO_FLAG) AS APROVADOS, 
+            COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+            ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+            ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY HH
+    </cfquery>
 
     <!--- Verificando se está logado  --->
 <cfif not isDefined("cookie.USER_APONTAMENTO_PDI") or cookie.USER_APONTAMENTO_PDI eq "">
@@ -673,6 +710,8 @@
                                         HD
                                     <cfelseif FindNoCase("Tiggo 5", MODELO) neq 0>
                                         T19
+                                    <cfelseif FindNoCase("Arrizo 6", MODELO) neq 0>
+                                        M1D
                                     <cfelseif FindNoCase("Tiggo 7", MODELO) neq 0>
                                         T1E
                                     <cfelseif FindNoCase("Tiggo 8 ADAS", MODELO) neq 0>
@@ -932,6 +971,18 @@
                                         <td></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_hd.TOTAL[i]#</strong></td>
                                         <td colspan="1" class="text-end"><strong>#consulta_barreira_hd.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
+
+                            <cfloop index="i" from="1" to="#consulta_barreira_arrizo.recordcount#">
+                                <cfif consulta_barreira_arrizo.BARREIRA[i] EQ "PDI">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
+                                        <td colspan="1" class="text-end"><strong>M1D</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_arrizo.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_arrizo.APROVADOS[i]#</strong></td>
                                     </tr>
                                 </cfif>
                             </cfloop>

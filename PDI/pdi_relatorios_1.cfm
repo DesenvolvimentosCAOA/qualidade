@@ -751,6 +751,56 @@
         GROUP BY BARREIRA
         ORDER BY ordem, HH
     </cfquery>
+
+    <cfquery name="consulta_barreira_arrizo" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN, MODELO,
+                CASE 
+                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+            AND MODELO LIKE 'ARRIZO%'
+                AND INTERVALO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+        )
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
     
     <!--- Verificando se está logado  --->
 <cfif not isDefined("cookie.USER_APONTAMENTO_PDI") or cookie.USER_APONTAMENTO_PDI eq "">
@@ -861,6 +911,8 @@
                                             HD
                                         <cfelseif FindNoCase("Tiggo 5", MODELO) neq 0>
                                             T19
+                                        <cfelseif FindNoCase("Arrizo 6", MODELO) neq 0>
+                                            M1D
                                         <cfelseif FindNoCase("Tiggo 7", MODELO) neq 0>
                                             T1E
                                         <cfelseif FindNoCase("Tiggo 8 ADAS", MODELO) neq 0>
@@ -1123,7 +1175,18 @@
                                     </tr>
                                 </cfif>
                             </cfloop>
-
+                            
+                            <cfloop index="i" from="1" to="#consulta_barreira_arrizo.recordcount#">
+                                <cfif consulta_barreira_arrizo.BARREIRA[i] EQ "PDI">
+                                    <tr class="align-middle">
+                                        <td colspan="1" class="text-end"><strong>SAÍDA</strong></td>
+                                        <td colspan="1" class="text-end"><strong>M1D</strong></td>
+                                        <td></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_arrizo.TOTAL[i]#</strong></td>
+                                        <td colspan="1" class="text-end"><strong>#consulta_barreira_arrizo.APROVADOS[i]#</strong></td>
+                                    </tr>
+                                </cfif>
+                            </cfloop>
                             
                         </cfoutput>
                     </tbody>

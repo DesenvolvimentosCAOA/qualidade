@@ -48,6 +48,7 @@
         )
         WHERE ROWNUM <= 3000 -- Limita o número de linhas retornadas
         AND STATUS_BLOQUEIO = 'BLOQUEADO'
+        AND STATUS_BLOQUEIO NOT IN 'LIBERADO'
         ORDER BY ID ASC
     </cfquery>
     

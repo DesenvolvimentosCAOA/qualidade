@@ -4,6 +4,7 @@
     <cfheader name="Expires" value="0">
     <cfcontent type="text/html; charset=UTF-8">
     <cfprocessingdirective pageEncoding="utf-8">
+    
     <cfif isDefined("url.id_editar")>
         <cfquery name="consulta_editar" datasource="#BANCOSINC#">
             SELECT * 

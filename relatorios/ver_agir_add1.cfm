@@ -54,26 +54,26 @@
      </cfquery>
 
 
-<cfquery name="insere" datasource="#BANCOSINC#">
-    INSERT INTO INTCOLDFUSION.VEREAGIR2 (ID, DATA_REGISTRO,MODELO,VIN, PECA, POSICAO, PROBLEMA, SEVERIDADE, DETECCAO, OCORRENCIA, RPN, TURNO, GRUPO_RESPONSAVEL, STATUS, BARREIRA)
-    VALUES(
-        <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
-        <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">,
-        <cfqueryparam value="#buscaMES.modelo#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_vin)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_peca)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_posicao)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_problema)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_severidade)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_deteccao)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_ocorrencia)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_rpn)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_turno)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_grupo)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_status)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_barreira)#" cfsqltype="CF_SQL_VARCHAR">
-    )
-</cfquery>
+    <cfquery name="insere" datasource="#BANCOSINC#">
+        INSERT INTO INTCOLDFUSION.VEREAGIR2 (ID, DATA_REGISTRO,MODELO,VIN, PECA, POSICAO, PROBLEMA, SEVERIDADE, DETECCAO, OCORRENCIA, RPN, TURNO, GRUPO_RESPONSAVEL, STATUS, BARREIRA)
+        VALUES(
+            <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
+            <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">,
+            <cfqueryparam value="#buscaMES.modelo#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_vin)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_peca)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_posicao)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_problema)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_severidade)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_deteccao)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_ocorrencia)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_rpn)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_turno)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_grupo)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_status)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_barreira)#" cfsqltype="CF_SQL_VARCHAR">
+        )
+    </cfquery>
 <cflocation url="ver_agir.cfm">
 
 </cfif>

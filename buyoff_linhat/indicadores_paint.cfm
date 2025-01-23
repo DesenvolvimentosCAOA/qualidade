@@ -774,7 +774,7 @@
                         </div>
                     </div>
                 </div>
-            
+
                 <script>
                     document.addEventListener("DOMContentLoaded", function() {
                         var ctx = document.getElementById('paretoChart7').getContext('2d');

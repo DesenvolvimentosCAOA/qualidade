@@ -102,3 +102,4 @@ function shuffleQuiz() {
 
 // Chamar a função ao carregar a página
 document.addEventListener("DOMContentLoaded", shuffleQuiz);
+

@@ -40,6 +40,8 @@
                     </li>
                     <li>
                         <a href="/qualidade/buyoff_linhat/indicadores_paint_geral.cfm">Geral</a>
+                    </li>                    <li>
+                        <a href="/qualidade/buyoff_linhat/indicadores_paint_cor_1.cfm">Indicadores COR</a>
                     </li>
                 </ul>
             </li>

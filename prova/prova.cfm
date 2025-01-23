@@ -1,3 +1,17 @@
+<cfinvoke method="inicializando" component="cf.ini.index">
+    <cfheader name="Cache-Control" value="no-cache, no-store, must-revalidate">
+    <cfheader name="Pragma" value="no-cache">
+    <cfheader name="Expires" value="0">
+    <cfcontent type="text/html; charset=UTF-8">
+    <cfprocessingdirective pageEncoding="utf-8">
+    
+<cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
+    <script>
+       alert("É necessario autenticação!!");
+       self.location = '/qualidade/prova/index.cfm'
+    </script>
+ </cfif>
+
 <cfif structKeyExists(form, "studentName")>
     <!--- Define valores padrão para questões não respondidas --->
     <cfloop from="1" to="10" index="i">
@@ -213,24 +227,20 @@
             <h6>*Ao término do tempo, a prova será enviada automaticamente, se estiver sem resposta será considerado como ERRADA</h6>
             <h6>A prova vale 10,0 pontos</h6>
             <h4>BOA PROVA!!</h4>
-
+<cfoutput>
             <form id="quizForm" method="post">
+                <cfquery name="login" datasource="#BANCOSINC#">
+                    SELECT USER_NAME, USER_SIGN, SHOP FROM INTCOLDFUSION.REPARO_FA_USERS
+                    WHERE USER_NAME = '#cookie.user_apontamento_fa#'
+                 </cfquery>
                 <div class="input-container">
                     <div class="input-group">
                         <label for="studentName">Nome Completo:</label>
-                        <input type="text" id="studentName" name="studentName" placeholder="Digite seu nome" required>
+                        <input type="text" id="studentName" name="studentName" value="#login.USER_SIGN#" readonly required>
                     </div>
                     <div class="input-group">
                         <label for="setor">Setor:</label>
-                        <select id="setor" name="setor" required>
-                            <option value="" disabled selected>Selecione</option>
-                            <option value="PAINT">PAINT</option>
-                            <option value="SMALL">SMALL</option>
-                            <option value="BODY">BODY</option>
-                            <option value="FA">FA</option>
-                            <option value="FAI">FAI</option>
-                            <option value="PDI">PDI</option>
-                        </select>
+                        <input type="text" id="setor" name="setor" value="#login.shop#" readonly required>
                     </div>
                     <div class="input-group">
                         <label for="turno">Turno:</label>
@@ -338,6 +348,7 @@
                 <input type="hidden" id="nota" name="nota" value="0">
                 <button type="submit" class="btn" onclick="calculateScore()">Enviar Prova</button>
             </form>
+        </cfoutput>
             <div class="result" id="result"></div>
         </div>
         <script src="./script.js"></script>
