@@ -148,6 +148,15 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row mb-4">
+                    <div class="col">
+                        <div class="form-group col-md-2">
+                            <label class="form-label" for="descricao_reparo">Peça</label>
+                            <input type="text" class="form-control" name="descricao_reparo" id="descricao_reparo" placeholder="Descreva o reparo">
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="bt_ms mb-5">
                     <button type="submit" form="for-edit" class="btn btn-primary">Salvar</button>
@@ -163,6 +172,7 @@
                                 POSICAO_REPARO = <cfqueryparam value="#form.posicao_reparo#" cfsqltype="CF_SQL_VARCHAR">,
                                 PROBLEMA_REPARO = <cfqueryparam value="#form.problema_reparo#" cfsqltype="CF_SQL_VARCHAR">,
                                 RESPONSAVEL_REPARO = <cfqueryparam value="#form.responsavel_reparo#" cfsqltype="CF_SQL_VARCHAR">,
+                                DESCRICAO_REPARO = <cfqueryparam value="#UCase(form.descricao_reparo)#" cfsqltype="CF_SQL_CLOB">,
                                 STATUS = CASE
                                             WHEN <cfqueryparam value="#form.problema_reparo#" cfsqltype="CF_SQL_VARCHAR"> IS NOT NULL THEN 'INSPEÇÃO QA'
                                             ELSE STATUS -- mantém o valor atual de STATUS se PROBLEMA_REPARO for NULL

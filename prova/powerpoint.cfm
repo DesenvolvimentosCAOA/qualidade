@@ -1,5 +1,32 @@
+<cfquery name="login" datasource="#BANCOSINC#">
+    SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
+    WHERE USER_NAME = '#cookie.USER_APONTAMENTO_FA#'
+</cfquery>
+
+<cfif structKeyExists(form, "realizarProva")>
+    <!--- Obter próximo maxId --->
+    <cfquery name="obterMaxId" datasource="#BANCOSINC#">
+        SELECT COALESCE(MAX(ID), 0) + 1 AS id FROM INTCOLDFUSION.treinamentos
+    </cfquery>
+
+    <!--- Inserir dados na tabela --->
+    <cfquery name="insere" datasource="#BANCOSINC#">
+        INSERT INTO INTCOLDFUSION.treinamentos (ID, DATA, NOME, TREINAMENTO)
+        VALUES(
+            <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
+            <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">,
+            <cfqueryparam value="#UCase(login.USER_SIGN)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="Indicadores e Check List" cfsqltype="CF_SQL_VARCHAR">
+        )
+    </cfquery>
+
+    <!--- Redirecionar para a página de prova --->
+    <cflocation url="/qualidade/prova/prova.cfm">
+</cfif>
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="PT-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -90,73 +117,76 @@
         }
     </style>
 </head>
-<body>
-    <div class="slide-container">
-        <img id="slide" src="/qualidade/prova/slides/Slide1.JPG" alt="Slide 1">
-    </div>
-    <div class="progress-bar-container">
-        <div id="progressBar" class="progress-bar"></div>
-        <div id="progressText" class="progress-text">0%</div>
-    </div>
-    <div class="controls">
-        <button id="prevBtn" onclick="changeSlide(-1)" disabled>Anterior</button>
-        <button id="nextBtn" onclick="changeSlide(1)">Próximo</button>
-    </div>
+    <body>
+        <div class="slide-container">
+            <img id="slide" src="/qualidade/prova/slides/Slide1.JPG" alt="Slide 1">
+        </div>
+        <div class="progress-bar-container">
+            <div id="progressBar" class="progress-bar"></div>
+            <div id="progressText" class="progress-text">0%</div>
+        </div>
+        <div class="controls">
+            <button id="prevBtn" onclick="changeSlide(-1)" disabled>Anterior</button>
+            <form id="provaForm" method="post" style="display: inline;">
+                <input type="hidden" name="realizarProva" value="1">
+                <button id="nextBtn" type="button" onclick="changeSlide(1)">Próximo</button>
+            </form>
+        </div>
 
-    <script>
-        const slides = [];
-        for (let i = 1; i <= 30; i++) {
-            slides.push(`/qualidade/prova/slides/Slide${i}.JPG`);
-        }
-
-        let currentSlide = 0;
-
-        const slideImage = document.getElementById('slide');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const progressBar = document.getElementById('progressBar');
-        const progressText = document.getElementById('progressText');
-
-        slideImage.addEventListener('mousemove', (event) => {
-            const rect = slideImage.getBoundingClientRect();
-            const mouseX = ((event.clientX - rect.left) / rect.width) * 100 + '%';
-            const mouseY = ((event.clientY - rect.top) / rect.height) * 100 + '%';
-
-            slideImage.style.setProperty('--mouse-x', mouseX);
-            slideImage.style.setProperty('--mouse-y', mouseY);
-        });
-
-        function changeSlide(direction) {
-            currentSlide += direction;
-
-            // Atualiza a imagem
-            slideImage.src = slides[currentSlide];
-
-            // Atualiza os botões
-            prevBtn.disabled = currentSlide === 0;
-
-            if (currentSlide === slides.length - 1) {
-                nextBtn.textContent = "Realizar Prova";
-                nextBtn.classList.add('red-button');  // Adiciona a classe para deixar o botão vermelho
-                nextBtn.onclick = () => window.location.href = "/qualidade/prova/prova.cfm";
-            } else {
-                nextBtn.textContent = "Próximo";
-                nextBtn.classList.remove('red-button');  // Remove a classe vermelha quando não for o último slide
-                nextBtn.onclick = () => changeSlide(1);
+        <script>
+            const slides = [];
+            for (let i = 1; i <= 30; i++) {
+                slides.push(`/qualidade/prova/slides/Slide${i}.JPG`);
             }
 
-            // Atualiza a barra de progresso
+            let currentSlide = 0;
+
+            const slideImage = document.getElementById('slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const provaForm = document.getElementById('provaForm');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            function changeSlide(direction) {
+                currentSlide += direction;
+
+                // Atualiza a imagem
+                slideImage.src = slides[currentSlide];
+
+                // Atualiza os botões
+                prevBtn.disabled = currentSlide === 0;
+
+                if (currentSlide === slides.length - 1) {
+                    nextBtn.textContent = "Realizar Prova";
+                    nextBtn.classList.add('red-button');
+                    nextBtn.onclick = () => provaForm.submit(); // Submete o formulário no último slide
+                } else {
+                    nextBtn.textContent = "Próximo";
+                    nextBtn.classList.remove('red-button');
+                    nextBtn.onclick = () => changeSlide(1); // Garante que o botão continue funcionando
+                }
+
+                // Atualiza a barra de progresso
+                updateProgressBar();
+            }
+
+            function updateProgressBar() {
+                const progress = ((currentSlide + 1) / slides.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `${Math.round(progress)}%`;
+            }
+
+            // Inicializa a barra de progresso
             updateProgressBar();
-        }
+            // Adiciona evento de zoom dinâmico
+                slideImage.addEventListener('mousemove', (event) => {
+                    const rect = slideImage.getBoundingClientRect();
+                    const offsetX = ((event.clientX - rect.left) / rect.width) * 100;
+                    const offsetY = ((event.clientY - rect.top) / rect.height) * 100;
 
-        function updateProgressBar() {
-            const progress = ((currentSlide + 1) / slides.length) * 100;
-            progressBar.style.width = `${progress}%`;
-            progressText.textContent = `${Math.round(progress)}%`;
-        }
-
-        // Inicializa a barra de progresso
-        updateProgressBar();
-    </script>
-</body>
+                    slideImage.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+                });
+        </script>
+    </body>
 </html>

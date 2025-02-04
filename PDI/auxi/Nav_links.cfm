@@ -42,12 +42,26 @@
             <li><a href="./pdi_editar.cfm">Editar Lançamento</a></li>
             <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "G">
             </cfif>
+            <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
         </ul>
         </li>
     </cfif>
     <li><a href="logout.cfm">Sair</a></li>
   </ul>
 </nav>
+
+    <!----script para login e senha da tela de adicionar defeito---->
+    <script>
+        function validateDefeitos() {
+            var username = prompt("Digite seu usuário:");
+            var password = prompt("Digite sua senha:");
+            if (username === "admin" && password === "102030") {
+                window.location.href = "/qualidade/buyoff_linhat/adicionar_defeito.cfm";
+            } else {
+                alert("Usuário ou senha incorretos!");
+            }
+        }
+    </script>
 
 <style>
 

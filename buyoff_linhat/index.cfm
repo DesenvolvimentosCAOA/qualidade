@@ -629,7 +629,7 @@
         function validarAcessoCadastro() {
             var usuario = prompt("Digite o nome de usuário:");
             var senha = prompt("Digite a senha:");
-            if (usuario === "" && senha === "") {
+            if (usuario === "admin" && senha === "124") {
                 mostrarForm('cadastro');
             } else {
                 alert("Usuário ou senha incorretos. Tente novamente.");

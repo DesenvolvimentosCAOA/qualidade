@@ -20,7 +20,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alerta da Qualidade</title>
+    <title>Alerta da Qualidade (8D)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -235,15 +235,26 @@
 </head>
     <body>
         <div class="container">
-            <div class="title">ALERTA DA QUALIDADE</div> <div>Nº: <input  style="width:100px;" type="text" name="id_alerta"></div>
-            <div style="background-color: #ddd;font-weight:bold;">ETAPA 1</div>
+            <div class="title">ALERTA DA QUALIDADE (8D)</div> <div>Nº DE CONTROLE: <input  style="width:100px;" type="text" name="id_alerta"></div>
+            <div style="background-color: #ddd;font-weight:bold;">D1</div>
                 <form method="post" id="form_envio">
                     <table>
                         <tr>
-                            <td class="subtitle"class="merged-cell" colspan="2">CLIENTE:</td>
-                            <td class="subtitle"colspan="2"><input type="text" name="cliente" required></td>
-                            <td class="subtitle"colspan="2">MODELO:</td>
-                            <td class="subtitle"colspan="2"><input type="text" name="modelo"></td>
+                            <td class="subtitle"class="merged-cell" colspan="2">DATA DA OCORRÊNCIA:</td>
+                            <td class="subtitle"colspan="2"><input type="date" name="data_ocorrencia" required></td>
+                            <td class="subtitle"colspan="2">BARREIRA:</td>
+                            <td class="subtitle"colspan="2">
+                                <select type="text" name="barreira">
+                                    <option value="">Selecione</option>
+                                    <option value="N0">N0</option>
+                                    <option value="N1">N1</option>
+                                    <option value="N2">N2</option>
+                                    <option value="N3">N3</option>
+                                    <option value="N4">N4</option>
+                                    <option value="OK A-">OK A-</option>
+                                    <option value="AVARIA">AVARIA</option>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <td class="subtitle"class="merged-cell" colspan="2">VIN/BARCODE DA OCORRÊNCIA:</td>

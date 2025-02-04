@@ -179,8 +179,9 @@
                             <th scope="col">Posição</th>
                             <th scope="col">Problema</th>
                             <th scope="col">Estação</th>
+                            <th scope="col">Reparador</th>
                             <th scope="col">Reparo Realizado</th>
-                            <th scope="col">Intervalo</th>
+                            <th scope="col">Descrição do Reparo</th>
                             <th scope="col">Status</th>
                             <th scope="col">Criticidade</th>
                         </tr>
@@ -199,8 +200,9 @@
                                     <td>#POSICAO#</td>
                                     <td>#PROBLEMA#</td>
                                     <td>#ESTACAO#</td>
+                                    <td>#REPARADOR#</td>
                                     <td>#TIPO_REPARO#</td>
-                                    <td>#INTERVALO#</td>
+                                    <td>#DESCRICAO_REPARO#</td>
                                     <td>#STATUS#</td>
                                     <td>#CRITICIDADE#</td>
                                 </tr>

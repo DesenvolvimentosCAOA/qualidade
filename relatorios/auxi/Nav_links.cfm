@@ -4,7 +4,13 @@
   <div class="logo">Controle De Relatórios</div>
   
   <ul>
-    <li><a href="ver_agir.cfm">Ver e Agir</a></li>
+    <li class="dropdown">
+        <a href="#">Relatórios</a>
+            <ul class="dropdown-menu">
+               <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver e Agir</a></li>
+               <!---- <li><a href="/qualidade/relatorios/alertas/d_principal.cfm">Alertas</a></li> ---->
+            </ul>
+    </li>
     <li class="dropdown">
         <a href="#">Indicadores</a>
             <ul class="dropdown-menu">
@@ -21,7 +27,7 @@
                 
             </ul>
         </li>
-    <li><a href="logout.cfm">Sair</a></li>
+    <li><a href="/qualidade/relatorios/logout.cfm">Sair</a></li>
   </ul>
 </nav>
 

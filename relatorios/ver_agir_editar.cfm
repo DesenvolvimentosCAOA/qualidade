@@ -21,15 +21,19 @@
             SET
                 BP_CONTENCAO_PROCESSO = '#UCase(form.BP_CONTENCAO_PROCESSO)#',
                 GRUPO_RESPONSAVEL = '#UCase(form.grupo_responsavel)#',
+                DESCRICAO_CONTENCAO = '#UCase(form.descricao_contencao)#',
+                necessita_qualidade = '#UCase(form.necessita_qualidade)#',
                 RESPONSAVEL_QUALIDADE = '#UCase(form.responsavel_qualidade)#',
-                bp_definitivo_processo = '#UCase(form.savedefinitivo)#',
-                descricao_contencao = '#UCase(form.save_descricao)#',
-                necessita_qualidade = '#UCase(form.save_resp)#',
-                bp_contencao_qualidade = '#UCase(form.save_def)#',
-                descricao_cont_qa = '#UCase(form.save_bp)#'
+                bp_contencao_qualidade = '#UCase(form.bp_contencao_qualidade)#',
+                descricao_cont_qa = '#UCase(form.descricao_cont_qa)#',
 
+                bp_definitivo_processo = '#UCase(form.savedefinitivo)#',
+                descricao_definitivo = '#UCase(form.save_descricao)#',
+                responsavel_definitivo ='#UCase(form.save_resp)#',
+                bp_definitivo_qualidade = '#UCase(form.save_bp)#'
             WHERE ID = '#url.id_editar#'
         </cfquery>
+        <cflocation url="ver_agir_apagar.cfm">
     </cfif>
 
     <html lang="pt-BR">
@@ -175,12 +179,31 @@
                     </div>
                     <div class="input-group">
                         <label for="descricao_contencao">Descrição da Contenção Processo</label>
-                        <input type="text" id="descricao_contencao" name="descricao_contencao" placeholder="Responsável" value="#consulta_editar.descricao_contencao#">
+                        <input type="text" id="descricao_contencao" name="descricao_contencao" placeholder="Descrição" value="#consulta_editar.descricao_contencao#">
                     </div>
                     <div class="input-group">
                         <label for="necessita_qualidade">Foi Necessário Ação da Qualidade?</label>
-                        <input type="text" id="necessita_qualidade" name="necessita_qualidade" value="#consulta_editar.necessita_qualidade#">
+                        <input list="necessita_qualidade_options" id="necessita_qualidade" name="necessita_qualidade" value="#consulta_editar.necessita_qualidade#" oninput="validateDatalist()">
+                        <datalist id="necessita_qualidade_options">
+                            <option value="SIM">
+                            <option value="NAO">
+                        </datalist>
+                        <span id="validationMessage" style="color: red; display: none;">Por favor, insira um valor válido da lista.</span>
                     </div>
+                    <script>
+                        function validateDatalist() {
+                            const input = document.getElementById('necessita_qualidade');
+                            const datalist = document.getElementById('necessita_qualidade_options');
+                            const validationMessage = document.getElementById('validationMessage');
+                            const options = Array.from(datalist.options).map(option => option.value);
+                    
+                            if (!options.includes(input.value)) {
+                                validationMessage.style.display = 'block';
+                            } else {
+                                validationMessage.style.display = 'none';
+                            }
+                        }
+                    </script>
                     <div class="input-group">
                         <label for="bp_contencao_qualidade">BP de contenção da Qualidade (Se houver)</label>
                         <input type="text" id="bp_contencao_qualidade" name="bp_contencao_qualidade" value="#consulta_editar.bp_contencao_qualidade#">
@@ -217,7 +240,7 @@
                     </div>
                     <div class="input-group">
                         <label for="save_def">Data BP Definitivo (Qualidade)</label>
-                        <input type="text" id="save_def" name="save_def" value="#consulta_editar.data_bp_definitivo_qualidade#">
+                        <input readonly type="date" id="save_def" name="save_def" value="#DateFormat(consulta_editar.data_bp_definitivo_qualidade, 'yyyy-mm-dd')#">
                     </div>
                     <div class="input-group">
                         <label for="save_bp">BP Definitivo (Qualidade)</label>
@@ -227,12 +250,12 @@
                 <div class="search-container">
                     <div class="search-container">
                         <button type="button" class="btn-rounded back-btn" id="btnVoltar" onclick="voltar()">Voltar</button>
-                        <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao">Salvar</button>
+                        <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao" >Salvar</button>
                     </div>
                     <script>
                         function voltar() {
                                 // Redireciona para a página anterior
-                                window.history.back(); // ou utilize: window.location.href = 'pagina-desejada.cfm'; para redirecionar a uma página específica
+                                window.history.back(); // ou utilize: window.location.href = '/qualidade/relatorios/ver_agir_apagar.cfm'; para redirecionar a uma página específica
                             }
                     </script>
                 </div>

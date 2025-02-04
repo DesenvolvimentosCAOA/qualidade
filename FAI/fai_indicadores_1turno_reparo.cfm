@@ -251,13 +251,13 @@
 
         <div class="container">
             <h2>Indicador Reparo 1º Turno</h2>
-            <form method="get" action="fai_indicadores_1turno.cfm" class="form-inline">
+            <form method="get" action="fai_indicadores_1turno_reparo.cfm" class="form-inline">
                 <div class="form-group mx-sm-3 mb-2">
                     <label for="filtroData" class="sr-only">Data:</label>
                     <input type="date" class="form-control" name="filtroData" id="filtroData" value="<cfif isDefined('url.filtroData')>#url.filtroData#</cfif>"/>
                 </div>
                     <button class="btn btn-primary mb-2" type="submit">Filtrar</button>
-                    <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='fai_indicadores_1turno.cfm'">Limpar</button>
+                    <button class="btn btn-warning mb-2 ml-2" type="reset" onclick="self.location='fai_indicadores_1turno_reparo.cfm'">Limpar</button>
             </form>
         </div>
 

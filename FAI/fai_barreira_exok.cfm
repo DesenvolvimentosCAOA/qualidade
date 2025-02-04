@@ -140,12 +140,12 @@
         
             function validarFormulario(event) {
                 var button = document.querySelector('button[type="submit"]');
-                var peça = document.getElementById('formNConformidade').value;
-                var problema = document.getElementById('formProblema').value;
-                var criticidade = document.getElementById('formCriticidade').value;
-                var posição = document.getElementById('formPosicao').value;
-                var responsável = document.getElementById('formEstacao').value;
-                var vin = document.getElementById('formVIN').value;
+                var peça = document.getElementById('formNConformidade').value.trim();
+                var problema = document.getElementById('formProblema').value.trim();
+                var criticidade = document.getElementById('formCriticidade').value.trim();
+                var posição = document.getElementById('formPosicao').value.trim();
+                var responsável = document.getElementById('formEstacao').value.trim();
+                var vin = document.getElementById('formVIN').value.trim();
         
                 // Validação do comprimento do VIN
                 if (vin.length !== 17) {
@@ -187,22 +187,30 @@
                     }
                 }
         
-                // Validação adicional caso "Peça" esteja preenchida
-                if (peça) {
+                // Nova validação: Se qualquer um dos campos estiver preenchido, todos devem estar
+                if (peça || posição || problema || criticidade || responsável) {
+                    if (!peça) {
+                        alert('Por favor, selecione uma peça.');
+                        event.preventDefault();
+                        return false;
+                    }
                     if (!posição) {
                         alert('Por favor, selecione uma posição.');
                         event.preventDefault();
                         return false;
                     }
-        
-                    if (!responsável) {
-                        alert('Por favor, selecione um responsável.');
+                    if (!problema) {
+                        alert('Por favor, selecione um problema.');
                         event.preventDefault();
                         return false;
                     }
-        
                     if (!criticidade) {
                         alert('Por favor, selecione uma criticidade.');
+                        event.preventDefault();
+                        return false;
+                    }
+                    if (!responsável) {
+                        alert('Por favor, selecione um responsável.');
                         event.preventDefault();
                         return false;
                     }
@@ -213,7 +221,6 @@
         
                 // Desativa o botão por 3 segundos
                 button.disabled = true;
-        
                 setTimeout(() => {
                     button.disabled = false;
                 }, 3000);

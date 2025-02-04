@@ -4,20 +4,20 @@
     <cfheader name="Pragma" value="no-cache">
     <cfheader name="Expires" value="0">
 
-   <!--- Verificando se está logado --->
-   <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
-    <script>
-        alert("É necessario autenticação!!");
-        self.location = '/qualidade/buyoff_linhat/index.cfm'
-    </script>
-</cfif>
+        <!--- Verificando se está logado --->
+    <cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
+        <script>
+            alert("É necessario autenticação!!");
+            self.location = '/qualidade/buyoff_linhat/index.cfm'
+        </script>
+    </cfif>
 
-<cfif not isDefined("cookie.user_level_final_assembly") or (cookie.user_level_final_assembly eq "R" or cookie.user_level_final_assembly eq "P")>
-    <script>
-        alert("É necessário autorização!!");
-        history.back(); // Voltar para a página anterior
-    </script>
-</cfif>
+    <cfif not isDefined("cookie.user_level_final_assembly") or (cookie.user_level_final_assembly eq "R" or cookie.user_level_final_assembly eq "P")>
+        <script>
+            alert("É necessário autorização!!");
+            history.back(); // Voltar para a página anterior
+        </script>
+    </cfif>
 
     <!--- Consulta --->
     <cfquery name="consulta" datasource="#BANCOSINC#">

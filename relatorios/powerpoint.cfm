@@ -1,3 +1,10 @@
+<cfif not isDefined("cookie.user_level_final_assembly") or (cookie.user_level_final_assembly eq "R" or cookie.user_level_final_assembly eq "P" or cookie.user_level_final_assembly eq "E")>
+    <script>
+        alert("É necessário autorização!!");
+        history.back(); // Voltar para a página anterior
+    </script>
+</cfif>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

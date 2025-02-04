@@ -22,7 +22,7 @@
         <cfelseif validausuario.USER_LEVEL EQ "P">
             <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/indicador.cfm"/>
         <cfelse>
-            <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/ver_agir.cfm"/>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/alertas/d_principal.cfm"/>
         </cfif>
     <cfelse>
         <!--- Mensagem de erro --->
@@ -170,7 +170,7 @@
     <body>
         <form method="post" onsubmit="return validarVerLogin()">
             <div class="login-container">
-                <h2 class="login-title">VER & AGIR</h2>
+                <h2 class="login-title">Relatórios</h2>
                 <div class="input-group">
                     <input type="text" id="ver_login" name="ver_login" required autocomplete="off" placeholder=" ">
                     <label for="ver_login">Usuário</label>
