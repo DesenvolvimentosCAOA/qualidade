@@ -1,6 +1,6 @@
 <cfif structKeyExists(form, "vin") and structKeyExists(form, "photoBase64")>
     <cfset vin = form.vin>
-    <cfset destinationPath = "C:/ColdFusion2023/cfusion/wwwroot/qualidade/arquivo_foto/#vin#/">
+    <cfset destinationPath = "C:/ColdFusion2023/cfusion-manuais/wwwroot/qualidade/arquivo_foto/#vin#/">
 
     <!--- Cria o diretório VIN dentro do caminho de destino se não existir --->
     <cfif not directoryExists(destinationPath)>

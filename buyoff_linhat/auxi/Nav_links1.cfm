@@ -1,65 +1,46 @@
 <nav>
     <input type="checkbox" id="check">
-        <label for="check" class="checkbtn">
-            <i class="icon icon-bars"></i>
-        </label>
-        <div class="logo">Paint Shop</div>
+    <label for="check" class="checkbtn">
+        <i class="icon icon-bars"></i>
+    </label>
+    <div class="logo">Paint Shop</div>
 
-        <ul>
-            <li>
-                <a href="/qualidade/buyoff_linhat/paint_selecionar_buy_off.cfm">Barreiras</a>
-            </li>
-            <li>
-                <a href="Reparo.cfm">Reparo</a>
-            </li>
-            <li>
-                <a href="liberacao.cfm">Liberação</a>
-            </li>
-            <li class="dropdown">
-                <a href="#">Relatórios</a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="relatorios_paint.cfm">Relatórios</a>
-                    </li>
-                    <li>
-                        <a href="paint_relatorios_buy_1.cfm">Relatórios Summary CP6</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#">Indicadores</a>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="/qualidade/buyoff_linhat/indicadores_paint.cfm">1º Turno</a>
-                    </li>
-                    <li>
-                        <a href="/qualidade/buyoff_linhat/indicadores_paint2.cfm">2º Turno</a>
-                    </li>
-                    <li>
-                        <a href="/qualidade/buyoff_linhat/indicadores_paint3.cfm">3º Turno</a>
-                    </li>
-                    <li>
-                        <a href="/qualidade/buyoff_linhat/indicadores_paint_geral.cfm">Geral</a>
-                    </li>                    <li>
-                        <a href="/qualidade/buyoff_linhat/indicadores_paint_cor_1.cfm">Indicadores COR</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#">Outros</a>
-                <ul class="dropdown-menu">
-                  <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
-                  <li><a href="/qualidade/buyoff_linhat/paint_editar.cfm">Editar Lançamento</a></li>
-                  <li><a href="/qualidade/buyoff_linhat/batalha_naval.cfm">Batalha Naval</a></li>
-                  <cfif isDefined("cookie.user_level_paint") and cookie.user_level_paint eq "G">                    <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver & Agir</a></li>
+    <ul>
+        <li><a href="/qualidade/buyoff_linhat/paint_selecionar_buy_off.cfm">Barreiras</a></li>
+        <li><a href="Reparo.cfm">Reparo</a></li>
+        <li><a href="liberacao.cfm">Liberação</a></li>
+        <li class="dropdown">
+            <a href="#">Relatórios</a>
+            <ul class="dropdown-menu">
+                <li><a href="relatorios_paint.cfm">Relatórios</a></li>
+                <li><a href="paint_relatorios_buy_1.cfm">Relatórios Summary CP6</a></li>
+            </ul>
+        </li>
+        <li class="dropdown">
+            <a href="#">Indicadores</a>
+            <ul class="dropdown-menu">
+                <li><a href="/qualidade/buyoff_linhat/indicadores_paint.cfm">1º Turno</a></li>
+                <li><a href="/qualidade/buyoff_linhat/indicadores_paint2.cfm">2º Turno</a></li>
+                <li><a href="/qualidade/buyoff_linhat/indicadores_paint3.cfm">3º Turno</a></li>
+                <li><a href="/qualidade/buyoff_linhat/indicadores_paint_geral.cfm">Geral</a></li>
+                <li><a href="/qualidade/buyoff_linhat/indicadores_paint_cor_1.cfm">Indicadores COR</a></li>
+            </ul>
+        </li>
+        <li class="dropdown">
+            <a href="#">Outros</a>
+            <ul class="dropdown-menu">
+                <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
+                <li><a href="/qualidade/buyoff_linhat/paint_editar.cfm">Editar Lançamento</a></li>
+                <li><a href="/qualidade/buyoff_linhat/batalha_naval.cfm">Batalha Naval</a></li>
+                <cfif isDefined("cookie.user_level_paint") and cookie.user_level_paint eq "G">
+                    <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver & Agir</a></li>
                 </cfif>
-                </ul>
-            </li>
-            <li>
-                <a href="logout.cfm">Sair</a>
-            </li>
-        </ul>
-    </nav>
+            </ul>
+        </li>
+        <li><a href="logout.cfm">Sair</a></li>
+    </ul>
+</nav>
+
 
     <!----script para login e senha da tela de adicionar defeito---->
     <script>

@@ -20,7 +20,7 @@
             WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
     </cfquery>
 
-<cfmail  from="Kennedy Dos Reis Rosario <kennedy.rosario@caoamontadora.com.br>"  subject="Alerta de Qualidade aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
+<cfmail  from="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"  subject="Alerta de Qualidade - Nº #consulta_editar.n_controle# aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
 	to="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
     cc="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
     type="html">

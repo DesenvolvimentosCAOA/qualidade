@@ -165,7 +165,13 @@
                                     <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy HH:nn:ss')#⠀</td>
                                     <td>#USER_COLABORADOR#</td>
                                     <td>#VIN#</td>
-                                    <td>#MODELO#</td>
+                                    <td>
+                                        <cfif left(VIN, 3) eq "LVV">
+                                            ARRIZO6
+                                        <cfelse>
+                                            #MODELO#
+                                        </cfif>
+                                    </td>
                                     <td>#BARREIRA#</td>
                                     <td>#PECA#</td>
                                     <td>#POSICAO#</td>

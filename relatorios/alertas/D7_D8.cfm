@@ -271,12 +271,23 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td rowspan="1" colspan="1" style="text-align:center; font-size:30px;background-color:lightgrey;">D3</td>
+                                    <td rowspan="3" colspan="1" style="text-align:center; font-size:30px;background-color:lightgrey;">D3</td>
                                     <td class="label-bold" colspan="1" style="background-color:lightgrey;">AÇÃO DE CONTENÇÃO:</td>
                                     <td colspan="8" style="background-color:lightgrey;">
                                         <input type="text" name="acao_contencao" placeholder="DESCREVA A AÇÃO DE CONTENÇÃO REALIZADA" style="background-color:lightgrey;" value="#consulta_editar.acao_contencao#" readonly>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td class="label-bold" colspan="5" style="text-align:center;background-color:lightgrey;">RESPONSÁVEL PELA AÇÃO DE CONTENÇÃO:</td>
+                                    <td class="label-bold" colspan="4" style="text-align:center;background-color:lightgrey;">DATA DA AÇÃO DE CONTENÇÃO:</td>
+                                </tr>
+                                <th colspan="5" style="text-align:center;background-color:lightgrey;">
+                                    <input readonly type="text" name="responsavel_acao_contencao" style="text-align:center;background-color:lightgrey;"  value="#consulta_editar.responsavel_acao_contencao#">
+                                </th>
+                                
+                                <th colspan="4" style="text-align:center;background-color:lightgrey;">
+                                    <input type="text" name="data_acao_contencao" style="text-align:center;background-color:lightgrey;" value="#dateformat(consulta_editar.data_acao_contencao, "dd/mm/yyyy")#" required>
+                                </th>
                                     <tr>
                                         <td rowspan="13" style="text-align:center; font-size:30px;">D4</td>
                                         <td class="label-bold" colspan="3" style="text-align:center;">MÃO DE OBRA</td>

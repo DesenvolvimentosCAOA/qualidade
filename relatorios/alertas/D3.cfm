@@ -19,11 +19,18 @@
             UPDATE INTCOLDFUSION.ALERTAS_8D
             SET              
                 ACAO_CONTENCAO = <cfqueryparam value="#UCase(form.acao_contencao)#" cfsqltype="CF_SQL_CLOB">,
+                DATA_ACAO_CONTENCAO = <cfqueryparam value="#form.data_acao_contencao#" cfsqltype="CF_SQL_TIMESTAMP">,
+                RESPONSAVEL_ACAO_CONTENCAO = <cfqueryparam value="#UCase(form.responsavel_acao_contencao)#" cfsqltype="CF_SQL_VARCHAR">,
                 STATUS = 'D3'
                 WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
         </cfquery>
         <cflocation url="d_principal.cfm">
     </cfif>
+    
+    <cfquery name="login" datasource="#BANCOSINC#">
+        SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
+        WHERE USER_NAME = '#cookie.user_apontamento_fa#'
+    </cfquery>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -272,12 +279,23 @@
                                 </tr>
                                 <form method="POST">
                                     <tr>
-                                        <td rowspan="1" colspan="1" style="text-align:center; font-size:30px;background-color:lightgrey;">D3</td>
+                                        <td rowspan="3" colspan="1" style="text-align:center; font-size:30px;background-color:lightgrey;">D3</td>
                                         <td class="label-bold" colspan="1" style="background-color:lightgrey;">AÇÃO DE CONTENÇÃO:</td>
                                         <td colspan="8" style="background-color:lightgrey;">
-                                            <input type="text" name="acao_contencao" placeholder="DESCREVA A AÇÃO DE CONTENÇÃO REALIZADA" style="background-color:lightgrey;">
+                                            <input type="text" name="acao_contencao" placeholder="DESCREVA A AÇÃO DE CONTENÇÃO REALIZADA" required style="background-color:lightgrey;">
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td class="label-bold" colspan="4" style="text-align:center;background-color:lightgrey;">RESPONSÁVEL PELA AÇÃO DE CONTENÇÃO:</td>
+                                        <td class="label-bold" colspan="3" style="text-align:center;background-color:lightgrey;">DATA DA AÇÃO DE CONTENÇÃO:</td>
+                                    </tr>
+                                    <th colspan="4" style="text-align:center;background-color:lightgrey;">
+                                        <input readonly type="text" name="responsavel_acao_contencao" style="text-align:center;background-color:lightgrey;" value="#login.user_sign#">
+                                    </th>
+                                    
+                                    <th colspan="3" style="text-align:center;background-color:lightgrey;">
+                                        <input type="date" name="data_acao_contencao" style="text-align:center;background-color:lightgrey;" required>
+                                    </th>
                             </table>
                                     <button type="button" class="btn-rounded back-btn" id="btnback" onclick="window.location.href = 'd_principal.cfm';">Voltar</button>
                                     <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao">Salvar</button>

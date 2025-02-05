@@ -172,10 +172,10 @@
                                             </button>
                                         </cfif>
                                     </td>
-                                </cfif>
+                                </cfif> 
                                  <!---<td>
-                                    <button class="btn-rounded" onclick="window.location.href = 'email.cfm?id_editar=#ID#'">enviar email</button>
-                                </td>   --->
+                                    <button class="btn-rounded" onclick="window.location.href = 'email_body.cfm?id_editar=#ID#'">enviar email</button>
+                                </td>  --->
                             </tr>
                         </cfloop>
                     </cfoutput>
