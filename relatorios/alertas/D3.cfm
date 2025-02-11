@@ -306,7 +306,7 @@
             
             <cfscript>
                 // Caminho do diretório
-                directoryPath = "C:/ColdFusion2023/cfusion-manuais/wwwroot/qualidade/arquivo_foto/";
+                directoryPath = "E:/arquivo_foto/";
             
                 // Obter a lista de pastas
                 folderList = directoryList(directoryPath, true, "directory");
@@ -355,7 +355,7 @@
             <script>
                 async function processAndSubmit(event) {
                     event.preventDefault();
-        
+            
                     const input = document.getElementById('photoInput');
                     const base64Array = [];
                     for (let file of input.files) {
@@ -366,11 +366,11 @@
                         });
                         base64Array.push({ fileName: file.name, base64: result });
                     }
-        
+            
                     document.getElementById('photoBase64').value = JSON.stringify(base64Array);
                     document.getElementById('uploadForm').submit();
                 }
-        
+            
                 // Filtrar a tabela com base na entrada do usuário
                 document.getElementById('searchInput').addEventListener('input', function() {
                     const filter = this.value.toLowerCase();
@@ -381,25 +381,25 @@
                     });
                 });
             </script>
-            
+
             <cfscript>
                 // Caminho da pasta com as imagens
-                folderPath = "C:/ColdFusion2023/cfusion-manuais/wwwroot/qualidade/arquivo_foto/#url.id_nc#";
-                
+                folderPath = expandPath("/arquivo_foto/#url.id_nc#");
+                writeDump(folderPath);
                 // Listar todos os arquivos na pasta (recursivamente)
                 folderContent = directoryList(folderPath, true, "all");
-                
+
                 // Iniciar o conteúdo HTML
                 htmlContent = "<div class='folder-content'>";
                 htmlContent &= "<ul>";
-                
+
                 // Loop para percorrer todos os arquivos da pasta
                 for (content in folderContent) {
                     contentName = listLast(content, "\");  // Extrair apenas o nome do arquivo
-                    
+
                     // Gerar o caminho relativo para a imagem
-                    fileUrl = "/qualidade/arquivo_foto/#url.id_nc#/#contentName#";
-                    
+                    fileUrl = expandPath("/arquivo_foto/#url.id_nc#/#contentName#");
+
                     // Verificar se é uma imagem (jpg, png, jpeg, gif)
                     if (findNoCase(".jpg", contentName) or findNoCase(".png", contentName) or findNoCase(".jpeg", contentName) or findNoCase(".gif", contentName)) {
                         // Adicionar a imagem e o link à lista
@@ -409,13 +409,13 @@
                         htmlContent &= "</li>";
                     }
                 }
-                
+
                 htmlContent &= "</ul>";
                 htmlContent &= "</div>";
             </cfscript>
-            
+
             <cfoutput>#htmlContent#</cfoutput>
-    
+
             <!-- Modal para visualizar as imagens -->
             <script>
                 function openModal(imageElement) {

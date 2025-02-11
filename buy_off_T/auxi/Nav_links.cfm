@@ -83,8 +83,9 @@
         <cfif isDefined("cookie.user_level_final_assembly") and cookie.user_level_final_assembly eq "G">
             <li><a href="/qualidade/buyoff_linhat/adicionar_defeito.cfm">Adicionar Defeitos</a></li>
             <li><a href="./fa_editar.cfm">Editar Lançamento</a></li>
+            <li><a href="cadastro_novo.cfm">Criar Usuário</a></li>
         </cfif>
-        <li><a href="./acompanhamento_massiva_fa.cfm">Acompanhamento Massiva</a></li>
+        <li><a href="./acompanhamento_massiva_fa.cfm">Acomp. Massiva</a></li>
         </ul>
         </li>
     <li><a href="logout.cfm">Sair</a></li>

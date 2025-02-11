@@ -84,7 +84,7 @@
                     <div class="col">
                         <cfquery name="login" datasource="#BANCOSINC#">
                             SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
-                            WHERE USER_NAME = '#cookie.USER_APONTAMENTO_FAI#'
+                            WHERE USER_NAME = '#cookie.USER_APONTAMENTO_PAINT#'
                         </cfquery>
                         <div class="form-group">
                             <label class="form-label" for="formReparador">Reparador</label>

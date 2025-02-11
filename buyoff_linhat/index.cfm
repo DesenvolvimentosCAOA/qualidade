@@ -76,8 +76,6 @@
 </cfif>
 </cfoutput>
 
-
-
 <!--- valida o usuário para FAI --->
 <cfoutput>
     <cfif isDefined("form.FAI_LOGIN")>
@@ -106,8 +104,6 @@
         </cfif>
     </cfif>
 </cfoutput>
-
-
 
     <!--- valida o usuário para BODY --->
 <cfoutput>
@@ -192,9 +188,6 @@
         </cfif>
     </cfoutput>
 
-
-
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -206,17 +199,169 @@
     <link rel="icon" href="./assets/chery.png" type="image/x-icon">
 
     <style>
-    body{
-        background: url('./assets/novo.jpg') no-repeat center center fixed; /* URL da imagem de fundo */
-        background-size: cover; /* Cobrir toda a área da tela */
-    }
-    #cadastro_usuario {
-  text-transform: lowercase; /* Transforma o texto em minúsculas */
-}
+        body{
+            background: url('./assets/novo.jpg') no-repeat center center fixed; /* URL da imagem de fundo */
+            background-size: cover; /* Cobrir toda a área da tela */
+        }
+        #cadastro_usuario {
+            text-transform: lowercase; /* Transforma o texto em minúsculas */
+            }
 
-    #cadastro_nome{
-        text-transform: uppercase;
-    }
+        #cadastro_nome{
+            text-transform: uppercase;
+        }
+        .titulo-texto {
+        font-size: 36px;
+        font-family: Arial, sans-serif;
+        color: #333;
+        overflow: hidden; /* Oculta o texto que ainda não apareceu */
+        white-space: nowrap; /* Impede a quebra de linha */
+        display: inline-block; /* Para o texto não quebrar */
+        }
+
+        .titulo-texto span {
+        opacity: 0;
+        position: relative;
+        display: inline-block;
+        animation: fadeInLeft 1s forwards;
+        }
+
+        /* Adicionando delay incremental para cada letra */
+        .titulo-texto span:nth-child(1) {
+        animation-delay: 0s;
+        }
+
+        .titulo-texto span:nth-child(2) {
+        animation-delay: 0.5s;
+        }
+
+        .titulo-texto span:nth-child(3) {
+        animation-delay: 1s;
+        }
+
+        .titulo-texto span:nth-child(4) {
+        animation-delay: 1.5s;
+        }
+
+        .titulo-texto span:nth-child(5) {
+        animation-delay: 2s;
+        }
+
+        .titulo-texto span:nth-child(6) {
+        animation-delay: 2.5s;
+        }
+
+        .titulo-texto span:nth-child(7) {
+        animation-delay: 3s;
+        }
+
+        .titulo-texto span:nth-child(8) {
+        animation-delay: 3.5s;
+        }
+
+        .titulo-texto span:nth-child(9) {
+        animation-delay: 4s;
+        }
+
+        .titulo-texto span:nth-child(10) {
+        animation-delay: 4.5s;
+        }
+
+        .titulo-texto span:nth-child(11) {
+        animation-delay: 5s;
+        }
+
+        .titulo-texto span:nth-child(12) {
+        animation-delay: 5.5s;
+        }
+
+        .titulo-texto span:nth-child(13) {
+        animation-delay: 6s;
+        }
+
+        .titulo-texto span:nth-child(14) {
+        animation-delay: 6.5s;
+        }
+
+        .titulo-texto span:nth-child(15) {
+        animation-delay: 7s;
+        }
+
+        .titulo-texto span:nth-child(16) {
+        animation-delay: 7.5s;
+        }
+
+        .titulo-texto span:nth-child(17) {
+        animation-delay: 8s;
+        }
+
+        .titulo-texto span:nth-child(18) {
+        animation-delay: 8.5s;
+        }
+
+        .titulo-texto span:nth-child(19) {
+        animation-delay: 9s;
+        }
+
+        .titulo-texto span:nth-child(20) {
+        animation-delay: 9.5s;
+        }
+
+        .titulo-texto span:nth-child(21) {
+        animation-delay: 10s;
+        }
+
+        .titulo-texto span:nth-child(22) {
+        animation-delay: 10.5s;
+        }
+
+        .titulo-texto span:nth-child(23) {
+        animation-delay: 11s;
+        }
+
+        .titulo-texto span:nth-child(24) {
+        animation-delay: 11.5s;
+        }
+
+        .titulo-texto span:nth-child(25) {
+        animation-delay: 12s;
+        }
+
+        .titulo-texto span:nth-child(26) {
+        animation-delay: 12.5s;
+        }
+
+        .titulo-texto span:nth-child(27) {
+        animation-delay: 13s;
+        }
+
+        .titulo-texto span:nth-child(28) {
+        animation-delay: 13.5s;
+        }
+
+        .titulo-texto span:nth-child(29) {
+        animation-delay: 14s;
+        }
+
+        .titulo-texto span:nth-child(30) {
+        animation-delay: 14.5s;
+        }
+
+        .titulo-texto span:nth-child(31) {
+        animation-delay: 15s;
+        }
+
+        @keyframes fadeInLeft {
+        0% {
+            opacity: 0;
+            transform: translateX(-100vw); /* Começa da esquerda da tela */
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0); /* Vai para sua posição normal */
+        }
+        }
+
     </style>
 
 </head>
@@ -225,17 +370,40 @@
         <cfinclude template="./auxi/menu.cfm">
     </header>
 
-    <h1 class="titulo-texto" id="typed-text"></h1>
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-    <script>
-        var typed = new Typed('#typed-text', {
-            strings: ["SISTEMA DE GESTAO DA QUALIDADE"],
-            typeSpeed: 50,
-            backSpeed: 25,
-            loop: false,
-            showCursor: false
-        });
-    </script>
+    <h1 class="titulo-texto">
+        <span>S</span>
+        <span>I</span>
+        <span>S</span>
+        <span>T</span>
+        <span>E</span>
+        <span>M</span>
+        <span>A</span>
+        <span> </span>
+        <span>D</span>
+        <span>E</span>
+        <span> </span>
+        <span>G</span>
+        <span>E</span>
+        <span>S</span>
+        <span>T</span>
+        <span>Ã</span>
+        <span>O</span>
+        <span> </span>
+        <span>D</span>
+        <span>A</span>
+        <span> </span>
+        <span>Q</span>
+        <span>U</span>
+        <span>A</span>
+        <span>L</span>
+        <span>I</span>
+        <span>D</span>
+        <span>A</span>
+        <span>D</span>
+        <span>E</span>
+      </h1>
+      
+      
 
     <!-- Formulário de Small -->
 <div id="form-small" class="form-section" style="display: none;">

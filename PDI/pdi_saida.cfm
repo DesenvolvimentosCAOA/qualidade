@@ -162,8 +162,6 @@
             // Associa a função de validação ao evento de envio do formulário
             document.getElementById('form_envio').addEventListener('submit', validarFormulario);
         </script>
-        
-        
       </head>
       <body>
          <!-- Header com as imagens e o menu -->
@@ -220,45 +218,81 @@
                            <cfinclude template="auxi/batalha_option.cfm">
                         </select>
                      </div>
-                     <div style="display:none" class="form-group col-md-2">
-                        <label style="display:none" for="formModelo">Modelo</label>
-                        <input style="display:none" type="text" class="form-control form-control-sm" name="modelo" id="formModelo" readonly="readonly">
-                        <input style="display:none" id="modelo" name="modelo" type="hidden" value="">
-                     </div>
+                     <div class="form-group col-md-2">
+                        <label for="formModelo">Modelo</label>
+                        <select class="form-control form-control-sm" name="modelo" id="formModelo">
+                            <option value="" selected disabled>Selecione um modelo</option>
+                            <option value="AZERA">AZERA</option>
+                            <option value="Tucson GLS/LTD">Tucson GLS/LTD</option>
+                            <option value="KONA EV">KONA EV</option>
+                            <option value="KONA HEV LTD">KONA HEV LTD</option>
+                            <option value="IONIQ">IONIQ</option>
+                            <option value="IX35 GLS">IX35 GLS</option>
+                            <option value="SUBARU XV">SUBARU XV</option>
+                            <option value="FORESTER">FORESTER</option>
+                            <option value="SUBARU WRX">SUBARU WRX</option>
+                            <option value="OUTBACK">OUTBACK</option>
+                            <option value="SANTA FÉ">SANTA FÉ</option>
+                            <option value="HR DA10/12">HR DA10/12</option>
+                            <option value="HD80">HD80</option>
+                            <option value="Tiggo 7 48v">Tiggo 7 48v</option>
+                            <option value="Tiggo 7 48v ADAS">Tiggo 7 48v ADAS</option>
+                            <option value="Tiggo 7 ADAS">Tiggo 7 ADAS</option>
+                            <option value="Tiggo 7 TXS">Tiggo 7 TXS</option>
+                            <option value="Tiggo 7 T">Tiggo 7 T</option>
+                            <option value="Tiggo 7 ICE LOW">Tiggo 7 ICE LOW</option>
+                            <option value="Tiggo 7 PRO">Tiggo 7 PRO</option>
+                            <option value="Tiggo 5x PRO">Tiggo 5x PRO</option>
+                            <option value="Tiggo 5x PRO ICE LOW">Tiggo 5x PRO ICE LOW</option>
+                            <option value="Tiggo 5x PRO ADAS HIGH">Tiggo 5x PRO ADAS HIGH</option>
+                            <option value="Tiggo 5x PRO ICE HIGH">Tiggo 5x PRO ICE HIGH</option>
+                            <option value="Tiggo 5x 48v">Tiggo 5x 48v</option>
+                            <option value="TIGGO 5x 48v ADAS LOW">TIGGO 5x 48v ADAS LOW</option>
+                            <option value="Tiggo 5 T">Tiggo 5 T</option>
+                            <option value="Tiggo 5 TXS">Tiggo 5 TXS</option>
+                            <option value="TIGGO 8 FL3">TIGGO 8 FL3</option>
+                            <option value="Tiggo 8 ADAS">Tiggo 8 ADAS</option>
+                            <option value="Tiggo 8 TXS">Tiggo 8 TXS</option>
+                            <option value="Tiggo 8 PHEV">Tiggo 8 PHEV</option>
+                            <option value="Tiggo 7 PHEV">Tiggo 7 PHEV</option>
+                            <option value="Arrizo 6">Arrizo 6</option>
+                        </select>
+                    </div>
                      <div style="display:none" class="form-group col-md-2">
                         <label style="display:none" for="formLocal">Local</label>
                         <select style="display:none" class="form-control form-control-sm" name="local" id="formLocal" required="required" readonly="readonly">
                            <option value="PDI">PDI</option>
                         </select>
                   </cfoutput>
-               </div>
+                     </div>
+                     <div class="form-group col-md-2">
+                        <label for="formProblema">Problema</label>
+                        <input class="form-control form-control-sm" list="problemasList" name="problema" id="formProblema" oninput="transformToUpperCase(this)">
+                        <datalist id="problemasList">
+                           <cfinclude template="auxi/problemas_option.cfm">
+                        </datalist>
+                     </div>
+                     <div class="form-group col-md-2">
+                        <label for="formEstacao">Responsável</label>
+                        <select class="form-control form-control-sm" name="estacao" id="formEstacao" style="width: 200px;">
+                           <option value="">Selecione o Responsável:</option>
+                           <cfinclude template="auxi/estacao.cfm">
+                        </select>
+                     </div>
+                     <div class="form-group col-md-2">
+                        <label for="formCriticidade">Criticidade</label>
+                        <select class="form-control form-control-sm" name="criticidade" id="formCriticidade">
+                           <option value="">Selecione</option>
+                           <option value="N0">N0</option>
+                           <option value="N1">N1</option>
+                           <option value="N2">N2</option>
+                           <option value="N3">N3</option>
+                           <option value="N4">N4</option>
+                        </select>
+                     </div>
                </div>
                <div class="form-row">
-                  <div class="form-group col-md-2">
-                     <label for="formProblema">Problema</label>
-                     <input class="form-control form-control-sm" list="problemasList" name="problema" id="formProblema" oninput="transformToUpperCase(this)">
-                     <datalist id="problemasList">
-                        <cfinclude template="auxi/problemas_option.cfm">
-                     </datalist>
-                  </div>
-                  <div class="form-group col-md-2">
-                     <label for="formEstacao">Responsável</label>
-                     <select class="form-control form-control-sm" name="estacao" id="formEstacao" style="width: 200px;">
-                        <option value="">Selecione o Responsável:</option>
-                        <cfinclude template="auxi/estacao.cfm">
-                     </select>
-                  </div>
-                  <div class="form-group col-md-2">
-                     <label for="formCriticidade">Criticidade</label>
-                     <select class="form-control form-control-sm" name="criticidade" id="formCriticidade">
-                        <option value="">Selecione</option>
-                        <option value="N0">N0</option>
-                        <option value="N1">N1</option>
-                        <option value="N2">N2</option>
-                        <option value="N3">N3</option>
-                        <option value="N4">N4</option>
-                     </select>
-                  </div>
+                  
                   <div class="form-group col-md-3">
                      <input type="hidden" name="barcode" id="barcode" value="<cfif isDefined('buscaBarcode.BARCODE')>#buscaBarcode.BARCODE#<cfelse></cfif>">
                   </div>
@@ -339,92 +373,90 @@
                </cfif>
                <script>
                   const vinModelMap = {
-                        "95PJV81DB": "IX35 GLS",
-                        "95PJ33ALX": "Tucson GLS/LTD",
-                        "95PJ3812G": "Tucson GLS/LTD",
-                        "95PZBN7KP": "HR DA10/12",
-                        "95PGA18FP": "HD80",
-                        "95PBDK51D": "Tiggo 5x PRO",
-                        "95PBDK31D": "Tiggo 5x PRO ICE HIGH",
-                        "95PBAK51B": "Tiggo 5 T",
-                        "95PBCK51D": "Tiggo 5 TXS",
-                        "95PEDL61D": "Tiggo 7 PRO",
-                        "95PEJL31D": "Tiggo 7 48v",
-                        "95PEKL31D": "Tiggo 7 48v ADAS",
-                        "95PEEL61D": "Tiggo 7 ADAS",
-                        "95PAAL51B": "Tiggo 7 T",
-                        "95PACL51D": "Tiggo 7 TXS",
-                        "95PBJK31D": "Tiggo 5x 48v",
-                        "95PBKK31D": "Tiggo 5x PRO ADAS HIGH",
-                        "95PDCM61D": "Tiggo 8 TXS",
-                        "LVTDB21B2": "Tiggo 8 TXS",
-                        "LVTDB21B1": "Tiggo 8 TXS",
-                        "LVVDB21B5": "Tiggo 8 TXS",
-                        "95PDEM61D": "Tiggo 8 ADAS",
-                        "LVTDB21BX": "Tiggo 8 TXS",
-                        "JF1VAGL85": "FORESTER",
-                        "JF1SK7LL5": "FORESTER",
-                        "JF1SKELL5": "FORESTER",
-                        "KMHF341EB": "AZERA",
-                        "LNNBBDAT0": "Tiggo 8 PHEV",
-                        "LNNBBDAT1": "Tiggo 8 PHEV",
-                        "LNNBBDAT2": "Tiggo 8 PHEV",
-                        "LNNBBDAT3": "Tiggo 8 PHEV",
-                        "LNNBBDAT4": "Tiggo 8 PHEV",
-                        "LNNBBDAT5": "Tiggo 8 PHEV",
-                        "LNNBBDAT6": "Tiggo 8 PHEV",
-                        "LNNBBDAT7": "Tiggo 8 PHEV",
-                        "LNNBBDAT8": "Tiggo 8 PHEV",
-                        "LNNBBDAT9": "Tiggo 8 PHEV",
-                        "LNNBBDATX": "Tiggo 8 PHEV",
-                        "JF1GT7LL5": "SUBARU XV",
-                        "JF1GTELL5": "SUBARU XV",
-                        "KMHSU81ED": "SANTA FÉ",
-                        "KMHC851CG": "IONIQ",
-                        "JF1VAFLH3": "SUBARU WRX",
-                        "95PJ33ALX": "Tucson GLS/LTD",
-                        "JF1BSFLC2": "OUTBACK",
-                        "95PBFK31D": "Tiggo 5x PRO ICE LOW",
-                        "KMHK281EG": "KONA HEV LTD",
-                        "KMHK281HF": "KONA EV",
-                        "95PBLK31D": "TIGGO 5x 48v ADAS LOW",
-                        "95PEFL31D": "Tiggo 7 ICE LOW",
-                        "LVVDC21B0": "Arrizo 6",
-                        "LVVDC21B1": "Arrizo 6",
-                        "LVVDC21B2": "Arrizo 6",
-                        "LVVDC21B3": "Arrizo 6",
-                        "LVVDC21B4": "Arrizo 6",
-                        "LVVDC21B5": "Arrizo 6",
-                        "LVVDC21B6": "Arrizo 6",
-                        "LVVDC21B7": "Arrizo 6",
-                        "LVVDC21B8": "Arrizo 6",
-                        "LVVDC21B9": "Arrizo 6",
-                        "LVVDC21BX": "Arrizo 6",
-                        "95PFEM61D": "TIGGO 8 FL3"
+                     "KMHF341EB": "AZERA",
+                     "95PJ33ALX": "Tucson GLS/LTD",
+                     "95PJ3812G": "Tucson GLS/LTD",
+                     "KMHK281HF": "KONA EV",
+                     "KMHK281EG": "KONA HEV LTD",
+                     "KMHC851CG": "IONIQ",
+                     "95PJV81DB": "IX35 GLS",
+                     "JF1GT7LL5": "SUBARU XV",
+                     "JF1GTELL5": "SUBARU XV",
+                     "JF1SK7LL5": "FORESTER",
+                     "JF1SKELL5": "FORESTER",
+                     "JF1VAGL85": "FORESTER",
+                     "JF1VAFLH3": "SUBARU WRX",
+                     "JF1BSFLC2": "OUTBACK",
+                     "KMHSU81ED": "SANTA FÉ",
+                     "95PZBN7KP": "HR DA10/12",
+                     "95PGA18FP": "HD80",
+                     "95PEJL31D": "Tiggo 7 48v",
+                     "95PEKL31D": "Tiggo 7 48v ADAS",
+                     "95PEEL61D": "Tiggo 7 ADAS",
+                     "95PACL51D": "Tiggo 7 TXS",
+                     "95PAAL51B": "Tiggo 7 T",
+                     "95PEFL31D": "Tiggo 7 ICE LOW",
+                     "95PEDL61D": "Tiggo 7 PRO",
+                     "95PBDK51D": "Tiggo 5x PRO",
+                     "95PBFK31D": "Tiggo 5x PRO ICE LOW",
+                     "95PBKK31D": "Tiggo 5x PRO ADAS HIGH",
+                     "95PBDK31D": "Tiggo 5x PRO ICE HIGH",
+                     "95PBJK31D": "Tiggo 5x 48v",
+                     "95PBLK31D": "TIGGO 5x 48v ADAS LOW",
+                     "95PBAK51B": "Tiggo 5 T",
+                     "95PBCK51D": "Tiggo 5 TXS",
+                     "95PFEM61D": "TIGGO 8 FL3",
+                     "95PDEM61D": "Tiggo 8 ADAS",
+                     "95PDCM61D": "Tiggo 8 TXS",
+                     "LVTDB21B2": "Tiggo 8 TXS",
+                     "LVTDB21B1": "Tiggo 8 TXS",
+                     "LVVDB21B5": "Tiggo 8 TXS",
+                     "LVTDB21BX": "Tiggo 8 TXS",
+                     "LNNBBDAT0": "Tiggo 8 PHEV",
+                     "LNNBBDAT1": "Tiggo 8 PHEV",
+                     "LNNBBDAT2": "Tiggo 8 PHEV",
+                     "LNNBBDAT3": "Tiggo 8 PHEV",
+                     "LNNBBDAT4": "Tiggo 8 PHEV",
+                     "LNNBBDAT5": "Tiggo 8 PHEV",
+                     "LNNBBDAT6": "Tiggo 8 PHEV",
+                     "LNNBBDAT7": "Tiggo 8 PHEV",
+                     "LNNBBDAT8": "Tiggo 8 PHEV",
+                     "LNNBBDAT9": "Tiggo 8 PHEV",
+                     "LNNBBDATX": "Tiggo 8 PHEV" ,
+                     "LVVDC21B0": "Arrizo 6",
+                     "LVVDC21B1": "Arrizo 6",
+                     "LVVDC21B2": "Arrizo 6",
+                     "LVVDC21B3": "Arrizo 6",
+                     "LVVDC21B4": "Arrizo 6",
+                     "LVVDC21B5": "Arrizo 6",
+                     "LVVDC21B6": "Arrizo 6",
+                     "LVVDC21B7": "Arrizo 6",
+                     "LVVDC21B8": "Arrizo 6",
+                     "LVVDC21B9": "Arrizo 6",
+                     "LVVDC21BX": "Arrizo 6"
                   };
               
                   const vinInput = document.getElementById("formVIN");
-                  const modeloInput = document.getElementById("formModelo");
+                  const modeloSelect = document.getElementById("formModelo");
               
                   vinInput.addEventListener("input", function() {
                       const vinValue = vinInput.value.trim();
-              
-                      // Verifica se o VIN tem pelo menos 9 caracteres
                       if (vinValue.length >= 9) {
-                          // Pega os primeiros 9 caracteres do VIN
                           const vinPrefix = vinValue.substring(0, 9);
-              
-                          // Verifica se o VIN começa com algum dos VINs mapeados
                           if (vinModelMap[vinPrefix]) {
-                              modeloInput.value = vinModelMap[vinPrefix]; // Atualiza o modelo correspondente
+                              modeloSelect.value = vinModelMap[vinPrefix]; // Preenche o select com o modelo correto
                           } else {
-                              modeloInput.value = ""; // Limpa o campo se não houver correspondência
+                              modeloSelect.value = ""; // Limpa se não houver correspondência
                           }
                       } else {
-                          modeloInput.value = ""; // Limpa o campo modelo se não for ao menos 9 caracteres
+                          modeloSelect.value = "";
                       }
                   });
-              </script>    
+              
+                  modeloSelect.addEventListener("change", function() {
+                      // Aqui você pode adicionar qualquer ação caso o usuário selecione um modelo manualmente
+                  });
+              </script>
             </form>
          </div>
          <div class="container col-12 bg-white rounded metas">

@@ -356,15 +356,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Relatório CP6 1º Turno</title>
         <link rel="icon" href="./assets/chery.png" type="image/x-icon">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-        <link rel="stylesheet" href="assets/css/style.css?v1"> 
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="assets/StyleBuyOFF.css?v9">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
         <style>
             table {
                 width: 100%;
@@ -376,6 +367,151 @@
             }
             th {
                 background-color: #f2f2f2;
+            }
+            /* Estilização geral do container */
+            .container {
+                max-width: 800px;
+                margin: 20px auto;
+                padding: 20px;
+                background: #f8f9fa;
+                border-radius: 10px;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+
+            /* Botões estilizados */
+            .btn {
+                font-size: 16px;
+                font-weight: bold;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .btn-warning {
+                background-color: #ffcc00;
+                color: #333;
+            }
+
+            .btn-warning:hover {
+                background-color: #e6b800;
+            }
+
+            /* Ajustando o botão do 1º turno para manter o verde */
+            .btn-primary {
+                background-color: green !important;
+                color: white !important;
+            }
+
+            /* Estilização do título */
+            h2 {
+                margin-top: 20px;
+                color: #333;
+                font-size: 24px;
+                font-weight: bold;
+            }
+
+            /* Estilização do formulário */
+            .form-row {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+            .form-group input {
+                font-size: 16px;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            /* Melhorando a responsividade */
+            @media (max-width: 600px) {
+                .form-row {
+                    flex-direction: column;
+                }
+                .btn {
+                    width: 100%;
+                }
+            }
+            /* Estilização geral da tabela */
+            #tblStocks {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+                background-color: #fff;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+                overflow: hidden;
+            }
+
+            /* Estilização do cabeçalho da tabela */
+            #tblStocks thead {
+                background-color: #007bff;
+                color: black;
+                font-weight: bold;
+            }
+
+            #tblStocks thead th {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 2px solid #0056b3;
+            }
+
+            /* Estilização das células da tabela */
+            #tblStocks tbody tr {
+                border-bottom: 1px solid #ddd;
+                transition: background 0.3s ease;
+            }
+
+            #tblStocks tbody tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            #tblStocks tbody tr:hover {
+                background-color: #e9ecef;
+            }
+
+            #tblStocks tbody td {
+                padding: 10px;
+                color: #333;
+            }
+
+            /* Melhorando a responsividade */
+            @media (max-width: 768px) {
+                #tblStocks thead {
+                    display: none;
+                }
+                
+                #tblStocks tbody tr {
+                    display: block;
+                    margin-bottom: 10px;
+                    background: #fff;
+                    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+                    border-radius: 8px;
+                    padding: 10px;
+                }
+                
+                #tblStocks tbody td {
+                    display: block;
+                    text-align: right;
+                    padding: 5px 10px;
+                    position: relative;
+                }
+                
+                #tblStocks tbody td::before {
+                    content: attr(data-label);
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    position: absolute;
+                    left: 10px;
+                    text-align: left;
+                }
             }
         </style>
 
@@ -405,7 +541,7 @@
         </div>
             <h2 class="titulo2">Relatórios</h2>
             
-            <div style="margin-top:1vw" class="container col-12 bg-white rounded metas">
+            <div style="margin-top:1vw" class="col-12 bg-white rounded metas">
                 <table id="tblStocks" class="table">
                     <thead>
                         <tr class="text-nowrap">

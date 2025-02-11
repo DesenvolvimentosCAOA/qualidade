@@ -3,10 +3,10 @@
     folderName = url.id_nc;
 
     // Caminho completo da pasta
-    directoryPath = "C:/ColdFusion2023/cfusion/wwwroot/qualidade/arquivo_foto/" & folderName;
+    directoryPath = "E:/arquivo_foto/" & folderName;
 
     // Caminho para o diretório temporário
-    tempDirectory = "C:/ColdFusion2023/cfusion/wwwroot/qualidade/arquivo_foto/temp/";
+    tempDirectory = "E:/arquivo_foto/temp/";
 
     // Verificar se o diretório temporário existe, caso contrário, criar
     if (!directoryExists(tempDirectory)) {

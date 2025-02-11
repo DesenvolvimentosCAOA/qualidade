@@ -257,8 +257,6 @@
                 event.preventDefault();
             }
         </script>
-        
- 
     </head>
     <body>
         <!-- Header com as imagens e o menu -->

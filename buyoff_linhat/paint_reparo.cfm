@@ -108,7 +108,7 @@
                 <div class="overflow-x-auto">
                     <cfquery name="login" datasource="#BANCOSINC#">
                         SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
-                        WHERE USER_NAME = '#cookie.USER_APONTAMENTO_FAI#'
+                        WHERE USER_NAME = '#cookie.USER_APONTAMENTO_PAINT#'
                     </cfquery>
                     <div class="container-fluid p-0">
                         <table class="table table-striped table-bordered w-100">

@@ -22,25 +22,22 @@
                 <li><a href="/qualidade/buyoff_linhat/indicadores_paint.cfm">1º Turno</a></li>
                 <li><a href="/qualidade/buyoff_linhat/indicadores_paint2.cfm">2º Turno</a></li>
                 <li><a href="/qualidade/buyoff_linhat/indicadores_paint3.cfm">3º Turno</a></li>
-                <li><a href="/qualidade/buyoff_linhat/indicadores_paint_geral.cfm">Geral</a></li>
+<!---                 <li><a href="/qualidade/buyoff_linhat/indicadores_paint_geral.cfm">Geral</a></li> --->
                 <li><a href="/qualidade/buyoff_linhat/indicadores_paint_cor_1.cfm">Indicadores COR</a></li>
             </ul>
         </li>
         <li class="dropdown">
-            <a href="#">Outros</a>
+            <a href="#">Acesso Exclusivo QA</a>
             <ul class="dropdown-menu">
                 <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
                 <li><a href="/qualidade/buyoff_linhat/paint_editar.cfm">Editar Lançamento</a></li>
-                <li><a href="/qualidade/buyoff_linhat/batalha_naval.cfm">Batalha Naval</a></li>
-                <cfif isDefined("cookie.user_level_paint") and cookie.user_level_paint eq "G">
-                    <li><a href="/qualidade/relatorios/ver_agir.cfm">Ver & Agir</a></li>
-                </cfif>
+                <li><a href="/qualidade/buyoff_linhat/cadastro_novo.cfm">Cadastro de Usuário</a></li>
+<!---                 <li><a href="/qualidade/buyoff_linhat/batalha_naval.cfm">Batalha Naval</a></li> --->
             </ul>
         </li>
         <li><a href="logout.cfm">Sair</a></li>
     </ul>
 </nav>
-
 
     <!----script para login e senha da tela de adicionar defeito---->
     <script>
@@ -56,8 +53,6 @@
             }
         }
     </script>
-
-    
 
     <style>
 

@@ -41,6 +41,7 @@
         <ul class="dropdown-menu">
             <li><a href="./pdi_editar.cfm">Editar Lançamento</a></li>
             <cfif isDefined("cookie.user_level_pdi") and cookie.user_level_pdi eq "G">
+                <li><a href="cadastro_novo.cfm">Criar Usuário</a></li>
             </cfif>
             <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
         </ul>

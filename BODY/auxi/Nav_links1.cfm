@@ -26,10 +26,11 @@
     <li class="dropdown">
       <a href="#">Outros</a>
       <ul class="dropdown-menu">
-        <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
-        <li><a href="./body_editar.cfm" >Editar Lançamento</a></li>
-        <li><a href="./cadastro_defeitos.cfm" >Upload de Arquivos</a></li>
+            <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
+            <li><a href="./body_editar.cfm" >Editar Lançamento</a></li>
+            <li><a href="./cadastro_defeitos.cfm" >Upload de Arquivos</a></li>
         <cfif isDefined("cookie.user_level_body") and cookie.user_level_body eq "G">
+            <li><a href="cadastro_novo.cfm">Criar Usuário</a></li>
         </cfif>
       </ul>
     </li>
