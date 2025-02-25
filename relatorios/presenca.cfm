@@ -51,6 +51,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css">
         <title>Presença Ver & Agir</title>
         
         <style>
@@ -170,6 +171,9 @@
     <header class="titulo" style="margin-bottom:10vw;">
         <cfinclude template="auxi/nav_links.cfm">
     </header>
+    <div id="loading-screen">
+        <div class="spinner"></div>
+    </div>
     <div class="form-container">
         <div class="form-container">
             <h2>FORMULÁRIO DE PRESENÇA - VER E AGIR</h2>
@@ -284,6 +288,9 @@
                     <label>Opções para FAI</label>
                     <input type="radio" id="pintura" name="pintura" value="Pintura"> Pintura Funilaria Montagem<br>
                     <input type="radio" id="eletrico" name="eletrico" value="Elétrico"> Elétrico Shower Pista Alinhamento<br>
+                    <input type="radio" id="linhat" name="linhat" value="Linha T">Linha T<br>
+                    <input type="radio" id="linhac" name="linhac" value="Linha C">Linha C<br>
+                    <input type="radio" id="linhaf" name="linhaf" value="Linha F">Linha F<br>
                 </div>
                 <!-- PRESENÇA DO TÉCNICO -->
                 <div class="form-group">
@@ -445,6 +452,7 @@
                 document.getElementById('options-fai').style.display = 'none';
             }
         </script>
+        <script src="/qualidade/relatorios/assets/script.js"></script>
     </body>
 </html>
             

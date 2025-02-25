@@ -36,7 +36,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>EDITAR REPARO</title>
     <link rel="icon" href="./assets/chery.png" type="image/x-icon">
-    <link rel="stylesheet" href="assets/style_editar.css?v1">
+    <style>
+        /* Estilo geral da página */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+
+        /* Cabeçalho */
+        h1 {
+            color: #004085;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 3px solid #004085;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Container principal */
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Organização dos inputs na mesma linha */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .col {
+            flex: 1;
+            min-width: 200px; /* Garante que os inputs não fiquem muito pequenos */
+        }
+
+        /* Estilização dos formulários */
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #004085;
+            box-shadow: 0 0 5px rgba(0, 64, 133, 0.5);
+        }
+
+        /* Botões */
+        .bt_ms {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: #fff;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        /* Rodapé */
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #555;
+        }
+        
+    </style>
 </head>
 
 <body>
@@ -70,7 +170,7 @@
                     <div class="col">
                         <div class="form-group">
                             <label class="form-label" for="formDataReparo">Data</label>
-                            <input type="text" class="form-control" name="data_reparo" id="formDataReparo" value="<cfoutput>#dateFormat(now(), 'dd/mm/yyyy')#</cfoutput>" readonly/>
+                            <input type="text" class="form-control" name="data_reparo" id="formDataReparo" value="<cfoutput>#dateFormat(now(), 'dd/mm/yyyy HH:mm:ss')#</cfoutput>" readonly/>
                         </div>
                     </div>
 
@@ -99,12 +199,10 @@
                 </div>
                 <div class="row mb-4">
                     <div class="col">
-                        <div class="form-group col-md-2">
+                        <div class="form-group">
                             <label class="form-label" for="formPecaReparo">Peça</label>
-                            <!-- Campo de entrada com datalist -->
                             <input type="text" class="form-control" name="peca_reparo" id="formPecaReparo" list="pecasDatalist" required>
                             <datalist id="pecasDatalist">
-                                <!-- Adicione as opções do datalist aqui -->
                                 <cfloop query="pecas">
                                     <cfoutput>
                                         <option value="#defeito#">#defeito#</option>
@@ -117,18 +215,18 @@
                     <div class="col">
                         <div class="form-group">
                             <label class="form-label" for="formPosicaoReparo">Posição</label>
-                            <select type="text" class="form-control" name="posicao_reparo" id="formPosicaoReparo" required>
-                                <cfinclude  template="auxi/batalha_option.cfm">
-                            </select>
+                            <input type="text" class="form-control" name="posicao_reparo" id="formPosicaoReparo" list="posicaoDatalist" required>
+                            <datalist id="posicaoDatalist">
+                                <cfinclude template="auxi/batalha_option.cfm">
+                            </datalist>
                         </div>
                     </div>
+                    
                     <div class="col">
                         <div class="form-group">
                             <label class="form-label" for="formProblemaReparo">Problema</label>
-                            <!-- Campo de entrada com datalist -->
                             <input type="text" class="form-control" name="problema_reparo" id="formProblemaReparo" list="problemasDatalist" required>
                             <datalist id="problemasDatalist">
-                                <!-- Adicione as opções do datalist aqui -->
                                 <cfloop query="problema">
                                     <cfoutput>
                                         <option value="#defeito#">#defeito#</option>
@@ -174,7 +272,7 @@
                             SET 
                                 TIPO_REPARO = '#form.tipo_reparo#',
                                 REPARADOR = '#form.reparador#',
-                                REPARO_DATA = '#form.data_reparo#',
+                                REPARO_DATA = SYSDATE,
                                 PECA_REPARO = '#form.peca_reparo#',
                                 POSICAO_REPARO = '#form.posicao_reparo#',
                                 PROBLEMA_REPARO = '#form.problema_reparo#',
@@ -225,6 +323,32 @@
             }
         });
     </script>
-    
+    <script>
+        document.getElementById('for-edit').addEventListener('submit', function(event) {
+            function validateDatalist(inputId, datalistId) {
+                const input = document.getElementById(inputId);
+                const datalist = document.getElementById(datalistId);
+                const options = Array.from(datalist.options).map(option => option.value);
+
+                if (!options.includes(input.value)) {
+                    alert(`O valor no campo "${input.previousElementSibling.textContent}" deve corresponder a uma das opções.`);
+                    input.focus();
+                    return false;
+                }
+                return true;
+            }
+
+            // Valida os campos "Peça", "Posição" e "Problema"
+            const isValidPeca = validateDatalist('formPecaReparo', 'pecasDatalist');
+            const isValidPosicao = validateDatalist('formPosicaoReparo', 'posicaoDatalist');
+            const isValidProblema = validateDatalist('formProblemaReparo', 'problemasDatalist');
+
+            // Cancelar envio se alguma validação falhar
+            if (!isValidPeca || !isValidPosicao || !isValidProblema) {
+                event.preventDefault();
+            }
+        });
+
+    </script>
 </body>
 </html>

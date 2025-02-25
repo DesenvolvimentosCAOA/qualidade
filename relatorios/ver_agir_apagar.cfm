@@ -53,7 +53,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/relatorios/assets/style.css?v4">
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css?v1">
         <style>
             /* Botão principal */
             .delete-button {
@@ -127,7 +127,6 @@
             );
             border-radius: 1px;
             }
-
         </style>
     </head>
 
@@ -135,6 +134,9 @@
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header><br><br><br><br><br>
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
         <h2>Editar</h2>
         <div>
             <div class="search-container">
@@ -191,7 +193,7 @@
             </table>
         </div> 
         
-        <script src="/qualidade/relatorios/assets/script.js?v9"></script>
+        <script src="/qualidade/relatorios/assets/script.js"></script>
 
         <script>
             function deletar(id) {
@@ -199,7 +201,7 @@
                     window.location.href = "ver_agir_apagar.cfm?id=" + id;
                 }
             }
-         </script>
+        </script>
          
     </body>
 </html>

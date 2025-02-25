@@ -651,6 +651,7 @@
         <title>Indicador - Presença</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css?v1">
         <script type="text/javascript">
             google.charts.load('current', {'packages': ['corechart']});
             google.charts.setOnLoadCallback(drawCharts);
@@ -885,6 +886,10 @@
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header>
+        
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
 
         <h2 style="margin-top:100px;">INDICADOR DE PRESENÇA VER & AGIR POR ÁREA</h2>
         <h6 style="margin-top:-10px;margin-left:47%;">(ÚLTIMOS 10 DIAS)</h6>
@@ -963,5 +968,7 @@
                 carousels.forEach(carousel => createCarousel(carousel));
             });
         </script>
+
+    <script src="/qualidade/relatorios/assets/script.js"></script>
     </body>
 </html>

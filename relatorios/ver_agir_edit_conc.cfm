@@ -35,6 +35,7 @@
             <title>VER & AGIR</title>
             <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
             <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v3">
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css?v1">
             <style>
                 body {
                     font-family: Arial, sans-serif;
@@ -102,7 +103,9 @@
             <header class="titulo">
                 <cfinclude template="auxi/nav_links.cfm">
             </header>
-        
+            <div id="loading-screen">
+                <div class="spinner"></div>
+            </div>
             <div id="tableBody" class="table-container" style="margin-top:100px;">
                 <h2 style="color: blue; font-size:30px;">Dados do Item</h2>
                 <cfoutput>
@@ -226,8 +229,9 @@
                                     }
                             </script>
                         </div>
-            </div>
-                </cfoutput>
+                </div>
+            </cfoutput>
+        <script src="/qualidade/relatorios/assets/script.js"></script>
     </body>
 </html>
         

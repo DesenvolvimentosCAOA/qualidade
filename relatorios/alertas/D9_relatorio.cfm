@@ -27,7 +27,7 @@
             src: url('bahnschrift-regular.ttf') format('truetype');
             }
 
-            body {
+            body, textarea {
                 font-family: 'Bahnschrift Regular', Arial, sans-serif;
                 margin: 0;
                 padding: 0;
@@ -59,9 +59,15 @@
                 font-size: 18px;
             }
     
+            .logo {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
             .logo img {
                 width: 100px;
-                height: 50px;
+                height: 100px;
             }
     
             .row-span {
@@ -76,7 +82,7 @@
                 font-weight: bold;
             }
     
-            input, select {
+            input, select, textarea {
                 width: 100%;
                 box-sizing: border-box;
                 border: none;
@@ -195,7 +201,7 @@
                                     <td class="logo">
                                         <img src="/qualidade/relatorios/img/Logo_Caoa.webp" alt="Logo CAOA">
                                     </td>
-                                    <td class="header" colspan="9" style="text-align:center;">
+                                    <td class="header" colspan="9" style="text-align:center;font-size:40px; color:red;">
                                         8D - ALERTA DE QUALIDADE
                                     </td>
                                 </tr>
@@ -220,53 +226,113 @@
                                 </th>
 
                                 <tr>
-                                    <td rowspan="4" style="text-align:center; font-size:30px;">D2</td>
+                                    <td rowspan="5" style="text-align:center; font-size:30px;">D2</td>
                                     <td class="label-bold" colspan="1" style="text-align:center;">BARREIRA:</td>
-                                    <td class="label-bold" colspan="1" style="text-align:center;">DATA DA OCORRÊNCIA:</td>
                                     <td class="label-bold" colspan="1" style="text-align:center;">MODELO:</td>
                                     <td class="label-bold" colspan="1" style="text-align:center;">VIN/BARCODE:</td>
-                                    <td class="label-bold" colspan="3" style="text-align:center;">PEÇA:</td>
-                                    <td class="label-bold" colspan="2" style="text-align:center;">POSIÇÃO:</td>
+                                    <td class="label-bold" colspan="2" style="text-align:center;">PEÇA:</td>
+                                    <td class="label-bold" colspan="1" style="text-align:center;">POSIÇÃO:</td>
+                                    <td class="label-bold" colspan="3" style="text-align:center;">PROBLEMA:</td>
                                 </tr>
                                 <th colspan="1" style="text-align:center;">
                                     <input type="text" name="barreira" id="barreira" list="barreiras" style="text-align:center;" value="#consulta_editar.barreira#">
                                 </th>
+                                <script>
+                                    function validarSetor(input) {
+                                        let valor = input.value;
+                                        let lista = document.getElementById("setores").getElementsByTagName("option"); // Forma segura para CFML
+                                        let valido = false;
                                 
-                                <th colspan="1">
-                                    <input type="text" name="data_ocorrencia" value="#DateFormat(consulta_editar.data_ocorrencia, 'dd/mm/yyyy')#">
-                                </th>
-
+                                        for (let i = 0; i < lista.length; i++) {
+                                            if (lista[i].value === valor) {
+                                                valido = true;
+                                                break;
+                                            }
+                                        }
+                                
+                                        if (!valido) {
+                                            input.setCustomValidity("Digite um setor válido");
+                                            input.reportValidity();
+                                        } else {
+                                            input.setCustomValidity("");
+                                        }
+                                    }
+                                </script>
                                 <th colspan="1" style="text-align:center;">
                                     <input type="text" name="modelo" id="modelo" style="text-align:center;" value="#consulta_editar.modelo#" readonly>
                                 </th>
+                                <script>
+                                    function validarModelo(input) {
+                                        let valor = input.value;
+                                        let lista = document.getElementById("modelos").getElementsByTagName("option"); // Forma segura para CFML
+                                        let valido = false;
+                                
+                                        for (let i = 0; i < lista.length; i++) {
+                                            if (lista[i].value === valor) {
+                                                valido = true;
+                                                break;
+                                            }
+                                        }
+                                
+                                        if (!valido) {
+                                            input.setCustomValidity("Digite um modelo válido");
+                                            input.reportValidity();
+                                        } else {
+                                            input.setCustomValidity("");
+                                        }
+                                    }
+                                </script>
+                                
                                 <th colspan="1" style="text-align:center;">
                                     <input type="text" name="vin" placeholder="Vin/Barcode" style="text-align:center;" value="#consulta_editar.vin#" readonly>
                                 </th>
-                                <th colspan="3" style="text-align:center;">
+                                <th colspan="2" style="text-align:center;">
                                     <input type="text" name="peca" placeholder="Peça" style="text-align:center;" value="#consulta_editar.peca#" readonly>
                                 </th>
-                                <th colspan="2" style="text-align:center;">
+                                <th colspan="1" style="text-align:center;">
                                     <input type="text" name="posicao" placeholder="Posição" style="text-align:center;" value="#consulta_editar.posicao#" readonly>
                                 </th>
-                                <tr>
-                                    <td class="label-bold" colspan="1" style="text-align:center;">PROBLEMA:</td>
-                                    <th colspan="8" style="text-align:center;">
-                                        <input type="text" name="problema" placeholder="Problema" style="text-align:center;" value="#consulta_editar.problema#" readonly>
-                                    </th>
-                                </tr>                                
+                                <th colspan="3" style="text-align:center;">
+                                    <input type="text" name="problema" placeholder="Problema" style="text-align:center;" value="#consulta_editar.problema#" readonly>
+                                </th>                            
                                 <tr>
                                     <td class="label-bold" colspan="1">DESCRIÇÃO DA NÃO CONFORMIDADE:</td>
                                     <td colspan="8">
-                                        <input type="text" name="descricao" placeholder="DESCREVA DETALHADAMENTE A NÃO CONFORMIDADE" value="#consulta_editar.descricao_nc#" readonly>
+                                        <textarea name="descricao" required readonly style="width: 100%; height: 100px; resize: vertical;">#consulta_editar.descricao_nc#</textarea>
+                                    </td>
+                                </tr>  
+                                <tr>
+                                    <td class="label-bold" colspan="1" style="text-align:center;">QTD OCORRÊNCIA:</td>
+                                    <td class="label-bold" colspan="1" style="text-align:center;">CRITICIDADE:</td>
+                                    <td class="label-bold" colspan="7" style="text-align:center;">HISTÓRICO DE TRATATIVA:</td>
+                                </tr>
+                                <th colspan="1">
+                                    <input type="text" name="qtd_ocorrencia" value="#consulta_editar.quantidade#" readonly>
+                                </th>
+                                <th colspan="1" style="text-align:center;">
+                                    <input type="text" name="criticidade" value="#consulta_editar.criticidade#" readonly>
+                                </th>
+                                <th colspan="7" style="text-align:center;">
+                                    <input type="text" name="historico" value="#consulta_editar.historico#" readonly>
+                                </th>
+                                <tr>
+                                    <td rowspan="3" colspan="1" style="text-align:center; font-size:30px; background-color:lightgrey;">D3</td>
+                                    <td class="label-bold" colspan="1" style="background-color:lightgrey;">AÇÃO DE CONTENÇÃO:</td>
+                                    <td colspan="8" style="background-color:lightgrey;">
+                                        <textarea name="acao_contencao" placeholder="DESCREVA A AÇÃO DE CONTENÇÃO REALIZADA" style="background-color:lightgrey;width: 100%; height: 100px; resize: vertical;" readonly>#consulta_editar.acao_contencao#</textarea>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td rowspan="1" colspan="1" style="text-align:center; font-size:30px;background-color:lightgrey;">D3</td>
-                                    <td class="label-bold" colspan="1" style="background-color:lightgrey;">AÇÃO DE CONTENÇÃO:</td>
-                                    <td colspan="8" style="background-color:lightgrey;">
-                                        <input type="text" name="acao_contencao" placeholder="DESCREVA A AÇÃO DE CONTENÇÃO REALIZADA" style="background-color:lightgrey;" value="#consulta_editar.acao_contencao#" readonly>
-                                    </td>
+                                    <td class="label-bold" colspan="6" style="text-align:center;background-color:lightgrey;">RESPONSÁVEL PELA AÇÃO DE CONTENÇÃO:</td>
+                                    <td class="label-bold" colspan="3" style="text-align:center;background-color:lightgrey;">DATA DA AÇÃO DE CONTENÇÃO:</td>
                                 </tr>
+                                <th colspan="6" style="text-align:center;background-color:lightgrey;">
+                                    <input readonly type="text" name="responsavel_acao_contencao" style="text-align:center;background-color:lightgrey;"  value="#consulta_editar.responsavel_acao_contencao#">
+                                </th>
+                                
+                                <th colspan="3" style="text-align:center;background-color:lightgrey;">
+                                    <input type="text" name="data_acao_contencao" style="text-align:center;background-color:lightgrey;" value="#dateformat(consulta_editar.data_acao_contencao, "dd/mm/yyyy")#" required>
+                                </th>
                                     <tr>
                                         <td rowspan="13" style="text-align:center; font-size:30px;">D4</td>
                                         <td class="label-bold" colspan="3" style="text-align:center;">MÃO DE OBRA</td>
@@ -392,9 +458,10 @@
                                     <tr>
                                         <td class="label-bold" colspan="1">CAUSA RAIZ:</td>
                                         <td colspan="8">
-                                            <input type="text" name="causa_raiz" value="#consulta_editar.causa_raiz#" readonly>
+                                            <textarea name="causa_raiz" readonly 
+                                                style="width: 100%; height: 100px; resize: vertical;">#consulta_editar.causa_raiz#</textarea>
                                         </td>
-                                    </tr>
+                                    </tr>  
                                     <tr>
                                         <td rowspan="6" style="text-align:center; font-size:30px;background-color:lightgrey">D5/D6</td>
                                         <td class="label-bold" colspan="2" style="text-align:center;background-color:lightgrey">NÃO CONFORMIDADE/ OPORTUNIDADE DE MELHORIA</td>
@@ -509,8 +576,9 @@
                                         <td class="label-bold" colspan="9">ANÁLISE DE EFICÁCIA E LIÇÕES APRENDIDAS:</td>
                                     </tr>
                                     <td colspan="9">
-                                        <input type="text" name="analise_eficacia" value="#consulta_editar.analise_eficacia#" readonly>
-                                    </td>
+                                        <textarea name="analise_eficacia" readonly 
+                                            style="width: 100%; height: 100px; resize: vertical;">#consulta_editar.analise_eficacia#</textarea>
+                                    </td>                                    
                                 </table>
                                     <button type="button" class="btn-rounded back-btn" id="btnback" onclick="window.location.href = 'd_principal.cfm';">Voltar</button>
                     </cfoutput>
@@ -518,7 +586,7 @@
             </div>
             <cfscript>
                 // Caminho do diretório
-                directoryPath = "C:/ColdFusion2023/cfusion/wwwroot/qualidade/arquivo_foto/";
+                directoryPath = "E:/arquivo_foto/";
             
                 // Obter a lista de pastas
                 folderList = directoryList(directoryPath, true, "directory");
@@ -594,66 +662,138 @@
                 });
             </script>
             
+            <cfparam name="id_nc" default="">
+            <!-- Verifica se ID foi passado -->
+            <cfif NOT Len(id_nc)>
+                <cfoutput>Erro: ID NC não especificado.</cfoutput>
+                <cfabort>
+            </cfif>
+
+            <cfset caminhoBase = "E:\arquivo_foto\">
+            <cfset pastaImagens = caminhoBase & id_nc>
+
+            <!-- Verifica se a pasta existe -->
+            <cfif NOT directoryExists(pastaImagens)>
+                <cfoutput>Erro: Diretório não encontrado.</cfoutput>
+                <cfabort>
+            </cfif>
+
+            <!-- Lista as imagens na pasta -->
             <cfscript>
-                // Caminho da pasta com as imagens
-                folderPath = "C:/ColdFusion2023/cfusion/wwwroot/qualidade/arquivo_foto/#url.id_nc#";
-                
-                // Listar todos os arquivos na pasta (recursivamente)
-                folderContent = directoryList(folderPath, true, "all");
-                
-                // Iniciar o conteúdo HTML
-                htmlContent = "<div class='folder-content'>";
-                htmlContent &= "<ul>";
-                
-                // Loop para percorrer todos os arquivos da pasta
-                for (content in folderContent) {
-                    contentName = listLast(content, "\");  // Extrair apenas o nome do arquivo
-                    
-                    // Gerar o caminho relativo para a imagem
-                    fileUrl = "/qualidade/arquivo_foto/#url.id_nc#/#contentName#";
-                    
-                    // Verificar se é uma imagem (jpg, png, jpeg, gif)
-                    if (findNoCase(".jpg", contentName) or findNoCase(".png", contentName) or findNoCase(".jpeg", contentName) or findNoCase(".gif", contentName)) {
-                        // Adicionar a imagem e o link à lista
-                        htmlContent &= "<li>";
-                        htmlContent &= "<img src='" & fileUrl & "' alt='" & contentName & "' style='width: 100px; height: auto; cursor: pointer;' onclick='openModal(this)'>";
-                        htmlContent &= "<a href='" & fileUrl & "' target='_blank'>" & contentName & "</a>";
+                htmlContent = "<div class='folder-content'><ul style='list-style: none; padding: 0;'>";
+
+                folderContent = directoryList(pastaImagens, false, "name");
+
+                for (contentName in folderContent) {
+                    if (
+                        findNoCase(".jpg", contentName) or 
+                        findNoCase(".png", contentName) or 
+                        findNoCase(".jpeg", contentName) or 
+                        findNoCase(".gif", contentName) or 
+                        findNoCase(".bmp", contentName) or 
+                        findNoCase(".webp", contentName)
+                    ) {
+                        fileUrl = "/qualidade/relatorios/alertas/exibeImagens.cfm?imagem=" & urlEncodedFormat(contentName) & "&id_nc=" & urlEncodedFormat(id_nc);
+
+                        htmlContent &= "<li style='margin-bottom: 10px;'>";
+                            htmlContent = "";
+                            htmlContent &= "<ul style='display: flex; flex-wrap: wrap; gap: 15px;'>";  // Contêiner para as imagens na horizontal
+                            
+                            for (content in folderContent) {
+                                contentName = listLast(content, "\");  // Extrair apenas o nome do arquivo
+                            
+                                // Gerar o caminho relativo para a imagem
+                                fileUrl = "/qualidade/relatorios/alertas/exibeImagens.cfm?imagem=" & urlEncodedFormat(contentName) & "&id_nc=" & urlEncodedFormat(id_nc);
+                            
+                                // Verificar se é uma imagem (jpg, png, jpeg, gif)
+                                if (findNoCase(".jpg", contentName) or findNoCase(".png", contentName) or findNoCase(".jpeg", contentName) or findNoCase(".gif", contentName)) {
+                                    // Adicionar a imagem e o link à lista
+                                    htmlContent &= "<li style='text-align: center; list-style-type: none;'>";
+                                    htmlContent &= "<a href='" & fileUrl & "' class='image-link' data-image='" & fileUrl & "' target='_blank' style='display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none;'>";
+                                    
+                                    // Exibir a imagem maior
+                                    htmlContent &= "<img src='" & fileUrl & "' style='width: 100px; height: 100px; object-fit: cover; border-radius: 4px;'>";
+                                    
+                                    // Nome da imagem abaixo da miniatura
+                                    htmlContent &= "<span style='color: blue; font-size: 12px; margin-top: 5px;'>" & contentName & "</span>";
+                                    htmlContent &= "</a>";
+                                    htmlContent &= "</li>";
+                                }
+                            }
+                            
+                            htmlContent &= "</ul>";
+                            
                         htmlContent &= "</li>";
                     }
                 }
-                
-                htmlContent &= "</ul>";
-                htmlContent &= "</div>";
+
+                htmlContent &= "</ul></div>";
             </cfscript>
-            
+
             <cfoutput>#htmlContent#</cfoutput>
-    
-            <!-- Modal para visualizar as imagens -->
-            <script>
-                function openModal(imageElement) {
-                    var modal = document.createElement("div");
-                    modal.style.position = "fixed";
-                    modal.style.top = "0";
-                    modal.style.left = "0";
-                    modal.style.width = "100%";
-                    modal.style.height = "100%";
-                    modal.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-                    modal.style.display = "flex";
-                    modal.style.justifyContent = "center";
-                    modal.style.alignItems = "center";
-            
-                    var modalImage = document.createElement("img");
-                    modalImage.src = imageElement.src;
-                    modalImage.style.maxWidth = "80%";
-                    modalImage.style.maxHeight = "80%";
-            
-                    modal.appendChild(modalImage);
-                    document.body.appendChild(modal);
-            
-                    modal.onclick = function() {
-                        modal.remove();
-                    };
+
+            <!-- CSS para posicionar a prévia -->
+            <style>
+                #imagePreview {
+                    display: none;
+                    position: absolute;
+                    border: 1px solid #ccc;
+                    background: #fff;
+                    padding: 5px;
+                    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
                 }
+            </style>
+
+            <!-- Elemento para mostrar a prévia -->
+            <div id="imagePreview">
+                <img id="previewImg" src="" style="max-width: 350px; max-height: 350px;">
+            </div>
+
+            <!-- Script para exibir a prévia da imagem -->
+            <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                    const preview = document.getElementById("imagePreview");
+                    const previewImg = document.getElementById("previewImg");
+
+                    document.querySelectorAll(".image-link").forEach(link => {
+                        link.addEventListener("mouseover", function(event) {
+                            previewImg.src = this.dataset.image;
+                            preview.style.display = "block";
+                            positionPreview(event);
+                        });
+
+                        link.addEventListener("mousemove", function(event) {
+                            positionPreview(event);
+                        });
+
+                        link.addEventListener("mouseout", function() {
+                            preview.style.display = "none";
+                        });
+
+                        function positionPreview(event) {
+                            const previewWidth = preview.offsetWidth;
+                            const previewHeight = preview.offsetHeight;
+                            const pageWidth = window.innerWidth;
+                            const pageHeight = window.innerHeight;
+
+                            let top = event.pageY - previewHeight - 10; // Aparecer acima do mouse
+                            let left = event.pageX + 10; // Posição padrão à direita
+
+                            // Se estiver no topo da página, exibir abaixo do mouse
+                            if (top < window.scrollY) {
+                                top = event.pageY + 10;
+                            }
+
+                            // Se a imagem ultrapassar a lateral direita, ajustar para a esquerda
+                            if (left + previewWidth > pageWidth) {
+                                left = event.pageX - previewWidth - 10;
+                            }
+
+                            preview.style.top = top + "px";
+                            preview.style.left = left + "px";
+                        }
+                    });
+                });
             </script>
-        </body>
+    </body>
 </html>

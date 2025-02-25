@@ -1,10 +1,12 @@
 <cfparam name="imagem" default="">
-<cfset caminhoBase = "E:\arquivo_foto\">
-<cfset caminhoImagem = caminhoBase & imagem>
+<cfparam name="id_nc" default="">
 
-<cfif NOT Len(imagem)>
-    <cfoutput>Erro: Nenhuma imagem especificada.</cfoutput>
-<cfelseif Find("..", imagem)>
+<cfset caminhoBase = "E:\arquivo_foto\">
+<cfset caminhoImagem = caminhoBase & id_nc & "\" & imagem>
+
+<cfif NOT Len(imagem) OR NOT Len(id_nc)>
+    <cfoutput>Erro: Parâmetros inválidos.</cfoutput>
+<cfelseif Find("..", imagem) OR Find("..", id_nc)>
     <cfoutput>Erro: Caminho inválido.</cfoutput>
 <cfelseif NOT FileExists(caminhoImagem)>
     <cfoutput>Erro: Imagem não encontrada.</cfoutput>

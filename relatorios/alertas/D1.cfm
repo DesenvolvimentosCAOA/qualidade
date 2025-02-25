@@ -18,7 +18,8 @@
 
     <cfquery name="insere" datasource="#BANCOSINC#">
         INSERT INTO INTCOLDFUSION.ALERTAS_8D (ID, DATA_REGISTRO, N_CONTROLE, DATA_OCORRENCIA, BARREIRA, 
-        RESP_ABERTURA, VIN, PECA, POSICAO, PROBLEMA, DESCRICAO_NC, STATUS, MODELO, SETOR_RESPONSAVEL
+        RESP_ABERTURA, VIN, PECA, POSICAO, PROBLEMA, DESCRICAO_NC, STATUS, MODELO, SETOR_RESPONSAVEL, CRITICIDADE,
+        HISTORICO, QUANTIDADE
         )
         VALUES(
             <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
@@ -34,7 +35,10 @@
             <cfqueryparam value="#UCase(form.descricao)#" cfsqltype="CF_SQL_CLOB">,
             <cfqueryparam value="#UCase('D1-D2')#" cfsqltype="CF_SQL_VARCHAR">,
             <cfqueryparam value="#UCase(form.modelo)#" cfsqltype="CF_SQL_VARCHAR">,
-            <cfqueryparam value="#UCase(form.setor)#" cfsqltype="CF_SQL_VARCHAR">
+            <cfqueryparam value="#UCase(form.setor)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.criticidade)#" cfsqltype="CF_SQL_CLOB">,
+            <cfqueryparam value="#UCase(form.historico)#" cfsqltype="CF_SQL_CLOB">,
+            <cfqueryparam value="#UCase(form.quantidade)#" cfsqltype="CF_SQL_NUMERIC">
         )
     </cfquery>
     <cflocation url="d_principal.cfm">
@@ -54,7 +58,7 @@
             src: url('bahnschrift-regular.ttf') format('truetype');
             }
 
-            body {
+            body, textarea {
                 font-family: 'Bahnschrift Regular', Arial, sans-serif;
                 margin: 0;
                 padding: 0;
@@ -86,9 +90,15 @@
                 font-size: 18px;
             }
     
+            .logo {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
             .logo img {
                 width: 100px;
-                height: 50px;
+                height: 100px;
             }
     
             .row-span {
@@ -103,7 +113,7 @@
                 font-weight: bold;
             }
     
-            input, select {
+            input, select, textarea {
                 width: 100%;
                 box-sizing: border-box;
                 border: none;
@@ -178,16 +188,16 @@
                                     <td class="logo">
                                         <img src="/qualidade/relatorios/img/Logo_Caoa.webp" alt="Logo CAOA">
                                     </td>
-                                    <td class="header" colspan="9" style="text-align:center;">
+                                    <td class="header" colspan="9" style="text-align:center;font-size:40px; color:red;">
                                         8D - ALERTA DE QUALIDADE
                                     </td>
                                 </tr>
                                 <tr>
                                     <td rowspan="2" style="text-align:center; font-size:30px;background-color:lightgrey;">D1</td>
                                     <td class="label-bold" colspan="1" style="background-color:lightgrey;text-align:center;">Nº DE CONTROLE:</td>
-                                    <td class="label-bold" colspan="1" style="background-color:lightgrey;text-align:center;">SETOR RESPONSÁVEL:</td>
-                                    <td class="label-bold" colspan="6" style="background-color:lightgrey;text-align:center;">RESPONSÁVEL PELA ABERTURA DO ALERTA:</td>
-
+                                    <td class="label-bold" colspan="3" style="background-color:lightgrey;text-align:center;">RESPONSÁVEL PELA ABERTURA DO ALERTA:</td>
+                                    <td class="label-bold" colspan="2" style="background-color:lightgrey;text-align:center;">SETOR RESPONSÁVEL:</td>
+                                    <td class="label-bold" colspan="2" style="background-color:lightgrey;text-align:center;">DATA DA OCORRÊNCIA:</td>
                                 </tr>
                                 <cfquery name="obterMaxId" datasource="#BANCOSINC#">
                                     SELECT COALESCE(MAX(ID), 0) + 1 AS id FROM INTCOLDFUSION.ALERTAS_8D
@@ -195,7 +205,11 @@
                                 <th colspan="1" style="background-color:lightgrey;">
                                     <input type="text" name="n_controle" style="background-color:lightgrey; text-align:center;" value="#obterMaxId.id#-25" readonly>
                                 </th>
-                                <th colspan="1" style="background-color:lightgrey; text-align:center;">
+
+                                <th colspan="3" style="background-color:lightgrey;text-align:center;">
+                                    <input type="text" name="responsavel_abertura" style="background-color:lightgrey;text-align:center;" value="#login.USER_SIGN#" readonly required>
+                                </th>
+                                <th colspan="2" style="background-color:lightgrey; text-align:center;">
                                     <input type="text" name="setor" id="setor" list="setores" placeholder="Setor" required style="background-color:lightgrey; text-align:center;" oninput="validarSetor(this)" title="Digite um setor válido">
                                     <datalist id="setores">
                                         <option value="LOGISTICA"></option>
@@ -207,18 +221,18 @@
                                         <option value="PDI"></option>
                                     </datalist>
                                 </th>
-                                <th colspan="6" style="background-color:lightgrey;text-align:center;">
-                                    <input type="text" name="responsavel_abertura" style="background-color:lightgrey;text-align:center;" value="#login.USER_SIGN#" readonly required>
+                                <th colspan="2" style="background-color:lightgrey;">
+                                    <input type="date" name="data_ocorrencia" style="background-color:lightgrey;" required>
                                 </th>
 
                                 <tr>
-                                    <td rowspan="4" style="text-align:center; font-size:30px;">D2</td>
+                                    <td rowspan="5" style="text-align:center; font-size:30px;">D2</td>
                                     <td class="label-bold" colspan="1" style="text-align:center;">BARREIRA:</td>
-                                    <td class="label-bold" colspan="1" style="text-align:center;">DATA DA OCORRÊNCIA:</td>
                                     <td class="label-bold" colspan="1" style="text-align:center;">MODELO:</td>
                                     <td class="label-bold" colspan="1" style="text-align:center;">VIN/BARCODE:</td>
                                     <td class="label-bold" colspan="1" style="text-align:center;">PEÇA:</td>
                                     <td class="label-bold" colspan="1" style="text-align:center;">POSIÇÃO:</td>
+                                    <td class="label-bold" colspan="2" style="text-align:center;">PROBLEMA:</td>
                                 </tr>
                                 <th colspan="1" style="text-align:center;">
                                     <select type="text" name="barreira" style="text-align:center;" required>
@@ -253,10 +267,6 @@
                                         }
                                     }
                                 </script>
-                                
-                                <th colspan="1" style="background-color:lightgrey;">
-                                    <input type="date" name="data_ocorrencia" style="background-color:lightgrey;" required>
-                                </th>
 
                                 <th colspan="1" style="text-align:center;">
                                     <input type="text" name="modelo" id="modelo" list="modelos" placeholder="Modelo" required style="text-align:center;" oninput="validarModelo(this)" title="Digite um modelo válido">
@@ -300,19 +310,40 @@
                                 <th colspan="1" style="text-align:center;">
                                     <input type="text" name="posicao" placeholder="Posição" style="text-align:center;" required>
                                 </th>
-                                <tr>
-                                    <td class="label-bold" colspan="1" style="text-align:center;">PROBLEMA:</td>
-                                    <th colspan="8" style="text-align:center;">
-                                        <input type="text" name="problema" placeholder="Problema" style="text-align:center;" required>
-                                    </th>
-                                </tr>                                
+                                <th colspan="2" style="text-align:center;">
+                                    <input type="text" name="problema" placeholder="Problema" style="text-align:center;" required>
+                                </th>                            
                                 <tr>
                                     <td class="label-bold" colspan="1">DESCRIÇÃO DA NÃO CONFORMIDADE:</td>
                                     <td colspan="8">
-                                        <input type="text" name="descricao" placeholder="DESCREVA DETALHADAMENTE A NÃO CONFORMIDADE" required>
+                                        <textarea name="descricao" placeholder="DESCREVA DETALHADAMENTE A NÃO CONFORMIDADE" required style="width: 100%; height: 100px;"></textarea>
                                     </td>
                                 </tr>
-
+                                <tr>
+                                    <td class="label-bold" colspan="1" style="text-align:center;">QTD OCORRÊNCIA:</td>
+                                    <td class="label-bold" colspan="1" style="text-align:center;">CRITICIDADE:</td>
+                                    <td class="label-bold" colspan="6" style="text-align:center;">HISTÓRICO DE TRATATIVA:</td>
+                                </tr>
+                                <th colspan="1">
+                                    <input type="text" name="quantidade" required>
+                                </th>
+                                <th colspan="1" style="text-align:center;">
+                                    <select type="text" name="criticidade" style="text-align:center;" required>
+                                        <option value="">Selecione</option>
+                                        <option value="N1">N1</option>
+                                        <option value="N2">N2</option>
+                                        <option value="N3">N3</option>
+                                        <option value="N4">N4</option>
+                                    </select>
+                                </th>
+                                <th colspan="6" style="text-align:center;">
+                                    <select type="text" name="historico" style="text-align:center;" required>
+                                        <option value="">Selecione</option>
+                                        <option value="PRIMEIRA NOTIFICAÇÃO">PRIMEIRA NOTIFICAÇÃO</option>
+                                        <option value="REINCIDÊNCIA DE ALERTA">REINCIDÊNCIA DE ALERTA</option>
+                                        <option value="TRATADO VIA VER & AGIR">TRATADO VIA VER & AGIR</option>
+                                    </select>
+                                </th>
                             </table>
                             <div style="text-align:center">
                                 <button type="button" class="btn-rounded back-btn" id="btnback" onclick="window.location.href = 'd_principal.cfm';">Voltar</button>

@@ -268,6 +268,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Realizado QC</title>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css?v1">
+
         <script type="text/javascript">
             google.charts.load('current', {packages: ['corechart']});
             google.charts.setOnLoadCallback(drawCharts);
@@ -608,6 +610,7 @@
                 chart15.draw(data15, options15);
             }
         </script>
+
         <style>
             .carousel-container {
                 display: flex;
@@ -650,11 +653,17 @@
             }
 
         </style>
+
     </head>
     <body>
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header>
+
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
+        
         <div class="carousel-container">
             <div class="carousel">
                 <div id="chart_div14" style="width: 100%; height: 300px; margin-top: 100px;"></div>
@@ -726,5 +735,6 @@
                 createCarousel('.carousel:nth-of-type(5)');
             });
         </script>
+        <script src="/qualidade/relatorios/assets/script.js"></script>
     </body>
 </html>

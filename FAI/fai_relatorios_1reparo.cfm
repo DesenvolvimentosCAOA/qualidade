@@ -20,7 +20,7 @@
         </cfif>
         
         <!--- Filtro de data e lógica de turnos --->
-        AND TRUNC(USER_DATA) = 
+        AND TRUNC(REPARO_DATA) = 
             <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                 #CreateODBCDate(url.filtroData)#
             <cfelse>
@@ -29,13 +29,13 @@
     
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(REPARO_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '6') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '7') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
-        AND INTERVALO BETWEEN '06:00' AND '15:00'
+        AND INTERVALO_REPARO BETWEEN '06:00' AND '15:00'
             AND PROBLEMA_REPARO IS NOT NULL
         ORDER BY BARREIRA DESC
     </cfquery>
@@ -45,7 +45,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -59,7 +59,7 @@
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE TRUNC(USER_DATA) = 
+            WHERE TRUNC(REPARO_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
                 <cfelse>
@@ -67,16 +67,16 @@
                 </cfif>
                 AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(REPARO_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '6') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '7') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
             AND MODELO LIKE 'TIGGO 7%'
-                AND INTERVALO BETWEEN '06:00' AND '15:00'
+                AND INTERVALO_REPARO BETWEEN '06:00' AND '15:00'
             AND PROBLEMA_REPARO IS NOT NULL
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA, 
                 'TTL' AS HH, 
@@ -96,7 +96,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -110,7 +110,7 @@
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE TRUNC(USER_DATA) = 
+            WHERE TRUNC(REPARO_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
                 <cfelse>
@@ -118,16 +118,16 @@
                 </cfif>
                 AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(REPARO_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '6') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '7') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
             AND MODELO LIKE 'TIGGO 5%'
             AND PROBLEMA_REPARO IS NOT NULL
-                AND INTERVALO BETWEEN '06:00' AND '15:00'
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+                AND INTERVALO_REPARO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA, 
                 'TTL' AS HH, 
@@ -147,7 +147,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -161,7 +161,7 @@
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE TRUNC(USER_DATA) = 
+            WHERE TRUNC(REPARO_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
                 <cfelse>
@@ -169,16 +169,16 @@
                 </cfif>
                 AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(REPARO_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '6') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '7') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
             AND MODELO LIKE 'TIGGO 8 %'
             AND PROBLEMA_REPARO IS NOT NULL
-                AND INTERVALO BETWEEN '06:00' AND '15:00'
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+                AND INTERVALO_REPARO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA, 
                 'TTL' AS HH, 
@@ -198,7 +198,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -212,7 +212,7 @@
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE TRUNC(USER_DATA) = 
+            WHERE TRUNC(REPARO_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
                 <cfelse>
@@ -220,16 +220,16 @@
                 </cfif>
                 AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(REPARO_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '6') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '7') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
             AND MODELO LIKE 'TIGGO 83%'
             AND PROBLEMA_REPARO IS NOT NULL
-                AND INTERVALO BETWEEN '06:00' AND '15:00'
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+                AND INTERVALO_REPARO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA, 
                 'TTL' AS HH, 
@@ -249,7 +249,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '06:00' AND '15:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -263,7 +263,7 @@
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE TRUNC(USER_DATA) = 
+            WHERE TRUNC(REPARO_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
                 <cfelse>
@@ -271,16 +271,16 @@
                 </cfif>
                 AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(REPARO_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '6') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '7') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
             AND MODELO LIKE 'TL %'
             AND PROBLEMA_REPARO IS NOT NULL
-                AND INTERVALO BETWEEN '06:00' AND '15:00'
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+                AND INTERVALO_REPARO BETWEEN '06:00' AND '15:00'
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA, 
                 'TTL' AS HH, 
@@ -300,7 +300,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -314,7 +314,7 @@
                 -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
                 COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE TRUNC(USER_DATA) = 
+            WHERE TRUNC(REPARO_DATA) = 
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
                     #CreateODBCDate(url.filtroData)#
                 <cfelse>
@@ -322,16 +322,16 @@
                 </cfif>
                 AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(REPARO_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '6') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '7') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
             AND MODELO LIKE '%HR %'
             AND PROBLEMA_REPARO IS NOT NULL
-                AND INTERVALO BETWEEN '00:00' AND '23:00'
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+                AND INTERVALO_REPARO BETWEEN '00:00' AND '23:00'
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA, 
                 'TTL' AS HH, 

@@ -40,13 +40,20 @@
             WHERE ID = <cfqueryparam value="#form.updateID#" cfsqltype="cf_sql_integer">
         </cfquery>
     </cfif>    
+
+    <cfif isDefined("form.negarID")>
+        <cfquery datasource="#BANCOSINC#">
+            UPDATE INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
+            SET STATUS = 'NEGADO'
+            WHERE ID = <cfqueryparam value="#form.negarID#" cfsqltype="cf_sql_integer">
+        </cfquery>
+    </cfif>
     
     <!--- Consulta --->
     <cfquery name="consulta_cripple" datasource="#BANCOSINC#">
         SELECT *
         FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
         WHERE PROBLEMA is not null
-        AND STATUS IS NULL
         <cfif isDefined("url.filtroID") and url.filtroID neq "">
             AND ID = <cfqueryparam value="#url.filtroID#" cfsqltype="cf_sql_integer">
         </cfif>
@@ -59,6 +66,7 @@
         <cfif isDefined("url.filtroestacao") and url.filtroestacao neq "">
             AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroestacao#%')
         </cfif>
+        AND TIPO_REPARO IS NOT NULL
         ORDER BY ID DESC
     </cfquery>
 
@@ -121,26 +129,32 @@
                             <th scope="col">Posição</th>
                             <th scope="col">Problema</th>
                             <th scope="col">Reparo Realizado</th>
-                            <th scope="col">Salvar</th>
+                            <th scope="col">Liberar Veículo</th>
+                            <th scope="col">Negar Veículo</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
                         <cfoutput>
                             <cfloop query="consulta_cripple">   
-                                    <tr class="align-middle">
-                                        <td>#ID#</td>
-                                        <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                        <td>
-                                            <input type="text" class="form-control" name="LIBERACAO" id="formLiberacao" value="#login.USER_SIGN#" readonly>
-                                        </td>
-                                        <td>#VIN#</td>
-                                        <td>#BARREIRA#</td>
-                                        <td>#PECA#</td>
-                                        <td>#POSICAO#</td>
-                                        <td>#PROBLEMA#</td>
-                                        <td>#TIPO_REPARO#</td>
-                                        <td><button class="btn btn-primary salvar-btn" type="submit" name="updateID" value="#ID#">Liberar</button></td>
-                                    </tr>
+                                <tr class="align-middle">
+                                    <td>#ID#</td>
+                                    <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
+                                    <td>
+                                        <input type="text" class="form-control" name="LIBERACAO" value="#login.USER_SIGN#" readonly>
+                                    </td>
+                                    <td>#VIN#</td>
+                                    <td>#BARREIRA#</td>
+                                    <td>#PECA#</td>
+                                    <td>#POSICAO#</td>
+                                    <td>#PROBLEMA#</td>
+                                    <td>#TIPO_REPARO#</td>
+                                    <td>
+                                        <button class="btn btn-primary salvar-btn" type="submit" name="updateID" value="#ID#">Liberar</button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger negar-btn" type="submit" name="negarID" value="#ID#" onclick="return confirm('Tem certeza que deseja negar este item?')">Negar</button>
+                                    </td>
+                                </tr>
                             </cfloop>
                         </cfoutput>
                     </tbody>

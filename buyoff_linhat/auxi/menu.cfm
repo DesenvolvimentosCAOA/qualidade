@@ -10,10 +10,8 @@
           >
         </li>
         <li>
-          <a href="../relatorios/index.cfm"
-            ><ion-icon name="bar-chart-outline"></ion-icon>
-            <p>Ver & Agir</p></a
-          >
+          <a href="../relatorios/index.cfm"><ion-icon name="bar-chart-outline"></ion-icon><p>Ver & Agir</p></a>
+          <a href="../relatorios/index.cfm"><ion-icon name="bar-chart-outline"></ion-icon><p>Alertas</p></a>
         </li>
       </ul>
       <ul>
@@ -58,18 +56,6 @@
           <a href="#" title="Login CL" onclick="mostrarForm('cl')"
             ><ion-icon name="chevron-forward-outline"></ion-icon>
             <p>Check List</p></a
-          >
-        </li>
-        <li class="">
-          <a href="#" title="Cadastro" onclick="validarAcessoCadastro()"
-            ><ion-icon name="chevron-forward-outline"></ion-icon>
-            <p>Cadastro</p></a
-          >
-        </li>
-        <li class="">
-          <a href="user_edit.cfm" title="Editar Usuário" onclick="validarAcessoEditar(event)"
-            ><ion-icon name="create-outline"></ion-icon>
-            <p>Editar Usuario</p></a
           >
         </li>
       </ul>

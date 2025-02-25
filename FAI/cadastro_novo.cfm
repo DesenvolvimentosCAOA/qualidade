@@ -220,12 +220,12 @@
                 <cfoutput>
                     <div hidden class="input-group w50">
                         <label for="usuario">usuário</label>
-                        <input type="text" id="nome_resp" name="cadastro_resp" value="#login.USER_SIGN#">
+                        <input type="text" id="cadastro_resp" name="cadastro_resp" value="#login.USER_SIGN#">
                     </div>
                 </cfoutput>
                 <div class="input-group">
 
-                    <cfset nomesPermitidos = "JEFFERSON ALVES TEIXEIRA, RAFAGA DE OLIVEIRA LIMA CORREA, LINCON AFONSO TRENTIN, KENNEDY DOS REIS ROSARIO, LUCAS CORREA LEAL, DANIEL ALVES TEIXEIRA, JOAO CLEBER RODRIGUES">
+                    <cfset nomesPermitidos = "JEFFERSON ALVES TEIXEIRA,RAFAGA DE OLIVEIRA LIMA CORREA,LINCON AFONSO TRENTIN,KENNEDY DOS REIS ROSARIO,LUCAS CORREA LEAL,DANIEL ALVES TEIXEIRA,JOAO CLEBER RODRIGUES">
 
                     <cfif login.recordcount gt 0 AND ListFind(nomesPermitidos, login.USER_SIGN)>
                         <button type="submit">Cadastrar</button>

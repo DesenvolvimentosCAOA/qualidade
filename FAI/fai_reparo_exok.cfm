@@ -1,4 +1,4 @@
-<cftry>
+
     <cfinvoke method="inicializando" component="cf.ini.index">
     <cfheader name="Cache-Control" value="no-cache, no-store, must-revalidate">
     <cfheader name="Pragma" value="no-cache">
@@ -49,52 +49,11 @@
         <cfif isDefined("url.filtroRoadTest") and url.filtroRoadTest neq "">
             AND UPPER(ROAD_TEST) LIKE UPPER('%#url.filtroRoadTest#%')
         </cfif>
-        AND BARREIRA = 'SIGN OFF'
-        AND PROBLEMA_REPARO IS NULL
-        AND (CRITICIDADE IS NULL OR CRITICIDADE NOT IN ('N0', 'OK A-'))
+        AND (BARREIRA = 'SIGN OFF' AND (STATUS IS NULL))
+        AND PROBLEMA IS NOT NULL
+        AND (CRITICIDADE IS NOT NULL OR CRITICIDADE NOT IN ('N0', 'OK A-'))
         ORDER BY ID DESC
     </cfquery>
-    
-    <!--- Atualizar Item--->
-    <cfif structKeyExists(form, "btSalvarID") and structKeyExists(form, "Tipo") and form.btSalvarID neq "" and form.Tipo neq "">
-        <cfquery name="atualizar" datasource="#BANCOSINC#">
-            UPDATE INTCOLDFUSION.sistema_qualidade_fai
-            SET TIPO_REPARO = <cfqueryparam value="#UCase(form.Tipo)#" cfsqltype="CF_SQL_VARCHAR">,
-            REPARADOR = <cfqueryparam value="#UCase(form.Reparador)#" cfsqltype="CF_SQL_VARCHAR">
-            WHERE ID = <cfqueryparam value="#form.btSalvarID#" cfsqltype="CF_SQL_INTEGER">
-        </cfquery>
-        <script>
-            alert("Salvo com sucesso!");
-            self.location = 'fai_reparo_exok.cfm';
-        </script>
-    </cfif>
-
-    <!--- Verifica se o formulário foi enviado --->
-    <cfif structKeyExists(form, "nome") and structKeyExists(form, "vin") and structKeyExists(form, "local") and structKeyExists(form, "N_Conformidade") and structKeyExists(form, "posicao") and structKeyExists(form, "problema")>
-        <!--- Obter próximo maxId --->
-        <cfquery name="obterMaxId" datasource="#BANCOSINC#">
-            SELECT COALESCE(MAX(ID), 0) + 1 AS id FROM INTCOLDFUSION.sistema_qualidade_fai
-        </cfquery>
-
-
-        <!--- Verifica se a inserção foi bem-sucedida --->
-        <cfif insere.recordCount>
-            <script> self.location = "fai_reparo_exok.cfm"; </script>
-        <cfelse>
-            <cfoutput>Erro ao inserir dados no banco de dados.</cfoutput>
-        </cfif>
-        </cfif>
-
-    <!--- Deletar Item --->
-    <cfif structKeyExists(url, "id") and url.id neq "">
-        <cfquery name="delete" datasource="#BANCOSINC#">
-            DELETE FROM INTCOLDFUSION.sistema_qualidade_fai
-            WHERE ID = <cfqueryparam value="#url.id#" cfsqltype="CF_SQL_INTEGER">
-        </cfquery>
-        <script>
-            self.location = 'fai_reparo_exok.cfm';
-        </script>
-    </cfif>
 
     <html lang="pt-BR">
         <head>
@@ -149,15 +108,12 @@
                                     <th scope="col">ID</th>
                                     <th scope="col">Data</th>
                                     <th scope="col">Inspetor</th>
-                                    <th scope="col">Reparador</th>
                                     <th scope="col">VIN</th>
                                     <th scope="col">Barreira</th>
                                     <th scope="col">Peça</th>
                                     <th scope="col">Posição</th>
                                     <th scope="col">Problema</th>
                                     <th scope="col">Estação</th>
-                                    <th scope="col">Reparo</th>
-<!---                                     <th scope="col">Salvar</th> --->
                                     <th scope="col">Editar</i></th>
                                 </tr>
                             </thead>
@@ -170,23 +126,14 @@
                                                     <td class="text-center">#ID#</td>
                                                     <td>#dateFormat(USER_DATA, 'dd/mm/yyyy')#</td>
                                                     <td class="text-center" style="font-size:15px">#USER_COLABORADOR#</td>
-                                                    <td>
-                                                        <input type="text" class="form-control" name="REPARADOR" id="formReparador" style="font-size:10px" value="#login.USER_SIGN#" readonly>
-                                                    </td>
                                                     <td class="text-center">#VIN#</td>
                                                     <td class="text-center">#BARREIRA#</td>
                                                     <td class="text-center">#PECA#</td>
                                                     <td class="text-center">#POSICAO#</td>
                                                     <td class="text-center">#PROBLEMA#</td>
                                                     <td class="text-center">#ESTACAO#</td>
-                                                    <td>
-                                                        <input type="text" class="form-control" name="Tipo" id="formTipo" required>
-                                                    </td>
-<!---                                                     <td><button type="submit" class="btn-save" name="btSalvarID" value="#ID#">Salvar</button></td> --->
                                                     <td class="text-nowrap">
-                                                        <button class="btn btn-primary" onclick="self.location='reparo_editar.cfm?id_editar=#id#'">
-                                                            <i class="mdi mdi-pencil-outline"></i> Editar
-                                                        </button>
+                                                        <a href="reparo_editar.cfm?id_editar=#id#" class="btn btn-primary">Editar</a>
                                                     </td>
                                                 </tr>
                                             </cfif>
@@ -207,18 +154,6 @@
             <footer class="text-center py-4">
                 <p>&copy; 2024 Sistema de gestão da qualidade.</p>
             </footer>
-            <!-- Bootstrap JS e dependências -->
-            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         </body>
     </html>
 
-    <cfcatch type="any">
-        <cfoutput>
-            Ocorreu um erro ao inserir os dados no banco de dados.<br>
-            Detalhes do erro: #cfcatch.message#<br>
-            Stack Trace: #cfcatch.stacktrace#
-        </cfoutput>
-    </cfcatch>
-</cftry>

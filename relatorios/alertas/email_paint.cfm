@@ -20,9 +20,9 @@
             WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
     </cfquery>
 
-<cfmail  from="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"  subject="Alerta de Qualidade aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
-	to="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
-    cc="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
+<cfmail  from="Kennedy Dos Reis Rosario <kennedy.rosario@caoamontadora.com.br>"  subject="Alerta de Qualidade - Nº #consulta_editar.n_controle# aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"
+	to="Renato Cezar Da Silva <renato.csilva@caoamontadora.com.br>,Joao Aparecido Morais Da Cruz <joao.acruz@caoamontadora.com.br>,Sergio Da Silva Pereira <sergio.spereira@caoamontadora.com.br>,Katienne Aparecida De Jesus Linhares <katienne.linhares@caoamontadora.com.br>,Paulo Henrique Chaveiro Da Silva <paulo.chaveiro@caoamontadora.com.br>,Lucas Da Silva De Carvalho <lucas.scarvalho@caoamontadora.com.br>"
+    cc="Luciano Ferreira De Almeida <luciano.ferreira@caoamontadora.com.br>,Sidclay Rodrigues Mota Junior <sidclay.junior@caoamontadora.com.br>,Francisco Fabricio Alves De Jesus <francisco.jesus@caoamontadora.com.br>,Cristiano Rodrigues Da Silva <cristiano.silva@caoamontadora.com.br>,Anderson Abadio Soares De Brito <anderson.brito@caoamontadora.com.br>,Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>,Kennedy Dos Reis Rosario <kennedy.rosario@caoamontadora.com.br>,Joao Cleber Rodrigues Da Costa <joao.ccosta@caoamontadora.com.br>,Lincon Afonso Trentin <lincon.trentin@caoamontadora.com.br>,Lucas Correa Leal <lucas.leal@caoamontadora.com.br>,Rafaga De Oliveira Lima Correa <rafaga.correa@caoamontadora.com.br>,Sullivan Moreira Da Costa <sullivan.costa@caoamontadora.com.br>,David Anjos Da Silva <david.anjos@caoamontadora.com.br>,Geovanna De Souza Ferreira Do Nascimento <geovanna.nascimento@caoamontadora.com.br>,Lucimaria Dos Santos Silva <lucimaria.silva@caoamontadora.com.br>"
     type="html">
 	<html>
 		<head>

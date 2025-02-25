@@ -236,51 +236,52 @@
         </header>
     <div class="container">
             <h1 class="titulo">Pesquisa</h1><br><br><br>
+        <cfoutput>
             <form method="get">
                 <div class="form-row">
                     <div class="form-group col-md-1">
                         <label for="formDataStart">Data Inicial</label>
-                        <input type="date" class="form-control form-control-sm" name="filtroDataStart" id="formDataStart">
+                        <input type="date" class="form-control form-control-sm" name="filtroDataStart" id="formDataStart" value="<cfif isDefined('url.filtroDataStart')>#url.filtroDataStart#</cfif>">
                     </div>
                     <div class="form-group col-md-1">
                         <label for="formDataEnd">Data Final</label>
-                        <input type="date" class="form-control form-control-sm" name="filtroDataEnd" id="formDataEnd">
+                        <input type="date" class="form-control form-control-sm" name="filtroDataEnd" id="formDataEnd" value="<cfif isDefined('url.filtroDataEnd')>#url.filtroDataEnd#</cfif>">
                     </div>
                     <div class="form-group col-md-1">
                         <label for="formVIN">BARCODE</label>
-                        <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroVIN" id="formVIN">
+                        <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroVIN" id="formVIN" value="<cfif isDefined('url.filtroVIN')>#url.filtroVIN#</cfif>">
                     </div>
                     <div class="form-group col-md-1">
                         <label for="formBARREIRA">Barreira</label>
                         <select class="form-control form-control-sm" name="filtroBARREIRA" id="formBARREIRA">
                             <option value="">Selecione</option>
-                            <option value="Primer">Primer</option>
-                            <option value="Top Coat">Top Coat</option>
-                            <option value="Validacao">Validacao</option>
-                            <option value="CP6">CP6</option>
-                            <option value="ECOAT">ECOAT</option>
+                            <option value="Primer" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ 'Primer'>selected</cfif>>Primer</option>
+                            <option value="Top Coat" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ 'Top Coat'>selected</cfif>>Top Coat</option>
+                            <option value="Validacao" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ 'Validacao'>selected</cfif>>Validacao</option>
+                            <option value="CP6" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ 'CP6'>selected</cfif>>CP6</option>
+                            <option value="ECOAT" <cfif isDefined('url.filtroBARREIRA') AND url.filtroBARREIRA EQ 'ECOAT'>selected</cfif>>ECOAT</option>
                         </select>
                     </div>
                     <div class="form-group col-md-1">
                         <label for="formESTACAO">Estação</label>
-                        <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroESTACAO" id="formESTACAO">
+                        <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroESTACAO" id="formESTACAO" value="<cfif isDefined('url.filtroESTACAO')>#url.filtroESTACAO#</cfif>">
                     </div>
                     <div class="form-group col-md-1">
                         <label for="formCRITICIDADE">Criticidade</label>
                         <select class="form-control form-control-sm" name="filtroCRITICIDADE" id="formCRITICIDADE">
                             <option value="">Selecione</option>
-                            <option value="AVARIA">Avaria</option>
-                            <option value="OK A-">OK A-</option>
-                            <option value="N0">N0</option>
-                            <option value="N1">N1</option>
-                            <option value="N2">N2</option>
-                            <option value="N3">N3</option>
-                            <option value="N4">N4</option>
+                            <option value="AVARIA" <cfif isDefined('url.filtroCRITICIDADE') AND url.filtroCRITICIDADE EQ 'AVARIA'>selected</cfif>>Avaria</option>
+                            <option value="OK A-" <cfif isDefined('url.filtroCRITICIDADE') AND url.filtroCRITICIDADE EQ 'OK A-'>selected</cfif>>OK A-</option>
+                            <option value="N0" <cfif isDefined('url.filtroCRITICIDADE') AND url.filtroCRITICIDADE EQ 'N0'>selected</cfif>>N0</option>
+                            <option value="N1" <cfif isDefined('url.filtroCRITICIDADE') AND url.filtroCRITICIDADE EQ 'N1'>selected</cfif>>N1</option>
+                            <option value="N2" <cfif isDefined('url.filtroCRITICIDADE') AND url.filtroCRITICIDADE EQ 'N2'>selected</cfif>>N2</option>
+                            <option value="N3" <cfif isDefined('url.filtroCRITICIDADE') AND url.filtroCRITICIDADE EQ 'N3'>selected</cfif>>N3</option>
+                            <option value="N4" <cfif isDefined('url.filtroCRITICIDADE') AND url.filtroCRITICIDADE EQ 'N4'>selected</cfif>>N4</option>
                         </select>
                     </div>
                     <div class="form-group col-md-1">
                         <label for="formPECA">Peça</label>
-                        <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroPECA" id="formPECA">
+                        <input type="text" class="form-control form-control-sm" maxlength="17" name="filtroPECA" id="formPECA" value="<cfif isDefined('url.filtroPECA')>#url.filtroPECA#</cfif>">
                     </div>
                     <div class="form-group col-md-3 form-buttons">
                         <button type="submit" class="btn btn-primary mt-4">Pesquisar</button>
@@ -289,6 +290,7 @@
                     </div>
                 </div>
             </form>
+        </cfoutput>
             <div style="margin-top:1vw" class="col-12 bg-white rounded metas">
                 <table id="tblStocks" class="table">
                     <thead>

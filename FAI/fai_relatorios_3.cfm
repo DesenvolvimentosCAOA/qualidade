@@ -718,6 +718,7 @@
                                 <tr class="align-middle">
                                     <td colspan="1" class="text-end"><strong>SHOWER</strong></td>
                                     <td colspan="1" class="text-end"><strong>T1A</strong></td>
+                                    <td></td>
                                     <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.TOTAL[i]#</strong></td>
                                     <td colspan="1" class="text-end"><strong>#consulta_barreira_t1a.APROVADOS[i]#</strong></td>
                                 </tr>

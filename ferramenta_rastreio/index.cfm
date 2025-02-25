@@ -36,8 +36,9 @@
     <cfquery name="buscaExistente" datasource="#BANCOSINC#">
         SELECT vin, modelo
         FROM intcoldfusion.ferramenta_rastreio
-        WHERE VIN = <cfqueryparam value="#trim(form.cod)#" cfsqltype="CF_SQL_VARCHAR">
+        WHERE UPPER(VIN) = UPPER(<cfqueryparam value="#trim(form.cod)#" cfsqltype="CF_SQL_VARCHAR">)
     </cfquery>
+    
 
     <cfif buscaExistente.recordcount GT 0>
         <script>
@@ -52,16 +53,19 @@
 
 <cfif buscaMES.recordcount GT 0>
     <cfquery name="insere" datasource="#BANCOSINC#">
-        INSERT INTO intcoldfusion.ferramenta_rastreio (id, vin, modelo, usuario, data_save, caixa) 
-        VALUES (
-            #maxId.id#,
-            <cfqueryparam value="#form.cod#" cfsqltype="CF_SQL_VARCHAR">,
-            <cfqueryparam value="#buscaMES.name#" cfsqltype="CF_SQL_VARCHAR">,
-            '#USER_APONTAMENTO_CL#',
-            sysdate,
-            <cfqueryparam value="#form.etiqv#" cfsqltype="CF_SQL_VARCHAR">
-        )            
-    </cfquery>
+        INSERT INTO intcoldfusion.ferramenta_rastreio (id, vin, modelo, usuario, data_save, caixa)
+        SELECT NVL(MAX(id), 0) + 1, 
+               <cfqueryparam value="#trim(form.cod)#" cfsqltype="CF_SQL_VARCHAR">,
+               <cfqueryparam value="#trim(buscaMES.name)#" cfsqltype="CF_SQL_VARCHAR">,
+               <cfqueryparam value="#trim(USER_APONTAMENTO_CL)#" cfsqltype="CF_SQL_VARCHAR">,
+               sysdate,
+               <cfqueryparam value="#trim(form.etiqv)#" cfsqltype="CF_SQL_VARCHAR">
+        FROM intcoldfusion.ferramenta_rastreio
+        WHERE NOT EXISTS (
+            SELECT 1 FROM intcoldfusion.ferramenta_rastreio 
+            WHERE UPPER(VIN) = UPPER(<cfqueryparam value="#trim(form.cod)#" cfsqltype="CF_SQL_VARCHAR">)
+        )
+    </cfquery>      
     <cflocation url="index.cfm">
 </cfif>
     </cfif>
@@ -200,7 +204,7 @@
                             </br></br>
                             <label>Leia a Caixa</label></br>
                             <input id="etiqv" name="etiqv" type="text" value="#newCaixa#"><br><br>
-                            <button class="btn" type="submit" id="btn" name="button">Confirmar</button>
+                            <button class="btn" type="submit" id="btn" name="button" onclick="disableButton()">Confirmar</button>
                         </form>
                     </div>
                     <div class="info-cab flex column g-1">
@@ -230,6 +234,11 @@
                 window.location.href = 'relatorio.cfm';
             }
             </script>
+            <script>
+                function disableButton() {
+                    document.getElementById("btn").disabled = true;
+                }
+                </script>
     
         </body>
     

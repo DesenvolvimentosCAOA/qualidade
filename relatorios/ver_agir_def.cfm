@@ -35,12 +35,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v4">        
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v4">
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css?v1">     
     </head>
     <body>
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header>
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
         <div id="tableProcess" class="table-container Process">
             <h2 style="color: green; font-size:30px;">AÇÃO DEFINITIVA</h2>
             <form id="for-edit" method="POST">
@@ -86,5 +90,6 @@
                 </cfoutput>
             </form>
         </div>
+        <script src="/qualidade/relatorios/assets/script.js"></script>
     </body>
 </html>

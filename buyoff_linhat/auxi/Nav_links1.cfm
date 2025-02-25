@@ -26,15 +26,17 @@
                 <li><a href="/qualidade/buyoff_linhat/indicadores_paint_cor_1.cfm">Indicadores COR</a></li>
             </ul>
         </li>
-        <li class="dropdown">
-            <a href="#">Acesso Exclusivo QA</a>
-            <ul class="dropdown-menu">
-                <li><a href="#" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
-                <li><a href="/qualidade/buyoff_linhat/paint_editar.cfm">Editar Lançamento</a></li>
-                <li><a href="/qualidade/buyoff_linhat/cadastro_novo.cfm">Cadastro de Usuário</a></li>
-<!---                 <li><a href="/qualidade/buyoff_linhat/batalha_naval.cfm">Batalha Naval</a></li> --->
-            </ul>
-        </li>
+        <cfif isDefined("cookie.user_level_paint") and cookie.user_level_paint eq "G">
+            <li class="dropdown">
+                <a href="#">Acesso Exclusivo QA</a>
+                <ul class="dropdown-menu">
+                    <li><a href="" onclick="validateDefeitos()">Adicionar Defeitos</a></li>
+                    <li><a href="/qualidade/buyoff_linhat/paint_editar.cfm">Editar Lançamento</a></li>
+                    <li><a href="/qualidade/buyoff_linhat/cadastro_novo.cfm">Cadastro de Usuário</a></li>
+    <!---                 <li><a href="/qualidade/buyoff_linhat/batalha_naval.cfm">Batalha Naval</a></li> --->
+                </ul>
+            </li>
+        </cfif>
         <li><a href="logout.cfm">Sair</a></li>
     </ul>
 </nav>

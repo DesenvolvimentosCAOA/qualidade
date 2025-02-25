@@ -36,13 +36,14 @@
     </cfif>
     
     
-    <html lang="pt-BR">
+<html lang="pt-BR">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>CONTENÇÃO - VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v4">  
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v4">
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css?v1">
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -109,7 +110,9 @@
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header>
-
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
         <div id="tableBody" class="table-container">
             <h2 style="color: blue; font-size:30px;margin-top:5vw;">Dados do Item</h2>
             <cfoutput>
@@ -236,7 +239,7 @@
                 </cfoutput>
             </form>
         </div>
-        <script src="/qualidade/relatorios/assets/script.js?v5"></script>
+        <script src="/qualidade/relatorios/assets/script.js"></script>
     </body>
-    </html>
+</html>
     

@@ -63,7 +63,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>CADASTRO - VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v6"> 
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v6">
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css?v1">
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -131,6 +132,10 @@
             <cfinclude template="auxi/nav_links.cfm">
         </header>
 
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
+
         <div id="tableBody" class="table-container" style="margin-top:100px;">
             <h2 style="color:#f6722c; font-size:30px;">Ver & Agir</h2>
             <form id="for-edit" method="POST">
@@ -142,7 +147,7 @@
                     <div class="input-group">
                         <label for="formNome">Usuário</label>
                         <input style="width:500px;" type="text" class="form-control form-control-sm" name="nome" id="formNome" required value="#login.USER_SIGN#" readonly>
-                    </div>
+
                     <div class="search-container">
                         <div class="input-group">
                             <label for="searchVIN">
@@ -294,6 +299,6 @@
             </form>
             
         </div>
-        <script src="/qualidade/relatorios/assets/script.js?v1"></script>
+        <script src="/qualidade/relatorios/assets/script.js"></script>
     </body>
 </html>

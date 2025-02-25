@@ -6,12 +6,12 @@
     <!--- Valida o usuário para Ver & Agir --->
 <cfif isDefined("form.ver_login")>
     <cfquery name="validausuario" datasource="#BANCOSINC#">
-        SELECT USER_ID, USER_NAME, USER_PASSWORD, TRIM(USER_LEVEL) AS USER_LEVEL, USER_SIGN 
+        SELECT USER_ID, USER_NAME, SHOP, USER_PASSWORD, TRIM(USER_LEVEL) AS USER_LEVEL, USER_SIGN 
         FROM reparo_fa_users 
         WHERE UPPER(USER_NAME) = UPPER('#form.ver_login#')
         AND USER_PASSWORD = UPPER('#form.ver_senha#')
     </cfquery>
-    
+
     <!--- Se usuário válido, cria cookies e redireciona --->
     <cfif validausuario.recordcount GT 0>
         <cfcookie name="user_apontamento_fa" value="#form.ver_login#">
@@ -21,8 +21,16 @@
             <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/indicador.cfm"/>
         <cfelseif validausuario.USER_LEVEL EQ "P">
             <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/indicador.cfm"/>
-        <cfelse>
-            <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/alertas/d_principal.cfm"/>
+        <cfelseif validausuario.USER_LEVEL EQ "G" AND validausuario.SHOP EQ 'PAINT'>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/ver_agir_paint.cfm"/>
+        <cfelseif validausuario.USER_LEVEL EQ "G" AND validausuario.SHOP EQ 'BODY'>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/ver_agir_body.cfm"/>
+        <cfelseif validausuario.USER_LEVEL EQ "G" AND validausuario.SHOP EQ 'FA'>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/ver_agir_fa.cfm"/>
+        <cfelseif validausuario.USER_LEVEL EQ "G" AND validausuario.SHOP EQ 'FAI'>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/ver_agir_fai.cfm"/>
+        <cfelseif validausuario.USER_LEVEL EQ "G" AND validausuario.SHOP EQ 'PDI'>
+            <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/ver_agir_pdi.cfm"/>
         </cfif>
     <cfelse>
         <!--- Mensagem de erro --->

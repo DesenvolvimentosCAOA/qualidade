@@ -20,9 +20,14 @@
             WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
     </cfquery>
 
-<cfmail  from="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"  subject="Alerta de Qualidade aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
-	to="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
-    cc="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
+    <cfquery name="login" datasource="#BANCOSINC#">
+        SELECT USER_NAME, USER_SIGN, USER_EMAIL FROM INTCOLDFUSION.REPARO_FA_USERS
+        WHERE USER_NAME = '#cookie.user_apontamento_fa#'
+    </cfquery>
+
+<cfmail  from="#login.USER_SIGN# <#login.USER_EMAIL#"  subject="Alerta de Qualidade - Nº #consulta_editar.n_controle# aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
+	to="Michael Jonathan Camargo De Oliveira <michael.oliveira@caoamontadora.com.br>,Ricardo Fernandes Silva <ricardo.fernandes@caoamontadora.com.br>,Vinicius Gomes Silva <vinicius.gsilva@caoamontadora.com.br>,Reginaldo Pires Dos Santos <reginaldo.santos@caoamontadora.com.br>,Sinomar Rodrigues Da Silva Junior <sinomar.junior@caoamontadora.com.br>,Jonathan Saint Clair Costa Santos <jonathan.costa@caoamontadora.com.br>,Matheus Ferreira Rodrigues <matheus.frodrigues@caoamontadora.com.br>,Matheus Pereira Araujo <matheus.araujo@caoamontadora.com.br>,Davidson Gomes Ribeiro Roquete <davidson.roquete@caoamontadora.com.br>,Rian Guilherme Silva Cardoso <rian.cardoso@caoamontadora.com.br>,Camila Pereira De Assuncao <camila.assuncao@caoamontadora.com.br>"
+    cc="Lucas Martins Borges Silva <lucas.silva@caoamontadora.com.br>,Luciano Ferreira De Almeida <luciano.ferreira@caoamontadora.com.br>,Sidclay Rodrigues Mota Junior <sidclay.junior@caoamontadora.com.br>,Francisco Fabricio Alves De Jesus <francisco.jesus@caoamontadora.com.br>,Cristiano Rodrigues Da Silva <cristiano.silva@caoamontadora.com.br>,Anderson Abadio Soares De Brito <anderson.brito@caoamontadora.com.br>,Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>,Kennedy Dos Reis Rosario <kennedy.rosario@caoamontadora.com.br>,Joao Cleber Rodrigues Da Costa <joao.ccosta@caoamontadora.com.br>,Lincon Afonso Trentin <lincon.trentin@caoamontadora.com.br>,Lucas Correa Leal <lucas.leal@caoamontadora.com.br>,Rafaga De Oliveira Lima Correa <rafaga.correa@caoamontadora.com.br>,Sullivan Moreira Da Costa <sullivan.costa@caoamontadora.com.br>"
     type="html">
 	<html>
 		<head>
@@ -119,11 +124,11 @@
                         <tr>
                         </tr>                               
                         <tr>
-                            <td class="label-bold" colspan="1" style="text-align:left;color:red;">DESCRIÇÃO DA <br>NÃO CONFORMIDADE:</td>
+                            <td class="label-bold" colspan="1">DESCRIÇÃO DA NÃO CONFORMIDADE:</td>
                             <td colspan="8">
-                                <input type="text" name="descricao" placeholder="DESCREVA DETALHADAMENTE A NÃO CONFORMIDADE" style="border:none;outline:none;" value="#consulta_editar.descricao_nc#" readonly>
+                                <textarea name="descricao" readonly style="width: 100%; height: 100px; resize: vertical;">#consulta_editar.descricao_nc#</textarea>
                             </td>
-                        </tr>
+                        </tr>  
                     </table>
                     <tr>
                         <p style="font-size: 15px;">A equipe responsável deve preencher as demais etapas do 8D para a conclusão do alerta de qualidade. O prazo final para encerramento é de 7 dias corridos a partir da data de abertura.

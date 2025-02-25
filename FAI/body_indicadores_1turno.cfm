@@ -468,7 +468,7 @@
                 }
                 .ticker:hover .ticker-content {
                     animation-play-state: paused;
-        }
+         }
 
                 @keyframes tickerMove {
                     0% { transform: translateX(100%); }
@@ -497,8 +497,6 @@
             <cfelse>
                 <cfset resultadoFinal = "Sem dados suficientes"> <!-- ou qualquer valor padrão que você queira usar -->
             </cfif>
-            
-    
             
             <div class="ticker">
                 <div class="ticker-content">

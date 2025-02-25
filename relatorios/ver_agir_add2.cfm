@@ -45,27 +45,27 @@
         </cfif>
 
 
-<cfquery name="insere" datasource="#BANCOSINC#">
-    INSERT INTO INTCOLDFUSION.VEREAGIR2 (ID, DATA_REGISTRO,MODELO,VIN, PECA, POSICAO, PROBLEMA, SEVERIDADE, DETECCAO, OCORRENCIA, RPN, TURNO, GRUPO_RESPONSAVEL, STATUS, BARREIRA)
-    VALUES(
-        <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
-        <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">,
-        <cfqueryparam value="#buscaMES.modelo#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_vin)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_peca)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_posicao)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_problema)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_severidade)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_deteccao)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_ocorrencia)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_rpn)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_turno)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_grupo)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_status)#" cfsqltype="CF_SQL_VARCHAR">,
-        <cfqueryparam value="#UCase(form.ver_barreira)#" cfsqltype="CF_SQL_VARCHAR">
-    )
-</cfquery>
-<cflocation url="ver_agir.cfm">
+    <cfquery name="insere" datasource="#BANCOSINC#">
+        INSERT INTO INTCOLDFUSION.VEREAGIR2 (ID, DATA_REGISTRO,MODELO,VIN, PECA, POSICAO, PROBLEMA, SEVERIDADE, DETECCAO, OCORRENCIA, RPN, TURNO, GRUPO_RESPONSAVEL, STATUS, BARREIRA)
+        VALUES(
+            <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
+            <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">,
+            <cfqueryparam value="#buscaMES.modelo#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_vin)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_peca)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_posicao)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_problema)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_severidade)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_deteccao)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_ocorrencia)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_rpn)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_turno)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_grupo)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_status)#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#UCase(form.ver_barreira)#" cfsqltype="CF_SQL_VARCHAR">
+        )
+    </cfquery>
+    <cflocation url="ver_agir.cfm">
 
 </cfif>
 </cfif>
@@ -76,6 +76,7 @@
         <title>VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <link rel="stylesheet" href="/qualidade/relatorios/assets/style_add.css?v6"> 
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css?v1">
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -143,6 +144,9 @@
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header>
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
 
         <div id="tableBody" class="table-container" style="margin-top:100px;">
             <h2 style="color:#f6722c; font-size:30px;">Ver & Agir</h2>
@@ -287,6 +291,6 @@
                 </cfoutput>
             </form>
         </div>
-        <script src="/qualidade/relatorios/assets/script.js?v1"></script>
+        <script src="/qualidade/relatorios/assets/script.js"></script>
     </body>
 </html>

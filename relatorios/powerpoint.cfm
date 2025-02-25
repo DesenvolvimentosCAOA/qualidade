@@ -1,9 +1,58 @@
-<cfif not isDefined("cookie.user_level_final_assembly") or (cookie.user_level_final_assembly eq "R" or cookie.user_level_final_assembly eq "P" or cookie.user_level_final_assembly eq "E")>
+<cfquery name="login" datasource="#BANCOSINC#">
+    SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
+    WHERE USER_NAME = '#cookie.USER_APONTAMENTO_FA#'
+</cfquery>
+
+<cfif structKeyExists(form, "finalizar_treinamento")>
+    <!--- Verificar se o USER_SIGN já existe na tabela de treinamentos --->
+    <cfquery name="verificarTreinamento" datasource="#BANCOSINC#">
+        SELECT COUNT(*) AS total
+        FROM INTCOLDFUSION.treinamentos
+        WHERE NOME = '#UCase(LOGIN.USER_SIGN)#'
+        AND TREINAMENTO = '#UCase('Lançamento Ver & Agir')#'
+    </cfquery>
+    
+
+    <!--- Se o nome já existir, exibe uma mensagem e redireciona --->
+    <cfif verificarTreinamento.total GT 0>
+        <script>
+            alert("O usuário já completou este treinamento!");
+            window.location.href = "indicador.cfm"; <!--- Redireciona para outra tela --->
+        </script>
+    <cfelse>
+        <!--- Obter próximo maxId --->
+        <cfquery name="obterMaxId" datasource="#BANCOSINC#">
+            SELECT COALESCE(MAX(ID), 0) + 1 AS id FROM INTCOLDFUSION.treinamentos
+        </cfquery>
+
+        <!--- Inserir dados na tabela --->
+        <cfquery name="insere" datasource="#BANCOSINC#">
+            INSERT INTO INTCOLDFUSION.treinamentos (ID, DATA, NOME, TREINAMENTO)
+            VALUES(
+                <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
+                <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">,
+                <cfqueryparam value="#UCase(LOGIN.USER_SIGN)#" cfsqltype="CF_SQL_VARCHAR">,
+                <cfqueryparam value="#UCase('Lançamento Ver & Agir')#" cfsqltype="CF_SQL_VARCHAR">
+            )
+        </cfquery>
+
+        <script>
+            alert("Treinamento finalizado com sucesso!");
+            window.location.href = "indicador.cfm";
+        </script>
+    </cfif>
+</cfif>
+
+<cfif not isDefined("cookie.user_level_final_assembly") or 
+    (cookie.user_level_final_assembly eq "R" or 
+     cookie.user_level_final_assembly eq "P" or 
+     cookie.user_level_final_assembly eq "E")>
     <script>
         alert("É necessário autorização!!");
-        history.back(); // Voltar para a página anterior
+        history.back();
     </script>
 </cfif>
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -11,6 +60,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Apresentação PowerPoint</title>
+    <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css?v1">
     <style>
         body {
             display: flex;
@@ -80,10 +130,10 @@
             cursor: not-allowed;
         }
         .red-button {
-            background-color: #dc3545; /* Cor vermelha */
+            background-color: #dc3545;
         }
         .red-button:hover {
-            background-color: #c82333; /* Tom mais escuro de vermelho */
+            background-color: #c82333;
         }
     </style>
 </head>
@@ -91,6 +141,10 @@
     <header class="titulo">
         <cfinclude template="auxi/nav_links.cfm">
     </header>
+
+    <div id="loading-screen">
+        <div class="spinner"></div>
+    </div>
 
     <div class="slide-container">
         <img id="slide" src="/qualidade/prova/ver/Slide1.JPG" alt="Slide 1">
@@ -103,6 +157,12 @@
         <button id="prevBtn" onclick="changeSlide(-1)" disabled>Anterior</button>
         <button id="nextBtn" onclick="changeSlide(1)">Próximo</button>
     </div>
+
+    <!-- Formulário para enviar os dados -->
+    <form id="finalizarForm" method="post" style="display: none;">
+        <input type="hidden" name="finalizar_treinamento" value="1">
+    </form>
+
     <script>
         const slides = [];
         for (let i = 1; i <= 12; i++) {
@@ -116,6 +176,7 @@
         const nextBtn = document.getElementById('nextBtn');
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
+        const finalizarForm = document.getElementById('finalizarForm');
 
         function changeSlide(direction) {
             currentSlide += direction;
@@ -127,9 +188,7 @@
             if (currentSlide === slides.length - 1) {
                 nextBtn.textContent = "FINALIZAR TREINAMENTO";
                 nextBtn.classList.add('red-button');
-                nextBtn.onclick = () => {
-                    window.location.href = "/qualidade/relatorios/insere_treinamento.cfm?data_registro=1";
-                };
+                nextBtn.onclick = () => finalizarTreinamento();
             } else {
                 nextBtn.textContent = "Próximo";
                 nextBtn.classList.remove('red-button');
@@ -145,7 +204,12 @@
             progressText.textContent = `${Math.round(progress)}%`;
         }
 
+        function finalizarTreinamento() {
+            finalizarForm.submit();
+        }
+
         updateProgressBar();
     </script>
+    <script src="/qualidade/relatorios/assets/script.js"></script>
 </body>
 </html>

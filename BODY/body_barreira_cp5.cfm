@@ -190,8 +190,7 @@
            <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
        )
     </cfquery>
-    
- 
+
     <cfoutput><script>window.location.href = 'body_barreira_cp5.cfm';</script></cfoutput>
     
  </cfif>
@@ -291,11 +290,7 @@
         <div class="container mt-4">
             <h2 class="titulo2">Barreira CP5</h2>
             
-            <cfquery name="defeitos" datasource="#BANCOSINC#">
-                SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
-                WHERE SHOP = 'BODY-PROBLEMA'
-                ORDER BY DEFEITO
-            </cfquery>
+
 
             <cfquery name="pecas" datasource="#BANCOSINC#">
                 SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
@@ -358,13 +353,13 @@
                         and p.name  like '%CARROCERIA%'
                     </cfquery>
  
- <cfset modelo = buscaMES.modelo>
- 
- <!--- Verifica se o modelo é null e substitui por "HR" se necessário --->
- <cfif isNull(modelo) or len(trim(modelo)) EQ 0>
-    <cfset modelo = "HR">
- </cfif>
- <!--- <cfdump var="#buscaMES#"> --->
+                <cfset modelo = buscaMES.modelo>
+                
+                <!--- Verifica se o modelo é null e substitui por "HR" se necessário --->
+                <cfif isNull(modelo) or len(trim(modelo)) EQ 0>
+                    <cfset modelo = "HR">
+                </cfif>
+                <!--- <cfdump var="#buscaMES#"> --->
                     <div class="form-group col-md-2">
                         <label for="formModelo">Modelo</label>
                         <input type="text" class="form-control form-control-sm" maxlength="17" name="modelo" id="formModelo" readonly value="#buscaMES.name#">
@@ -378,6 +373,14 @@
                     </cfoutput>
                     </div>
                 </div>
+
+                <cfquery name="pecas" datasource="#BANCOSINC#">
+                    SELECT DESCRICAO FROM INTCOLDFUSION.pecas_defeitos
+                    WHERE SHOP = 'BODY'
+                    AND ESTACAO = 'BODY'
+                    AND DEFINICAO = 'PECA'
+                    ORDER BY DESCRICAO ASC
+                </cfquery>
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <label for="formNConformidade">Peça</label>
@@ -385,7 +388,7 @@
                             <option value="">Selecione a Peça</option>
                             <cfloop query="pecas">
                                 <cfoutput>
-                                    <option value="#defeito#">#defeito#</option>
+                                    <option value="#descricao#">#descricao#</option>
                                 </cfoutput>
                             </cfloop>
                         </select>
@@ -396,13 +399,21 @@
                             <cfinclude template="auxi/batalha_option.cfm">
                         </select>
                     </div>
+
+                    <cfquery name="defeitos" datasource="#BANCOSINC#">
+                        SELECT DESCRICAO FROM INTCOLDFUSION.pecas_defeitos
+                        WHERE SHOP = 'BODY'
+                        AND ESTACAO = 'BODY'
+                        AND DEFINICAO = 'PROBLEMA'
+                        ORDER BY DESCRICAO ASC
+                    </cfquery>
                     <div class="form-group col-md-2">
                         <label for="formProblema">Problema</label>
                         <input type="text" list="defeitos-list" class="form-control form-control-sm" name="problema" id="formProblema" oninput="transformToUpperCase(this)">
                         <datalist id="defeitos-list">
                             <cfloop query="defeitos">
                                 <cfoutput>
-                                    <option value="#defeito#">#defeito#</option>
+                                    <option value="#descricao#">#descricao#</option>
                                 </cfoutput>
                             </cfloop>
                         </datalist>

@@ -457,3 +457,14 @@ function verificarCampos() {
 
 // Executa a verificação assim que a página carregar
 document.addEventListener('DOMContentLoaded', verificarCampos);
+
+//função de loading das páginas
+function navigateTo(url) {
+    // Exibe a tela de loading
+    document.getElementById("loading-screen").classList.add("show");
+
+    // Aguarda 1 segundo antes de redirecionar
+    setTimeout(() => {
+        window.location.href = url;
+    }, 1000);
+}

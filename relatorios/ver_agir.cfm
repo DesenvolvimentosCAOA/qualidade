@@ -12,153 +12,12 @@
             history.back(); // Voltar para a página anterior
         </script>
         </cfif>
-        <cfif not isDefined("cookie.user_level_final_assembly") or cookie.user_level_final_assembly eq "R">
+        <cfif not isDefined("cookie.user_level_final_assembly") or ListFind("R,P,I", cookie.user_level_final_assembly)>
             <script>
                 alert("É necessário autorização!!");
                 history.back(); // Voltar para a página anterior
             </script>
         </cfif>
-        <cfif not isDefined("cookie.user_level_final_assembly") or cookie.user_level_final_assembly eq "P">
-            <script>
-                alert("É necessário autorização!!");
-                history.back(); // Voltar para a página anterior
-            </script>
-        </cfif>
-
-    <cfquery name="consultas" datasource="#BANCOSINC#">
-        SELECT * 
-        FROM (
-            SELECT * 
-            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
-            WHERE 1 = 1
-            <cfif isDefined("url.searchID") and url.searchID neq "">
-                AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-            </cfif>
-            <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                AND UPPER(BARCODE) LIKE UPPER('%' || <cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR"> || '%')
-            </cfif>
-            <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-                AND UPPER(PECA) LIKE UPPER('%' || <cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR"> || '%')
-            </cfif>
-            <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-                AND UPPER(POSICAO) LIKE UPPER('%' || <cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR"> || '%')
-            </cfif>
-            <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-                AND UPPER(PROBLEMA) LIKE UPPER('%' || <cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR"> || '%')
-            </cfif>
-            AND PROBLEMA IS NOT NULL
-            ORDER BY ID DESC
-        )
-        WHERE USER_DATA >= TRUNC(SYSDATE) -10
-    </cfquery>
-
-    <cfquery name="consultas_paint" datasource="#BANCOSINC#">
-        SELECT *
-        FROM (
-        SELECT *
-        FROM INTCOLDFUSION.SISTEMA_QUALIDADE
-        WHERE 1 = 1
-        <cfif isDefined("url.searchID") and url.searchID neq "">
-            AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-        </cfif>
-        <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-            AND UPPER(BARCODE) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
-        </cfif>
-        <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-            AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
-        </cfif>
-        <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-            AND UPPER(POSICAO) LIKE UPPER('%<cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR">%')
-        </cfif>
-        <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-            AND UPPER(PROBLEMA) LIKE UPPER('%<cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR">%')
-        </cfif>
-        AND PROBLEMA IS NOT NULL
-        ORDER BY ID DESC
-        )
-        WHERE USER_DATA >= TRUNC(SYSDATE) -5 -- Final da semana atual
-    </cfquery>
-
-    <cfquery name="consultas_fa" datasource="#BANCOSINC#">
-        SELECT *
-        FROM (
-            SELECT *
-            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
-            WHERE 1 = 1
-            <cfif isDefined("url.searchID") and url.searchID neq "">
-                AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-            </cfif>
-            <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-                AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-                AND UPPER(POSICAO) LIKE UPPER('%<cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-                AND UPPER(PROBLEMA) LIKE UPPER('%<cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            AND PROBLEMA IS NOT NULL
-            ORDER BY ID DESC
-        )
-        WHERE USER_DATA >= TRUNC(SYSDATE) -5
-    </cfquery>
-
-    <cfquery name="consultas_fai" datasource="#BANCOSINC#">
-        SELECT *
-        FROM (
-            SELECT *
-            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-            WHERE 1 = 1
-            <cfif isDefined("url.searchID") and url.searchID neq "">
-                AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-            </cfif>
-            <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-                AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-                AND UPPER(POSICAO) LIKE UPPER('%<cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-                AND UPPER(PROBLEMA) LIKE UPPER('%<cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            AND PROBLEMA IS NOT NULL
-            ORDER BY ID DESC
-        )
-        WHERE USER_DATA >= TRUNC(SYSDATE) -5
-    </cfquery>
-
-    <cfquery name="consultas_pdi" datasource="#BANCOSINC#">
-        SELECT *
-        FROM (
-            SELECT *
-            FROM INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA
-            WHERE 1 = 1
-            <cfif isDefined("url.searchID") and url.searchID neq "">
-                AND ID = <cfqueryparam value="#url.searchID#" cfsqltype="CF_SQL_INTEGER">
-            </cfif>
-            <cfif isDefined("url.searchVIN") and url.searchVIN neq "">
-                AND UPPER(VIN) LIKE UPPER('%<cfqueryparam value="#url.searchVIN#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPeca") and url.searchPeca neq "">
-                AND UPPER(PECA) LIKE UPPER('%<cfqueryparam value="#url.searchPeca#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchPosicao") and url.searchPosicao neq "">
-                AND UPPER(POSICAO) LIKE UPPER('%<cfqueryparam value="#url.searchPosicao#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            <cfif isDefined("url.searchProblema") and url.searchProblema neq "">
-                AND UPPER(PROBLEMA) LIKE UPPER('%<cfqueryparam value="#url.searchProblema#" cfsqltype="CF_SQL_VARCHAR">%')
-            </cfif>
-            AND PROBLEMA IS NOT NULL
-            ORDER BY ID DESC
-        )
-        WHERE USER_DATA >= TRUNC(SYSDATE) -5
-    </cfquery>
 
     <cfquery name="consultas_acomp_cont" datasource="#BANCOSINC#">
         SELECT *
@@ -188,7 +47,7 @@
             -- AND BP_CONTENCAO_PROCESSO IS NULL
             ORDER BY DATA_REGISTRO DESC
         )
-        WHERE ROWNUM <= 200
+        WHERE ROWNUM <= 400
     </cfquery>
 
     <cfquery name="consulta_datas" datasource="#BANCOSINC#">
@@ -397,282 +256,26 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>INÍCIO - VER & AGIR</title>
+        <title>ACOMPANHAMENTO - VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/relatorios/assets/style.css?v5">
-
-        <style>
-            .wide-column {
-                width: 300px;
-            }
-            .status-span {
-            display: inline-block;
-            padding: 5px;
-            line-height: 1.8; /* Aumente para ajustar o espaçamento entre as linhas */
-            white-space: normal; /* Permite quebra de linha */
-            word-wrap: break-word; /* Quebra palavras longas */
-            overflow: hidden; /* Garante que o conteúdo não saia do bloco */
-            text-align: center; /* Centraliza o texto dentro do bloco */
-            border-radius: 4px; /* Opcional para bordas arredondadas */
-            }
-        </style>
-
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css?v1">
     </head>
     <body>
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header>
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
 
         <!-- Container para os botões -->
         <div class="btn-container">
-            <div class="btn-rounded">
-                Novo Relatório
-                <div class="submenu">
-                        <a href="#" onclick="showTable('tableBody')">Body</a>
-                        <a href="#" onclick="showTable('tablePaint')">Paint</a>
-                        <a href="#" onclick="showTable('tableFA')">FA</a>
-                        <a href="#" onclick="showTable('tableFAI')">FAI</a>
-                        <a href="#" onclick="showTable('tablePDI')">PDI</a>
-                </div>
-            </div>
-            <button class="btn-rounded" onclick="showTable('tableACOMP')">Acompanhamento</button>
-            <button class="btn-rounded"></button>
-            <button class="btn-rounded"></button>
-        </div>
-
-        <!-- Tabelas -->
-        <div id="tableBody" class="table-container">
-            <h2 style="color:#0000CD">Body Shop</h2>
-            <!-- Inputs de pesquisa -->
-            <div class="search-container">
-                <input type="text" id="searchID" placeholder="Pesquisar ID" onkeyup="filterTable()">
-                <input type="text" id="searchVIN" placeholder="Pesquisar Barcode" onkeyup="filterTable()">
-                <input type="text" id="searchPeca" placeholder="Pesquisar Peça" onkeyup="filterTable()">
-                <input type="text" id="searchPosicao" placeholder="Pesquisar Posição" onkeyup="filterTable()">
-                <input type="text" id="searchProblema" placeholder="Pesquisar Problema" onkeyup="filterTable()">
-            </div>
-
-
-            <table border="1" id="bodyTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>VIN</th>
-                        <th>Modelo</th>
-                        <th>Peça</th>
-                        <th>Posição</th>
-                        <th>Problema</th>
-                        <th>Inserir</th>
-                    </tr>
-                </thead>
-                <tbody style="font-size:12px;">
-                    <cfoutput>
-                        <cfloop query="consultas">
-                            <tr>
-                                <td>#ID#</td>
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                <td>#BARCODE#</td>
-                                <td>#MODELO#</td>
-                                <td>#PECA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PROBLEMA#</td>
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_add.cfm?id_editar=#id#&tabela=sistema_qualidade_body'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>  
-                            </tr>
-                        </cfloop>
-                    </cfoutput>
-                </tbody>
-            </table>
-        </div> 
-
-        <div id="tablePaint" class="table-container">
-            <h2 style="color:#f6722c">Paint Shop</h2>
-            <!-- Inputs de pesquisa -->
-            <div class="search-container">
-                <input type="text" id="searchIDP" placeholder="Pesquisar ID" onkeyup="filterTablePaint()">
-                <input type="text" id="searchVINP" placeholder="Pesquisar Barcode" onkeyup="filterTablePaint()">
-                <input type="text" id="searchPecaP" placeholder="Pesquisar Peça" onkeyup="filterTablePaint()">
-                <input type="text" id="searchPosicaoP" placeholder="Pesquisar Posição" onkeyup="filterTablePaint()">
-                <input type="text" id="searchProblemaP" placeholder="Pesquisar Problema" onkeyup="filterTablePaint()">
-            </div>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>Barcode</th>
-                        <th>Modelo</th>
-                        <th>Peça</th>
-                        <th>Posição</th>
-                        <th>Problema</th>
-                        <th>Inserir</th>
-                    </tr>
-                </thead>
-                <tbody style="font-size:12px;">
-                    <cfoutput>
-                        <cfloop query="consultas_paint">
-                            <tr>
-                                <td>#ID#</td>
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                <td>#BARCODE#</td>
-                                <td>#MODELO#</td>
-                                <td>#PECA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PROBLEMA#</td>
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_add.cfm?id_editar=#id#&tabela=sistema_qualidade'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>                                
-                            </tr>
-                        </cfloop>
-                    </cfoutput>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="tableFA" class="table-container">
-            <h2 style="color:gold">Final Assembly</h2>
-            <!-- Inputs de pesquisa -->
-            <div class="search-container">
-                <input type="text" id="searchIDFA" placeholder="Pesquisar ID" onkeyup="filterTableFA()">
-                <input type="text" id="searchVINFA" placeholder="Pesquisar Vin" onkeyup="filterTableFA()">
-                <input type="text" id="searchPecaFA" placeholder="Pesquisar Peça" onkeyup="filterTableFA()">
-                <input type="text" id="searchPosicaoFA" placeholder="Pesquisar Posição" onkeyup="filterTableFA()">
-                <input type="text" id="searchProblemaFA" placeholder="Pesquisar Problema" onkeyup="filterTableFA()">
-            </div>
-            <table border="1" id="FATable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>VIN</th>
-                        <th>Modelo</th>
-                        <th>Peça</th>
-                        <th>Posição</th>
-                        <th>Problema</th>
-                        <th>Inserir</th>
-                    </tr>
-                </thead>
-                <tbody style="font-size:12px;">
-                    <cfoutput>
-                        <cfloop query="consultas_fa">
-                            <tr>
-                                <td>#ID#</td>
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                <td>#VIN#</td>
-                                <td>#MODELO#</td>
-                                <td>#PECA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PROBLEMA#</td>
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_add.cfm?id_editar=#id#&tabela=sistema_qualidade_fa'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>  
-                            </tr>
-                        </cfloop>
-                    </cfoutput>
-                </tbody>
-            </table>
-        </div> 
-
-        <div id="tableFAI" class="table-container">
-            <h2 style="color:gray">FAI</h2>
-            <!-- Inputs de pesquisa -->
-            <div class="search-container">
-                <input type="text" id="searchIDFAI" placeholder="Pesquisar ID" onkeyup="filterTableFAI()">
-                <input type="text" id="searchVINFAI" placeholder="Pesquisar Vin" onkeyup="filterTableFAI()">
-                <input type="text" id="searchPecaFAI" placeholder="Pesquisar Peça" onkeyup="filterTableFAI()">
-                <input type="text" id="searchPosicaoFAI" placeholder="Pesquisar Posição" onkeyup="filterTableFAI()">
-                <input type="text" id="searchProblemaFAI" placeholder="Pesquisar Problema" onkeyup="filterTableFAI()">
-            </div>
-
-            <table border="1" id="FAITable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>VIN</th>
-                        <th>Modelo</th>
-                        <th>Peça</th>
-                        <th>Posição</th>
-                        <th>Problema</th>
-                        <th>Inserir</th>
-                    </tr>
-                </thead>
-                <tbody style="font-size:12px;">
-                    <cfoutput>
-                        <cfloop query="consultas_fai">
-                            <tr>
-                                <td>#ID#</td>
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                <td>#VIN#</td>
-                                <td>#MODELO#</td>
-                                <td>#PECA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PROBLEMA#</td>
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_add.cfm?id_editar=#id#&tabela=sistema_qualidade_fai'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>  
-                            </tr>
-                        </cfloop>
-                    </cfoutput>
-                </tbody>
-            </table>
-        </div> 
-
-        <div id="tablePDI" class="table-container">
-            <h2 style="color:purple">PDI</h2>
-            <!-- Inputs de pesquisa -->
-            <div class="search-container">
-                <input type="text" id="searchIDPDI" placeholder="Pesquisar ID" onkeyup="filterTablePDI()">
-                <input type="text" id="searchVINPDI" placeholder="Pesquisar Vin" onkeyup="filterTablePDI()">
-                <input type="text" id="searchPecaPDI" placeholder="Pesquisar Peça" onkeyup="filterTablePDI()">
-                <input type="text" id="searchPosicaoPDI" placeholder="Pesquisar Posição" onkeyup="filterTablePDI()">
-                <input type="text" id="searchProblemaPDI" placeholder="Pesquisar Problema" onkeyup="filterTablePDI()">
-            </div>
-
-            <table border="1" id="PDITable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>VIN</th>
-                        <th>Modelo</th>
-                        <th>Peça</th>
-                        <th>Posição</th>
-                        <th>Problema</th>
-                        <th>Inserir</th>
-                    </tr>
-                </thead>
-                <tbody style="font-size:12px;">
-                    <cfoutput>
-                        <cfloop query="consultas_pdi">
-                            <tr>
-                                <td>#ID#</td>
-                                <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
-                                <td>#VIN#</td>
-                                <td>#MODELO#</td>
-                                <td>#PECA#</td>
-                                <td>#POSICAO#</td>
-                                <td>#PROBLEMA#</td>
-                                <td class="text-nowrap">
-                                    <button class="btn-rounded" onclick="self.location='ver_agir_add.cfm?id_editar=#id#&tabela=sistema_qualidade_pdi_saida'">
-                                        <i class="mdi mdi-pencil-outline"></i>Selecionar
-                                    </button>
-                                </td>  
-                            </tr>
-                        </cfloop>
-                    </cfoutput>
-                </tbody>
-            </table>
+            <button class="btn-rounded" style='background-color:red;color:black;'>Acompanhamento</button>
+            <button class="btn-rounded" onclick="navigateTo('/qualidade/relatorios/ver_agir_body.cfm')">Body</button>
+            <button class="btn-rounded" onclick="navigateTo('/qualidade/relatorios/ver_agir_paint.cfm')">Paint</button>
+            <button class="btn-rounded" onclick="navigateTo('/qualidade/relatorios/ver_agir_fa.cfm')">Final Assembly</button>
+            <button class="btn-rounded" onclick="navigateTo('/qualidade/relatorios/ver_agir_fai.cfm')">FAI</button>
+            <button class="btn-rounded" onclick="navigateTo('/qualidade/relatorios/ver_agir_pdi.cfm')">PDI</button>
         </div>
 
         <div id="tableACOMP" class="table-container">
@@ -800,7 +403,7 @@
                                 </cfif>
                             </td>
 
-                            <!-- Nova Coluna Total de Ocorrências Após BP -->
+                            <!--Coluna Total de Ocorrências Após BP -->
                             <td>
                                 <cfset totalOcorrenciasAposBP = 0>
                                 <cfloop query="result">
@@ -869,6 +472,6 @@
                  });
              </script>
         </div> 
-        <script src="/qualidade/relatorios/assets/script.js?v1"></script>
+        <script src="/qualidade/relatorios/assets/script.js"></script>
     </body>
 </html>

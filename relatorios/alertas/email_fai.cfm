@@ -15,14 +15,14 @@
     </cfif>
     <cfquery name="atualiza" datasource="#BANCOSINC#">
         UPDATE INTCOLDFUSION.ALERTAS_8D
-        SET              
+        SET
             STATUS = 'EMAIL'
             WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
     </cfquery>
 
-<cfmail  from="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"  subject="Alerta de Qualidade aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
-	to="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
-    cc="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
+<cfmail  from="#login.USER_SIGN# <#login.USER_EMAIL#"  subject="Alerta de Qualidade - Nº #consulta_editar.n_controle# aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
+	to="Alvaro Luis Goncalves Quinot <alvaro.quinot@caoamontadora.com.br>,Alex Da Silva Barreto <alex.barreto@caoamontadora.com.br>,Gabriel Pedro Martins De Paula <gabriel.paula@caoamontadora.com.br>,Rogerio Ferreira Da Silva <rogerio,silva@caoamontadora.com.br>"
+    cc="Anderson Abadio Soares De Brito <anderson.brito@caoamontadora.com.br>,Athos Luiz Cardoso Maia <athos.maia@caoamontadora.com.br>,Cristiano Rodrigues Da Silva <cristiano.silva@caoamontadora.com.br>,Daniel Alves Teixeira <daniel.teixeira@caoamontadora.com.br>,David Anjos Da Silva <david.anjos@caoamontadora.com.br>,Eduardo Silva Alves <eduardo.asilva@caoamontadora.com.br>,Francisco Fabricio Alves De Jesus <francisco.jesus@caoamontadora.com.br>,Geovanna De Souza Ferreira Do Nascimento <geovanna.nascimento@caoamontadora.com.br>,Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>,Joao Cleber Rodrigues Da Costa <joao.ccosta@caoamontadora.com.br>,Jose Antonio De Melo Neto <jose.neto@caoamontadora.com.br>,Kennedy Dos Reis Rosario <kennedy.rosario@caoamontadora.com.br>,Lincon Afonso Trentin <lincon.trentin@caoamontadora.com.br>,Lucas Correa Leal <lucas.leal@caoamontadora.com.br>,Luciano Ferreira De Almeida <luciano.ferreira@caoamontadora.com.br>,Lucimaria Dos Santos Silva <lucimaria.silva@caoamontadora.com.br>,Maycon Gomes Silva <maycon.silva@caoamontadora.com.br>,Miguel Pedro Rodrigues Da Silva <miguel.pedro@caoamontadora.com.br>,Rafaga De Oliveira Lima Correa <rafaga.correa@caoamontadora.com.br>,Sidclay Rodrigues Mota Junior <sidclay.junior@caoamontadora.com.br>,Thalison Lucas Martins De Oliveira <thalison.oliveira@caoamontadora.com.br>,Victor Barbosa Brito <victor.brito@caoamontadora.com.br>,Victor Caina Almeida Silva <victor.csilva@caoamontadora.com.br>,Sullivan Moreira Da Costa <sullivan.costa@caoamontadora.com.br>"
     type="html">
 	<html>
 		<head>
@@ -32,7 +32,7 @@
 		</head>
         <cfif isDefined("url.id_editar")>
             <cfquery name="consulta_editar" datasource="#BANCOSINC#">
-                SELECT * 
+                SELECT *
                 FROM INTCOLDFUSION.ALERTAS_8D
                 WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
                 ORDER BY ID DESC

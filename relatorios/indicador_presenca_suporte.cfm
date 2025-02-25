@@ -417,6 +417,7 @@
         <title>Indicador - Presença Suporte</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <link rel="stylesheet" href="/qualidade/relatorios/assets/style_shop.css?v1">
         <script type="text/javascript">
             google.charts.load('current', {'packages': ['corechart']});
             google.charts.setOnLoadCallback(drawCharts);
@@ -596,7 +597,7 @@
             .button-container {
             display: flex;
             gap: 10px;
-        }
+            }
 
             .button {
                 display: inline-flex;
@@ -644,6 +645,9 @@
         <header class="titulo">
             <cfinclude template="auxi/nav_links.cfm">
         </header>
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
         <h2 style="margin-top:100px;">INDICADOR DE PRESENÇA SUPORTE VER & AGIR</h2>
         <h6 style="margin-top:-10px;margin-left:47%;">(ÚLTIMOS 10 DIAS)</h6>
         <div class="button-container">
@@ -721,5 +725,8 @@
                 carousels.forEach(carousel => createCarousel(carousel));
             });
         </script>
+
+        <script src="/qualidade/relatorios/assets/script.js"></script>
+        
     </body>
 </html>

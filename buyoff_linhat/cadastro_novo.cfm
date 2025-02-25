@@ -2,8 +2,44 @@
 
 <cfquery name="login" datasource="#BANCOSINC#">
     SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
-    WHERE USER_NAME = '#cookie.USER_APONTAMENTO_PAINT#'
+    WHERE USER_NAME = '#cookie.user_apontamento_fa#'
 </cfquery>
+
+<cfif not isDefined("cookie.user_level_final_assembly") or (cookie.user_level_final_assembly eq "R" or cookie.user_level_final_assembly eq "P")>
+    <script>
+        alert("É necessário autorização!!");
+        history.back(); // Voltar para a página anterior
+    </script>
+</cfif>
+
+<cfif structKeyExists(form, "cadastro_nome") and structKeyExists(form, "cadastro_usuario")>
+    <cfquery datasource="#BANCOSINC#">
+        INSERT INTO INTCOLDFUSION.REPARO_FA_USERS (
+            USER_ID, 
+            USER_NAME, 
+            USER_PASSWORD, 
+            USER_LEVEL, 
+            USER_SIGN, 
+            SHOP, 
+            RESPONSAVEL, 
+            MATRICULA
+        ) VALUES (
+            SEQ_USER_ID.NEXTVAL,  <!--- Ajuste para a sequência correta do banco --->
+            <cfqueryparam value="#form.cadastro_usuario#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.cadastro_senha#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.cadastro_nivel_acesso#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.cadastro_nome#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.cadastro_setor#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.cadastro_resp#" cfsqltype="CF_SQL_VARCHAR">,
+            <cfqueryparam value="#form.cadastro_matricula#" cfsqltype="CF_SQL_VARCHAR">
+        )
+    </cfquery>
+    
+    <script>
+        alert("Usuário cadastrado com sucesso!");
+        window.location.href = "cadastro_novo.cfm";
+    </script>
+</cfif>
 
 <html lang="pt-BR">
 
@@ -21,7 +57,7 @@
             font-family: 'Poppins', sans-serif;
         }
         body{
-            background-image: url(imgs/teste1.jpg);
+            background-image: url(/qualidade/buyoff_linhat/imgs/teste1.jpg);
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
@@ -166,7 +202,7 @@
         </div>
         <div class="form-box">
             <h2>Criar Usuário</h2>
-            <form id="cadastroForm" method="post" action="cadastro.cfm">
+            <form id="cadastroForm" method="post">
                 <div class="input-group">
                     <label for="nome"> Nome Completo</label>
                     <input type="text" id="nome" name="cadastro_nome" required oninput="atualizarCredenciais()">
@@ -217,12 +253,7 @@
                     </div>
                 </cfoutput>
                 <div class="input-group">
-
-                    <cfset nomesPermitidos = "JEFFERSON ALVES TEIXEIRA,RAFAGA DE OLIVEIRA LIMA CORREA,LINCON AFONSO TRENTIN,KENNEDY DOS REIS ROSARIO,LUCAS CORREA LEAL,DANIEL ALVES TEIXEIRA,JOAO CLEBER RODRIGUES">
-
-                    <cfif login.recordcount gt 0 AND ListFind(nomesPermitidos, login.USER_SIGN)>
                         <button type="submit">Cadastrar</button>
-                    </cfif>                   
                     <button type="button" onclick="voltarParaIndex()">Voltar</button>
                 </div>
 

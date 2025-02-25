@@ -311,7 +311,7 @@
                     <div class="hint-dot">FAI</div>
                     <div class="hint-content">Dashboard-FAI</div>
                 </a>
-                <a href="https://caoamontadora.sharepoint.com/:u:/s/CockpitBI2/EeBOJ3bV6JZNnPv0pPkRx7sBLUveUmG8V3aRW7IeKWSm7A?e=6PdEmK" class="button hint">
+                <a href="#" class="button hint">
                     <div class="hint-dot">PDI</div>
                     <div class="hint-content">Dashboard-PDI</div>
                 </a>

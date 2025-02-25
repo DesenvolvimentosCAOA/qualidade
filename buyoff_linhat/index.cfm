@@ -202,6 +202,7 @@
         body{
             background: url('./assets/novo.jpg') no-repeat center center fixed; /* URL da imagem de fundo */
             background-size: cover; /* Cobrir toda a área da tela */
+            overflow: hidden;
         }
         #cadastro_usuario {
             text-transform: lowercase; /* Transforma o texto em minúsculas */
@@ -232,123 +233,123 @@
         }
 
         .titulo-texto span:nth-child(2) {
-        animation-delay: 0.5s;
+        animation-delay: 0.2s;
         }
 
         .titulo-texto span:nth-child(3) {
-        animation-delay: 1s;
+        animation-delay: 0.3s;
         }
 
         .titulo-texto span:nth-child(4) {
-        animation-delay: 1.5s;
+        animation-delay: 0.4s;
         }
 
         .titulo-texto span:nth-child(5) {
-        animation-delay: 2s;
+        animation-delay: 0.5s;
         }
 
         .titulo-texto span:nth-child(6) {
-        animation-delay: 2.5s;
+        animation-delay: 0.6s;
         }
 
         .titulo-texto span:nth-child(7) {
-        animation-delay: 3s;
+        animation-delay: 0.7s;
         }
 
         .titulo-texto span:nth-child(8) {
-        animation-delay: 3.5s;
+        animation-delay: 0.8s;
         }
 
         .titulo-texto span:nth-child(9) {
-        animation-delay: 4s;
+        animation-delay: 0.9s;
         }
 
         .titulo-texto span:nth-child(10) {
-        animation-delay: 4.5s;
+        animation-delay: 1s;
         }
 
         .titulo-texto span:nth-child(11) {
-        animation-delay: 5s;
+        animation-delay: 1.1s;
         }
 
         .titulo-texto span:nth-child(12) {
-        animation-delay: 5.5s;
+        animation-delay: 1.2s;
         }
 
         .titulo-texto span:nth-child(13) {
-        animation-delay: 6s;
+        animation-delay: 1.3s;
         }
 
         .titulo-texto span:nth-child(14) {
-        animation-delay: 6.5s;
+        animation-delay: 1.4s;
         }
 
         .titulo-texto span:nth-child(15) {
-        animation-delay: 7s;
+        animation-delay: 1.5s;
         }
 
         .titulo-texto span:nth-child(16) {
-        animation-delay: 7.5s;
+        animation-delay: 1.6s;
         }
 
         .titulo-texto span:nth-child(17) {
-        animation-delay: 8s;
+        animation-delay: 1.7s;
         }
 
         .titulo-texto span:nth-child(18) {
-        animation-delay: 8.5s;
+        animation-delay: 1.8s;
         }
 
         .titulo-texto span:nth-child(19) {
-        animation-delay: 9s;
+        animation-delay: 1.9s;
         }
 
         .titulo-texto span:nth-child(20) {
-        animation-delay: 9.5s;
+        animation-delay: 2s;
         }
 
         .titulo-texto span:nth-child(21) {
-        animation-delay: 10s;
+        animation-delay: 2.1s;
         }
 
         .titulo-texto span:nth-child(22) {
-        animation-delay: 10.5s;
+        animation-delay: 2.2s;
         }
 
         .titulo-texto span:nth-child(23) {
-        animation-delay: 11s;
+        animation-delay: 2.3s;
         }
 
         .titulo-texto span:nth-child(24) {
-        animation-delay: 11.5s;
+        animation-delay: 2.4s;
         }
 
         .titulo-texto span:nth-child(25) {
-        animation-delay: 12s;
+        animation-delay: 2.5s;
         }
 
         .titulo-texto span:nth-child(26) {
-        animation-delay: 12.5s;
+        animation-delay: 2.6s;
         }
 
         .titulo-texto span:nth-child(27) {
-        animation-delay: 13s;
+        animation-delay: 2.7s;
         }
 
         .titulo-texto span:nth-child(28) {
-        animation-delay: 13.5s;
+        animation-delay: 2.8s;
         }
 
         .titulo-texto span:nth-child(29) {
-        animation-delay: 14s;
+        animation-delay: 2.9s;
         }
 
         .titulo-texto span:nth-child(30) {
-        animation-delay: 14.5s;
+        animation-delay: 3s;
         }
 
         .titulo-texto span:nth-child(31) {
-        animation-delay: 15s;
+        animation-delay: 3.1s;
         }
 
         @keyframes fadeInLeft {
@@ -361,7 +362,54 @@
             transform: translateX(0); /* Vai para sua posição normal */
         }
         }
+        #adminBtn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px 15px;
+            background-color: #ff4500;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none; /* Inicialmente oculto */
+        }
 
+        #adminBtn:hover {
+            background-color: #d13a00;
+        }
+
+        #submenu {
+            position: fixed;
+            top: 50px;
+            right: 10px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            width: 150px;
+        }
+
+        #submenu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #submenu ul li {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        #submenu ul li:last-child {
+            border-bottom: none;
+        }
+
+        #submenu ul li:hover {
+            background: #f4f4f4;
+        }
     </style>
 
 </head>
@@ -401,10 +449,17 @@
         <span>A</span>
         <span>D</span>
         <span>E</span>
-      </h1>
-      
-      
+    </h1>
+    <button id="adminBtn">Admin</button>
 
+    <div id="submenu">
+        <ul>
+            <li>
+                <a href="/qualidade/buyoff_linhat/user_edit.cfm" title="Login CL"><p>Gerenciar Usuários</p></a></li>
+            <li>Gerenciar Usuários</li>
+            <li>Logs do Sistema</li>
+        </ul>
+    </div>
     <!-- Formulário de Small -->
 <div id="form-small" class="form-section" style="display: none;">
     <form method="post" onsubmit="return validarSmallLogin()">
@@ -817,5 +872,31 @@
         }
 
     </script>
+
+    <script>
+        document.addEventListener("keydown", function(event) {
+            if (event.ctrlKey && event.shiftKey && event.key === "A") {
+                event.preventDefault();
+                let btn = document.getElementById("adminBtn");
+                btn.style.display = (btn.style.display === "none" || btn.style.display === "") ? "block" : "none";
+            }
+        });
+
+        document.getElementById("adminBtn").addEventListener("click", function() {
+            let submenu = document.getElementById("submenu");
+            submenu.style.display = (submenu.style.display === "none" || submenu.style.display === "") ? "block" : "none";
+        });
+
+        // Fechar o submenu ao clicar fora
+        document.addEventListener("click", function(event) {
+            let btn = document.getElementById("adminBtn");
+            let submenu = document.getElementById("submenu");
+
+            if (event.target !== btn && !submenu.contains(event.target)) {
+                submenu.style.display = "none";
+            }
+        });
+    </script>
+
 </body>
 </html>

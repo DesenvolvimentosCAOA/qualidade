@@ -20,9 +20,14 @@
             WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
     </cfquery>
 
-<cfmail  from="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"  subject="Alerta de Qualidade - Nº #consulta_editar.n_controle# aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
-	to="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
-    cc="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
+<cfquery name="login" datasource="#BANCOSINC#">
+    SELECT USER_NAME, USER_SIGN, USER_EMAIL FROM INTCOLDFUSION.REPARO_FA_USERS
+    WHERE USER_NAME = '#cookie.user_apontamento_fa#'
+</cfquery>
+
+<cfmail  from="#login.USER_SIGN# <#login.USER_EMAIL#"  subject="Alerta de Qualidade - Nº #consulta_editar.n_controle# aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
+	to="Clodoaldo Francisco De Morais <clodoaldo.morais@caoamontadora.com.br>,Danilo Cabral De Paula <danilo.paula@caoamontadora.com.br>,Fabio Vaz Barbosa <fabio.barbosa@caoamontadora.com.br>,Samuel Mendes De Oliveira <samuel.mendes@caoamontadora.com.br>,Athos Morais Oliveira <athos.oliveira@caoamontadora.com.br>,Wallace Frota Dos Santos <wallace.frota@caoamontadora.com.br>,Eduardo Silva Alves <eduardo.asilva@caoamontadora.com.br>,Victor Barbosa Brito <victor.brito@caoamontadora.com.br>,Jefferson De Souza Brito <jefferson.brito@caoamontadora.com.br>,Paulo Victor Barbosa <paulo.barbosa@caoamontadora.com.br>,Vitor Batista Dos Santos <vitor.santos@caoamontadora.com.br>,Adailton Bicudo Da Rocha <adailton.rocha@caoamontadora.com.br>,Sullivan Gabriel Bernardo Pinto <sullivan.pinto@caoamontadora.com.br>"
+    cc="Elias Joaquim Moreira Filho <elias.filho@caoamontadora.com.br>,Luciano Ferreira De Almeida <luciano.ferreira@caoamontadora.com.br>,Sidclay Rodrigues Mota Junior <sidclay.junior@caoamontadora.com.br>,Francisco Fabricio Alves De Jesus <francisco.jesus@caoamontadora.com.br>,Cristiano Rodrigues Da Silva <cristiano.silva@caoamontadora.com.br>,Anderson Abadio Soares De Brito <anderson.brito@caoamontadora.com.br>,Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>,Kennedy Dos Reis Rosario <kennedy.rosario@caoamontadora.com.br>,Joao Cleber Rodrigues Da Costa <joao.ccosta@caoamontadora.com.br>,Lincon Afonso Trentin <lincon.trentin@caoamontadora.com.br>,Lucas Correa Leal <lucas.leal@caoamontadora.com.br>,Rafaga De Oliveira Lima Correa <rafaga.correa@caoamontadora.com.br>"
     type="html">
 	<html>
 		<head>

@@ -184,6 +184,7 @@
         <title>Indicador - VER & AGIR</title>
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
         <style>
             .chart-container {
                 display: flex;
@@ -239,6 +240,41 @@
                 background-color: rgba(0, 0, 0, 0.7); /* Fundo escuro com transparência */
                 border-radius: 15px; /* Bordas arredondadas */
                 padding: 10px; /* Espaçamento interno */
+            }
+            /* Tela de Loading */
+            #loading-screen {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+                visibility: hidden;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+
+            #loading-screen.show {
+                visibility: visible;
+                opacity: 1;
+            }
+
+            .spinner {
+                width: 50px;
+                height: 50px;
+                border: 5px solid rgba(255, 255, 255, 0.3);
+                border-top-color: #f6722c;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
             }
         </style>
 
@@ -853,6 +889,10 @@
             <cfinclude template="auxi/nav_links.cfm">
         </header>
         
+        <div id="loading-screen">
+            <div class="spinner"></div>
+        </div>
+
         <div class="btn-container">
             <h2>Indicador VER & AGIR</h2>
             <div class="select-container">
@@ -939,6 +979,7 @@
                 <div id="status_chart_pdi" style="width: 900px; height: 200px;"></div>
             </div>
         </div>
+        <script src="/qualidade/relatorios/assets/script.js"></script>
     </body>
     <meta http-equiv="refresh" content="40,URL=indicador.cfm">
 </html>
