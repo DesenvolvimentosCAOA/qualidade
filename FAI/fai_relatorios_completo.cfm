@@ -130,7 +130,6 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Relatórios</title>
-        <!-- Bootstrap CSS -->
         <link rel="icon" href="./assets/chery.png" type="image/x-icon">
         <link rel="stylesheet" href="assets/stylerelatorio.css?v2">
     </head>
@@ -139,8 +138,7 @@
         <header>
             <cfinclude template="auxi/nav_links1.cfm">
         </header><br><br><br><br><br><br>
-    
-        
+
             <h2 class="titulo2">Relatórios Completo</h2><br>
             <cfquery name="defeitos" datasource="#BANCOSINC#">
                 SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS

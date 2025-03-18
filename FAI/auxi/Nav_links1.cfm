@@ -4,7 +4,6 @@
             <i class="icon icon-bars"></i>
         </label>
         <div class="logo">FAI</div>
-
         <ul>
             <li>
                 <a href="fai_selecionar_buy_off.cfm">Buy Off's</a>
@@ -12,11 +11,13 @@
             <li class="dropdown">
                 <a href="#">Reparo</a>
                 <ul class="dropdown-menu">
+                    <cfif isDefined("cookie.USER_SIGN") and cookie.USER_SIGN eq "ALVARO LUIS GONCALVES QUINOT" OR cookie.user_sign eq "JEFFERSON ALVES TEIXEIRA">
+                        <li>
+                            <a href="fai_editar_reparo.cfm">Editar Reparo</a>
+                        </li>
+                    </cfif>
                     <li>
                         <a href="fai_selecionar_reparo.cfm">Reparo</a>
-                    </li>
-                    <li>
-                        <a href="fai_indicadores_1turno_reparo.cfm">Indicador Reparo 1º turno</a>
                     </li>
                     <li>
                         <a href="fai_indicadores_2turno_reparo.cfm">Indicador Reparo 2º turno</a>

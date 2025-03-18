@@ -17,6 +17,11 @@
       </script>
     </cfif>
 
+      <!--- Consulta de permissões --->
+  <cfquery name="valida" datasource="sincprod">
+   select usuario, permissao from intcoldfusion.usuarios_ferramenta_rastreio
+   where lower(usuario) like lower('%#cookie.USER_APONTAMENTO_CL#%') 
+ </cfquery>
      <html lang="pt">
          <head>
          <cfoutput>

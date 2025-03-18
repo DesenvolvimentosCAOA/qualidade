@@ -304,7 +304,7 @@
             PRESENCA_VER_E_AGIR
         WHERE 
             TURNO LIKE '1%' 
-            AND AREA = 'FA' 
+            AND AREA = 'FINAL ASSEMBLY' 
             AND DATA >= TRUNC(SYSDATE) - 10
         GROUP BY 
             TO_CHAR(DATA, 'DD/MM/YYYY'), TURNO, AREA
@@ -351,7 +351,7 @@
             PRESENCA_VER_E_AGIR
         WHERE 
             TURNO LIKE '2%' 
-            AND AREA = 'FA' 
+            AND AREA = 'FINAL ASSEMBLY' 
             AND DATA >= TRUNC(SYSDATE) - 10
         GROUP BY 
             TO_CHAR(DATA, 'DD/MM/YYYY'), TURNO, AREA
@@ -399,7 +399,7 @@
             PRESENCA_VER_E_AGIR
         WHERE 
             TURNO LIKE '3%' 
-            AND AREA = 'FA' 
+            AND AREA = 'FINAL ASSEMBLY' 
             AND DATA >= TRUNC(SYSDATE) - 10
         GROUP BY 
             TO_CHAR(DATA, 'DD/MM/YYYY'), TURNO, AREA
@@ -674,7 +674,7 @@
                             slantedText: true,
                             slantedTextAngle: 10,
                             textStyle: {
-                                fontSize: 12,
+                                fontSize: 18,
                             }
                         },
                         vAxis: {
@@ -797,7 +797,6 @@
 
             }
         </script>
-
         <style>
             .carousel-container {
                 display: flex;
@@ -880,7 +879,6 @@
             }
 
         </style>
-        
     </head>
     <body>
         <header class="titulo">
@@ -898,18 +896,18 @@
         </div>
         <div class="carousel-container">
             <div class="carousel">
-                <div id="chart_div" style="width: 100%; height: 400px; margin-top: 50px;"></div>
-                <div id="chart_div2" style="width: 100%; height: 400px; margin-top: 50px;"></div>
-                <div id="chart_div3" style="width: 100%; height: 400px; margin-top: 50px;"></div>
+                <div id="chart_div4" style="width: 100%; height: 400px; margin-top: 100px;"></div>
+                <div id="chart_div5" style="width: 100%; height: 400px; margin-top: 100px;"></div>
+                <div id="chart_div6" style="width: 100%; height: 400px; margin-top: 100px;"></div>
                 <button class="prev">&lt;</button>
                 <button class="next">&gt;</button>
             </div>
         </div>
         <div class="carousel-container">
             <div class="carousel">
-                <div id="chart_div4" style="width: 100%; height: 400px; margin-top: 100px;"></div>
-                <div id="chart_div5" style="width: 100%; height: 400px; margin-top: 100px;"></div>
-                <div id="chart_div6" style="width: 100%; height: 400px; margin-top: 100px;"></div>
+                <div id="chart_div" style="width: 100%; height: 400px; margin-top: 50px;"></div>
+                <div id="chart_div2" style="width: 100%; height: 400px; margin-top: 50px;"></div>
+                <div id="chart_div3" style="width: 100%; height: 400px; margin-top: 50px;"></div>
                 <button class="prev">&lt;</button>
                 <button class="next">&gt;</button>
             </div>

@@ -3,233 +3,327 @@
     <cfheader name="Pragma" value="no-cache">
     <cfheader name="Expires" value="0">
 
-    <!--- Valida o usuário para Ver & Agir ---> 
-    <cfif isDefined("form.ver_login")>
-        <cfquery name="validausuario" datasource="#BANCOSINC#">
-            SELECT USER_ID, USER_NAME, USER_PASSWORD, USER_SIGN, TRIM(USER_LEVEL) AS USER_LEVEL, USER_SIGN 
-            FROM reparo_fa_users 
-            WHERE UPPER(USER_NAME) = UPPER('#form.ver_login#')
-            AND USER_PASSWORD = UPPER('#form.ver_senha#')
-        </cfquery>
-
-        <!--- Verifica se o usuário já realizou a prova --->
-        <cfif validausuario.recordcount GT 0>
-            <cfquery name="verificaProva" datasource="#BANCOSINC#">
-                SELECT nome
-                FROM provas_qualidade
-                WHERE nome = '#validausuario.USER_SIGN#'
-            </cfquery>
-
-            <!--- Se o nome do usuário já existe na tabela provas_qualidade, exibe a mensagem ---> 
-            <cfif verificaProva.recordcount GT 0>
-                <div id="mensagemProva" class="mensagem-erro">
-                    <p>VOCÊ JÁ REALIZOU A PROVA</p>
-                </div>
+    <cfoutput>
+        <cfif isDefined("form.prova_login")>
+            <cfif not isDefined("form.ver_login") or not isDefined("form.ver_senha")>
+                <cfset errorMessage = "Por favor, preencha todos os campos.">
             <cfelse>
-                <!--- Se o usuário não realizou a prova, cria cookies e redireciona ---> 
-                <cfcookie name="user_apontamento_fa" value="#form.ver_login#">
-                <cfcookie name="user_level_final_assembly" value="#validausuario.USER_LEVEL#">
-                <cfif validausuario.USER_LEVEL EQ "R" or validausuario.USER_LEVEL EQ "G">
-                    <meta http-equiv="refresh" content="0; URL=/qualidade/prova/powerpoint.cfm"/>
+                <cfquery name="validausuario" datasource="#BANCOSINC#">
+                    SELECT USER_ID, USER_NAME, USER_PASSWORD, trim(USER_LEVEL) as USER_LEVEL, USER_SIGN 
+                    FROM reparo_fa_users 
+                    WHERE upper(USER_NAME) = UPPER(<cfqueryparam value="#form.ver_login#" cfsqltype="cf_sql_varchar">)
+                    AND USER_PASSWORD = UPPER(<cfqueryparam value="#form.ver_senha#" cfsqltype="cf_sql_varchar">)
+                    AND (USER_LEVEL = 'G' OR USER_LEVEL = 'I' OR USER_LEVEL = 'P')
+                </cfquery>
+                
+                <cfif validausuario.recordcount GT 0>
+                    <cfcookie name="user_apontamento_prova" value="#form.ver_login#">
+                    <cfcookie name="user_level_prova" value="#validausuario.USER_LEVEL#">
+                    <cfif validausuario.user_level eq "G" OR validausuario.user_level eq "I" OR validausuario.user_level eq "P">
+                        <cflocation url="/qualidade/prova/inicio.cfm" addtoken="no">
+                    </cfif>
+                <cfelse>
+                    <cfset errorMessage = "Usuario ou senha incorretos.">
                 </cfif>
             </cfif>
-        <cfelse>
-            <!--- Mensagem de erro ---> 
-            <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
         </cfif>
-    </cfif>
+    </cfoutput>
 
-    <!DOCTYPE html>
-    <html lang="pt-br">
-        <head>
-        <meta charset="UTF-8">
+
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8"> 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login - VER & AGIR</title>
+        <title>Login - Portal de Treinamentos da Qualidade</title>
         <style>
-            /* Reset e estilo geral */
             * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Montserrat', sans-serif;
             }
 
             body, html {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            color: #eee;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                background: url('/qualidade/prova/assets/fundo.jpg') center center/cover no-repeat;
+                color: #333;
             }
 
-            /* Imagem de fundo cobrindo a tela inteira */
-            body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('/qualidade/buyoff_linhat/assets/novo.jpg') center center/cover no-repeat;
-            filter: brightness(0.3);
-            z-index: -1;
-            }
-
-            /* Estilo do container de login */
             .login-container {
-            background-color: rgba(37, 37, 57, 0.9); /* fundo semi-transparente */
-            width: 100%;
-            max-width: 400px;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            }
-
-            /* Animação do título */
-            .login-title {
-            font-size: 2em;
-            color: #f1f1f1;
-            margin-bottom: 20px;
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 4px solid #6c63ff;
-            width: 0;
-            animation: typing 3s steps(20, end) forwards, blink 0.6s step-end infinite alternate;
-            }
-
-            /* Animações */
-            @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-            }
-
-            @keyframes blink {
-            from { border-color: transparent; }
-            to { border-color: #6c63ff; }
-            }
-
-            .input-group {
-            position: relative;
-            margin-bottom: 20px;
-            }
-
-            /* Estilo dos inputs */
-            .input-group input {
-            width: 100%;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: #3b3b4f;
-            color: #eee;
-            border: 2px solid #444;
-            outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            }
-
-            .input-group input:focus {
-            border-color: #6c63ff;
-            box-shadow: 0px 0px 8px rgba(108, 99, 255, 0.5);
-            }
-
-            .input-group label {
-            position: absolute;
-            top: 50%;
-            left: 15px;
-            transform: translateY(-50%);
-            color: #888;
-            pointer-events: none;
-            transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
-            }
-
-            .input-group input:focus + label,
-            .input-group input:not(:placeholder-shown) + label {
-            top: -10px;
-            font-size: 0.8em;
-            color: #6c63ff;
-            }
-
-            /* Botão de login */
-            .login-button {
-            width: 100%;
-            padding: 15px;
-            font-size: 1em;
-            font-weight: bold;
-            color: white;
-            background: #6c63ff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            }
-
-            .login-button:hover {
-            background: #4a45d6;
-            }
-
-            /* Estilo da mensagem de erro */
-            .mensagem-erro {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: rgba(255, 0, 0, 0.9);
-                color: white;
-                padding: 20px;
-                border-radius: 10px;
+                background-color: rgba(255, 255, 255, 0.95);
+                width: 100%;
+                max-width: 450px;
+                padding: 2.5rem;
+                border-radius: 20px;
+                box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
                 text-align: center;
-                font-size: 1.5em;
-                box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
-                animation: fadeIn 2s ease-in-out;
-                z-index: 9999;
+                animation: slideIn 0.5s ease-in-out;
             }
 
-            /* Animação da mensagem de erro */
-            @keyframes fadeIn {
+            @keyframes slideIn {
                 from {
                     opacity: 0;
+                    transform: translateY(-20px);
                 }
                 to {
                     opacity: 1;
+                    transform: translateY(0);
                 }
             }
+
+            .login-header {
+                margin-bottom: 2rem;
+            }
+
+            .login-header img {
+                width: 80px;
+                margin-bottom: 1rem;
+            }
+
+            .login-title {
+                font-size: 2.2em;
+                color: #2c3e50;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+            }
+
+            .login-subtitle {
+                font-size: 1em;
+                color: #7f8c8d;
+                font-weight: 400;
+            }
+
+            .input-group {
+                position: relative;
+                margin-bottom: 1.5rem;
+            }
+
+            .input-group input {
+                width: 100%;
+                padding: 15px 15px 15px 50px;
+                border-radius: 10px;
+                background-color: #f9f9f9;
+                color: #2c3e50;
+                border: 2px solid #ddd;
+                outline: none;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .input-group input:focus {
+                border-color: #6c63ff;
+                box-shadow: 0px 0px 12px rgba(108, 99, 255, 0.3);
+            }
+
+            .input-group i {
+                position: absolute;
+                top: 50%;
+                left: 20px;
+                transform: translateY(-50%);
+                color: #7f8c8d;
+                font-size: 1.2em;
+            }
+
+            .input-group input:focus + i {
+                color: #6c63ff;
+            }
+
+            .login-button {
+                width: 100%;
+                padding: 15px;
+                font-size: 1.1em;
+                font-weight: 600;
+                color: white;
+                background: linear-gradient(135deg, #6c63ff, #4a45d6);
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .login-button:hover {
+                transform: translateY(-3px);
+                box-shadow: 0px 6px 12px rgba(108, 99, 255, 0.3);
+            }
+
+            .mensagem-erro {
+                background-color: #ffebee;
+                color: #c62828;
+                padding: 15px;
+                border-radius: 10px;
+                text-align: center;
+                font-size: 1em;
+                margin-top: 1.5rem;
+                border: 1px solid #c62828;
+                animation: fadeIn 0.5s ease-in-out;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            .login-footer {
+                margin-top: 2rem;
+                font-size: 0.9em;
+                color: #7f8c8d;
+            }
+
+            .login-footer a {
+                color: #6c63ff;
+                text-decoration: none;
+                font-weight: 500;
+                cursor: pointer;
+            }
+
+            .login-footer a:hover {
+                text-decoration: underline;
+            }
+
+            /* Estilo do Modal */
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+
+            .modal-content {
+                background-color: white;
+                padding: 2rem;
+                border-radius: 10px;
+                text-align: center;
+                box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+                animation: slideIn 0.3s ease-in-out;
+            }
+
+            .modal-content h2 {
+                margin-bottom: 1rem;
+                font-size: 1.5em;
+                color: #2c3e50;
+            }
+
+            .modal-content ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            .modal-content ul li {
+                margin: 0.5rem 0;
+                font-size: 1.1em;
+                color: #333;
+            }
+
+            .modal-content button {
+                margin-top: 1rem;
+                padding: 10px 20px;
+                font-size: 1em;
+                color: white;
+                background: #6c63ff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background 0.3s ease;
+            }
+
+            .modal-content button:hover {
+                background: #4a45d6;
+            }
         </style>
-
-        </head>
-        <body>
-            <form method="post" onsubmit="return validarVerLogin()">
-                <div class="login-container">
-                    <h2 class="login-title">Treinamento</h2>
-                    <div class="input-group">
-                        <input type="text" id="ver_login" name="ver_login" required autocomplete="off" placeholder=" ">
-                        <label for="ver_login">Usuário</label>
-                    </div>
-                    <div class="input-group">
-                        <input type="password" id="ver_senha" name="ver_senha" required autocomplete="off" placeholder=" ">
-                        <label for="ver_senha">Senha</label>
-                    </div>
-                    <button class="login-button" type="submit">Entrar</button>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <form method="post" onsubmit="return validarVerLogin()">
+            <input type="hidden" name="prova_login" value="1">
+            <div class="login-container">
+                <div class="login-header">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo">
+                    <h1 class="login-title">Portal da Qualidade</h1>
+                    <p class="login-subtitle">Acesse sua conta para continuar</p>
                 </div>
-            </form>
-            <script>
-                function validarVerLogin() {
-                    var login = document.getElementById('ver_login').value;
-                    var senha = document.getElementById('ver_senha').value;
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="ver_login" name="ver_login" required autocomplete="off" placeholder="Usuario">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="ver_senha" name="ver_senha" required autocomplete="off" placeholder="Senha">
+                </div>
+                <button class="login-button" type="submit">Entrar</button>
+                <cfif isDefined("errorMessage")>
+                    <div class="mensagem-erro"><cfoutput>#errorMessage#</cfoutput></div>
+                </cfif>
+                <div class="login-footer">
+                    <p>Nao tem uma conta? <a id="contateAnalista" href="#">Contate um Analista da Qualidade</a></p>
+                </div>
+            </div>
+        </form>
 
-                    // Validar se a senha contém apenas números
-                    if (!(/^\d+$/.test(senha))) {
-                        document.getElementById('ver_erro_numerico').style.display = 'block';
-                        return false; // Impede o envio do formulário
-                    }
+        <!-- Modal para exibir os nomes dos analistas -->
+        <div id="analistaModal" class="modal">
+            <div class="modal-content">
+                <h2>Analistas da Qualidade</h2>
+                <ul>
+                    <li>Joao Cleber (FA)</li>
+                    <li>Lincon Trentin (FAI)</li>
+                    <li>Rafaga De Oliveira (PAINT)</li>
+                    <li>Lucas Correa (BODY)</li>
+                    <li>Daniel Teixeira (FIELD)</li>
+                    <a href="https://web.whatsapp.com/send?phone=5562993636153&text=Ola,%20gostaria%20de%20falar%20sobre%20a%20criacao%20de%20USUARIO." target="_blank" rel="noopener noreferrer">
+                        Jefferson Teixeira (SISTEMAS)
+                    </a>
+                </ul>
+                <button id="fecharModal">Fechar</button>
+            </div>
+        </div>
 
-                    // Exemplo simples de validação
-                    if (login === "" || senha === "") {
-                        document.getElementById('ver_erro').style.display = 'block';
-                        return false; // Impede o envio do formulário
-                    }
+        <script>
+            // Função para validar o login
+            function validarVerLogin() {
+                var login = document.getElementById('ver_login').value;
+                var senha = document.getElementById('ver_senha').value;
 
-                    return true; // Permite o envio do formulário
+                if (!/^\d+$/.test(senha)) {
+                    alert("A senha deve conter apenas números.");
+                    return false;
                 }
-            </script>
-        </body>
-    </html>
+
+                if (login === "" || senha === "") {
+                    alert("Por favor, preencha todos os campos.");
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Função para exibir o modal com os nomes dos analistas
+            document.getElementById('contateAnalista').addEventListener('click', function(event) {
+                event.preventDefault(); // Impede o comportamento padrão do link
+                document.getElementById('analistaModal').style.display = 'flex';
+            });
+
+            // Função para fechar o modal
+            document.getElementById('fecharModal').addEventListener('click', function() {
+                document.getElementById('analistaModal').style.display = 'none';
+            });
+
+            // Fechar o modal ao clicar fora dele
+            window.addEventListener('click', function(event) {
+                var modal = document.getElementById('analistaModal');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        </script>
+    </body>
+</html>

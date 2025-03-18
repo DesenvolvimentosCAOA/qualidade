@@ -5,7 +5,7 @@
 
   <ul>
     <li><a href="./body_selecionar_buy_off.cfm">Buy Off's</a></li>
-    <li><a href="./body_reparo.cfm">Reparo</a></li>
+    <li><a href="./body_reparo_novo.cfm">Reparo</a></li>
     <li><a href="./body_liberacao.cfm">Liberação</a></li>
 
     <li class="dropdown">

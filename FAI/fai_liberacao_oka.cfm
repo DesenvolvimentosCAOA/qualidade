@@ -52,7 +52,7 @@
             AND ID = <cfqueryparam value="#url.filtroID#" cfsqltype="cf_sql_integer">
         </cfif>
         <cfif isDefined("url.filtroModelo") and url.filtroModelo neq "">
-            AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroModelo#%')
+            AND UPPER(MODELO) LIKE UPPER('%#url.filtroModelo#%')
         </cfif>
         <cfif isDefined("url.filtroVin") and url.filtroVin neq "">
             AND UPPER(VIN) LIKE UPPER('%#url.filtroVin#%')
@@ -237,7 +237,7 @@
                                 <input type="number" class="form-control" name="filtroID" id="filtroID" value="<cfif isDefined("url.filtroID")>#url.filtroID#</cfif>"/>
                             </div>
                             <div class="col-2">
-                                <label class="form-label" for="filtroModelo">Barreira:</label>
+                                <label class="form-label" for="filtroModelo">Modelo:</label>
                                 <input type="text" class="form-control" name="filtroModelo" id="filtroModelo" value="<cfif isDefined("url.filtroModelo")>#url.filtroModelo#</cfif>"/>
                             </div>
                             <div class="col-3">
@@ -246,7 +246,10 @@
                             </div>
                             <div class="col-2 d-flex align-items-end">
                                 <button class="btn btn-primary mr-2" type="submit">Filtrar</button>
-                                <button class="btn btn-warning" type="reset" onclick="self.location='fa_liberacao_oka.cfm'">Limpar</button>
+                                <button class="btn btn-warning" type="reset" onclick="self.location='fai_liberacao_oka.cfm'">Limpar</button>
+                            </div>
+                            <div class="col-2 d-flex align-items-end">
+                                <button class="btn btn-warning mb-2 ml-2" type="button" id="report">Download</button>
                             </div>
                         </div>
                     </form>
@@ -255,7 +258,7 @@
             
                 <div class="container col-12 bg-white rounded metas">
                     <form method="post" action="fa_liberacao_oka.cfm">
-                        <table class="table" style="font-size:12px;">
+                        <table id="tblStocks" class="table" style="font-size:12px;">
                             <thead>
                                 <tr class="text-nowrap">
                                     <th scope="col">ID</th>
@@ -288,5 +291,17 @@
                     </form>
                 </div>
             </div>
+            <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            <script src="/cf/assets/js/home/js/table2excel.js?v=2"></script>
+            <script>
+                // Gerando Excel da tabela
+                var table2excel = new Table2Excel();
+                document.getElementById('report').addEventListener('click', function() {
+                    table2excel.export(document.querySelectorAll('#tblStocks'));
+                });
+            </script>
         </body>
     </html>    

@@ -289,9 +289,6 @@
     
         <div class="container mt-4">
             <h2 class="titulo2">Barreira CP5</h2>
-            
-
-
             <cfquery name="pecas" datasource="#BANCOSINC#">
                 SELECT DEFEITO FROM INTCOLDFUSION.REPARO_FA_DEFEITOS
                 WHERE SHOP = 'BODY-PEÇA'
@@ -315,9 +312,9 @@
                     </div>
                     
                     <cfquery name="consulta1" datasource="#BANCOSINC#">
-                    SELECT * FROM (
-            SELECT ID, VIN,MODELO,BARREIRA  FROM sistema_qualidade_body ORDER BY ID DESC)
-            WHERE ROWNUM = 1 
+                        SELECT * FROM (
+                        SELECT ID, VIN,MODELO,BARREIRA  FROM sistema_qualidade_body ORDER BY ID DESC)
+                        WHERE ROWNUM = 1 
                     </cfquery>
  <!---                     <cfdump  var="#consulta1#"> --->
                 <div class="form-group col-md-2">

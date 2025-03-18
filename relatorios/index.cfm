@@ -33,8 +33,15 @@
             <meta http-equiv="refresh" content="0; URL=/qualidade/relatorios/ver_agir_pdi.cfm"/>
         </cfif>
     <cfelse>
-        <!--- Mensagem de erro --->
-        <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
+        <div id="mensagem-erro" class="mensagem-erro">USUÁRIO OU SENHA INCORRETA</div>
+                    <script>
+                        setTimeout(function() {
+                            var mensagemErro = document.getElementById('mensagem-erro');
+                            if (mensagemErro) {
+                                mensagemErro.remove();
+                            }
+                        }, 3000); // 3000 milissegundos = 3 segundos
+                    </script>
     </cfif>
 </cfif>
 
@@ -43,7 +50,27 @@
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - VER & AGIR</title>
+    <title>Ferramentas da Qualidade</title>
+    <script>
+        const originalTitle = "Ferramentas Da Qualidade"; // Título original
+        let currentTitle = originalTitle;
+        function scrollTitle() {
+            // Move o primeiro caractere para o final da string
+            currentTitle = currentTitle.substring(1) + currentTitle[0];
+            document.title = currentTitle;
+
+            // Verifica se o título voltou ao estado original
+            if (currentTitle === originalTitle) {
+                // Espera 1 segundo antes de reiniciar o efeito
+                setTimeout(scrollTitle, 1000);
+            } else {
+                // Continua o efeito normalmente
+                setTimeout(scrollTitle, 300); // Ajuste o tempo para controlar a velocidade
+            }
+        }
+        // Inicia o efeito de scrolling quando a página carrega
+        window.onload = scrollTitle;
+    </script>
     <style>
         /* Reset e estilo geral */
         * {
@@ -172,6 +199,49 @@
         margin-top: 10px;
         display: none;
         }
+        /* Estilo da mensagem de erro */
+        .mensagem-erro {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: rgba(255, 0, 0, 0.9);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                text-align: center;
+                font-size: 1.5em;
+                box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+                animation: fadeIn 2s ease-in-out;
+                z-index: 9999;
+            }
+
+            /* Animação da mensagem de erro */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+            .mensagem-erro {
+                background-color: #ffebee; /* Fundo vermelho claro */
+                color: #c62828; /* Texto vermelho escuro */
+                padding: 15px;
+                border: 1px solid #c62828; /* Borda vermelha */
+                border-radius: 5px; /* Bordas arredondadas */
+                text-align: center;
+                font-family: Arial, sans-serif;
+                font-size: 16px;
+                margin: 20px auto;
+                max-width: 400px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            }
+
+            .mensagem-erro p {
+                margin: 0;
+            }
     </style>
 
     </head>

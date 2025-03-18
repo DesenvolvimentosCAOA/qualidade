@@ -20,9 +20,14 @@
             WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
     </cfquery>
 
-<cfmail  from="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"  subject="Alerta de Qualidade aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
-	to="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
-    cc="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
+    <cfquery name="login" datasource="#BANCOSINC#">
+        SELECT USER_NAME, USER_SIGN, USER_EMAIL FROM INTCOLDFUSION.REPARO_FA_USERS
+        WHERE USER_NAME = '#cookie.user_apontamento_fa#'
+    </cfquery>
+
+<cfmail  from="#login.USER_SIGN# <#login.USER_EMAIL#"  subject="Alerta de Qualidade - Nº #consulta_editar.n_controle# aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
+	to="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>,Kennedy Dos Reis Rosario <kennedy.rosario@caoamontadora.com.br>"
+    cc="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>,Kennedy Dos Reis Rosario <kennedy.rosario@caoamontadora.com.br>"
     type="html">
 	<html>
 		<head>
@@ -119,11 +124,11 @@
                         <tr>
                         </tr>                               
                         <tr>
-                            <td class="label-bold" colspan="1" style="text-align:left;color:red;">DESCRIÇÃO DA <br>NÃO CONFORMIDADE:</td>
+                            <td class="label-bold" colspan="1" style="color:red;">DESCRIÇÃO DA NÃO CONFORMIDADE:</td>
                             <td colspan="8">
-                                <input type="text" name="descricao" placeholder="DESCREVA DETALHADAMENTE A NÃO CONFORMIDADE" style="border:none;outline:none;" value="#consulta_editar.descricao_nc#" readonly>
+                                <textarea name="descricao" readonly style="width: 100%; height: 100px; resize: vertical;">#consulta_editar.descricao_nc#</textarea>
                             </td>
-                        </tr>
+                        </tr>  
                     </table>
                     <tr>
                         <p style="font-size: 15px;">A equipe responsável deve preencher as demais etapas do 8D para a conclusão do alerta de qualidade. O prazo final para encerramento é de 7 dias corridos a partir da data de abertura.

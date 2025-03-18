@@ -894,22 +894,22 @@
         </div>
 
         <div class="btn-container">
-            <h2>Indicador VER & AGIR</h2>
+            <h2>Indicador de Status VER & AGIR</h2>
             <div class="select-container">
                 <label for="meses" class="label-rounded">Escolha o mês:</label>
                 <select id="meses" name="mes" class="select-rounded" onchange="updateCharts()">
-                    <option value="2024-01" <cfif mesSelecionado == "2024-01">selected</cfif>>Janeiro</option>
-                    <option value="2024-02" <cfif mesSelecionado == "2024-02">selected</cfif>>Fevereiro</option>
-                    <option value="2024-03" <cfif mesSelecionado == "2024-03">selected</cfif>>Março</option>
-                    <option value="2024-04" <cfif mesSelecionado == "2024-04">selected</cfif>>Abril</option>
-                    <option value="2024-05" <cfif mesSelecionado == "2024-05">selected</cfif>>Maio</option>
-                    <option value="2024-06" <cfif mesSelecionado == "2024-06">selected</cfif>>Junho</option>
-                    <option value="2024-07" <cfif mesSelecionado == "2024-07">selected</cfif>>Julho</option>
-                    <option value="2024-08" <cfif mesSelecionado == "2024-08">selected</cfif>>Agosto</option>
-                    <option value="2024-09" <cfif mesSelecionado == "2024-09">selected</cfif>>Setembro</option>
-                    <option value="2024-10" <cfif mesSelecionado == "2024-10">selected</cfif>>Outubro</option>
-                    <option value="2024-11" <cfif mesSelecionado == "2024-11">selected</cfif>>Novembro</option>
-                    <option value="2024-12" <cfif mesSelecionado == "2024-12">selected</cfif>>Dezembro</option>
+                    <option value="2025-01" <cfif mesSelecionado == "2025-01">selected</cfif>>Janeiro</option>
+                    <option value="2025-02" <cfif mesSelecionado == "2025-02">selected</cfif>>Fevereiro</option>
+                    <option value="2025-03" <cfif mesSelecionado == "2025-03">selected</cfif>>Março</option>
+                    <option value="2025-04" <cfif mesSelecionado == "2025-04">selected</cfif>>Abril</option>
+                    <option value="2025-05" <cfif mesSelecionado == "2025-05">selected</cfif>>Maio</option>
+                    <option value="2025-06" <cfif mesSelecionado == "2025-06">selected</cfif>>Junho</option>
+                    <option value="2025-07" <cfif mesSelecionado == "2025-07">selected</cfif>>Julho</option>
+                    <option value="2025-08" <cfif mesSelecionado == "2025-08">selected</cfif>>Agosto</option>
+                    <option value="2025-09" <cfif mesSelecionado == "2025-09">selected</cfif>>Setembro</option>
+                    <option value="2025-10" <cfif mesSelecionado == "2025-10">selected</cfif>>Outubro</option>
+                    <option value="2025-11" <cfif mesSelecionado == "2025-11">selected</cfif>>Novembro</option>
+                    <option value="2025-12" <cfif mesSelecionado == "2025-12">selected</cfif>>Dezembro</option>
                 </select>
             </div>
 

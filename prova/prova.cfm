@@ -5,12 +5,13 @@
     <cfcontent type="text/html; charset=UTF-8">
     <cfprocessingdirective pageEncoding="utf-8">
     
-<cfif not isDefined("cookie.USER_APONTAMENTO_FA") or cookie.USER_APONTAMENTO_FA eq "">
-    <script>
-       alert("É necessario autenticação!!");
-       self.location = '/qualidade/prova/index.cfm'
-    </script>
- </cfif>
+    <!--- Verificando se está logado  --->
+    <cfif not isDefined("cookie.USER_APONTAMENTO_PROVA") or cookie.USER_APONTAMENTO_PROVA eq "">
+        <script>
+            alert("É necessario autenticação!!");
+            self.location = '/qualidade/prova/index.cfm'
+        </script>
+    </cfif>
 
 <cfif structKeyExists(form, "studentName")>
     <!--- Define valores padrão para questões não respondidas --->
@@ -33,7 +34,7 @@
     <cfquery datasource="#BANCOSINC#">
         INSERT INTO provas_qualidade (
             NOME, DATA, SETOR, TURNO,
-            Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, NOTA
+            Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, NOTA, MATERIA
         ) VALUES (
             <cfqueryparam value="#UCase(form.studentName)#" cfsqltype="cf_sql_varchar"/>,
             <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP"/>,
@@ -49,7 +50,8 @@
             <cfqueryparam value="#form.q8#" cfsqltype="cf_sql_varchar"/>,
             <cfqueryparam value="#form.q9#" cfsqltype="cf_sql_varchar"/>,
             <cfqueryparam value="#form.q10#" cfsqltype="cf_sql_varchar"/>,
-            <cfqueryparam value="#score#" cfsqltype="cf_sql_integer"/>
+            <cfqueryparam value="#score#" cfsqltype="cf_sql_integer"/>,
+            'CHECK LIST'
         )
     </cfquery>
 
@@ -58,7 +60,7 @@
     </cfoutput>
     <script>
         setTimeout(function() {
-            window.location.href = "../buyoff_linhat/index.cfm";
+            window.location.href = "../prova/inicio.cfm";
         }, 2000); // 2000 ms = 2 segundos
     </script>
 </cfif>
@@ -70,186 +72,240 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prova Online</title>
     <style>
+        /* Reset básico */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color:rgb(255, 255, 255);
+            color: #ffffff;
             margin: 0;
             padding: 0;
+            line-height: 1.6;
         }
+
+        /* Container principal */
         .container {
             max-width: 800px;
             margin: 50px auto;
-            padding: 20px;
-            background: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            padding: 30px;
+            background: #2a2a3f;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
         }
+
+        /* Cabeçalho */
         header {
-            background-color: #007bff;
+            background-color: #2a2a3f;
             color: white;
-            padding: 10px 20px;
+            padding: 20px;
             text-align: center;
-            border-radius: 10px 10px 0 0;
-        }
-        header h1 {
-            margin: 0;
-        }
-        nav {
-            margin: 20px 0;
-            text-align: center;
-        }
-        nav a {
-            margin: 0 10px;
-            text-decoration: none;
-            color: #007bff;
-            font-weight: bold;
-        }
-        nav a:hover {
-            text-decoration: underline;
-        }
-        h2 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            cursor: pointer;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
+            border-radius: 12px 12px 0 0;
             margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
         }
-        input[type="radio"] {
-            margin-right: 10px;
+
+        header h2 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 600;
         }
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-top: 20px;
-            font-size: 16px;
-            color: white;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .result {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 18px;
-            color: green;
-            display: none;
-        }
+
+        /* Timer */
         .timer {
             text-align: right;
             font-size: 18px;
-            color: red;
+            color: #ff4d4d;
             margin-bottom: 20px;
+            font-weight: 500;
         }
+
+        /* Textos secundários */
+        h6 {
+            font-size: 14px;
+            color: #ccc;
+            margin: 5px 0;
+            font-weight: 400;
+        }
+
+        /* Mensagem de destaque */
+        h4 {
+            font-size: 20px;
+            color: #00cc88;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        /* Container de inputs */
         .input-container {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-        margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .input-group {
-            flex: 1;
+            margin-bottom: 15px;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-weight: 500;
         }
 
         .input-group input,
         .input-group select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 12px;
+            border: 1px solid #444;
+            border-radius: 8px;
             font-size: 16px;
+            background-color: #3a3a4f;
+            color: #ffffff;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        h2 {
-            font-size: 18px;
-            margin-bottom: 10px;
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #00cc88;
+            box-shadow: 0 0 8px rgba(0, 204, 136, 0.3);
+            outline: none;
         }
 
+        .input-group input:read-only {
+            background-color: #444;
+            cursor: not-allowed;
+        }
+
+        /* Layout para Setor e Turno na mesma linha */
+        .row {
+            display: flex;
+            gap: 20px; /* Espaçamento entre Setor e Turno */
+        }
+
+        .row .input-group {
+            flex: 1;
+        }
+
+        /* Reduzir o tamanho do campo Setor */
+        .row .input-group#setor-group {
+            flex: 0.5; /* Define a largura do Setor como 50% do espaço disponível */
+        }
+
+        /* Aumentar o espaçamento entre Setor e Turno */
+        .row .input-group#setor-group {
+            margin-right: 30px; /* Espaçamento maior entre Setor e Turno */
+        }
+
+        /* Questões */
         .question {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #3a3a4f;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
+        .question:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .question h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        /* Opções de resposta */
         .options label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            padding: 12px;
+            background-color: #4a4a5f;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
+        .options label:hover {
+            background-color: #5a5a6f;
+            transform: translateX(5px);
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        /* Botão de enviar */
         .btn {
             display: block;
             width: 100%;
-            padding: 10px;
-            margin-top: 20px;
+            padding: 15px;
+            margin-top: 30px;
             font-size: 16px;
             color: white;
-            background-color: #007bff;
+            background-color: #00cc88;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-weight: 500;
         }
 
         .btn:hover {
-            background-color: #0056b3;
+            background-color: #00b377;
+            transform: translateY(-2px);
+        }
+
+        /* Resultado */
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: #00cc88;
+            display: none;
+            font-weight: 500;
         }
     </style>
 </head>
-    <body>
-        <div class="container">
-            <header>
-                <h2>Prova Online - Indicadores/ Check List</h2>
-            </header>
-            <nav>
-                <a href="#">Início</a>
-                <a href="#prova">Prova</a>
-                <a href="#resultados">Resultados</a>
-            </nav>
-            <div class="timer" id="timer">Tempo restante: 30:00</div>
-            <h6>*Você terá exatos 30 minutos para o término da prova</h6>
-            <h6>*Ao término do tempo, a prova será enviada automaticamente, se estiver sem resposta será considerado como ERRADA</h6>
-            <h6>A prova vale 10,0 pontos</h6>
-            <h4>BOA PROVA!!</h4>
-<cfoutput>
+<body>
+    <div class="container">
+        <header>
+            <h2>Prova Online - Indicadores/ Check List</h2>
+        </header>
+
+        <div class="timer" id="timer">Tempo restante: 30:00</div>
+        <h6>*Você terá exatos 30 minutos para o término da prova</h6>
+        <h6>*Ao término do tempo, a prova será enviada automaticamente, se estiver sem resposta será considerado como ERRADA</h6>
+        <h6>A prova vale 10,0 pontos</h6>
+        <h4>BOA PROVA!!</h4>
+        <cfoutput>
             <form id="quizForm" method="post">
                 <cfquery name="login" datasource="#BANCOSINC#">
                     SELECT USER_NAME, USER_SIGN, SHOP FROM INTCOLDFUSION.REPARO_FA_USERS
-                    WHERE USER_NAME = '#cookie.user_apontamento_fa#'
-                 </cfquery>
+                    WHERE USER_NAME = '#cookie.user_apontamento_prova#'
+                </cfquery>
                 <div class="input-container">
+                    <!-- Nome Completo na linha de cima -->
                     <div class="input-group">
                         <label for="studentName">Nome Completo:</label>
                         <input type="text" id="studentName" name="studentName" value="#login.USER_SIGN#" readonly required>
                     </div>
-                    <div class="input-group">
-                        <label for="setor">Setor:</label>
-                        <input type="text" id="setor" name="setor" value="#login.shop#" readonly required>
-                    </div>
-                    <div class="input-group">
-                        <label for="turno">Turno:</label>
-                        <select id="turno" name="turno" required>
-                            <option value="" disabled selected>Selecione</option>
-                            <option value="1º TURNO">1º TURNO</option>
-                            <option value="2º TURNO">2º TURNO</option>
-                            <option value="3º TURNO">3º TURNO</option>
-                        </select>
+                    <!-- Setor e Turno na linha de baixo -->
+                    <div class="row">
+                        <div class="input-group" id="setor-group">
+                            <label for="setor">Setor:</label>
+                            <input type="text" id="setor" name="setor" value="#login.shop#" readonly required>
+                        </div>
+                        <div class="input-group">
+                            <label for="turno">Turno:</label>
+                            <select id="turno" name="turno" required>
+                                <option value="" disabled selected>Selecione</option>
+                                <option value="1º TURNO">1º TURNO</option>
+                                <option value="2º TURNO">2º TURNO</option>
+                                <option value="3º TURNO">3º TURNO</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <!-- Questões -->

@@ -18,16 +18,16 @@
                     TRUNC(SYSDATE)
                 </cfif>
             AND PROBLEMA IS NOT NULL
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
             AND BARREIRA = 'CP7'
               
               AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
             )
               GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
@@ -63,14 +63,14 @@
                 </cfif>
             AND PROBLEMA IS NOT NULL
             AND BARREIRA = 'CP7'
-            AND CRITICIDADE NOT IN ('N1', 'N2', 'N3', 'N4')
+            AND CRITICIDADE NOT IN ('N1', 'N2', 'N3', 'N4','AVARIA','OK A-')
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
             )
             GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
@@ -96,7 +96,7 @@
 
     <cfquery name="consulta_nconformidades_cp7_AVARIA" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
-            SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FA
             WHERE TRUNC(USER_DATA) =
                 <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
@@ -109,34 +109,34 @@
             AND CRITICIDADE NOT IN ('N1', 'N2', 'N3', 'N4','N0','OK A-')
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
             )
-            GROUP BY PROBLEMA, PECA, ESTACAO
+            GROUP BY PROBLEMA, PECA, POSICAO, ESTACAO
             ORDER BY COUNT(*) DESC
         ),
         CONSULTA2 AS (
-            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA) AS RNUM
             FROM CONSULTA
             WHERE ROWNUM <= 10
         ),
         CONSULTA3 AS (
-            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, 
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, 
                 SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
             FROM CONSULTA2
         ),
         CONSULTA4 AS (
-            SELECT PROBLEMA, PECA, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            SELECT PROBLEMA, PECA, POSICAO, ESTACAO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
                 ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
             FROM CONSULTA3
         )
         SELECT * FROM CONSULTA4
     </cfquery>
-    
+
     <cfquery name="consulta_barreira" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT 
@@ -157,7 +157,7 @@
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
-                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA','CRIPPLE') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
                     
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
@@ -175,6 +175,12 @@
                 <cfelse>
                     TRUNC(SYSDATE)
                 </cfif>
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') BETWEEN '6' AND '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
+            )
                 AND INTERVALO BETWEEN '06:00' AND '15:00'
             GROUP BY BARREIRA, VIN, INTERVALO
         )
@@ -217,11 +223,11 @@
         AND CRITICIDADE NOT IN ('N0', 'OK A-','AVARIA')
         AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
             )
         GROUP BY ESTACAO
         ORDER BY TOTAL_PROBLEMAS DESC
@@ -248,6 +254,14 @@
                     TRUNC(SYSDATE)
                 </cfif>
                 AND INTERVALO BETWEEN '06:00' AND '15:00'
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
+            )
             AND STATUS IS NOT NULL
             AND BARREIRA = 'CP7'
         )
@@ -280,9 +294,9 @@
             AND STATUS = 'EM REPARO'
             AND BARREIRA = 'CP7'
             AND (
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
             )
         )
         SELECT 
@@ -302,6 +316,14 @@
         WHERE STATUS = 'EM REPARO'
         AND USER_DATA <= SYSDATE
         AND BARREIRA = 'CP7'
+        AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
+            )
         GROUP BY TRUNC(SYSDATE) - TRUNC(USER_DATA)
         ORDER BY DIAS_EM_REPARO
     </cfquery>
@@ -318,14 +340,14 @@
                 </cfif>
             AND PROBLEMA IS NOT NULL
             AND BARREIRA = 'LIBERACAO'
-            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
+            AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA','CRIPPLE')
             AND (
                 -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '15:48:00'))
                 -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
                 -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
             )
             GROUP BY PROBLEMA, PECA, ESTACAO
             ORDER BY COUNT(*) DESC
@@ -369,11 +391,9 @@
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
-                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
-                    
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA','CRIPPLE') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
                     -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
                     WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
-
                     ELSE 0
                 END AS APROVADO_FLAG,
                 COUNT(DISTINCT VIN) AS totalVins,
@@ -388,6 +408,15 @@
                     TRUNC(SYSDATE)
                 </cfif>
                 AND INTERVALO BETWEEN '06:00' AND '15:00'
+                AND MODELO NOT IN 'CHASSI HR HDB 4WD DBLE'
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
+            )
             GROUP BY BARREIRA, VIN, INTERVALO
         )
         SELECT BARREIRA, HH, 
@@ -415,13 +444,86 @@
         ORDER BY ordem, HH
     </cfquery>
 
-    <!--- Verificando se está logado  --->
-<cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
-    <script>
-        alert("É necessario autenticação!!");
-        self.location = '/qualidade/buyoff_linhat/index.cfm'
-    </script>
-</cfif>
+    <cfquery name="consulta_barreira_liberacao_hr" datasource="#BANCOSINC#">
+        WITH CONSULTA AS (
+            SELECT 
+                BARREIRA, VIN,
+                CASE 
+                    WHEN INTERVALO = '06:00' THEN '06:00~07:00'
+                    WHEN INTERVALO = '07:00' THEN '07:00~08:00'
+                    WHEN INTERVALO = '08:00' THEN '08:00~09:00'
+                    WHEN INTERVALO = '09:00' THEN '09:00~10:00'
+                    WHEN INTERVALO = '10:00' THEN '10:00~11:00'
+                    WHEN INTERVALO = '11:00' THEN '11:00~12:00'
+                    WHEN INTERVALO = '12:00' THEN '12:00~13:00'
+                    WHEN INTERVALO = '13:00' THEN '13:00~14:00'
+                    WHEN INTERVALO = '14:00' THEN '14:00~15:00'
+                    WHEN INTERVALO = '15:00' THEN '15:00~16:00'
+                    ELSE 'OUTROS'
+                END HH,
+                CASE 
+                    -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) = 0 
+                    AND COUNT(CASE WHEN CRITICIDADE IN ('N0', 'OK A-', 'AVARIA','CRIPPLE') OR CRITICIDADE IS NULL THEN 1 END) > 0 THEN 1
+                    -- Verifica se o VIN contém N1, N2, N3 ou N4 (Reprovado)
+                    WHEN COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) > 0 THEN 0
+                    ELSE 0
+                END AS APROVADO_FLAG,
+                COUNT(DISTINCT VIN) AS totalVins,
+                
+                -- Contagem de problemas apenas para criticidades N1, N2, N3 e N4
+                COUNT(CASE WHEN CRITICIDADE IN ('N1', 'N2', 'N3', 'N4') THEN 1 END) AS totalProblemas
+            FROM INTCOLDFUSION.sistema_qualidade_fa
+            WHERE TRUNC(USER_DATA) = 
+                <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+                    #CreateODBCDate(url.filtroData)#
+                <cfelse>
+                    TRUNC(SYSDATE)
+                </cfif>
+                AND INTERVALO BETWEEN '06:00' AND '15:00'
+                AND MODELO = 'CHASSI HR HDB 4WD DBLE'
+                AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(USER_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '6') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:10:00' AND '14:48:00'))
+            )
+            GROUP BY BARREIRA, VIN, INTERVALO
+        )
+        SELECT BARREIRA, HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                
+                -- Cálculo do DPV: total de VINs distintos dividido pelo número de registros com criticidades N1, N2, N3 e N4
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                1 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA, HH
+        UNION ALL
+        SELECT BARREIRA, 
+                'TTL' AS HH, 
+                COUNT(DISTINCT VIN) AS TOTAL, 
+                SUM(APROVADO_FLAG) AS APROVADOS, 
+                COUNT(DISTINCT VIN) - SUM(APROVADO_FLAG) AS REPROVADOS,
+                ROUND(SUM(APROVADO_FLAG) / COUNT(DISTINCT VIN) * 100, 1) AS PORCENTAGEM, 
+                ROUND(SUM(totalProblemas) / NULLIF(SUM(totalVins), 0), 2) AS DPV,
+                2 AS ordem
+        FROM CONSULTA
+        GROUP BY BARREIRA
+        ORDER BY ordem, HH
+    </cfquery>
+
+        <!--- Verificando se está logado  --->
+    <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
+        <script>
+            alert("É necessario autenticação!!");
+            self.location = '/qualidade/buyoff_linhat/index.cfm'
+        </script>
+    </cfif>
     
     <html lang="pt-BR">
     <head>

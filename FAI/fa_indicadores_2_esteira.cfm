@@ -344,8 +344,6 @@
         ORDER BY DIAS_EM_REPARO
     </cfquery>
 
-    <!----Consulta para LIBERAÇÃO ---->
-
     <cfquery name="consulta_nconformidades_liberacao" datasource="#BANCOSINC#">
         WITH CONSULTA AS (
             SELECT PROBLEMA, PECA, ESTACAO, COUNT(*) AS TOTAL_POR_DEFEITO

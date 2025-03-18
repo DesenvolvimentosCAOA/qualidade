@@ -16,23 +16,29 @@
         history.back(); // Voltar para a página anterior
     </script>
 </cfif>
-    <!--- Captura e Atualização de Dados --->
+<cfquery name="login" datasource="#BANCOSINC#">
+    SELECT USER_NAME, USER_SIGN 
+    FROM INTCOLDFUSION.REPARO_FA_USERS
+    WHERE USER_NAME = <cfqueryparam value="#cookie.user_apontamento_body#" cfsqltype="cf_sql_varchar">
+</cfquery>
+    <!--- Captura e Atualiza Dados--->
     <cfif isDefined("form.updateID") and isDefined("form.status")>
-        <cfquery datasource="#BANCOSINC#">
-            UPDATE INTCOLDFUSION.sistema_qualidade_body
-            SET 
-            STATUS = <cfqueryparam value="#form.status#" cfsqltype="cf_sql_varchar">
-            WHERE ID = <cfqueryparam value="#form.updateID#" cfsqltype="cf_sql_integer">
-        </cfquery>
+        <cfif login.recordCount gt 0>
+            <cfquery datasource="#BANCOSINC#">
+                UPDATE INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
+                SET 
+                    STATUS = <cfqueryparam value="#form.status#" cfsqltype="cf_sql_varchar">,
+                    RESPONSAVEL_LIBERACAO = <cfqueryparam value="#login.USER_SIGN#" cfsqltype="cf_sql_varchar">
+                WHERE ID = <cfqueryparam value="#form.updateID#" cfsqltype="cf_sql_integer">
+            </cfquery>
+        </cfif>
     </cfif>
     
     <!--- Consulta --->
     <cfquery name="consulta_cripple" datasource="#BANCOSINC#">
         SELECT *
-        FROM INTCOLDFUSION.sistema_qualidade_body
-        WHERE PROBLEMA is not null
-        and TIPO_REPARO is not null
-        AND STATUS is null
+        FROM INTCOLDFUSION.SISTEMA_QUALIDADE_BODY
+        WHERE STATUS = 'REPARADO'
         <cfif isDefined("url.filtroID") and url.filtroID neq "">
             AND ID = <cfqueryparam value="#url.filtroID#" cfsqltype="cf_sql_integer">
         </cfif>
@@ -40,7 +46,7 @@
             AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroModelo#%')
         </cfif>
         <cfif isDefined("url.filtroPeca") and url.filtroPeca neq "">
-            AND UPPER(BARCODE) LIKE UPPER('%#url.filtroPeca#%')
+            AND UPPER(VIN) LIKE UPPER('%#url.filtroPeca#%')
         </cfif>
         <cfif isDefined("url.filtroestacao") and url.filtroestacao neq "">
             AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroestacao#%')
@@ -52,23 +58,28 @@
     </cfquery>
     
     <html lang="pt-br">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Liberação</title>
-        <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
-        <link rel="stylesheet" href="/qualidade/FAI/assets/stylereparo.css?v1">
-    </head>
+        <head>
+            <!-- Required meta tags -->
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <title>LIBERAÇÃO</title>
+            <link rel="stylesheet" href="/qualidade/FAI/assets/stylereparo.css?v1">
+            <style>
+                .inputs{
+                    margin-left:-30vw;
+                }
+            </style>
+        </head>
     <body>
         <header>
             <cfinclude template="auxi/nav_links1.cfm">
-        </header><br><br><br><br><br>
-    
+        </header>
+    <div class="container">
+        <h2> Liberação</h2>
         <cfoutput>
-            <h2 class="titulo2">Liberação Buy Off's</h2><br> 
+            <div class="inputs">
             <form class="filterTable" name="fitro" method="GET" >
-                <div class="row" >
+                <div class="row" >                    
                     <div class="col-1"style="margin-left:15vw">
                         <label class="form-label" for="filtroID">ID:</label>
                         <input type="number" class="form-control" name="filtroID" id="filtroID" value="<cfif isDefined("url.filtroID")>#url.filtroID#</cfif>"/>
@@ -87,6 +98,7 @@
                     </div>
                 </div>
             </form>
+        </div>
         </cfoutput>
     
         <div class="container col-12 bg-white rounded metas">
@@ -97,7 +109,7 @@
                             <th scope="col">ID</th>
                             <th scope="col">Data</th>
                             <th scope="col">Colaborador</th>
-                            <th scope="col">VIN/BARCODE</th>
+                            <th scope="col">VIN</th>
                             <th scope="col">Barreira</th>
                             <th scope="col">Peça</th>
                             <th scope="col">Posição</th>
@@ -113,7 +125,7 @@
                                         <td>#ID#</td>
                                         <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
                                         <td>#USER_COLABORADOR#</td>
-                                        <td>#BARCODE#</td>
+                                        <td>#VIN#</td>
                                         <td>#BARREIRA#</td>
                                         <td>#PECA#</td>
                                         <td>#POSICAO#</td>
@@ -122,13 +134,12 @@
                                         <td>
                                             <!-- Dropdown de Status e Botão Salvar -->
                                             <div class="d-flex align-items-center">
-                                                    <select class="form-select status-dropdown mr-2" name="status" onchange="changeDropdownColor(this)">
-                                                        <option value="">Selecione</option>
-                                                        <option value="OK">OK</option>
-                                                        <option value="NG">NG</option>
-                                                        <option value="NG">Dispensado</option>
-                                                        <option value="#STATUS#" SELECTED >#STATUS#</option>
-                                                    </select>
+                                                <select class="form-select status-dropdown mr-2" name="status" onchange="changeDropdownColor(this)">
+                                                    <option value="">Selecione</option>
+                                                    <option value="LIBERADO">LIBERADO</option>
+                                                    <option value="NG">NG</option>
+                                                    <option value="DISPENSADO">DISPENSADO</option>
+                                                </select>
                                                 <button class="btn btn-primary salvar-btn" type="submit" name="updateID" value="#ID#">Salvar</button>
                                             </div>
                                         </td>
@@ -145,13 +156,12 @@
                 if (selectElement.value === '') {
                     color = 'white';
                 } else {
-                    color = selectElement.value === 'OK' ? 'green' : 'red';
+                    color = selectElement.value === 'LIBERADO' ? 'green' : 'NG' ? 'red' : 'blue';
                 }
                 selectElement.style.backgroundColor = color;
             }
         </script>
-    </body>
-    </html>
-    
-
+    </div>
+</body>
+</html>
     

@@ -27,7 +27,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData4 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData4 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_body1" group="DIA">
         <cfset chartData4 = chartData4 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -54,7 +54,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData5 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData5 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_body2" group="DIA">
         <cfset chartData5 = chartData5 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -81,7 +81,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData6 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData6 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_body3" group="DIA">
         <cfset chartData6 = chartData6 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -108,9 +108,9 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData1 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_paint1" group="DIA">
-        <cfset chartData = chartData & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
+        <cfset chartData1 = chartData1 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
 
     <cfquery name="qPresenca_paint2" datasource="#BANCOSINC#">
@@ -135,7 +135,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData2 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData2 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_paint2" group="DIA">
         <cfset chartData2 = chartData2 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -162,7 +162,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData3 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData3 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_paint3" group="DIA">
         <cfset chartData3 = chartData3 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -181,7 +181,7 @@
         FROM 
             PRESENCA_VER_E_AGIR
             WHERE TURNO LIKE '1%'
-            AND AREA = 'FA'
+            AND AREA = 'FINAL ASSEMBLY'
             AND DATA >= TRUNC(SYSDATE) -10
         GROUP BY 
             TO_CHAR(DATA, 'DD/MM/YYYY'), TURNO, AREA
@@ -189,7 +189,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData7 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData7 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_fa1" group="DIA">
         <cfset chartData7 = chartData7 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -208,7 +208,7 @@
         FROM 
             PRESENCA_VER_E_AGIR
             WHERE TURNO LIKE '2%'
-            AND AREA = 'FA'
+            AND AREA = 'FINAL ASSEMBLY'
             AND DATA >= TRUNC(SYSDATE) -10
         GROUP BY 
             TO_CHAR(DATA, 'DD/MM/YYYY'), TURNO, AREA
@@ -216,7 +216,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData8 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData8 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_fa2" group="DIA">
         <cfset chartData8 = chartData8 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -235,7 +235,7 @@
         FROM 
             PRESENCA_VER_E_AGIR
             WHERE TURNO LIKE '3%'
-            AND AREA = 'FA'
+            AND AREA = 'FINAL ASSEMBLY'
             AND DATA >= TRUNC(SYSDATE) -10
         GROUP BY 
             TO_CHAR(DATA, 'DD/MM/YYYY'), TURNO, AREA
@@ -243,7 +243,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData9 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData9 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_fa3" group="DIA">
         <cfset chartData9 = chartData9 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -263,14 +263,14 @@
             PRESENCA_VER_E_AGIR
             WHERE TURNO LIKE '1%'
             AND AREA = 'FAI'
-            AND DATA >= TRUNC(SYSDATE) -10
+            AND DATA >= TRUNC(SYSDATE) -1
         GROUP BY 
             TO_CHAR(DATA, 'DD/MM/YYYY'), TURNO, AREA
         ORDER BY 
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData10 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData10 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_fai1" group="DIA">
         <cfset chartData10 = chartData10 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -297,7 +297,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData11 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData11 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_fai2" group="DIA">
         <cfset chartData11 = chartData11 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -324,7 +324,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData12 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData12 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_fai3" group="DIA">
         <cfset chartData12 = chartData12 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -351,7 +351,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData13 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData13 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_small1" group="DIA">
         <cfset chartData13 = chartData13 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -378,7 +378,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData14 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData14 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_small2" group="DIA">
         <cfset chartData14 = chartData14 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -405,7 +405,7 @@
             DIA, TURNO, AREA
     </cfquery>
 
-    <cfset chartData15 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
+    <cfset chartData15 = "['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística']">
     <cfoutput query="qPresenca_small3" group="DIA">
         <cfset chartData15 = chartData15 & ",['#DIA#', #TOTAL_BODY#, #TOTAL_PAINT#, #TOTAL_SMALL#, #TOTAL_FA#, #TOTAL_FAI#, #TOTAL_SQE#, #TOTAL_LOGISTICA#]">
     </cfoutput>
@@ -427,7 +427,7 @@
             function drawChart(chartData, elementId, title, colors) {
                 // Verifica se há dados
                 if (chartData.length <= 1) {
-                    chartData = [['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte FA', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística'], ['Sem dados', 0, 0, 0, 0, 0, 0, 0]];
+                    chartData = [['Dia', 'Suporte Body', 'Suporte Paint', 'Suporte Small', 'Suporte Final Assembly', 'Suporte FAI', 'Suporte SQE', 'Suporte Logística'], ['Sem dados', 0, 0, 0, 0, 0, 0, 0]];
                 }
 
                 var data = google.visualization.arrayToDataTable(chartData);
@@ -464,7 +464,7 @@
         
                 // Dados para o gráfico do 1º turno
                 var chartData1 = [
-                    <cfoutput>#chartData#</cfoutput>
+                    <cfoutput>#chartData1#</cfoutput>
                 ];
                 drawChart(chartData1, 'chart_div', 'Indicador de Presença Paint 1ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
         
@@ -498,59 +498,59 @@
                 ];
                 drawChart(chartData6, 'chart_div6', 'Indicador de Presença Body 3ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
                 
-                // Dados para o gráfico do small 1º turno
+                // Dados para o gráfico do fa 1º turno
                 var chartData7 = [
                     <cfoutput>#chartData7#</cfoutput>
                 ];
-                drawChart(chartData7, 'chart_div7', 'Indicador de Presença small 1ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
+                drawChart(chartData7, 'chart_div7', 'Indicador de Presença final assembly 1ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
 
-                // Dados para o gráfico do small 2º turno
+                // Dados para o gráfico do fa 2º turno
                 var chartData8 = [
                     <cfoutput>#chartData8#</cfoutput>
                 ];
-                drawChart(chartData8, 'chart_div8', 'Indicador de Presença small 2ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
+                drawChart(chartData8, 'chart_div8', 'Indicador de Presença final assembly 2ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
                 
-                // Dados para o gráfico do small 3º turno
+                // Dados para o gráfico do fa 3º turno
                 var chartData9 = [
                     <cfoutput>#chartData9#</cfoutput>
                 ];
-                drawChart(chartData9, 'chart_div9', 'Indicador de Presença small 3ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
+                drawChart(chartData9, 'chart_div9', 'Indicador de Presença final assembly 3ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
     
-                // Dados para o gráfico do fa 1º turno
+                // Dados para o gráfico do fai 1º turno
                 var chartData10 = [
                     <cfoutput>#chartData10#</cfoutput>
                 ];
-                drawChart(chartData10, 'chart_div10', 'Indicador de Presença FA 1ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
+                drawChart(chartData10, 'chart_div10', 'Indicador de Presença FAI 1ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
 
-                // Dados para o gráfico do fa 2º turno
+                // Dados para o gráfico do fai 2º turno
                 var chartData11 = [
                     <cfoutput>#chartData11#</cfoutput>
                 ];
-                drawChart(chartData11, 'chart_div11', 'Indicador de Presença FA 2ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
+                drawChart(chartData11, 'chart_div11', 'Indicador de Presença FAI 2ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
                 
-                // Dados para o gráfico do fa 3º turno
+                // Dados para o gráfico do fai 3º turno
                 var chartData12 = [
                     <cfoutput>#chartData12#</cfoutput>
                 ];
-                drawChart(chartData12, 'chart_div12', 'Indicador de Presença FA 3ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
+                drawChart(chartData12, 'chart_div12', 'Indicador de Presença FAI 3ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
 
-                // Dados para o gráfico do fai 1º turno
+                // Dados para o gráfico do small 1º turno
                 var chartData13 = [
                     <cfoutput>#chartData13#</cfoutput>
                 ];
-                drawChart(chartData13, 'chart_div13', 'Indicador de Presença FAI 1ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
+                drawChart(chartData13, 'chart_div13', 'Indicador de Presença Small 1ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
 
-                // Dados para o gráfico do fai 2º turno
+                // Dados para o gráfico do small 2º turno
                 var chartData14 = [
                     <cfoutput>#chartData14#</cfoutput>
                 ];
-                drawChart(chartData14, 'chart_div14', 'Indicador de Presença FAI 2ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
+                drawChart(chartData14, 'chart_div14', 'Indicador de Presença Small 2ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
                 
-                // Dados para o gráfico do fai 3º turno
+                // Dados para o gráfico do small 3º turno
                 var chartData15 = [
                     <cfoutput>#chartData15#</cfoutput>
                 ];
-                drawChart(chartData15, 'chart_div15', 'Indicador de Presença FAI 3ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
+                drawChart(chartData15, 'chart_div15', 'Indicador de Presença Small 3ºTurno', ['#E57373', '#81C784', '#64B5F6', '#FFB74D', '#FF8A65']);
 
             }
         </script>

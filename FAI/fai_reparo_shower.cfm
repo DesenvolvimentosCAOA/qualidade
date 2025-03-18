@@ -49,10 +49,11 @@
         <cfif isDefined("url.filtroRoadTest") and url.filtroRoadTest neq "">
             AND UPPER(ROAD_TEST) LIKE UPPER('%#url.filtroRoadTest#%')
         </cfif>
-        AND (BARREIRA = 'SHOWER' OR (BARREIRA = 'SIGN OFF' AND PROBLEMA = 'INFILTRACAO') OR (STATUS IS NULL AND PROBLEMA IS NOT NULL))
+        AND (BARREIRA = 'SHOWER' OR (BARREIRA = 'SIGN OFF' AND PROBLEMA = 'INFILTRACAO'))
         AND (CRITICIDADE IS NOT NULL OR CRITICIDADE NOT IN ('N0', 'OK A-'))
         AND PROBLEMA IS NOT NULL
         AND RESPONSAVEL_REPARO IS NULL
+        AND BARREIRA NOT IN ('UNDER BODY','ROAD TEST','TUNEL DE LIBERACAO')
         ORDER BY ID DESC
     </cfquery>
 
@@ -65,7 +66,7 @@
             <link rel="icon" href="./assets/chery.png" type="image/x-icon">
             <link rel="stylesheet" href="assets/stylereparo.css?v1">
         </head>
-        
+
         <body>
             <!-- Header com as imagens e o menu -->
             <header class="titulo">

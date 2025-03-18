@@ -131,7 +131,7 @@
         <cfif buscaMES2.recordcount EQ 0>
             <script>
                 alert("Vin inválido ou campo vazio");
-                window.location.href="body_barreira_validacao.cfm";
+                window.location.href="body_barreira_hr.cfm";
             </script>
         </cfif>
  

@@ -2,10 +2,10 @@
 
 <cfquery name="login" datasource="#BANCOSINC#">
     SELECT USER_NAME, USER_SIGN FROM INTCOLDFUSION.REPARO_FA_USERS
-    WHERE USER_NAME = '#cookie.user_apontamento_fa#'
+    WHERE USER_NAME = '#cookie.user_apontamento_paint#'
 </cfquery>
 
-<cfif not isDefined("cookie.user_level_final_assembly") or (cookie.user_level_final_assembly eq "R" or cookie.user_level_final_assembly eq "P")>
+<cfif not isDefined("cookie.user_level_paint") or (cookie.user_level_paint eq "R" or cookie.user_level_paint eq "P")>
     <script>
         alert("É necessário autorização!!");
         history.back(); // Voltar para a página anterior

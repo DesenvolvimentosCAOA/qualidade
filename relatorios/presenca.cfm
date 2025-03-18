@@ -67,7 +67,7 @@
                 align-items: center;
                 min-height: 100vh;
             }
-    
+        
             body::before {
                 content: '';
                 position: absolute;
@@ -78,7 +78,7 @@
                 background-color: rgba(0, 0, 0, 0.5);
                 z-index: -1;
             }
-    
+        
             .form-container {
                 background-color: #fff;
                 padding: 40px;
@@ -87,25 +87,25 @@
                 max-width: 600px;
                 width: 100%;
             }
-    
+        
             .form-container h2 {
                 font-size: 1.8rem;
                 color: #333;
                 text-align: center;
                 margin-bottom: 10px;
             }
-    
+        
             .form-container p {
                 font-size: 1rem;
                 color: #666;
                 text-align: center;
                 margin-bottom: 30px;
             }
-    
+        
             .form-group {
                 margin-bottom: 25px;
             }
-    
+        
             .form-group label {
                 display: block;
                 font-size: 1rem;
@@ -113,19 +113,19 @@
                 font-weight: bold;
                 margin-bottom: 10px;
             }
-    
+        
             .radio-group {
                 display: flex;
-                flex-direction: column;
+                flex-direction: row; /* Alterado de column para row */
                 gap: 10px;
             }
-    
+        
             .radio-input {
                 display: flex;
                 align-items: center;
                 gap: 10px;
             }
-    
+        
             .radio-input input {
                 appearance: none;
                 width: 20px;
@@ -136,17 +136,17 @@
                 cursor: pointer;
                 transition: all 0.3s ease;
             }
-    
+        
             .radio-input input:checked {
                 background-color: #4285f4;
                 border-color: #4285f4;
             }
-    
+        
             .radio-input span {
                 font-size: 1rem;
                 color: #444;
             }
-    
+        
             .submit-btn {
                 display: block;
                 width: 100%;
@@ -161,7 +161,7 @@
                 text-align: center;
                 transition: background-color 0.3s ease;
             }
-    
+        
             .submit-btn:hover {
                 background-color: #357ae8;
             }
@@ -213,8 +213,8 @@
                             <span>SMALL</span>
                         </div>
                         <div class="radio-input">
-                            <input type="radio" id="area-fa" name="area" value="FA" onclick="showOptions('FA')">
-                            <span>FA</span>
+                            <input type="radio" id="area-fa" name="area" value="FINAL ASSEMBLY" onclick="showOptions('FA')">
+                            <span>FINAL ASSEMBLY</span>
                         </div>
                         <div class="radio-input">
                             <input type="radio" id="area-fai" name="area" value="FAI" onclick="showOptions('FAI')">
@@ -438,7 +438,7 @@
                     document.getElementById('options-body').style.display = 'block';
                 } else if (area === 'PAINT') {
                     document.getElementById('options-paint').style.display = 'block';
-                } else if (area === 'FA') {
+                } else if (area === 'FINAL ASSEMBLY') {
                     document.getElementById('options-fa').style.display = 'block';
                 } else if (area === 'FAI') {
                     document.getElementById('options-fai').style.display = 'block';

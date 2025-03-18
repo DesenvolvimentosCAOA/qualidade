@@ -120,7 +120,7 @@
             <cfcookie name="user_apontamento_body" value="#FORM.body_shop_login#">
             <cfcookie name="user_level_body" value="#validausuario.USER_LEVEL#">
             <cfif validausuario.user_level eq "R">
-                <meta http-equiv="refresh" content="0; URL=/qualidade/body/body_reparo.cfm"/>
+                <meta http-equiv="refresh" content="0; URL=/qualidade/body/body_reparo_novo.cfm"/>
             <cfelseif validausuario.user_level eq "P">
                 <meta http-equiv="refresh" content="0; URL=/qualidade/body/body_indicadores_1turno.cfm"/>
             <cfelse>
@@ -130,7 +130,7 @@
             <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
                </cfif>
     </cfif>
-    </cfoutput>
+</cfoutput>
 
 
     <!--- valida o usuário para PDI --->
@@ -150,7 +150,7 @@
                 <cfif validausuario.user_level eq "R" OR validausuario.user_level eq "E">
                     <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_entrada.cfm"/>
                 <cfelseif validausuario.user_level eq "P">
-                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_indicadores_1turno.cfm"/>
+                    <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_indicadores_1.cfm"/>
                 <cfelse>
                     <meta http-equiv="refresh" content="0; URL=/qualidade/PDI/pdi_saida.cfm"/>
                 </cfif>

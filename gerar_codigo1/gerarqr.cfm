@@ -3,7 +3,7 @@
     vin = URL.vin;
     
     // Configuração da impressora (IP e Porta)
-    printer_ip = "172.16.43.34";
+    printer_ip = "172.16.43.33";
     printer_port = 6101;
     
     // Ajuste da escuridão (densidade), velocidade e área de impressão

@@ -526,47 +526,6 @@
         SELECT * FROM CONSULTA4
     </cfquery>
 
-<cfquery name="consulta_nconformidades_shower_reparo" datasource="#BANCOSINC#">
-    WITH CONSULTA AS (
-    SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, COUNT(*) AS TOTAL_POR_DEFEITO
-    FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
-    WHERE TRUNC(REPARO_DATA) =
-        <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
-            #CreateODBCDate(url.filtroData)#
-        <cfelse>
-            TRUNC(SYSDATE)
-        </cfif>
-    AND PROBLEMA_REPARO IS NOT NULL
-    AND BARREIRA = 'SHOWER'
-    AND (
-                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
-                ((TO_CHAR(REPARO_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
-                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
-                OR ((TO_CHAR(REPARO_DATA, 'D') = '6') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-                -- Sábado: turno inicia às 06:00 e termina às 15:48
-                OR ((TO_CHAR(REPARO_DATA, 'D') = '7') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
-            )
-    GROUP BY PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO
-    ORDER BY COUNT(*) DESC
-    ),
-    CONSULTA2 AS (
-        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, 
-            ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA_REPARO) AS RNUM
-        FROM CONSULTA
-        WHERE ROWNUM <= 5
-    ),
-    CONSULTA3 AS (
-        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, 
-            SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
-        FROM CONSULTA2
-    ),
-    CONSULTA4 AS (
-        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
-            ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
-        FROM CONSULTA3
-    )
-    SELECT * FROM CONSULTA4
-</cfquery>
 <cfquery name="consulta_barreira_reparo" datasource="#BANCOSINC#">
     WITH CONSULTA AS (
         SELECT 
@@ -609,7 +568,129 @@
     GROUP BY BARREIRA
     ORDER BY ordem, HH
 </cfquery>
-
+<cfquery name="consulta_nconformidades_shower_reparo" datasource="#BANCOSINC#">
+    WITH CONSULTA AS (
+    SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, COUNT(*) AS TOTAL_POR_DEFEITO
+    FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
+    WHERE TRUNC(REPARO_DATA) =
+        <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+            #CreateODBCDate(url.filtroData)#
+        <cfelse>
+            TRUNC(SYSDATE)
+        </cfif>
+    AND PROBLEMA_REPARO IS NOT NULL
+    AND BARREIRA = 'SHOWER'
+    AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(REPARO_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '6') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '7') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+    GROUP BY PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO
+    ORDER BY COUNT(*) DESC
+    ),
+    CONSULTA2 AS (
+        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, 
+            ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA_REPARO) AS RNUM
+        FROM CONSULTA
+        WHERE ROWNUM <= 5
+    ),
+    CONSULTA3 AS (
+        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, 
+            SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
+        FROM CONSULTA2
+    ),
+    CONSULTA4 AS (
+        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
+        FROM CONSULTA3
+    )
+    SELECT * FROM CONSULTA4
+</cfquery>
+<cfquery name="consulta_nconformidades_pista_reparo" datasource="#BANCOSINC#">
+    WITH CONSULTA AS (
+    SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, COUNT(*) AS TOTAL_POR_DEFEITO
+    FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
+    WHERE TRUNC(REPARO_DATA) =
+        <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+            #CreateODBCDate(url.filtroData)#
+        <cfelse>
+            TRUNC(SYSDATE)
+        </cfif>
+    AND PROBLEMA_REPARO IS NOT NULL
+    AND BARREIRA = 'ROAD TEST'
+    AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(REPARO_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '6') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '7') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+    GROUP BY PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO
+    ORDER BY COUNT(*) DESC
+    ),
+    CONSULTA2 AS (
+        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, 
+            ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA_REPARO) AS RNUM
+        FROM CONSULTA
+        WHERE ROWNUM <= 5
+    ),
+    CONSULTA3 AS (
+        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, 
+            SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
+        FROM CONSULTA2
+    ),
+    CONSULTA4 AS (
+        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
+        FROM CONSULTA3
+    )
+    SELECT * FROM CONSULTA4
+</cfquery>
+<cfquery name="consulta_nconformidades_ub2_reparo" datasource="#BANCOSINC#">
+    WITH CONSULTA AS (
+    SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, COUNT(*) AS TOTAL_POR_DEFEITO
+    FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
+    WHERE TRUNC(REPARO_DATA) =
+        <cfif isDefined("url.filtroData") AND NOT isNull(url.filtroData) AND len(trim(url.filtroData)) gt 0>
+            #CreateODBCDate(url.filtroData)#
+        <cfelse>
+            TRUNC(SYSDATE)
+        </cfif>
+    AND PROBLEMA_REPARO IS NOT NULL
+    AND BARREIRA = 'UNDER BODY'
+    AND (
+                -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
+                ((TO_CHAR(REPARO_DATA, 'D') BETWEEN '2' AND '5') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '15:48:00'))
+                -- Sexta-feira: turno inicia às 06:00 e termina às 14:48
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '6') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+                -- Sábado: turno inicia às 06:00 e termina às 15:48
+                OR ((TO_CHAR(REPARO_DATA, 'D') = '7') AND (TO_CHAR(REPARO_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
+            )
+    GROUP BY PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO
+    ORDER BY COUNT(*) DESC
+    ),
+    CONSULTA2 AS (
+        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, 
+            ROW_NUMBER() OVER (ORDER BY TOTAL_POR_DEFEITO DESC, PROBLEMA_REPARO) AS RNUM
+        FROM CONSULTA
+        WHERE ROWNUM <= 5
+    ),
+    CONSULTA3 AS (
+        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, 
+            SUM(TOTAL_POR_DEFEITO) OVER (ORDER BY RNUM) AS TOTAL_ACUMULADO
+        FROM CONSULTA2
+    ),
+    CONSULTA4 AS (
+        SELECT PROBLEMA_REPARO, PECA_REPARO, RESPONSAVEL_REPARO, TOTAL_POR_DEFEITO, TOTAL_ACUMULADO,
+            ROUND(TOTAL_ACUMULADO / SUM(TOTAL_POR_DEFEITO) OVER () * 100, 1) AS PARETO
+        FROM CONSULTA3
+    )
+    SELECT * FROM CONSULTA4
+</cfquery>
 
     <!-- Verificando se está logado -->
     <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
@@ -621,7 +702,6 @@
     
 <html lang="pt-BR">
     <head>
-        <!-- Meta tags necessárias -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>FAI Indicador-1º turno</title>
@@ -791,81 +871,11 @@
         <div class="container-fluid">
             <div class="row">
                 <!-- Tabela H/H para Under Body 2 -->
-                <div class="col-md-4">
-                    <h3>Under Body 2</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-custom">
-                            <thead>
-                                <tr>
-                                    <th>H/H</th>
-                                    <th>Prod</th>
-                                    <th>Aprov</th>
-                                    <th>%</th>
-                                    <th>DPV</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfoutput query="consulta_barreira">
-                                    <cfif BARREIRA eq 'UNDER BODY'>
-                                        <tr>
-                                            <td>#HH#</td>
-                                            <td>#TOTAL#</td>
-                                            <td>#APROVADOS#</td>
-                                            <td class="percentage <cfif PORCENTAGEM gt '86.0'>green<cfelseif PORCENTAGEM lt '86.0'>red</cfif>">
-                                                #PORCENTAGEM#%
-                                            </td>
-                                            <td>#DPV#</td>
-                                        </tr>
-                                    </cfif>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <!-- Tabela Pareto para Under Body 2 -->
-                <div class="col-md-4">
-                    <h3>Pareto - Under Body 2</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-custom" id="tblStocks" data-excel-name="Veículos">
-                            <thead>
-                                <tr>
-                                    <th scope="col" colspan="5">Principais Não Conformidades - Top 5</th>
-                                </tr>
-                                <tr>
-                                    <th scope="col">Shop</th>
-                                    <th scope="col">Peça</th>
-                                    <th scope="col">Problema</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Pareto</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <cfoutput query="consulta_nconformidades_underbody2">
-                                    <tr>
-                                        <td class="<cfif ESTACAO eq 'TRIM'>station-gold
-                                                    <cfelseif ESTACAO eq 'Paint'>station-orange
-                                                    <cfelseif ESTACAO eq 'BODY'>station-blue
-                                                    <cfelseif ESTACAO eq 'CKD'>station-green</cfif>">
-                                            #ESTACAO#
-                                        </td>
-                                        <td>#PECA#</td>
-                                        <td style="font-weight: bold">#PROBLEMA#</td>
-                                        <td>#TOTAL_POR_DEFEITO#</td>
-                                        <td>#PARETO#%</td>
-                                    </tr>
-                                </cfoutput>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <!-- Tabela e Gráfico para Road Test -->
                 <div class="container-fluid">
                     <div class="row">
-                        <!-- Tabela H/H -->
-                        <div class="col-md-4">
-                            <h3>Road Test</h3>
+                        <!-- Tabela ub2 -->
+                        <div class="col-md-3">
+                            <h3>H/H UB2 Inspeção</h3>
                             <div class="table-responsive">
                                 <table class="table table-hover table-sm table-custom">
                                     <thead>
@@ -879,7 +889,7 @@
                                     </thead>
                                     <tbody>
                                         <cfoutput query="consulta_barreira">
-                                            <cfif BARREIRA eq 'Road Test'>
+                                            <cfif BARREIRA eq 'UNDER BODY'>
                                                 <tr>
                                                     <td>#HH#</td>
                                                     <td>#TOTAL#</td>
@@ -895,10 +905,63 @@
                                 </table>
                             </div>
                         </div>
-                        
-                        <!-- Tabela Pareto para Under Body 2 -->
-                        <div class="col-md-4">
-                            <h3>Pareto - Road Test</h3>
+                
+                        <!-- Tabela Pareto - Shower -->
+                        <div class="col-md-3">
+                            <h3>Top 5 UB2 Inspeção</h3>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm table-custom" id="tblStocks" data-excel-name="Veículos">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" colspan="5">Principais Não Conformidades - Top 5</th>
+                                        </tr>
+                                        <tr>
+                                            <th scope="col">Peça</th>
+                                            <th scope="col">Problema</th>
+                                            <th scope="col">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <cfoutput query="consulta_nconformidades_underbody2">
+                                            <tr>
+                                                <td>#PECA#</td>
+                                                <td style="font-weight: bold">#PROBLEMA#</td>
+                                                <td>#TOTAL_POR_DEFEITO#</td>
+                                            </tr>
+                                        </cfoutput>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                
+                        <!-- Tabela UB2 Reparo -->
+                        <div class="col-md-3">
+                            <h3 style="color:red;">H/H UB2 Reparo</h3>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th>H/H</th>
+                                            <th>Qtd Reparados</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <cfoutput query="consulta_barreira_reparo">
+                                            <cfif BARREIRA eq 'UNDER BODY'>
+                                                <tr>
+                                                    <td>#HH#</td>
+                                                    <td>#TOTAL#</td>
+                                                </tr>
+                                            </cfif>
+                                        </cfoutput>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                
+                        <!-- Tabela Pareto - UB2 Reparo -->
+                        <div class="col-md-3">
+                            <h3 style="color:red;">Top 5 - UB2 Reparo</h3>
                             <div class="table-responsive">
                                 <table class="table table-hover table-sm table-custom" id="tblStocks" data-excel-name="Veículos">
                                     <thead>
@@ -910,32 +973,157 @@
                                             <th scope="col">Peça</th>
                                             <th scope="col">Problema</th>
                                             <th scope="col">Total</th>
-                                            <th scope="col">Pareto</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <cfoutput query="consulta_nconformidades_roadtest">
+                                        <cfoutput query="consulta_nconformidades_ub2_reparo">
                                             <tr>
-                                                <td class="<cfif ESTACAO eq 'TRIM'>station-gold
-                                                            <cfelseif ESTACAO eq 'Paint'>station-orange
-                                                            <cfelseif ESTACAO eq 'BODY'>station-blue
-                                                            <cfelseif ESTACAO eq 'CKD'>station-green</cfif>">
-                                                    #ESTACAO#
+                                                <td class="<cfif RESPONSAVEL_REPARO eq 'TRIM'>station-gold
+                                                            <cfelseif RESPONSAVEL_REPARO eq 'Paint'>station-orange
+                                                            <cfelseif RESPONSAVEL_REPARO eq 'BODY'>station-blue
+                                                            <cfelseif RESPONSAVEL_REPARO eq 'CKD'>station-green</cfif>">
+                                                    #RESPONSAVEL_REPARO#
                                                 </td>
-                                                <td>#PECA#</td>
-                                                <td style="font-weight: bold">#PROBLEMA#</td>
+                                                <td>#PECA_REPARO#</td>
+                                                <td style="font-weight: bold">#PROBLEMA_REPARO#</td>
                                                 <td>#TOTAL_POR_DEFEITO#</td>
-                                                <td>#PARETO#%</td>
                                             </tr>
                                         </cfoutput>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                <!-- Tabela e Gráfico para Shower -->
+                    </div>
+                </div>
+
+
+
+                <!-- Tabela e Gráfico para Road Test -->
                 <div class="container-fluid">
-                    
-                    
+                    <div class="row">
+                        <!-- Tabela Pista -->
+                        <div class="col-md-3">
+                            <h3>H/H Pista Inspeção</h3>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th>H/H</th>
+                                            <th>Prod</th>
+                                            <th>Aprov</th>
+                                            <th>%</th>
+                                            <th>DPV</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <cfoutput query="consulta_barreira">
+                                            <cfif BARREIRA eq 'ROAD TEST'>
+                                                <tr>
+                                                    <td>#HH#</td>
+                                                    <td>#TOTAL#</td>
+                                                    <td>#APROVADOS#</td>
+                                                    <td class="percentage <cfif PORCENTAGEM gt '86.0'>green<cfelseif PORCENTAGEM lt '86.0'>red</cfif>">
+                                                        #PORCENTAGEM#%
+                                                    </td>
+                                                    <td>#DPV#</td>
+                                                </tr>
+                                            </cfif>
+                                        </cfoutput>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                
+                        <!-- Tabela Pareto - Pista -->
+                        <div class="col-md-3">
+                            <h3>Top 5 Pista Inspeção</h3>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm table-custom" id="tblStocks" data-excel-name="Veículos">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" colspan="5">Principais Não Conformidades - Top 5</th>
+                                        </tr>
+                                        <tr>
+                                            <th scope="col">Peça</th>
+                                            <th scope="col">Problema</th>
+                                            <th scope="col">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <cfoutput query="consulta_nconformidades_roadtest">
+                                            <tr>
+                                                <td>#PECA#</td>
+                                                <td style="font-weight: bold">#PROBLEMA#</td>
+                                                <td>#TOTAL_POR_DEFEITO#</td>
+                                            </tr>
+                                        </cfoutput>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                
+                        <!-- Tabela Pista Reparo -->
+                        <div class="col-md-3">
+                            <h3 style="color:red;">H/H Pista Reparo</h3>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm table-custom">
+                                    <thead>
+                                        <tr>
+                                            <th>H/H</th>
+                                            <th>Qtd Reparados</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <cfoutput query="consulta_barreira_reparo">
+                                            <cfif BARREIRA eq 'ROAD TEST'>
+                                                <tr>
+                                                    <td>#HH#</td>
+                                                    <td>#TOTAL#</td>
+                                                </tr>
+                                            </cfif>
+                                        </cfoutput>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                
+                        <!-- Tabela Pareto - Pista Reparo -->
+                        <div class="col-md-3">
+                            <h3 style="color:red;">Top 5 - Pista Reparo</h3>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-sm table-custom" id="tblStocks" data-excel-name="Veículos">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" colspan="5">Principais Não Conformidades - Top 5</th>
+                                        </tr>
+                                        <tr>
+                                            <th scope="col">Shop</th>
+                                            <th scope="col">Peça</th>
+                                            <th scope="col">Problema</th>
+                                            <th scope="col">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <cfoutput query="consulta_nconformidades_pista_reparo">
+                                            <tr>
+                                                <td class="<cfif RESPONSAVEL_REPARO eq 'TRIM'>station-gold
+                                                            <cfelseif RESPONSAVEL_REPARO eq 'Paint'>station-orange
+                                                            <cfelseif RESPONSAVEL_REPARO eq 'BODY'>station-blue
+                                                            <cfelseif RESPONSAVEL_REPARO eq 'CKD'>station-green</cfif>">
+                                                    #RESPONSAVEL_REPARO#
+                                                </td>
+                                                <td>#PECA_REPARO#</td>
+                                                <td style="font-weight: bold">#PROBLEMA_REPARO#</td>
+                                                <td>#TOTAL_POR_DEFEITO#</td>
+                                            </tr>
+                                        </cfoutput>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tabela e Gráfico para Shower -->
                     <div class="container-fluid">
                         <div class="row">
                             <!-- Tabela Shower -->
@@ -1060,9 +1248,7 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
-                    
+
                 <!-- Tabela e Gráfico para SIGN OFF -->
                 <div class="container-fluid">
                     <div class="row">

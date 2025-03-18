@@ -34,7 +34,6 @@
             AND UPPER(ID) LIKE UPPER('%#url.filtroID#%')
         </cfif>
         AND TIPO_REPARO is null
-        AND USER_DATA >= SYSDATE - 1 -- Filtra os últimos 1 dia
         ORDER BY ID DESC
     </cfquery>
 
