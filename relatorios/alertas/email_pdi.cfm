@@ -26,8 +26,8 @@
     </cfquery>
 
 <cfmail  from="#login.USER_SIGN# <#login.USER_EMAIL#"  subject="Alerta de Qualidade - Nº #consulta_editar.n_controle# aberto no dia #DateFormat(now(), "dd/mm/yyyy")#"  
-	to="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>,Kennedy Dos Reis Rosario <kennedy.rosario@caoamontadora.com.br>"
-    cc="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>,Kennedy Dos Reis Rosario <kennedy.rosario@caoamontadora.com.br>"
+	to="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>, Lincon Afonso Trentin <lincon.trentin@caoamontadora.com.br>"
+    cc="Jefferson Alves Teixeira <jefferson.teixeira@caoamontadora.com.br>"
     type="html">
 	<html>
 		<head>

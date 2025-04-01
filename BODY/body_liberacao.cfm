@@ -46,7 +46,7 @@
             AND UPPER(BARREIRA) LIKE UPPER('%#url.filtroModelo#%')
         </cfif>
         <cfif isDefined("url.filtroPeca") and url.filtroPeca neq "">
-            AND UPPER(VIN) LIKE UPPER('%#url.filtroPeca#%')
+            AND UPPER(BARCODE) LIKE UPPER('%#url.filtroPeca#%')
         </cfif>
         <cfif isDefined("url.filtroestacao") and url.filtroestacao neq "">
             AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroestacao#%')
@@ -109,7 +109,7 @@
                             <th scope="col">ID</th>
                             <th scope="col">Data</th>
                             <th scope="col">Colaborador</th>
-                            <th scope="col">VIN</th>
+                            <th scope="col">Barcode</th>
                             <th scope="col">Barreira</th>
                             <th scope="col">Peça</th>
                             <th scope="col">Posição</th>
@@ -125,7 +125,7 @@
                                         <td>#ID#</td>
                                         <td>#lsdatetimeformat(USER_DATA, 'dd/mm/yyyy')#</td>
                                         <td>#USER_COLABORADOR#</td>
-                                        <td>#VIN#</td>
+                                        <td>#BARCODE#</td>
                                         <td>#BARREIRA#</td>
                                         <td>#PECA#</td>
                                         <td>#POSICAO#</td>

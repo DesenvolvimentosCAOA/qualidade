@@ -64,6 +64,12 @@
                 </div>
                 <div class="col col-3">
                   <div class="form-group">
+                    <label class="form-label" for="formVIN">ID</label>
+                    <input type="text" class="form-control" name="VIN" id="formVIN" value="#consulta_editar.id#" readonly required/>
+                  </div>
+                </div>
+                <div class="col col-3">
+                  <div class="form-group">
                     <label class="form-label" for="formModelo">Modelo</label>
                     <input type="text" class="form-control" name="modelo" id="formModelo" value="#consulta_editar.modelo#" readonly required/>
                   </div>

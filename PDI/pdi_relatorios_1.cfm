@@ -883,6 +883,7 @@
                             <th scope="col">VIN/BARCODE</th>
                             <th scope="col">Turno</th>
                             <th scope="col">Criticidade</th>
+                            <th scope="col">Bateria</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -1005,6 +1006,7 @@
                                         </cfif>
                                     </td>
                                     <td>#CRITICIDADE#</td>
+                                    <td>#BATERIA#</td>
                                 </tr>
                             </cfloop>
                             

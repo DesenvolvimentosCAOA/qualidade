@@ -42,7 +42,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Relatórios</title>
-        <link rel="stylesheet" href="/qualidade/buyoff_linhat/assets/stylerelatorio.css?v1">
+        <link rel="stylesheet" href="/qualidade/buy_off_T/assets/stylerelatorio.css?v1">
         <link rel="icon" href="/qualidade/FAI/assets/chery.png" type="image/x-icon">
     </head>
     <body>
@@ -156,6 +156,7 @@
                             <th scope="col">Criticidade</th>
                             <th scope="col">STATUS</th>
                             <th scope="col">Data Liberação</th>
+                            <th scope="col">Bateria</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
@@ -181,6 +182,7 @@
                                     <td>#CRITICIDADE#</td>
                                     <td>#STATUS#</td>
                                     <td>#lsdatetimeformat(DATA_ENVIO, 'dd/mm/yyyy HH:nn:ss')#⠀</td>
+                                    <td>#BATERIA#</td>
                                 </tr>
                             </cfloop>
                         </cfoutput>

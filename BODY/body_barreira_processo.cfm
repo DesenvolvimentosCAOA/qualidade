@@ -27,7 +27,6 @@
         AND BARREIRA = 'PROCESSO'
         ORDER BY ID DESC
     </cfquery>
-    
  
             <!--- Pesquisa MES --->
  <cfquery name='buscaMES' datasource="#BANCOMES#">

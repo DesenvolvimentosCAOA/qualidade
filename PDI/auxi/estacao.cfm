@@ -15,3 +15,4 @@
 <option value="CP7">CP7</option>
 <option value="SUB-MONTAGEM">SUB-MONTAGEM</option>
 <option value="PCP">PCP</option>
+<option value="PDI">PDI</option>

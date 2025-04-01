@@ -21,7 +21,8 @@
                 ACAO_CONTENCAO = <cfqueryparam value="#UCase(form.acao_contencao)#" cfsqltype="CF_SQL_CLOB">,
                 DATA_ACAO_CONTENCAO = <cfqueryparam value="#form.data_acao_contencao#" cfsqltype="CF_SQL_TIMESTAMP">,
                 RESPONSAVEL_ACAO_CONTENCAO = <cfqueryparam value="#UCase(form.responsavel_acao_contencao)#" cfsqltype="CF_SQL_VARCHAR">,
-                STATUS = 'D3'
+                STATUS = 'D3',
+                DATA_RESPOSTA = <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
                 WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
         </cfquery>
         <cflocation url="d_principal.cfm">

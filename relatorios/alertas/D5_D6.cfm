@@ -48,7 +48,8 @@
                 BP_3 = <cfqueryparam value="#UCase(form.bp_3)#" cfsqltype="CF_SQL_CLOB">,
                 BP_4 = <cfqueryparam value="#UCase(form.bp_4)#" cfsqltype="CF_SQL_CLOB">,
                 BP_5 = <cfqueryparam value="#UCase(form.bp_5)#" cfsqltype="CF_SQL_CLOB">,
-                STATUS = 'D5/D6'
+                STATUS = 'D5/D6',
+                DATA_RESPOSTA_D5_D6 = <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
                 WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
         </cfquery>
         <cflocation url="d_principal.cfm">

@@ -346,13 +346,13 @@
         ORDER BY ordem, HH
     </cfquery>
 
-    <!--- Verificando se está logado  --->
-<cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
-    <script>
-        alert("É necessario autenticação!!");
-        self.location = '/qualidade/buyoff_linhat/index.cfm'
-    </script>
-</cfif>
+        <!--- Verificando se está logado  --->
+    <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
+        <script>
+            alert("É necessario autenticação!!");
+            self.location = '/qualidade/buyoff_linhat/index.cfm'
+        </script>
+    </cfif>
 
 <html lang="pt-BR">
     <head>

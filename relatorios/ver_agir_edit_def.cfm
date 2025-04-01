@@ -22,7 +22,7 @@
                 BP_DEFINITIVO_PROCESSO = <cfqueryparam value="#UCase(form.ver_bp)#" cfsqltype="CF_SQL_VARCHAR">,
                 RESPONSAVEL_DEFINITIVO = <cfqueryparam value="#UCase(form.ver_responsavel)#" cfsqltype="CF_SQL_VARCHAR">,
                 DESCRICAO_DEFINITIVO = <cfqueryparam value="#UCase(form.ver_descricao)#" cfsqltype="CF_SQL_VARCHAR">,
-                STATUS = <cfqueryparam value="#form.ver_status#" cfsqltype="CF_SQL_VARCHAR" >,
+                STATUS = 'CONCLUÍDO',
                 BP_DEFINITIVO_QUALIDADE = <cfqueryparam value="#UCase(form.save_bp)#" cfsqltype="CF_SQL_VARCHAR">,
                 DATA_BP_DEFINITIVO_QUALIDADE = <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
             WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">

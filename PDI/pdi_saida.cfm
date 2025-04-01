@@ -290,6 +290,10 @@
                            <option value="N4">N4</option>
                         </select>
                      </div>
+                     <div class="form-group col-md-2">
+                        <label for="formBateria">Bateria</label>
+                        <input type="text" class="form-control form-control-sm" name="bateria" id="formBateria" placeholder="Digite a voltagem da bateria" required>
+                    </div>
                </div>
                <div class="form-row">
                   
@@ -339,32 +343,35 @@
                </cfif>
                <!-- Inserção com o intervalo e USER_DATA corretos -->
                <cfquery name="insere" datasource="#BANCOSINC#">
-                  INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA (ID, USER_DATA, USER_COLABORADOR, VIN, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, STATUS, ULTIMO_REGISTRO) 
-                  VALUES (
-                   <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
-                   <cfqueryparam value="#userDataInserir#" cfsqltype="CF_SQL_TIMESTAMP">,
-                   <cfqueryparam value="#form.nome#" cfsqltype="CF_SQL_VARCHAR">,
-                   <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">,
-                   <cfqueryparam value="#UCase(form.modelo)#" cfsqltype="CF_SQL_VARCHAR">,
-                   <cfqueryparam value="#UCase(form.local)#" cfsqltype="CF_SQL_VARCHAR">,
-                   <cfqueryparam value="#UCase(form.N_Conformidade)#" cfsqltype="CF_SQL_VARCHAR">,
-                   <cfqueryparam value="#UCase(form.posicao)#" cfsqltype="CF_SQL_VARCHAR">,
-                   <cfqueryparam value="#UCase(form.problema)#" cfsqltype="CF_SQL_VARCHAR">,
-                   <cfqueryparam value="#UCase(form.estacao)#" cfsqltype="CF_SQL_VARCHAR">,
-                   <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">,
-                   <cfqueryparam value="#intervaloInserir#" cfsqltype="CF_SQL_VARCHAR">,
-                   CASE
-                   WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">= 'N0' THEN 'LIBERADO'
-                   WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">= 'AVARIA' THEN 'REPARO CAOA'
-                   WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">= 'OK A-' THEN 'LIBERADO'
-                   WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">= 'N1' THEN 'REPARO PDI'
-                   WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">= 'N2' OR 
-                   <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">= 'N3' OR 
-                   <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">= 'N4'  THEN 'REPARO CAOA'
-                   ELSE 'LIBERADO'
-                  END,
-                  <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP"> )
-               </cfquery>
+                  INSERT INTO INTCOLDFUSION.SISTEMA_QUALIDADE_PDI_SAIDA (
+                      ID, USER_DATA, USER_COLABORADOR, VIN, MODELO, BARREIRA, PECA, POSICAO, PROBLEMA, ESTACAO, CRITICIDADE, INTERVALO, STATUS, ULTIMO_REGISTRO, BATERIA
+                  ) VALUES (
+                      <cfqueryparam value="#obterMaxId.id#" cfsqltype="CF_SQL_INTEGER">,
+                      <cfqueryparam value="#userDataInserir#" cfsqltype="CF_SQL_TIMESTAMP">,
+                      <cfqueryparam value="#form.nome#" cfsqltype="CF_SQL_VARCHAR">,
+                      <cfqueryparam value="#UCase(form.vin)#" cfsqltype="CF_SQL_VARCHAR">,
+                      <cfqueryparam value="#UCase(form.modelo)#" cfsqltype="CF_SQL_VARCHAR">,
+                      <cfqueryparam value="#UCase(form.local)#" cfsqltype="CF_SQL_VARCHAR">,
+                      <cfqueryparam value="#UCase(form.N_Conformidade)#" cfsqltype="CF_SQL_VARCHAR">,
+                      <cfqueryparam value="#UCase(form.posicao)#" cfsqltype="CF_SQL_VARCHAR">,
+                      <cfqueryparam value="#UCase(form.problema)#" cfsqltype="CF_SQL_VARCHAR">,
+                      <cfqueryparam value="#UCase(form.estacao)#" cfsqltype="CF_SQL_VARCHAR">,
+                      <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR">,
+                      <cfqueryparam value="#intervaloInserir#" cfsqltype="CF_SQL_VARCHAR">,
+                      CASE
+                          WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> = 'N0' THEN 'LIBERADO'
+                          WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> = 'AVARIA' THEN 'REPARO CAOA'
+                          WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> = 'OK A-' THEN 'LIBERADO'
+                          WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> = 'N1' THEN 'REPARO PDI'
+                          WHEN <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> = 'N2' OR 
+                               <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> = 'N3' OR 
+                               <cfqueryparam value="#form.criticidade#" cfsqltype="CF_SQL_VARCHAR"> = 'N4' THEN 'REPARO CAOA'
+                          ELSE 'LIBERADO'
+                      END,
+                      <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">,
+                      <cfqueryparam value="#form.bateria#" cfsqltype="CF_SQL_VARCHAR">
+                  )
+              </cfquery>
                <cfoutput>
                   <script>
                      window.location.href = 'pdi_saida.cfm';
@@ -476,6 +483,7 @@
                      <th scope="col">Problema</th>
                      <th scope="col">Responsável</th>
                      <th scope="col">Criticidade</th>
+                     <th scope="col">Bateria</th>
                   </tr>
                </thead>
                <tbody class="table-group-divider">
@@ -498,6 +506,7 @@
                         <td>#PROBLEMA#</td>
                         <td>#ESTACAO#</td>
                         <td>#CRITICIDADE#</td>
+                        <td>#BATERIA#</td>
                      </tr>
                   </cfoutput>
                </tbody>

@@ -49,7 +49,8 @@
                 MEIO_AMBIENTE_4 = <cfqueryparam value="#UCase(form.meio_ambiente_4)#" cfsqltype="CF_SQL_CLOB">,
                 MEIO_AMBIENTE_5 = <cfqueryparam value="#UCase(form.meio_ambiente_5)#" cfsqltype="CF_SQL_CLOB">,
                 CAUSA_RAIZ = <cfqueryparam value="#UCase(form.causa_raiz)#" cfsqltype="CF_SQL_CLOB">,
-                STATUS = 'D4'
+                STATUS = 'D4',
+                DATA_RESPOSTA_D4 = <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
                 WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
         </cfquery>
         <cflocation url="d_principal.cfm">

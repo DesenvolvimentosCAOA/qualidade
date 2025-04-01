@@ -12,34 +12,6 @@
     </script>
 </cfif>
 
-<!-- Verificando o nível de autorização dos usuários para exibir os botões -->
-<cfif (isDefined("cookie.user_level_paint") and cookie.user_apontamento_fai eq "JEFFERSON ALVES TEIXEIRA") 
-   or (isDefined("cookie.user_level_body") and cookie.user_level_body eq "G") 
-   or (isDefined("cookie.user_level_fa") and cookie.user_level_fa eq "G") 
-   or (isDefined("cookie.user_level_fai") and cookie.user_level_fai eq "G")>
-    <!-- Conteúdo do botão e submenus para usuários com nível "G" -->
-    <div class="btn-container">
-        <div class="btn-rounded">
-            Novo Relatório
-            <div class="submenu">
-                <a href="#" onclick="showTable('tableBody')">Body</a>
-                <a href="#" onclick="showTable('tablePaint')">Paint</a>
-                <a href="#" onclick="showTable('tableFA')">FA</a>
-                <a href="#" onclick="showTable('tableFAI')">FAI</a>
-                <a href="#" onclick="showTable('tablePDI')">PDI</a>
-            </div>
-        </div>
-        <button class="btn-rounded" onclick="showTable('tableACOMP')">Acompanhamento Contenção</button>
-        <button class="btn-rounded"></button>
-        <button class="btn-rounded"></button>
-    </div>
-<cfelse>
-    <script>
-        alert("É necessário autorização!!");
-        history.back();
-    </script>
-</cfif>
-
     <!--- Consulta --->
     <cfquery name="consulta" datasource="#BANCOSINC#">
         SELECT *

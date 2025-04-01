@@ -127,7 +127,7 @@
                                   PECA_REPARO ='#UCase(form.peca)#', 
                                   POSICAO_REPARO = '#UCase(form.local)#', 
                                   PROBLEMA_REPARO = '#Ucase(form.NConformidade)#', 
-                                  REPONSAVEL_REPARO = '#UCase(form.estacao)#'
+                                  RESPONSAVEL_REPARO = '#UCase(form.estacao)#'
                               WHERE ID = '#url.id_editar#'
                           </cfquery>
                           <div class="alert alert-success" role="alert">

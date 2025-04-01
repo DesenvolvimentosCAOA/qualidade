@@ -16,24 +16,24 @@
         <cfif isDefined("url.filtroESTACAO") and url.filtroESTACAO neq "">
             AND UPPER(ESTACAO) LIKE UPPER('%#url.filtroESTACAO#%')
         </cfif>
-        AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+        AND INTERVALO_REPARO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
         AND (
-            (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
-                        AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+            (TO_CHAR(REPARO_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
+                        AND INTERVALO_REPARO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                         AND CASE 
-                                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                                ELSE TRUNC(USER_DATA) 
+                                WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                                ELSE TRUNC(REPARO_DATA) 
                             END = CASE 
                                     WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
-                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                OR (TO_CHAR(REPARO_DATA, 'D') = '7' -- Sexta-feira
+                    AND INTERVALO_REPARO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(REPARO_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                            ELSE TRUNC(USER_DATA) 
+                            WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                            ELSE TRUNC(REPARO_DATA) 
                         END = CASE 
                                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
@@ -49,7 +49,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -65,22 +65,22 @@
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
                 WHERE 
                 (
-                    (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
-                        AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    (TO_CHAR(REPARO_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
+                        AND INTERVALO_REPARO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                         AND CASE 
-                                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                                ELSE TRUNC(USER_DATA) 
+                                WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                                ELSE TRUNC(REPARO_DATA) 
                             END = CASE 
                                     WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
-                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                OR (TO_CHAR(REPARO_DATA, 'D') = '7' -- Sexta-feira
+                    AND INTERVALO_REPARO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(REPARO_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                            ELSE TRUNC(USER_DATA) 
+                            WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                            ELSE TRUNC(REPARO_DATA) 
                         END = CASE 
                                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
@@ -89,7 +89,7 @@
                 )
                 AND MODELO LIKE 'TIGGO 7%'
             AND PROBLEMA_REPARO IS NOT NULL
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA,
             'TTL' AS HH, 
@@ -108,7 +108,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -124,22 +124,22 @@
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
                 WHERE 
                 (
-                    (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
-                        AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    (TO_CHAR(REPARO_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
+                        AND INTERVALO_REPARO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                         AND CASE 
-                                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                                ELSE TRUNC(USER_DATA) 
+                                WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                                ELSE TRUNC(REPARO_DATA) 
                             END = CASE 
                                     WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
-                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                OR (TO_CHAR(REPARO_DATA, 'D') = '7' -- Sexta-feira
+                    AND INTERVALO_REPARO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(REPARO_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                            ELSE TRUNC(USER_DATA) 
+                            WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                            ELSE TRUNC(REPARO_DATA) 
                         END = CASE 
                                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
@@ -148,7 +148,7 @@
                 )
                 AND MODELO LIKE 'TIGGO 5%'
             AND PROBLEMA_REPARO IS NOT NULL
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA,
             'TTL' AS HH, 
@@ -167,7 +167,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -183,22 +183,22 @@
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
                 WHERE 
                 (
-                    (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
-                        AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    (TO_CHAR(REPARO_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
+                        AND INTERVALO_REPARO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                         AND CASE 
-                                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                                ELSE TRUNC(USER_DATA) 
+                                WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                                ELSE TRUNC(REPARO_DATA) 
                             END = CASE 
                                     WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
-                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                OR (TO_CHAR(REPARO_DATA, 'D') = '7' -- Sexta-feira
+                    AND INTERVALO_REPARO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(REPARO_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                            ELSE TRUNC(USER_DATA) 
+                            WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                            ELSE TRUNC(REPARO_DATA) 
                         END = CASE 
                                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
@@ -207,7 +207,7 @@
                 )
                 AND MODELO LIKE 'TIGGO 8 %'
             AND PROBLEMA_REPARO IS NOT NULL
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA,
             'TTL' AS HH, 
@@ -226,7 +226,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -242,22 +242,22 @@
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
                 WHERE 
                 (
-                    (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
-                        AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    (TO_CHAR(REPARO_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
+                        AND INTERVALO_REPARO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                         AND CASE 
-                                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                                ELSE TRUNC(USER_DATA) 
+                                WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                                ELSE TRUNC(REPARO_DATA) 
                             END = CASE 
                                     WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
-                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                OR (TO_CHAR(REPARO_DATA, 'D') = '7' -- Sexta-feira
+                    AND INTERVALO_REPARO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(REPARO_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                            ELSE TRUNC(USER_DATA) 
+                            WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                            ELSE TRUNC(REPARO_DATA) 
                         END = CASE 
                                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
@@ -266,7 +266,7 @@
                 )
                 AND MODELO LIKE 'TIGGO 83%'
             AND PROBLEMA_REPARO IS NOT NULL
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA,
             'TTL' AS HH, 
@@ -285,7 +285,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -301,22 +301,22 @@
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
                 WHERE 
                 (
-                    (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
-                        AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    (TO_CHAR(REPARO_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
+                        AND INTERVALO_REPARO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                         AND CASE 
-                                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                                ELSE TRUNC(USER_DATA) 
+                                WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                                ELSE TRUNC(REPARO_DATA) 
                             END = CASE 
                                     WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
-                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                OR (TO_CHAR(REPARO_DATA, 'D') = '7' -- Sexta-feira
+                    AND INTERVALO_REPARO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(REPARO_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                            ELSE TRUNC(USER_DATA) 
+                            WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                            ELSE TRUNC(REPARO_DATA) 
                         END = CASE 
                                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
@@ -325,7 +325,7 @@
                 )
                 AND MODELO LIKE 'TL %'
             AND PROBLEMA_REPARO IS NOT NULL
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA,
             'TTL' AS HH, 
@@ -344,7 +344,7 @@
             SELECT 
                 BARREIRA, VIN, MODELO,
                 CASE 
-                    WHEN INTERVALO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
+                    WHEN INTERVALO_REPARO BETWEEN '00:00' AND '23:00' THEN 'OUTROS'
                 END HH,
                 CASE 
                     -- Verifica se o VIN só contém criticidades N0, OK A- ou AVARIA (Aprovado)
@@ -360,22 +360,22 @@
             FROM INTCOLDFUSION.SISTEMA_QUALIDADE_FAI
                 WHERE 
                 (
-                    (TO_CHAR(USER_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
-                        AND INTERVALO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    (TO_CHAR(REPARO_DATA, 'D') BETWEEN 2 AND 6 -- Segunda a Quinta-feira
+                        AND INTERVALO_REPARO IN ('15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
                         AND CASE 
-                                WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                                ELSE TRUNC(USER_DATA) 
+                                WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                                ELSE TRUNC(REPARO_DATA) 
                             END = CASE 
                                     WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                     ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
                                 END
                     )
-                OR (TO_CHAR(USER_DATA, 'D') = '7' -- Sexta-feira
-                    AND INTERVALO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
-                    AND TO_CHAR(USER_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
+                OR (TO_CHAR(REPARO_DATA, 'D') = '7' -- Sexta-feira
+                    AND INTERVALO_REPARO IN ('15:00', '15:50', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00')
+                    AND TO_CHAR(REPARO_DATA, 'HH24:MI') BETWEEN '15:00' AND '23:00'
                     AND CASE 
-                            WHEN TO_CHAR(USER_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(USER_DATA - 1) 
-                            ELSE TRUNC(USER_DATA) 
+                            WHEN TO_CHAR(REPARO_DATA, 'HH24:MI') <= '02:00' THEN TRUNC(REPARO_DATA - 1) 
+                            ELSE TRUNC(REPARO_DATA) 
                         END = CASE 
                                 WHEN SUBSTR('#url.filtroData#', 12, 5) <= '02:00' THEN TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS') - 1) 
                                 ELSE TRUNC(TO_DATE('#url.filtroData#', 'YYYY-MM-DD HH24:MI:SS')) 
@@ -384,7 +384,7 @@
                 )
                 AND MODELO LIKE '%HR %'
             AND PROBLEMA_REPARO IS NOT NULL
-            GROUP BY BARREIRA, VIN, INTERVALO, MODELO
+            GROUP BY BARREIRA, VIN, INTERVALO_REPARO, MODELO
         )
         SELECT BARREIRA,
             'TTL' AS HH, 
@@ -398,13 +398,13 @@
         ORDER BY HH
     </cfquery>
 
-    <!--- Verificando se está logado  --->
-<cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
-    <script>
-        alert("É necessario autenticação!!");
-        self.location = '/qualidade/buyoff_linhat/index.cfm'
-    </script>
-</cfif>
+        <!--- Verificando se está logado  --->
+    <cfif not isDefined("cookie.USER_APONTAMENTO_FAI") or cookie.USER_APONTAMENTO_FAI eq "">
+        <script>
+            alert("É necessario autenticação!!");
+            self.location = '/qualidade/buyoff_linhat/index.cfm'
+        </script>
+    </cfif>
 
 <html lang="pt-BR">
     <head>
@@ -557,6 +557,7 @@
                                 <td>2º TURNO</td>
                                 <td>#CRITICIDADE#</td>
                                 <td>#TIPO_REPARO#</td>
+                                <td>#INTERVALO_REPARO#</td>
                             </tr>
                         </cfloop>
                         <cfloop index="i" from="1" to="#consulta_barreira_tiggo7.recordcount#">

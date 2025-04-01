@@ -13,19 +13,7 @@
             ORDER BY ID DESC
         </cfquery>
     </cfif>
-
-    <cfif isDefined("form.analise_eficacia") and form.analise_eficacia neq "">
-        <cfquery name="atualiza" datasource="#BANCOSINC#">
-            UPDATE INTCOLDFUSION.ALERTAS_8D
-            SET
-                ANALISE_EFICACIA = <cfqueryparam value="#UCase(form.analise_eficacia)#" cfsqltype="CF_SQL_CLOB">,
-                STATUS = 'FINALIZADO',
-                DATA_RESPOSTA_D7_D8 = <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
-                WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
-        </cfquery>
-        <cflocation url="d_principal.cfm">
-    </cfif>
-
+    
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -150,55 +138,65 @@
                 background-color: #8B0000; /* Cor de fundo ao passar o mouse */
             }
 
-            .folder-content {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
+            #uploadForm {
+                max-width: 500px;
+                margin: 0 auto;
                 padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                background-color: #f9f9f9;
+                font-family: Arial, sans-serif;
             }
 
-            .folder-content ul {
-                list-style-type: none;
-                padding: 0;
-                margin: 0;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 20px;
-            }
-
-            .folder-content li {
-                text-align: center;
-                max-width: 120px;
-                margin-bottom: 20px;
-            }
-
-            .folder-content img {
-                width: 100px;
-                height: auto;
-                border-radius: 4px;
-                transition: transform 0.3s ease-in-out;
-                cursor: pointer;
-            }
-
-            .folder-content img:hover {
-                transform: scale(1.1);
-            }
-
-            .folder-content a {
+            #uploadForm label {
                 display: block;
-                margin-top: 10px;
-                text-decoration: none;
-                font-size: 14px;
+                margin-bottom: 8px;
+                font-weight: bold;
                 color: #333;
-                transition: color 0.3s;
             }
 
-            .folder-content a:hover {
-                color: #007bff;
+            #uploadForm input[type="text"],
+            #uploadForm input[type="file"] {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 14px;
             }
 
+            #uploadForm input[type="text"]:read-only {
+                background-color: #e9ecef;
+                cursor: not-allowed;
+            }
+
+            #uploadForm button {
+                width: 100%;
+                padding: 10px;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+            #uploadForm button:hover {
+                background-color: #0056b3;
+            }
+
+            #uploadForm input[type="file"] {
+                padding: 5px;
+                font-size: 14px;
+            }
+
+            #uploadForm input[type="file"]:focus {
+                outline: none;
+                border-color: #007bff;
+            }
         </style>
-    </head>        
+    </head>
         <body>
             <header class="titulo">
                 <cfinclude template="/qualidade/relatorios/auxi/nav_links.cfm">
@@ -209,12 +207,8 @@
                         <cfoutput>
                             <table>
                                 <tr>
-                                    <td class="logo">
-                                        <img src="/qualidade/relatorios/img/Logo_Caoa.webp" alt="Logo CAOA">
-                                    </td>
-                                    <td class="header" colspan="9" style="text-align:center;font-size:40px; color:red;">
-                                        8D - ALERTA DE QUALIDADE
-                                    </td>
+                                    <td class="logo"><img src="/qualidade/relatorios/img/Logo_Caoa.webp" alt="Logo CAOA"></td>
+                                    <td class="header" colspan="9" style="text-align:center;font-size:40px; color:red;">8D - ALERTA DE QUALIDADE</td>
                                 </tr>
                                 <tr>
                                     <td rowspan="2" style="text-align:center; font-size:30px;background-color:lightgrey;">D1</td>
@@ -241,14 +235,13 @@
                                     <td class="label-bold" colspan="1" style="text-align:center;">BARREIRA:</td>
                                     <td class="label-bold" colspan="1" style="text-align:center;">MODELO:</td>
                                     <td class="label-bold" colspan="1" style="text-align:center;">VIN/BARCODE:</td>
-                                    <td class="label-bold" colspan="1" style="text-align:center;">PEÇA:</td>
+                                    <td class="label-bold" colspan="2" style="text-align:center;">PEÇA:</td>
                                     <td class="label-bold" colspan="1" style="text-align:center;">POSIÇÃO:</td>
-                                    <td class="label-bold" colspan="4" style="text-align:center;">PROBLEMA:</td>
+                                    <td class="label-bold" colspan="3" style="text-align:center;">PROBLEMA:</td>
                                 </tr>
                                 <th colspan="1" style="text-align:center;">
                                     <input type="text" name="barreira" id="barreira" list="barreiras" style="text-align:center;" value="#consulta_editar.barreira#">
                                 </th>
-
                                 <script>
                                     function validarSetor(input) {
                                         let valor = input.value;
@@ -270,11 +263,9 @@
                                         }
                                     }
                                 </script>
-
                                 <th colspan="1" style="text-align:center;">
                                     <input type="text" name="modelo" id="modelo" style="text-align:center;" value="#consulta_editar.modelo#" readonly>
                                 </th>
-                                
                                 <script>
                                     function validarModelo(input) {
                                         let valor = input.value;
@@ -300,51 +291,51 @@
                                 <th colspan="1" style="text-align:center;">
                                     <input type="text" name="vin" placeholder="Vin/Barcode" style="text-align:center;" value="#consulta_editar.vin#" readonly>
                                 </th>
-                                <th colspan="1" style="text-align:center;">
+                                <th colspan="2" style="text-align:center;">
                                     <input type="text" name="peca" placeholder="Peça" style="text-align:center;" value="#consulta_editar.peca#" readonly>
                                 </th>
                                 <th colspan="1" style="text-align:center;">
                                     <input type="text" name="posicao" placeholder="Posição" style="text-align:center;" value="#consulta_editar.posicao#" readonly>
                                 </th>
-                                <th colspan="4" style="text-align:center;">
+                                <th colspan="3" style="text-align:center;">
                                     <input type="text" name="problema" placeholder="Problema" style="text-align:center;" value="#consulta_editar.problema#" readonly>
                                 </th>                            
                                 <tr>
                                     <td class="label-bold" colspan="1">DESCRIÇÃO DA NÃO CONFORMIDADE:</td>
                                     <td colspan="8">
-                                        <textarea name="descricao" required readonly style="width: 100%; height: 100px;">#consulta_editar.descricao_nc#</textarea>
+                                        <textarea name="descricao" required readonly style="width: 100%; height: 100px; resize: vertical;">#consulta_editar.descricao_nc#</textarea>
                                     </td>
                                 </tr>  
                                 <tr>
                                     <td class="label-bold" colspan="1" style="text-align:center;">QTD OCORRÊNCIA:</td>
-                                    <td class="label-bold" colspan="2" style="text-align:center;">CRITICIDADE:</td>
-                                    <td class="label-bold" colspan="6" style="text-align:center;">HISTÓRICO DE TRATATIVA:</td>
+                                    <td class="label-bold" colspan="1" style="text-align:center;">CRITICIDADE:</td>
+                                    <td class="label-bold" colspan="7" style="text-align:center;">HISTÓRICO DE TRATATIVA:</td>
                                 </tr>
                                 <th colspan="1">
                                     <input type="text" name="qtd_ocorrencia" value="#consulta_editar.quantidade#" readonly>
                                 </th>
-                                <th colspan="2" style="text-align:center;">
+                                <th colspan="1" style="text-align:center;">
                                     <input type="text" name="criticidade" value="#consulta_editar.criticidade#" readonly>
                                 </th>
-                                <th colspan="6" style="text-align:center;">
+                                <th colspan="7" style="text-align:center;">
                                     <input type="text" name="historico" value="#consulta_editar.historico#" readonly>
                                 </th>
                                 <tr>
                                     <td rowspan="3" colspan="1" style="text-align:center; font-size:30px; background-color:lightgrey;">D3</td>
                                     <td class="label-bold" colspan="1" style="background-color:lightgrey;">AÇÃO DE CONTENÇÃO:</td>
                                     <td colspan="8" style="background-color:lightgrey;">
-                                        <textarea name="acao_contencao" placeholder="DESCREVA A AÇÃO DE CONTENÇÃO REALIZADA" style="background-color:lightgrey; width: 100%; height: 100px;" readonly>#consulta_editar.acao_contencao#</textarea>
+                                        <textarea name="acao_contencao" placeholder="DESCREVA A AÇÃO DE CONTENÇÃO REALIZADA" style="background-color:lightgrey;width: 100%; height: 100px; resize: vertical;" readonly>#consulta_editar.acao_contencao#</textarea>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="label-bold" colspan="5" style="text-align:center;background-color:lightgrey;">RESPONSÁVEL PELA AÇÃO DE CONTENÇÃO:</td>
-                                    <td class="label-bold" colspan="4" style="text-align:center;background-color:lightgrey;">DATA DA AÇÃO DE CONTENÇÃO:</td>
+                                    <td class="label-bold" colspan="6" style="text-align:center;background-color:lightgrey;">RESPONSÁVEL PELA AÇÃO DE CONTENÇÃO:</td>
+                                    <td class="label-bold" colspan="3" style="text-align:center;background-color:lightgrey;">DATA DA AÇÃO DE CONTENÇÃO:</td>
                                 </tr>
-                                <th colspan="5" style="text-align:center;background-color:lightgrey;">
+                                <th colspan="6" style="text-align:center;background-color:lightgrey;">
                                     <input readonly type="text" name="responsavel_acao_contencao" style="text-align:center;background-color:lightgrey;"  value="#consulta_editar.responsavel_acao_contencao#">
                                 </th>
                                 
-                                <th colspan="4" style="text-align:center;background-color:lightgrey;">
+                                <th colspan="3" style="text-align:center;background-color:lightgrey;">
                                     <input type="text" name="data_acao_contencao" style="text-align:center;background-color:lightgrey;" value="#dateformat(consulta_editar.data_acao_contencao, "dd/mm/yyyy")#" required>
                                 </th>
                                     <tr>
@@ -475,7 +466,7 @@
                                             <textarea name="causa_raiz" readonly 
                                                 style="width: 100%; height: 100px; resize: vertical;">#consulta_editar.causa_raiz#</textarea>
                                         </td>
-                                    </tr>                                    
+                                    </tr>  
                                     <tr>
                                         <td rowspan="6" style="text-align:center; font-size:30px;background-color:lightgrey">D5/D6</td>
                                         <td class="label-bold" colspan="2" style="text-align:center;background-color:lightgrey">NÃO CONFORMIDADE/ OPORTUNIDADE DE MELHORIA</td>
@@ -585,70 +576,312 @@
                                             <input type="text" name="bp_5" style="width: 100%;background-color:lightgrey" value="#consulta_editar.bp_5#" readonly>
                                         </td>
                                     </tr>
-                                <form method="POST">
                                     <tr>
                                         <td rowspan="2" style="text-align:center; font-size:30px;">D7/D8</td>
                                         <td class="label-bold" colspan="9">ANÁLISE DE EFICÁCIA E LIÇÕES APRENDIDAS:</td>
                                     </tr>
                                     <td colspan="9">
-                                        <textarea name="analise_eficacia" placeholder="DESCREVA A ANÁLISE DE EFICÁCIA E LIÇÕES APRENDIDAS AQUI" 
-                                            style="width: 100%; height: 100px; resize: vertical;"></textarea>
-                                    </td>
-                                    </table>
-                                    <button type="button" class="btn-rounded back-btn" id="btnback" onclick="window.location.href = 'd_principal.cfm';">Voltar</button>
-                                    <button type="submit" class="btn-rounded save-btn" id="btnSalvarEdicao">Salvar</button>
-                                </form>
-                    </cfoutput>
+                                        <textarea name="analise_eficacia" readonly 
+                                            style="width: 100%; height: 100px; resize: vertical;">#consulta_editar.analise_eficacia#</textarea>
+                                    </td>                                    
+                            </table>
+
+                            <form id="uploadForm" action="uploadfinal.cfm" method="post" onsubmit="addIdToUrl(event)">
+                                <label for="vin">Nº Controle:</label>
+                                <input type="text" name="vin" id="vin" value="#consulta_editar.n_controle#" readonly required>
+                                <input type="text" name="id" id="id" value="#consulta_editar.id#" readonly required hidden>
+                                <label for="photoInput">Selecionar Arquivos:</label>
+                                <input type="file" id="photoInput" multiple>
+                                <input type="hidden" name="photoBase64" id="photoBase64">
+                                <button type="submit">Enviar</button>
+                            </form>
+                        </cfoutput>
+                        <cfscript>
+                            // Caminho do diretório
+                            directoryPath = "E:/arquivo_foto/";
+                        
+                            // Obter a lista de pastas
+                            folderList = directoryList(directoryPath, true, "directory");
+                        
+                            // Recupera o parâmetro da URL id_nc
+                            idNc = url.id_nc;
+                        
+                            // Gerar o código HTML para a tabela
+                            htmlTable = "<style>
+                                            table { width: 100%; border-collapse: collapse; }
+                                            th, td { border: 1px solid black; padding: 8px; text-align: center; }
+                                         </style>";
+                            htmlTable &= "<table id='dataTable'>";
+                            htmlTable &= "<tr><th>ID</th><th>N CONTROLE</th><th>Ação</th></tr>";
+                        
+                            for (folder in folderList) {
+                                folderName = listLast(folder, "\");
+                        
+                                // Verifica se a pasta corresponde ao id_nc
+                                if (folderName == idNc) {
+                                    // Consulta ao banco de dados para buscar os dados da tabela ALERTAS_8D
+                                    query = new Query();
+                                    query.setDatasource("#BANCOSINC#");
+                                    query.setSQL("SELECT ID, N_CONTROLE FROM ALERTAS_8D WHERE N_CONTROLE = :idNc");
+                                    query.addParam(name="idNc", value=folderName, cfsqltype="cf_sql_varchar");
+                                    result = query.execute().getResult();
+                        
+                                    if (result.recordCount > 0) {
+                                        htmlTable &= "<tr>";
+                                        htmlTable &= "<td>" & result.ID & "</td>";
+                                        
+                                        // Verifica se o N_CONTROLE está vazio ou nulo e coloca "Falta Lançamento"
+                                        caixaValue = (len(trim(result.N_CONTROLE)) == 0 or isNull(result.N_CONTROLE)) ? "Falta Lançamento" : result.N_CONTROLE;
+                                        
+                                        htmlTable &= "<td>" & caixaValue & "</td>";
+                                        htmlTable &= "<td><a href='downloadFolder.cfm?id_nc=" & folderName & "'>Baixar Pasta</a>";
+                                        htmlTable &= "</tr>";
+                                    }
+                                }
+                            }
+                        
+                            htmlTable &= "</table>";
+                        </cfscript>
+                        <cfoutput>#htmlTable#</cfoutput>
+                        <h2 style="text-align:center;">Evidências da não conformidade</h2>
+                        <script>
+                            async function processAndSubmit(event) {
+                                event.preventDefault();
+                    
+                                const input = document.getElementById('photoInput');
+                                const base64Array = [];
+                                for (let file of input.files) {
+                                    const reader = new FileReader();
+                                    const result = await new Promise(resolve => {
+                                        reader.onload = () => resolve(reader.result.split(',')[1]);
+                                        reader.readAsDataURL(file);
+                                    });
+                                    base64Array.push({ fileName: file.name, base64: result });
+                                }
+                    
+                                document.getElementById('photoBase64').value = JSON.stringify(base64Array);
+                                document.getElementById('uploadForm').submit();
+                            }
+                    
+                            // Filtrar a tabela com base na entrada do usuário
+                            document.getElementById('searchInput').addEventListener('input', function() {
+                                const filter = this.value.toLowerCase();
+                                const rows = document.querySelectorAll('#dataTable tr:not(:first-child)');
+                                rows.forEach(row => {
+                                    const text = row.textContent.toLowerCase();
+                                    row.style.display = text.includes(filter) ? '' : 'none';
+                                });
+                            });
+                        </script>
+                        
+                        <cfparam name="id_nc" default="">
+                        <!-- Verifica se ID foi passado -->
+                        <cfif NOT Len(id_nc)>
+                            <cfoutput>Erro: ID NC não especificado.</cfoutput>
+                            <cfabort>
+                        </cfif>
+            
+                        <cfset caminhoBase = "E:\arquivo_foto\">
+                        <cfset pastaImagens = caminhoBase & id_nc>
+            
+                        <!-- Verifica se a pasta existe -->
+                        <cfif NOT directoryExists(pastaImagens)>
+                            <cfoutput>Erro: Diretório não encontrado.</cfoutput>
+                            <cfabort>
+                        </cfif>
+            
+                        <!-- Lista as imagens na pasta -->
+                        <cfscript>
+                            htmlContent = "<div class='folder-content'><ul style='list-style: none; padding: 0;'>";
+            
+                            folderContent = directoryList(pastaImagens, false, "name");
+            
+                            for (contentName in folderContent) {
+                                if (
+                                    findNoCase(".jpg", contentName) or 
+                                    findNoCase(".png", contentName) or 
+                                    findNoCase(".jpeg", contentName) or 
+                                    findNoCase(".gif", contentName) or 
+                                    findNoCase(".bmp", contentName) or 
+                                    findNoCase(".webp", contentName)
+                                ) {
+                                    fileUrl = "/qualidade/relatorios/alertas/exibeImagens.cfm?imagem=" & urlEncodedFormat(contentName) & "&id_nc=" & urlEncodedFormat(id_nc);
+            
+                                    htmlContent &= "<li style='margin-bottom: 10px;'>";
+                                        htmlContent = "";
+                                        htmlContent &= "<ul style='display: flex; flex-wrap: wrap; gap: 15px;'>";  // Contêiner para as imagens na horizontal
+                                        
+                                        for (content in folderContent) {
+                                            contentName = listLast(content, "\");  // Extrair apenas o nome do arquivo
+                                        
+                                            // Gerar o caminho relativo para a imagem
+                                            fileUrl = "/qualidade/relatorios/alertas/exibeImagens.cfm?imagem=" & urlEncodedFormat(contentName) & "&id_nc=" & urlEncodedFormat(id_nc);
+                                        
+                                            // Verificar se é uma imagem (jpg, png, jpeg, gif)
+                                            if (findNoCase(".jpg", contentName) or findNoCase(".png", contentName) or findNoCase(".jpeg", contentName) or findNoCase(".gif", contentName)) {
+                                                // Adicionar a imagem e o link à lista
+                                                htmlContent &= "<li style='text-align: center; list-style-type: none;'>";
+                                                htmlContent &= "<a href='" & fileUrl & "' class='image-link' data-image='" & fileUrl & "' target='_blank' style='display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none;'>";
+                                                
+                                                // Exibir a imagem maior
+                                                htmlContent &= "<img src='" & fileUrl & "' style='width: 100px; height: 100px; object-fit: cover; border-radius: 4px;'>";
+                                                
+                                                // Nome da imagem abaixo da miniatura
+                                                htmlContent &= "<span style='color: blue; font-size: 12px; margin-top: 5px;'>" & contentName & "</span>";
+                                                htmlContent &= "</a>";
+                                                htmlContent &= "</li>";
+                                            }
+                                        }
+                                        
+                                        htmlContent &= "</ul>";
+                                        
+                                    htmlContent &= "</li>";
+                                }
+                            }
+            
+                            htmlContent &= "</ul></div>";
+                        </cfscript>
+            
+                        <cfoutput>#htmlContent#</cfoutput>
+            
+                        <!-- CSS para posicionar a prévia -->
+                        <style>
+                            #imagePreview {
+                                display: none;
+                                position: absolute;
+                                border: 1px solid #ccc;
+                                background: #fff;
+                                padding: 5px;
+                                box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+                            }
+                        </style>
+            
+                        <!-- Elemento para mostrar a prévia -->
+                        <div id="imagePreview">
+                            <img id="previewImg" src="" style="max-width: 350px; max-height: 350px;">
+                        </div>
+            
+                        <!-- Script para exibir a prévia da imagem -->
+                        <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                const preview = document.getElementById("imagePreview");
+                                const previewImg = document.getElementById("previewImg");
+            
+                                document.querySelectorAll(".image-link").forEach(link => {
+                                    link.addEventListener("mouseover", function(event) {
+                                        previewImg.src = this.dataset.image;
+                                        preview.style.display = "block";
+                                        positionPreview(event);
+                                    });
+            
+                                    link.addEventListener("mousemove", function(event) {
+                                        positionPreview(event);
+                                    });
+            
+                                    link.addEventListener("mouseout", function() {
+                                        preview.style.display = "none";
+                                    });
+            
+                                    function positionPreview(event) {
+                                        const previewWidth = preview.offsetWidth;
+                                        const previewHeight = preview.offsetHeight;
+                                        const pageWidth = window.innerWidth;
+                                        const pageHeight = window.innerHeight;
+            
+                                        let top = event.pageY - previewHeight - 10; // Aparecer acima do mouse
+                                        let left = event.pageX + 10; // Posição padrão à direita
+            
+                                        // Se estiver no topo da página, exibir abaixo do mouse
+                                        if (top < window.scrollY) {
+                                            top = event.pageY + 10;
+                                        }
+            
+                                        // Se a imagem ultrapassar a lateral direita, ajustar para a esquerda
+                                        if (left + previewWidth > pageWidth) {
+                                            left = event.pageX - previewWidth - 10;
+                                        }
+            
+                                        preview.style.top = top + "px";
+                                        preview.style.left = left + "px";
+                                    }
+                                });
+                            });
+                        </script>
+                        <script>
+                            // Adiciona o ID (n_controle) na URL do formulário antes de enviar
+                            function addIdToUrl(event) {
+                                event.preventDefault(); // Previne o envio imediato
+                                const id = document.getElementById('id').value; // Obtém o valor do ID (n_controle)
+                                const form = document.getElementById('uploadForm'); // Referência ao formulário
+                                const photoInput = document.getElementById('photoInput'); // Campo de arquivos
+                        
+                                // Verifica se há arquivos selecionados
+                                if (!photoInput.files.length) {
+                                    alert("Por favor, selecione pelo menos um arquivo.");
+                                    return;
+                                }
+                        
+                                // Processa os arquivos e transforma em Base64
+                                const base64Array = [];
+                                const promises = [];
+                                for (let file of photoInput.files) {
+                                    promises.push(new Promise((resolve) => {
+                                        const reader = new FileReader();
+                                        reader.onload = () => {
+                                            const base64 = reader.result.split(',')[1];
+                                            base64Array.push({ fileName: file.name, base64 });
+                                            resolve();
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }));
+                                }
+                        
+                                Promise.all(promises).then(() => {
+                                    // Define o valor em Base64 no campo oculto
+                                    document.getElementById('photoBase64').value = JSON.stringify(base64Array);
+                        
+                                    // Adiciona o ID (n_controle) à URL do formulário
+                                    form.action += `?id_editar=${encodeURIComponent(id)}`;
+                        
+                                    // Envia o formulário
+                                    form.submit();
+                                });
+                            }
+                        </script>
                 </div>
             </div>
+            
             <cfscript>
                 // Caminho do diretório
                 directoryPath = "C:/ColdFusion2023/cfusion-manuais/wwwroot/qualidade/arquivo_foto/";
-            
+
+                // Obter o valor do id_nc da URL
+                id_nc = url.id_nc;
+
                 // Obter a lista de pastas
                 folderList = directoryList(directoryPath, true, "directory");
-            
-                // Recupera o parâmetro da URL id_nc
-                idNc = url.id_nc;
-            
+
                 // Gerar o código HTML para a tabela
-                htmlTable = "<style>
-                                table { width: 100%; border-collapse: collapse; }
-                                th, td { border: 1px solid black; padding: 8px; text-align: center; }
-                             </style>";
-                htmlTable &= "<table id='dataTable'>";
-                htmlTable &= "<tr><th>ID</th><th>N CONTROLE</th><th>Ação</th></tr>";
-            
+                htmlTable = "<table id='dataTable'>";
+                htmlTable &= "<tr><th>Nome da Pasta</th><th>Ação</th></tr>";
+
                 for (folder in folderList) {
                     folderName = listLast(folder, "\");
-            
-                    // Verifica se a pasta corresponde ao id_nc
-                    if (folderName == idNc) {
-                        // Consulta ao banco de dados para buscar os dados da tabela ALERTAS_8D
-                        query = new Query();
-                        query.setDatasource("#BANCOSINC#");
-                        query.setSQL("SELECT ID, N_CONTROLE FROM ALERTAS_8D WHERE N_CONTROLE = :idNc");
-                        query.addParam(name="idNc", value=folderName, cfsqltype="cf_sql_varchar");
-                        result = query.execute().getResult();
-            
-                        if (result.recordCount > 0) {
-                            htmlTable &= "<tr>";
-                            htmlTable &= "<td>" & result.ID & "</td>";
-                            
-                            // Verifica se o N_CONTROLE está vazio ou nulo e coloca "Falta Lançamento"
-                            caixaValue = (len(trim(result.N_CONTROLE)) == 0 or isNull(result.N_CONTROLE)) ? "Falta Lançamento" : result.N_CONTROLE;
-                            
-                            htmlTable &= "<td>" & caixaValue & "</td>";
-                            htmlTable &= "<td><a href='downloadFolder.cfm?id_nc=" & folderName & "'>Baixar Pasta</a>";
-                            htmlTable &= "</tr>";
-                        }
+
+                    // Verificar se o nome da pasta corresponde ao id_editar
+                    if (directoryExists(folder) && folderName == id_nc) {
+                        htmlTable &= "<tr>";
+                        htmlTable &= "<td>" & folderName & "</td>";
+                        
+                        htmlTable &= "</tr>";
                     }
                 }
-            
+
                 htmlTable &= "</table>";
             </cfscript>
+
             <cfoutput>#htmlTable#</cfoutput>
-            <h2 style="text-align:center;">Evidências da não conformidade</h2>
+
             <script>
                 async function processAndSubmit(event) {
                     event.preventDefault();
@@ -678,140 +911,6 @@
                     });
                 });
             </script>
-            
-            <cfparam name="id_nc" default="">
-<!-- Verifica se ID foi passado -->
-<cfif NOT Len(id_nc)>
-    <cfoutput>Erro: ID NC não especificado.</cfoutput>
-    <cfabort>
-</cfif>
-
-<cfset caminhoBase = "E:\arquivo_foto\">
-<cfset pastaImagens = caminhoBase & id_nc>
-
-<!-- Verifica se a pasta existe -->
-<cfif NOT directoryExists(pastaImagens)>
-    <cfoutput>Erro: Diretório não encontrado.</cfoutput>
-    <cfabort>
-</cfif>
-
-<!-- Lista as imagens na pasta -->
-<cfscript>
-    htmlContent = "<div class='folder-content'><ul style='list-style: none; padding: 0;'>";
-
-    folderContent = directoryList(pastaImagens, false, "name");
-
-    for (contentName in folderContent) {
-        if (
-            findNoCase(".jpg", contentName) or 
-            findNoCase(".png", contentName) or 
-            findNoCase(".jpeg", contentName) or 
-            findNoCase(".gif", contentName) or 
-            findNoCase(".bmp", contentName) or 
-            findNoCase(".webp", contentName)
-        ) {
-            fileUrl = "/qualidade/relatorios/alertas/exibeImagens.cfm?imagem=" & urlEncodedFormat(contentName) & "&id_nc=" & urlEncodedFormat(id_nc);
-
-            htmlContent &= "<li style='margin-bottom: 10px;'>";
-                htmlContent = "";
-                htmlContent &= "<ul style='display: flex; flex-wrap: wrap; gap: 15px;'>";  // Contêiner para as imagens na horizontal
-                
-                for (content in folderContent) {
-                    contentName = listLast(content, "\");  // Extrair apenas o nome do arquivo
-                
-                    // Gerar o caminho relativo para a imagem
-                    fileUrl = "/qualidade/relatorios/alertas/exibeImagens.cfm?imagem=" & urlEncodedFormat(contentName) & "&id_nc=" & urlEncodedFormat(id_nc);
-                
-                    // Verificar se é uma imagem (jpg, png, jpeg, gif)
-                    if (findNoCase(".jpg", contentName) or findNoCase(".png", contentName) or findNoCase(".jpeg", contentName) or findNoCase(".gif", contentName)) {
-                        // Adicionar a imagem e o link à lista
-                        htmlContent &= "<li style='text-align: center; list-style-type: none;'>";
-                        htmlContent &= "<a href='" & fileUrl & "' class='image-link' data-image='" & fileUrl & "' target='_blank' style='display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none;'>";
-                        
-                        // Exibir a imagem maior
-                        htmlContent &= "<img src='" & fileUrl & "' style='width: 100px; height: 100px; object-fit: cover; border-radius: 4px;'>";
-                        
-                        // Nome da imagem abaixo da miniatura
-                        htmlContent &= "<span style='color: blue; font-size: 12px; margin-top: 5px;'>" & contentName & "</span>";
-                        htmlContent &= "</a>";
-                        htmlContent &= "</li>";
-                    }
-                }
-                
-                htmlContent &= "</ul>";
-                
-            htmlContent &= "</li>";
-        }
-    }
-
-    htmlContent &= "</ul></div>";
-</cfscript>
-
-<cfoutput>#htmlContent#</cfoutput>
-
-<!-- CSS para posicionar a prévia -->
-<style>
-    #imagePreview {
-        display: none;
-        position: absolute;
-        border: 1px solid #ccc;
-        background: #fff;
-        padding: 5px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-    }
-</style>
-
-<!-- Elemento para mostrar a prévia -->
-<div id="imagePreview">
-    <img id="previewImg" src="" style="max-width: 350px; max-height: 350px;">
-</div>
-
-<!-- Script para exibir a prévia da imagem -->
-<script>
-        document.addEventListener("DOMContentLoaded", function() {
-        const preview = document.getElementById("imagePreview");
-        const previewImg = document.getElementById("previewImg");
-
-        document.querySelectorAll(".image-link").forEach(link => {
-            link.addEventListener("mouseover", function(event) {
-                previewImg.src = this.dataset.image;
-                preview.style.display = "block";
-                positionPreview(event);
-            });
-
-            link.addEventListener("mousemove", function(event) {
-                positionPreview(event);
-            });
-
-            link.addEventListener("mouseout", function() {
-                preview.style.display = "none";
-            });
-
-            function positionPreview(event) {
-                const previewWidth = preview.offsetWidth;
-                const previewHeight = preview.offsetHeight;
-                const pageWidth = window.innerWidth;
-                const pageHeight = window.innerHeight;
-
-                let top = event.pageY - previewHeight - 10; // Aparecer acima do mouse
-                let left = event.pageX + 10; // Posição padrão à direita
-
-                // Se estiver no topo da página, exibir abaixo do mouse
-                if (top < window.scrollY) {
-                    top = event.pageY + 10;
-                }
-
-                // Se a imagem ultrapassar a lateral direita, ajustar para a esquerda
-                if (left + previewWidth > pageWidth) {
-                    left = event.pageX - previewWidth - 10;
-                }
-
-                preview.style.top = top + "px";
-                preview.style.left = left + "px";
-            }
-        });
-    });
-</script>
-
         </body>
 </html>
+    

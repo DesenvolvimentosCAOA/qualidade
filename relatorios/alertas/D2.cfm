@@ -13,7 +13,7 @@
             ORDER BY ID DESC
         </cfquery>
     </cfif>
-    
+
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -417,9 +417,9 @@
 
                 htmlTable &= "</table>";
             </cfscript>
-        
+
             <cfoutput>#htmlTable#</cfoutput>
-        
+
             <script>
                 async function processAndSubmit(event) {
                     event.preventDefault();
