@@ -78,179 +78,179 @@
         FROM VEREAGIR2
     </cfquery>
 
-    <cfquery name="result" datasource="#BANCOSINC#">
-        SELECT 
-            sqf.PECA AS PECA_SQF, 
-            sqf.PROBLEMA AS PROBLEMA_SQF,
-            v2.PECA AS PECA_VEREAGIR2,
-            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
-            v2.ID AS ID_VEREAGIR2,
-            v2.BARREIRA,
-            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
-            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
-            v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
+<cfquery name="result" datasource="#BANCOSINC#">
+    SELECT 
+        sqf.PECA AS PECA_SQF, 
+        sqf.PROBLEMA AS PROBLEMA_SQF,
+        v2.PECA AS PECA_VEREAGIR2,
+        v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+        v2.ID AS ID_VEREAGIR2,
+        v2.BARREIRA,
+        MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+        MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+        v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
 
-            -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
-            (SELECT COUNT(*)
-            FROM SISTEMA_QUALIDADE_FA sqf_inner
-            WHERE sqf_inner.PECA = sqf.PECA
-            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
-            AND CRITICIDADE NOT IN 'N0'
-            ) AS TOTAL_OCORRENCIAS_APOS_BP,
-             -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
-            (SELECT MAX(sqf_inner.USER_DATA)
-            FROM SISTEMA_QUALIDADE_FA sqf_inner
-            WHERE sqf_inner.PECA = sqf.PECA
-            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
-            AND CRITICIDADE NOT IN ('N0')
-            ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
-        FROM 
-            SISTEMA_QUALIDADE_FA sqf
-        LEFT JOIN
-            VEREAGIR2 v2
-        ON
-            sqf.PECA = v2.PECA 
-            AND sqf.PROBLEMA = v2.PROBLEMA
-        WHERE 
-            v2.BARREIRA = 'FINAL ASSEMBLY'
-        GROUP BY 
-            sqf.PECA, sqf.PROBLEMA, 
-            v2.PECA, v2.PROBLEMA, 
-            v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
+        -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
+        (SELECT COUNT(*)
+        FROM SISTEMA_QUALIDADE_FA sqf_inner
+        WHERE sqf_inner.PECA = sqf.PECA
+        AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+        AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+        AND CRITICIDADE NOT IN 'N0'
+        ) AS TOTAL_OCORRENCIAS_APOS_BP,
+         -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
+        (SELECT MAX(sqf_inner.USER_DATA)
+        FROM SISTEMA_QUALIDADE_FA sqf_inner
+        WHERE sqf_inner.PECA = sqf.PECA
+        AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+        AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+        AND CRITICIDADE NOT IN ('N0')
+        ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
+    FROM 
+        SISTEMA_QUALIDADE_FA sqf
+    LEFT JOIN
+        VEREAGIR2 v2
+    ON
+        sqf.PECA = v2.PECA 
+        AND sqf.PROBLEMA = v2.PROBLEMA
+    WHERE 
+        v2.BARREIRA = 'FINAL ASSEMBLY'
+    GROUP BY 
+        sqf.PECA, sqf.PROBLEMA, 
+        v2.PECA, v2.PROBLEMA, 
+        v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
 
-        UNION ALL
+    UNION ALL
 
-        SELECT 
-            sqf.PECA AS PECA_SQF, 
-            sqf.PROBLEMA AS PROBLEMA_SQF,
-            v2.PECA AS PECA_VEREAGIR2,
-            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
-            v2.ID AS ID_VEREAGIR2,
-            v2.BARREIRA,
-            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
-            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
-            v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
+    SELECT 
+        sqf.PECA AS PECA_SQF, 
+        sqf.PROBLEMA AS PROBLEMA_SQF,
+        v2.PECA AS PECA_VEREAGIR2,
+        v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+        v2.ID AS ID_VEREAGIR2,
+        v2.BARREIRA,
+        MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+        MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+        v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
 
-            -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
-            (SELECT COUNT(*)
-            FROM SISTEMA_QUALIDADE_FAI sqf_inner
-            WHERE sqf_inner.PECA = sqf.PECA
-            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
-            AND CRITICIDADE NOT IN 'N0'
-            ) AS TOTAL_OCORRENCIAS_APOS_BP,
-             -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
-            (SELECT MAX(sqf_inner.USER_DATA)
-            FROM SISTEMA_QUALIDADE_FAI sqf_inner
-            WHERE sqf_inner.PECA = sqf.PECA
-            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
-            AND CRITICIDADE NOT IN ('N0')
-            ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
+        -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
+        (SELECT COUNT(*)
+        FROM SISTEMA_QUALIDADE_FAI sqf_inner
+        WHERE sqf_inner.PECA = sqf.PECA
+        AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+        AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+        AND CRITICIDADE NOT IN 'N0'
+        ) AS TOTAL_OCORRENCIAS_APOS_BP,
+         -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
+        (SELECT MAX(sqf_inner.USER_DATA)
+        FROM SISTEMA_QUALIDADE_FAI sqf_inner
+        WHERE sqf_inner.PECA = sqf.PECA
+        AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+        AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+        AND CRITICIDADE NOT IN ('N0')
+        ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
 
-        FROM 
-            SISTEMA_QUALIDADE_FAI sqf
-        LEFT JOIN
-            VEREAGIR2 v2
-        ON
-            sqf.PECA = v2.PECA 
-            AND sqf.PROBLEMA = v2.PROBLEMA
-        WHERE 
-            v2.BARREIRA = 'FAI'
-        GROUP BY 
-            sqf.PECA, sqf.PROBLEMA, 
-            v2.PECA, v2.PROBLEMA, 
-            v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
+    FROM 
+        SISTEMA_QUALIDADE_FAI sqf
+    LEFT JOIN
+        VEREAGIR2 v2
+    ON
+        sqf.PECA = v2.PECA 
+        AND sqf.PROBLEMA = v2.PROBLEMA
+    WHERE 
+        v2.BARREIRA = 'FAI'
+    GROUP BY 
+        sqf.PECA, sqf.PROBLEMA, 
+        v2.PECA, v2.PROBLEMA, 
+        v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
 
-        UNION ALL
+    UNION ALL
 
-        SELECT 
-            sqf.PECA AS PECA_SQF, 
-            sqf.PROBLEMA AS PROBLEMA_SQF,
-            v2.PECA AS PECA_VEREAGIR2,
-            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
-            v2.ID AS ID_VEREAGIR2,
-            v2.BARREIRA,
-            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
-            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
-            v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
+    SELECT 
+        sqf.PECA AS PECA_SQF, 
+        sqf.PROBLEMA AS PROBLEMA_SQF,
+        v2.PECA AS PECA_VEREAGIR2,
+        v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+        v2.ID AS ID_VEREAGIR2,
+        v2.BARREIRA,
+        MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+        MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+        v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
 
-            -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
-            (SELECT COUNT(*)
-            FROM SISTEMA_QUALIDADE sqf_inner
-            WHERE sqf_inner.PECA = sqf.PECA
-            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
-            AND CRITICIDADE NOT IN 'N0'
-            ) AS TOTAL_OCORRENCIAS_APOS_BP,
-             -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
-            (SELECT MAX(sqf_inner.USER_DATA)
-            FROM SISTEMA_QUALIDADE sqf_inner
-            WHERE sqf_inner.PECA = sqf.PECA
-            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
-            AND CRITICIDADE NOT IN ('N0')
-            ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
+        -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
+        (SELECT COUNT(*)
+        FROM SISTEMA_QUALIDADE sqf_inner
+        WHERE sqf_inner.PECA = sqf.PECA
+        AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+        AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+        AND CRITICIDADE NOT IN 'N0'
+        ) AS TOTAL_OCORRENCIAS_APOS_BP,
+         -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
+        (SELECT MAX(sqf_inner.USER_DATA)
+        FROM SISTEMA_QUALIDADE sqf_inner
+        WHERE sqf_inner.PECA = sqf.PECA
+        AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+        AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+        AND CRITICIDADE NOT IN ('N0')
+        ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
 
-        FROM 
-            SISTEMA_QUALIDADE sqf
-        LEFT JOIN
-            VEREAGIR2 v2
-        ON
-            sqf.PECA = v2.PECA 
-            AND sqf.PROBLEMA = v2.PROBLEMA
-        WHERE 
-            v2.BARREIRA = 'PAINT'
-        GROUP BY 
-            sqf.PECA, sqf.PROBLEMA, 
-            v2.PECA, v2.PROBLEMA, 
-            v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
+    FROM 
+        SISTEMA_QUALIDADE sqf
+    LEFT JOIN
+        VEREAGIR2 v2
+    ON
+        sqf.PECA = v2.PECA 
+        AND sqf.PROBLEMA = v2.PROBLEMA
+    WHERE 
+        v2.BARREIRA = 'PAINT'
+    GROUP BY 
+        sqf.PECA, sqf.PROBLEMA, 
+        v2.PECA, v2.PROBLEMA, 
+        v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
 
-        UNION ALL
+    UNION ALL
 
-        SELECT 
-            sqf.PECA AS PECA_SQF, 
-            sqf.PROBLEMA AS PROBLEMA_SQF,
-            v2.PECA AS PECA_VEREAGIR2,
-            v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
-            v2.ID AS ID_VEREAGIR2,
-            v2.BARREIRA,
-            MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
-            MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
-            v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
-            -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
-            (SELECT COUNT(*)
-            FROM SISTEMA_QUALIDADE_BODY sqf_inner
-            WHERE sqf_inner.PECA = sqf.PECA
-            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-            AND TRUNC(sqf_inner.USER_DATA) >= TRUNC(v2.DATA_BP_DEFINITIVO_PROCESSO)
-            AND CRITICIDADE NOT IN 'N0'
-            ) AS TOTAL_OCORRENCIAS_APOS_BP,
-             -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
-            (SELECT MAX(sqf_inner.USER_DATA)
-            FROM SISTEMA_QUALIDADE_BODY sqf_inner
-            WHERE sqf_inner.PECA = sqf.PECA
-            AND sqf_inner.PROBLEMA = sqf.PROBLEMA
-            AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
-            AND CRITICIDADE NOT IN ('N0')
-            ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
+    SELECT 
+        sqf.PECA AS PECA_SQF, 
+        sqf.PROBLEMA AS PROBLEMA_SQF,
+        v2.PECA AS PECA_VEREAGIR2,
+        v2.PROBLEMA AS PROBLEMA_VEREAGIR2,
+        v2.ID AS ID_VEREAGIR2,
+        v2.BARREIRA,
+        MAX(sqf.USER_DATA) AS ULTIMA_DATA_SQF,
+        MAX(v2.DATA_REGISTRO) AS ULTIMA_DATA_VEREAGIR2,
+        v2.DATA_BP_DEFINITIVO_PROCESSO AS DATA_BP_DEFINITIVO,
+        -- Contagem de ocorrências em `sistema_qualidade_fa` após a data e hora do BP definitivo
+        (SELECT COUNT(*)
+        FROM SISTEMA_QUALIDADE_BODY sqf_inner
+        WHERE sqf_inner.PECA = sqf.PECA
+        AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+        AND TRUNC(sqf_inner.USER_DATA) >= TRUNC(v2.DATA_BP_DEFINITIVO_PROCESSO)
+        AND CRITICIDADE NOT IN 'N0'
+        ) AS TOTAL_OCORRENCIAS_APOS_BP,
+         -- Última data da ocorrência em sistema_qualidade_fa após o BP definitivo
+        (SELECT MAX(sqf_inner.USER_DATA)
+        FROM SISTEMA_QUALIDADE_BODY sqf_inner
+        WHERE sqf_inner.PECA = sqf.PECA
+        AND sqf_inner.PROBLEMA = sqf.PROBLEMA
+        AND sqf_inner.USER_DATA >= v2.DATA_BP_DEFINITIVO_PROCESSO
+        AND CRITICIDADE NOT IN ('N0')
+        ) AS ULTIMA_DATA_OCORRENCIA_APOS_BP
 
-        FROM 
-            SISTEMA_QUALIDADE_BODY sqf
-        LEFT JOIN
-            VEREAGIR2 v2
-        ON
-            sqf.PECA = v2.PECA 
-            AND sqf.PROBLEMA = v2.PROBLEMA
-        WHERE 
-            v2.BARREIRA = 'BODY'
-        GROUP BY 
-            sqf.PECA, sqf.PROBLEMA, 
-            v2.PECA, v2.PROBLEMA, 
-            v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
-    </cfquery>
+    FROM 
+        SISTEMA_QUALIDADE_BODY sqf
+    LEFT JOIN
+        VEREAGIR2 v2
+    ON
+        sqf.PECA = v2.PECA 
+        AND sqf.PROBLEMA = v2.PROBLEMA
+    WHERE 
+        v2.BARREIRA = 'BODY'
+    GROUP BY 
+        sqf.PECA, sqf.PROBLEMA, 
+        v2.PECA, v2.PROBLEMA, 
+        v2.ID, v2.BARREIRA, v2.DATA_BP_DEFINITIVO_PROCESSO
+</cfquery>
 
 <html lang="pt-BR">
     <head>

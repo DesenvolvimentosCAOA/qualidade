@@ -18,7 +18,6 @@
       history.back(); // Voltar para a página anterior
    </script>
    </cfif>
-  
    <!---  Consulta  --->
    <cfquery name="consulta" datasource="#BANCOSINC#">
       SELECT *

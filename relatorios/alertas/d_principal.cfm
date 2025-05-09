@@ -169,18 +169,17 @@
                             <tr>
                                 <td style="white-space: normal; word-wrap: break-word; max-width: 200px;">
                                     <cfif isDate(data_registro)>
-                                        <!--- Verifica se tem data de finalização (D7/D8) --->
-                                        <cfif isDate(data_resposta_d7_d8)>
-                                            <!--- Calcula se foi finalizado dentro do prazo --->
-                                            <cfset dias_ate_finalizacao = DateDiff("d", data_registro, data_resposta_d7_d8)>
+                                        <!--- Verifica se está finalizado por data_evidencias OU status --->
+                                        <cfif (isDate(data_evidencias) OR (STATUS EQ "FINALIZADO"))>
+                                            <!--- Usa data_evidencias se existir, senão usa data atual --->
+                                            <cfset data_finalizacao = isDate(data_evidencias) ? data_evidencias : now()>
+                                            <cfset dias_ate_finalizacao = DateDiff("d", data_registro, data_finalizacao)>
                                             
                                             <cfif dias_ate_finalizacao lte 7>
-                                                <!--- Finalizado dentro do prazo - verde --->
                                                 <div style="color: green; font-weight: bold; white-space: normal;">
                                                     FINALIZADO<br>(DENTRO DO PRAZO)
                                                 </div>
                                             <cfelse>
-                                                <!--- Finalizado fora do prazo - vermelho --->
                                                 <cfset dias_atraso = dias_ate_finalizacao - 7>
                                                 <div style="color: red; font-weight: bold; white-space: normal;">
                                                     FINALIZADO<br>(#dias_atraso# dia<cfif dias_atraso gt 1>s</cfif> de atraso)
@@ -251,6 +250,8 @@
                                                     window.location.href = 'd5_d6.cfm?id_editar=#ID#&id_nc=#n_controle#';
                                                 } else if (status === 'D5/D6') {
                                                     window.location.href = 'd7_d8.cfm?id_editar=#ID#&id_nc=#n_controle#';
+                                                } else if (status === 'EVIDENCIAS PROCESSO') {
+                                                    window.location.href = 'relatoriofinal.cfm?id_editar=#ID#&id_nc=#n_controle#';
                                                 } else if (status === 'FINALIZADO') {
                                                     window.location.href = 'd9_relatorio.cfm?id_editar=#ID#&id_nc=#n_controle#';
                                                 }

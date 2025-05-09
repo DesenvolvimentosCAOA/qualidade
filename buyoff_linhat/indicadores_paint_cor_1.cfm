@@ -45,7 +45,7 @@
                 OR ((TO_CHAR(USER_DATA, 'D') = '7') AND (TO_CHAR(USER_DATA, 'HH24:MI:SS') BETWEEN '06:00:00' AND '14:48:00'))
             )
             AND INTERVALO BETWEEN '06:00' AND '15:00'
-            AND (MODELO LIKE '%WAP' OR MODELO LIKE '%BRANCO' OR MODELO LIKE '%BRANCA')
+            AND (MODELO LIKE '%WAP' OR MODELO LIKE '%BRANCO%' OR MODELO LIKE '%BRANCA')
             AND MODELO NOT IN 'CABINE  HR HDB 4WD BRANCA'
         GROUP BY BARREIRA, BARCODE,INTERVALO
     )
@@ -87,7 +87,7 @@
         AND PROBLEMA IS NOT NULL
         AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
         AND BARREIRA = 'ECOAT'
-        AND (MODELO LIKE '%BRANCO' OR MODELO LIKE '%WAP')
+        AND (MODELO LIKE '%BRANCO%' OR MODELO LIKE '%WAP')
         AND MODELO NOT IN 'CABINE  HR HDB 4WD BRANCA'
         AND (
             -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte
@@ -144,7 +144,7 @@
         AND PROBLEMA IS NOT NULL
         AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
         AND BARREIRA = 'Primer'
-        AND (MODELO LIKE '%BRANCO' OR MODELO LIKE '%WAP')
+        AND (MODELO LIKE '%BRANCO%' OR MODELO LIKE '%WAP')
         AND MODELO NOT IN 'CABINE  HR HDB 4WD BRANCA'
 
         AND (
@@ -202,7 +202,7 @@
         AND PROBLEMA IS NOT NULL
         AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
         AND BARREIRA = 'Top Coat'
-        AND (MODELO LIKE '%BRANCO' OR MODELO LIKE '%WAP')
+        AND (MODELO LIKE '%BRANCO%' OR MODELO LIKE '%WAP')
         AND MODELO NOT IN 'CABINE  HR HDB 4WD BRANCA'
 
         AND (
@@ -260,7 +260,7 @@
         AND PROBLEMA IS NOT NULL
         AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
         AND BARREIRA = 'Validacao'
-        AND (MODELO LIKE '%BRANCO' OR MODELO LIKE '%WAP')
+        AND (MODELO LIKE '%BRANCO%' OR MODELO LIKE '%WAP')
         AND MODELO NOT IN 'CABINE  HR HDB 4WD BRANCA'
 
         AND (
@@ -318,7 +318,7 @@
         AND PROBLEMA IS NOT NULL
         AND CRITICIDADE NOT IN ('N0', 'OK A-', 'AVARIA')
         AND BARREIRA = 'CP6'
-        AND (MODELO LIKE '%BRANCO' OR MODELO LIKE '%WAP')
+        AND (MODELO LIKE '%BRANCO%' OR MODELO LIKE '%WAP')
         AND MODELO NOT IN 'CABINE  HR HDB 4WD BRANCA'
         AND (
             -- Segunda a Quinta-feira: turno inicia às 06:00 e termina às 15:48 do dia seguinte

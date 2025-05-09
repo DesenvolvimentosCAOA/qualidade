@@ -9,10 +9,27 @@
 
     <!--- Decodifica o Base64 e salva os arquivos dentro do diretório VIN --->
     <cfset photoData = deserializeJSON(form.photoBase64)>
+    <cfset counter = 1>
+    
     <cfloop array="#photoData#" index="image">
-        <cfset filePath = destinationPath & image.fileName>
+        <!--- Obtém a extensão do arquivo original --->
+        <cfset fileExt = listLast(image.fileName, ".")>
+        
+        <!--- Cria o novo nome do arquivo --->
+        <cfset newFileName = "EVIDENCIAS INICIAIS " & counter & "." & fileExt>
+        <cfset filePath = destinationPath & newFileName>
+        
+        <!--- Verifica se o arquivo já existe para evitar sobrescrita --->
+        <cfloop condition="fileExists(filePath)">
+            <cfset counter++>
+            <cfset newFileName = "EVIDENCIAS INICIAIS " & counter & "." & fileExt>
+            <cfset filePath = destinationPath & newFileName>
+        </cfloop>
+        
         <cfset binaryData = toBinary(image.base64)>
         <cffile action="write" file="#filePath#" output="#binaryData#">
+        
+        <cfset counter++>
     </cfloop>
 
     <!--- Atualiza o STATUS na tabela ALERTAS_8D no datasource BANCOSINC --->
@@ -31,4 +48,3 @@
         self.location = 'd_principal.cfm';
     </script>
 </cfif>
-

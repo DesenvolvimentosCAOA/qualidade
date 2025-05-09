@@ -1,3 +1,7 @@
+<script>
+    self.location  = '/SGQ/index.cfm'
+</script><!----  
+
 <cfinvoke method="inicializando" component="cf.ini.index">
     <cfheader name="Cache-Control" value="no-cache, no-store, must-revalidate">
     <cfheader name="Pragma" value="no-cache">
@@ -33,7 +37,7 @@
         AND (SHOP = 'FA' OR USER_LEVEL = 'G' OR USER_LEVEL = 'P')
     </cfquery>
    
-<!---    <CFDUMP VAR="#validausuario#"> --->
+    <!---    <CFDUMP VAR="#validausuario#"> --->
     <cfif validausuario.recordcount GT 0>
         <cfcookie name="user_apontamento_fa" value="#FORM.final_assembly_login#">
         <cfcookie name="user_level_final_assembly" value="#validausuario.USER_LEVEL#">
@@ -51,29 +55,29 @@
 
 <!--- valida o usuário para paint --->
 <cfoutput>
-<cfif isDefined("form.PAINT_SHOP_LOGIN")>
-    <cfquery name="validausuario" datasource="#BANCOSINC#">
-        SELECT USER_ID, USER_NAME, USER_PASSWORD, trim (USER_LEVEL) USER_LEVEL, USER_SIGN FROM reparo_fa_users 
-        WHERE upper(USER_NAME) = UPPER('#form.PAINT_SHOP_LOGIN#')
-        AND USER_PASSWORD = UPPER('#form.PAINT_SHOP_SENHA#')
-        AND (SHOP = 'PAINT' OR USER_LEVEL = 'G' OR USER_LEVEL = 'P')
-    </cfquery>
-   
-<!---    <CFDUMP VAR="#validausuario#"> --->
-    <cfif validausuario.recordcount GT 0>
-        <cfcookie name="user_apontamento_paint" value="#FORM.PAINT_SHOP_LOGIN#">
-        <cfcookie name="user_level_paint" value="#validausuario.USER_LEVEL#">
-        <cfif validausuario.user_level eq "R">
-            <meta http-equiv="refresh" content="0; URL=/qualidade/buyoff_linhat/Reparo.cfm"/>
-        <cfelseif validausuario.user_level eq "P">
-            <meta http-equiv="refresh" content="0; URL=/qualidade/buyoff_linhat/indicadores_paint.cfm"/>
+    <cfif isDefined("form.PAINT_SHOP_LOGIN")>
+        <cfquery name="validausuario" datasource="#BANCOSINC#">
+            SELECT USER_ID, USER_NAME, USER_PASSWORD, trim (USER_LEVEL) USER_LEVEL, USER_SIGN FROM reparo_fa_users 
+            WHERE upper(USER_NAME) = UPPER('#form.PAINT_SHOP_LOGIN#')
+            AND USER_PASSWORD = UPPER('#form.PAINT_SHOP_SENHA#')
+            AND (SHOP = 'PAINT' OR USER_LEVEL = 'G' OR USER_LEVEL = 'P')
+        </cfquery>
+    
+        <!---    <CFDUMP VAR="#validausuario#"> --->
+        <cfif validausuario.recordcount GT 0>
+            <cfcookie name="user_apontamento_paint" value="#FORM.PAINT_SHOP_LOGIN#">
+            <cfcookie name="user_level_paint" value="#validausuario.USER_LEVEL#">
+            <cfif validausuario.user_level eq "R">
+                <meta http-equiv="refresh" content="0; URL=/qualidade/buyoff_linhat/Reparo.cfm"/>
+            <cfelseif validausuario.user_level eq "P">
+                <meta http-equiv="refresh" content="0; URL=/qualidade/buyoff_linhat/indicadores_paint.cfm"/>
+            <cfelse>
+                <meta http-equiv="refresh" content="0; URL=/qualidade/buyoff_linhat/paint_selecionar_buy_off.cfm"/>
+            </cfif>
         <cfelse>
-            <meta http-equiv="refresh" content="0; URL=/qualidade/buyoff_linhat/paint_selecionar_buy_off.cfm"/>
-        </cfif>
-    <cfelse>
-        <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
-           </cfif>
-</cfif>
+            <u class="btn btn-danger" style="width: 100%">USUÁRIO OU SENHA INCORRETA</u>
+            </cfif>
+    </cfif>
 </cfoutput>
 
 <!--- valida o usuário para FAI --->
@@ -899,4 +903,4 @@
     </script>
 
 </body>
-</html>
+</html> ---->

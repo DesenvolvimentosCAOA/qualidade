@@ -35,7 +35,8 @@
     <!--- Atualiza o STATUS na tabela ALERTAS_8D no datasource BANCOSINC --->
     <cfquery datasource="#BANCOSINC#">
         UPDATE INTCOLDFUSION.ALERTAS_8D
-        SET STATUS = 'FINALIZADO'
+        SET STATUS = 'FINALIZADO',
+        DATA_RESPOSTA_D7_D8 = <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
         WHERE ID = <cfqueryparam value="#id_editar#" cfsqltype="cf_sql_integer">
     </cfquery>
 

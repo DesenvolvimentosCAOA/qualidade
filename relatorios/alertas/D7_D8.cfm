@@ -19,7 +19,7 @@
             UPDATE INTCOLDFUSION.ALERTAS_8D
             SET
                 ANALISE_EFICACIA = <cfqueryparam value="#UCase(form.analise_eficacia)#" cfsqltype="CF_SQL_CLOB">,
-                STATUS = 'FINALIZADO',
+                STATUS = 'EVIDENCIAS PROCESSO',
                 DATA_RESPOSTA_D7_D8 = <cfqueryparam value="#now()#" cfsqltype="CF_SQL_TIMESTAMP">
                 WHERE ID = <cfqueryparam value="#url.id_editar#" cfsqltype="CF_SQL_INTEGER">
         </cfquery>
@@ -478,18 +478,18 @@
                                     </tr>                                    
                                     <tr>
                                         <td rowspan="6" style="text-align:center; font-size:30px;background-color:lightgrey">D5/D6</td>
-                                        <td class="label-bold" colspan="2" style="text-align:center;background-color:lightgrey">NÃO CONFORMIDADE/ OPORTUNIDADE DE MELHORIA</td>
-                                        <td class="label-bold" colspan="3" style="text-align:center;background-color:lightgrey">AÇÃO DEFINITIVA</td>
+                                        <td class="label-bold" colspan="1" style="text-align:center;background-color:lightgrey">NÃO CONFORMIDADE/ OPORTUNIDADE DE MELHORIA</td>
+                                        <td class="label-bold" colspan="4" style="text-align:center;background-color:lightgrey">AÇÃO DEFINITIVA</td>
                                         <td class="label-bold" colspan="1" style="text-align:center;background-color:lightgrey">ESTAÇÃO</td>
                                         <td class="label-bold" colspan="1" style="text-align:center;background-color:lightgrey">RESPONSÁVEL</td>
                                         <td class="label-bold" colspan="1" style="text-align:center;background-color:lightgrey">DATA</td>
                                         <td class="label-bold" colspan="1" style="text-align:center;background-color:lightgrey">BP</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" style="background-color:lightgrey">
+                                        <td colspan="1" style="background-color:lightgrey">
                                             <input type="text" name="nc_op1" style="width: 100%;background-color:lightgrey" value="#consulta_editar.nc_op_1#" readonly>
                                         </td>
-                                        <td colspan="3" style="background-color:lightgrey">
+                                        <td colspan="4" style="background-color:lightgrey">
                                             <input type="text" name="acao_1" style="width: 100%;background-color:lightgrey" value="#consulta_editar.acao_definitiva_1#" readonly>
                                         </td>
                                         <td colspan="1" style="background-color:lightgrey">
@@ -506,10 +506,10 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" style="background-color:lightgrey">
+                                        <td colspan="1" style="background-color:lightgrey">
                                             <input type="text" name="nc_op2" style="width: 100%;background-color:lightgrey" value="#consulta_editar.nc_op_2#" readonly>
                                         </td>
-                                        <td colspan="3" style="background-color:lightgrey">
+                                        <td colspan="4" style="background-color:lightgrey">
                                             <input type="text" name="acao_2" style="width: 100%;background-color:lightgrey" value="#consulta_editar.acao_definitiva_2#" readonly>
                                         </td>
                                         <td colspan="1" style="background-color:lightgrey">
@@ -526,10 +526,10 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" style="background-color:lightgrey">
+                                        <td colspan="1" style="background-color:lightgrey">
                                             <input type="text" name="nc_op3" style="width: 100%;background-color:lightgrey" value="#consulta_editar.nc_op_3#" readonly>
                                         </td>
-                                        <td colspan="3" style="background-color:lightgrey">
+                                        <td colspan="4" style="background-color:lightgrey">
                                             <input type="text" name="acao_3" style="width: 100%;background-color:lightgrey" value="#consulta_editar.acao_definitiva_3#" readonly>
                                         </td>
                                         <td colspan="1" style="background-color:lightgrey">
@@ -546,10 +546,10 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" style="background-color:lightgrey">
+                                        <td colspan="1" style="background-color:lightgrey">
                                             <input type="text" name="nc_op4" style="width: 100%;background-color:lightgrey" value="#consulta_editar.nc_op_4#" readonly>
                                         </td>
-                                        <td colspan="3" style="background-color:lightgrey">
+                                        <td colspan="4" style="background-color:lightgrey">
                                             <input type="text" name="acao_4" style="width: 100%;background-color:lightgrey" value="#consulta_editar.acao_definitiva_4#" readonly>
                                         </td>
                                         <td colspan="1" style="background-color:lightgrey">
@@ -566,10 +566,10 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" style="background-color:lightgrey">
+                                        <td colspan="1" style="background-color:lightgrey">
                                             <input type="text" name="nc_op5" style="width: 100%;background-color:lightgrey" value="#consulta_editar.nc_op_5#" readonly>
                                         </td>
-                                        <td colspan="3" style="background-color:lightgrey">
+                                        <td colspan="4" style="background-color:lightgrey">
                                             <input type="text" name="acao_5" style="width: 100%;background-color:lightgrey" value="#consulta_editar.acao_definitiva_5#" readonly>
                                         </td>
                                         <td colspan="1" style="background-color:lightgrey">
@@ -680,138 +680,137 @@
             </script>
             
             <cfparam name="id_nc" default="">
-<!-- Verifica se ID foi passado -->
-<cfif NOT Len(id_nc)>
-    <cfoutput>Erro: ID NC não especificado.</cfoutput>
-    <cfabort>
-</cfif>
+            <!-- Verifica se ID foi passado -->
+            <cfif NOT Len(id_nc)>
+                <cfoutput>Erro: ID NC não especificado.</cfoutput>
+                <cfabort>
+            </cfif>
 
-<cfset caminhoBase = "E:\arquivo_foto\">
-<cfset pastaImagens = caminhoBase & id_nc>
+            <cfset caminhoBase = "E:\arquivo_foto\">
+            <cfset pastaImagens = caminhoBase & id_nc>
 
-<!-- Verifica se a pasta existe -->
-<cfif NOT directoryExists(pastaImagens)>
-    <cfoutput>Erro: Diretório não encontrado.</cfoutput>
-    <cfabort>
-</cfif>
+            <!-- Verifica se a pasta existe -->
+            <cfif NOT directoryExists(pastaImagens)>
+                <cfoutput>Erro: Diretório não encontrado.</cfoutput>
+                <cfabort>
+            </cfif>
 
-<!-- Lista as imagens na pasta -->
-<cfscript>
-    htmlContent = "<div class='folder-content'><ul style='list-style: none; padding: 0;'>";
+            <!-- Lista as imagens na pasta -->
+            <cfscript>
+                htmlContent = "<div class='folder-content'><ul style='list-style: none; padding: 0;'>";
 
-    folderContent = directoryList(pastaImagens, false, "name");
+                folderContent = directoryList(pastaImagens, false, "name");
 
-    for (contentName in folderContent) {
-        if (
-            findNoCase(".jpg", contentName) or 
-            findNoCase(".png", contentName) or 
-            findNoCase(".jpeg", contentName) or 
-            findNoCase(".gif", contentName) or 
-            findNoCase(".bmp", contentName) or 
-            findNoCase(".webp", contentName)
-        ) {
-            fileUrl = "/qualidade/relatorios/alertas/exibeImagens.cfm?imagem=" & urlEncodedFormat(contentName) & "&id_nc=" & urlEncodedFormat(id_nc);
+                for (contentName in folderContent) {
+                    if (
+                        findNoCase(".jpg", contentName) or 
+                        findNoCase(".png", contentName) or 
+                        findNoCase(".jpeg", contentName) or 
+                        findNoCase(".gif", contentName) or 
+                        findNoCase(".bmp", contentName) or 
+                        findNoCase(".webp", contentName)
+                    ) {
+                        fileUrl = "/qualidade/relatorios/alertas/exibeImagens.cfm?imagem=" & urlEncodedFormat(contentName) & "&id_nc=" & urlEncodedFormat(id_nc);
 
-            htmlContent &= "<li style='margin-bottom: 10px;'>";
-                htmlContent = "";
-                htmlContent &= "<ul style='display: flex; flex-wrap: wrap; gap: 15px;'>";  // Contêiner para as imagens na horizontal
-                
-                for (content in folderContent) {
-                    contentName = listLast(content, "\");  // Extrair apenas o nome do arquivo
-                
-                    // Gerar o caminho relativo para a imagem
-                    fileUrl = "/qualidade/relatorios/alertas/exibeImagens.cfm?imagem=" & urlEncodedFormat(contentName) & "&id_nc=" & urlEncodedFormat(id_nc);
-                
-                    // Verificar se é uma imagem (jpg, png, jpeg, gif)
-                    if (findNoCase(".jpg", contentName) or findNoCase(".png", contentName) or findNoCase(".jpeg", contentName) or findNoCase(".gif", contentName)) {
-                        // Adicionar a imagem e o link à lista
-                        htmlContent &= "<li style='text-align: center; list-style-type: none;'>";
-                        htmlContent &= "<a href='" & fileUrl & "' class='image-link' data-image='" & fileUrl & "' target='_blank' style='display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none;'>";
-                        
-                        // Exibir a imagem maior
-                        htmlContent &= "<img src='" & fileUrl & "' style='width: 100px; height: 100px; object-fit: cover; border-radius: 4px;'>";
-                        
-                        // Nome da imagem abaixo da miniatura
-                        htmlContent &= "<span style='color: blue; font-size: 12px; margin-top: 5px;'>" & contentName & "</span>";
-                        htmlContent &= "</a>";
+                        htmlContent &= "<li style='margin-bottom: 10px;'>";
+                            htmlContent = "";
+                            htmlContent &= "<ul style='display: flex; flex-wrap: wrap; gap: 15px;'>";  // Contêiner para as imagens na horizontal
+                            
+                            for (content in folderContent) {
+                                contentName = listLast(content, "\");  // Extrair apenas o nome do arquivo
+                            
+                                // Gerar o caminho relativo para a imagem
+                                fileUrl = "/qualidade/relatorios/alertas/exibeImagens.cfm?imagem=" & urlEncodedFormat(contentName) & "&id_nc=" & urlEncodedFormat(id_nc);
+                            
+                                // Verificar se é uma imagem (jpg, png, jpeg, gif)
+                                if (findNoCase(".jpg", contentName) or findNoCase(".png", contentName) or findNoCase(".jpeg", contentName) or findNoCase(".gif", contentName)) {
+                                    // Adicionar a imagem e o link à lista
+                                    htmlContent &= "<li style='text-align: center; list-style-type: none;'>";
+                                    htmlContent &= "<a href='" & fileUrl & "' class='image-link' data-image='" & fileUrl & "' target='_blank' style='display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none;'>";
+                                    
+                                    // Exibir a imagem maior
+                                    htmlContent &= "<img src='" & fileUrl & "' style='width: 100px; height: 100px; object-fit: cover; border-radius: 4px;'>";
+                                    
+                                    // Nome da imagem abaixo da miniatura
+                                    htmlContent &= "<span style='color: blue; font-size: 12px; margin-top: 5px;'>" & contentName & "</span>";
+                                    htmlContent &= "</a>";
+                                    htmlContent &= "</li>";
+                                }
+                            }
+                            
+                            htmlContent &= "</ul>";
+                            
                         htmlContent &= "</li>";
                     }
                 }
-                
-                htmlContent &= "</ul>";
-                
-            htmlContent &= "</li>";
-        }
-    }
 
-    htmlContent &= "</ul></div>";
-</cfscript>
+                htmlContent &= "</ul></div>";
+            </cfscript>
 
-<cfoutput>#htmlContent#</cfoutput>
+            <cfoutput>#htmlContent#</cfoutput>
 
-<!-- CSS para posicionar a prévia -->
-<style>
-    #imagePreview {
-        display: none;
-        position: absolute;
-        border: 1px solid #ccc;
-        background: #fff;
-        padding: 5px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-    }
-</style>
-
-<!-- Elemento para mostrar a prévia -->
-<div id="imagePreview">
-    <img id="previewImg" src="" style="max-width: 350px; max-height: 350px;">
-</div>
-
-<!-- Script para exibir a prévia da imagem -->
-<script>
-        document.addEventListener("DOMContentLoaded", function() {
-        const preview = document.getElementById("imagePreview");
-        const previewImg = document.getElementById("previewImg");
-
-        document.querySelectorAll(".image-link").forEach(link => {
-            link.addEventListener("mouseover", function(event) {
-                previewImg.src = this.dataset.image;
-                preview.style.display = "block";
-                positionPreview(event);
-            });
-
-            link.addEventListener("mousemove", function(event) {
-                positionPreview(event);
-            });
-
-            link.addEventListener("mouseout", function() {
-                preview.style.display = "none";
-            });
-
-            function positionPreview(event) {
-                const previewWidth = preview.offsetWidth;
-                const previewHeight = preview.offsetHeight;
-                const pageWidth = window.innerWidth;
-                const pageHeight = window.innerHeight;
-
-                let top = event.pageY - previewHeight - 10; // Aparecer acima do mouse
-                let left = event.pageX + 10; // Posição padrão à direita
-
-                // Se estiver no topo da página, exibir abaixo do mouse
-                if (top < window.scrollY) {
-                    top = event.pageY + 10;
+            <!-- CSS para posicionar a prévia -->
+            <style>
+                #imagePreview {
+                    display: none;
+                    position: absolute;
+                    border: 1px solid #ccc;
+                    background: #fff;
+                    padding: 5px;
+                    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
                 }
+            </style>
 
-                // Se a imagem ultrapassar a lateral direita, ajustar para a esquerda
-                if (left + previewWidth > pageWidth) {
-                    left = event.pageX - previewWidth - 10;
-                }
+            <!-- Elemento para mostrar a prévia -->
+            <div id="imagePreview">
+                <img id="previewImg" src="" style="max-width: 350px; max-height: 350px;">
+            </div>
 
-                preview.style.top = top + "px";
-                preview.style.left = left + "px";
-            }
-        });
-    });
-</script>
+            <!-- Script para exibir a prévia da imagem -->
+            <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                    const preview = document.getElementById("imagePreview");
+                    const previewImg = document.getElementById("previewImg");
 
+                    document.querySelectorAll(".image-link").forEach(link => {
+                        link.addEventListener("mouseover", function(event) {
+                            previewImg.src = this.dataset.image;
+                            preview.style.display = "block";
+                            positionPreview(event);
+                        });
+
+                        link.addEventListener("mousemove", function(event) {
+                            positionPreview(event);
+                        });
+
+                        link.addEventListener("mouseout", function() {
+                            preview.style.display = "none";
+                        });
+
+                        function positionPreview(event) {
+                            const previewWidth = preview.offsetWidth;
+                            const previewHeight = preview.offsetHeight;
+                            const pageWidth = window.innerWidth;
+                            const pageHeight = window.innerHeight;
+
+                            let top = event.pageY - previewHeight - 10; // Aparecer acima do mouse
+                            let left = event.pageX + 10; // Posição padrão à direita
+
+                            // Se estiver no topo da página, exibir abaixo do mouse
+                            if (top < window.scrollY) {
+                                top = event.pageY + 10;
+                            }
+
+                            // Se a imagem ultrapassar a lateral direita, ajustar para a esquerda
+                            if (left + previewWidth > pageWidth) {
+                                left = event.pageX - previewWidth - 10;
+                            }
+
+                            preview.style.top = top + "px";
+                            preview.style.left = left + "px";
+                        }
+                    });
+                });
+            </script>
         </body>
 </html>
